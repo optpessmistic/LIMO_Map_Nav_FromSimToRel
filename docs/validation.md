@@ -8,6 +8,7 @@
 |---|---|---|
 | 核心测试 | Windows，Python 3.12；`python -m unittest discover -s tests -v` | 52 项通过：二维仿真 22、任务核心 18、感知核心 12。未运行 ROS executor。 |
 | 世界导出、地图坐标与导航配置 | `python -m unittest discover -s tools -p 'test_*.py' -v` | 12 项通过；检查 SDF、地图旋转/边界、DWB/MPPI 低速配置及速度消息链。 |
+| 离线目标评分 | `python -m unittest discover -s tools -p test_target_evaluation.py -v` | 新增 21 项通过，含 80 组穷举最优匹配对照；检查显式对齐、一对一匹配、重复/合并实例、零目标和非法输入。 |
 | 二维任务场景 | `python -m sim.suite` | 15/15 通过；完整策略完成可达范围内的理想探索、搜索和返航。含 0/1/3 个目标、不可达区域、遮挡、预算终止等情况。 |
 | 上游固定版本 | `bash scripts/fetch_sim_vendor.sh --check-only` | 固定源 commit 和补丁检查通过；模型包与实车驱动包名称分离。 |
 | ROS / Gazebo 安装 | WSL Ubuntu 24.04；`sudo bash tools/setup_jazzy.sh` | 配置进行中。安装成功、运行时检查和后续修复需另行记录。 |

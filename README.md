@@ -110,6 +110,8 @@ ros2 run nav2_map_server map_saver_cli -f outputs/map/final --ros-args -p use_si
 
 先创建 `outputs/map` 目录；替换示例中的任务文件名与代次。导出工具拒绝会话代次不符、无效坐标和图外标注，不修改原始地图。
 
+离线目标评分使用 `tools/evaluate_targets.py`。它要求显式提供独立标定的 `map → world` 平移、旋转和类别映射，先最大化一对一匹配数量，再最小化总定位误差；输出 TP/FP/FN、precision/recall 和距离误差。零目标时未定义的比率保留为 `null`，目标清单匹配不等于整个任务成功。参见该工具的 `--help`；真值文件只允许评分器读取。
+
 仿真世界及 `.metadata.json` 是物理引擎/离线评估器输入，不能作为探索或识别输入。SDF 可通过 `tools/build_gazebo_world.py` 从 `# . S T` ASCII 生成，支持多个 `T`。环境中的红盒只是待替换的视觉替身。
 
 成功需要分别满足地图验收、目标搜索/标注验收、实际返航验收。无 frontier、导航 Action 成功或零检测都不能单独证明任务全部完成。更完整的判据与失败分类见实验方案。
