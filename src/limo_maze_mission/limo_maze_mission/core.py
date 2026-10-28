@@ -2,9 +2,11 @@
 
 Inputs are only OccupancyGrid data, estimated poses and detector observations.
 No simulator state or expected target count is accepted by this module.
+Explicit, independently verified setup priors may create a separate planning
+copy; they are not sensor observations or coverage evidence.
 """
 from collections import deque
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from math import atan2, ceil, cos, hypot, isfinite, pi, sin
 
 
@@ -55,6 +57,37 @@ class Grid:
         c, s = cos(self.origin_yaw), sin(self.origin_yaw)
         dx, dy = x - self.origin_x, y - self.origin_y
         return floor((c*dx + s*dy)/self.resolution), floor((-s*dx + c*dy)/self.resolution)
+
+    def with_free_prior(self, center_xy, radius):
+        """Return (planning copy, filled count) using a verified free start disk.
+
+        The caller must independently establish this setup prior. It is not a
+        lidar observation and must not be credited as observed map/vision
+        coverage. Only unknown (-1) cells wholly inside the disk are filled;
+        measured values, map geometry and this original Grid remain unchanged.
+        No out-of-map area is created. Boundary corners are included (<=).
+        """
+        try:
+            cx, cy = center_xy
+            if (any(isinstance(v, bool) for v in (cx, cy, radius)) or
+                    not all(isfinite(v) for v in (cx, cy, radius)) or radius <= 0):
+                raise ValueError('Invalid prior geometry')
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError('Prior center must contain two finite coordinates and radius must be finite and positive') from exc
+        # Rotation preserves a disk. Work in the grid's unrotated local frame,
+        # so every cell's four corners can be checked against the same center.
+        c, s = cos(self.origin_yaw), sin(self.origin_yaw)
+        dx, dy = cx-self.origin_x, cy-self.origin_y
+        gx, gy = c*dx+s*dy, -s*dx+c*dy
+        values, filled = list(self.data), 0
+        for x, y in self.cells():
+            index = y*self.width+x
+            if values[index] != -1:
+                continue
+            if all(hypot(px*self.resolution-gx, py*self.resolution-gy) <= radius
+                   for px, py in ((x, y), (x+1, y), (x, y+1), (x+1, y+1))):
+                values[index], filled = 0, filled+1
+        return replace(self, data=tuple(values)), filled
 
     def component(self, start, allowed=None):
         allowed = allowed if allowed is not None else {p for p in self.cells() if self.free(p)}
@@ -225,25 +258,37 @@ class Selection:
     frontier_count: int = 0
     uncovered_count: int = 0
     reachable_count: int = 0
+    unobserved_count: int = 0
 
 
 class Planner:
-    def __init__(self, radius=.22, standoff=.55):
+    def __init__(self, radius=.25, standoff=.55):
         self.radius, self.standoff = radius, standoff
 
-    def select(self, grid, pose, coverage, failures, now, perception_ready):
+    def select(self, grid, pose, coverage, failures, now, perception_ready, observed_grid=None):
+        # The optional planning prior permits collision checks in an independently
+        # verified start area. It must never become map or camera evidence.
+        observed_grid = grid if observed_grid is None else observed_grid
+        geometry = ('width', 'height', 'resolution', 'origin_x', 'origin_y', 'origin_yaw')
+        if any(getattr(grid, key) != getattr(observed_grid, key) for key in geometry):
+            raise ValueError('Planning and observed grids must have identical geometry')
         start = grid.to_cell(*pose[:2])
-        raw = grid.component(start)
+        connected = grid.component(start)
         safe = grid.safe_cells(self.radius)
         reachable = grid.component(start, safe)
         if not reachable:
             return Selection('unsafe_or_unlocalized')
-        frontiers = {p for p in raw if grid.frontier(p)}
-        uncovered = {p for p in raw if not coverage.contains(grid.to_world(p), grid.resolution)}
-        failures.resolve_observed(grid, coverage)
-        stats = dict(frontier_count=len(frontiers), uncovered_count=len(uncovered), reachable_count=len(raw))
-        if not frontiers and not uncovered and not failures.entries and perception_ready:
+        observed = {p for p in connected if observed_grid.free(p)}
+        unobserved = connected.keys() - observed
+        frontiers = {p for p in observed if observed_grid.frontier(p)}
+        uncovered = {p for p in observed if not coverage.contains(observed_grid.to_world(p), observed_grid.resolution)}
+        failures.resolve_observed(observed_grid, coverage)
+        stats = dict(frontier_count=len(frontiers), uncovered_count=len(uncovered),
+                     reachable_count=len(connected), unobserved_count=len(unobserved))
+        if not frontiers and not uncovered and not unobserved and not failures.entries and perception_ready:
             return Selection('complete', **stats)
+        if not frontiers and unobserved:
+            return Selection('mapping_evidence_incomplete', **stats)
         if not frontiers and not perception_ready:
             return Selection('perception_unverified', **stats)
         kind = 'frontier' if frontiers else 'coverage'

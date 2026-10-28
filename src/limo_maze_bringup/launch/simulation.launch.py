@@ -14,15 +14,17 @@ def generate_launch_description():
     sim_share = get_package_share_directory('limo_sim_bringup')
     mission_share = get_package_share_directory('limo_maze_mission')
     return LaunchDescription([
-        DeclareLaunchArgument('world', default_value=os.path.join(share, 'worlds', 'example_maze.world')),
+        DeclareLaunchArgument('world', default_value=os.path.join(share, 'worlds', 'smoke_maze.world')),
         DeclareLaunchArgument('headless', default_value='true'),
         DeclareLaunchArgument('headless_rendering', default_value='false'),
+        DeclareLaunchArgument('lidar_fov_deg', default_value='240', choices=['240', '360']),
         DeclareLaunchArgument('autonomous', default_value='false'),
         DeclareLaunchArgument('red_surrogate', default_value='false'),
         DeclareLaunchArgument('output_dir', default_value='outputs/mission'),
         IncludeLaunchDescription(PythonLaunchDescriptionSource(os.path.join(sim_share, 'launch', 'sim.launch.py')),
             launch_arguments={'world': LaunchConfiguration('world'), 'headless': LaunchConfiguration('headless'),
-                              'headless_rendering': LaunchConfiguration('headless_rendering')}.items()),
+                              'headless_rendering': LaunchConfiguration('headless_rendering'),
+                              'lidar_fov_deg': LaunchConfiguration('lidar_fov_deg')}.items()),
         IncludeLaunchDescription(PythonLaunchDescriptionSource(os.path.join(share, 'launch', 'mapping_navigation.launch.py'))),
         IncludeLaunchDescription(PythonLaunchDescriptionSource(os.path.join(mission_share, 'launch', 'mission.launch.py')),
             launch_arguments={'autonomous': LaunchConfiguration('autonomous'), 'use_sim_time': 'true',

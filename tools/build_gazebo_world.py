@@ -48,6 +48,32 @@ def box(world, name, xyz, size, color):
             element(material, "diffuse", color)
 
 
+def target_wall_normal(rows, target):
+    """Choose an adjacent wall, returning its normal in ASCII grid axes.
+
+    Side walls preserve a straight corridor's centreline. At a dead end the
+    end wall is preferred. In corners/other cells, use a deterministic wall;
+    no wall-free fallback silently puts an obstacle in the travel corridor.
+    """
+    x, y = target
+    directions = ((0, -1), (0, 1), (-1, 0), (1, 0))
+    walls = {d for d in directions if rows[y+d[1]][x+d[0]] == "#"}
+    if not walls:
+        raise ValueError("Target at grid ({}, {}) has no adjacent wall; move T "
+                         "next to a wall before exporting physical geometry.".format(x, y))
+    open_directions = set(directions) - walls
+    if len(open_directions) == 1:
+        dx, dy = next(iter(open_directions))
+        preferred = ((-dx, -dy),) + directions
+    elif {(-1, 0), (1, 0)} <= open_directions:
+        preferred = ((0, -1), (0, 1), (-1, 0), (1, 0))
+    elif {(0, -1), (0, 1)} <= open_directions:
+        preferred = ((-1, 0), (1, 0), (0, -1), (0, 1))
+    else:
+        preferred = directions
+    return next(direction for direction in preferred if direction in walls)
+
+
 def build(text, cell=0.6, wall_height=0.6):
     if not math.isfinite(cell) or not math.isfinite(wall_height) or cell <= 0 or wall_height <= 0:
         raise ValueError("Cell size and wall height must be finite and positive.")
@@ -78,20 +104,33 @@ def build(text, cell=0.6, wall_height=0.6):
                 px, py = xy(x, y)
                 box(world, "wall_{}_{}".format(x, y), (px, py, wall_height/2),
                     (cell, cell, wall_height), "0.26 0.32 0.39 1")
-    # Place a visual surrogate beside its cell center to keep the navigation
-    # centerline usable. It is not an AprilTag or a validated target detector.
+    # Mount a thin visual surrogate flush against an actual adjacent wall.
+    # At cell=0.6, its inner face is 0.27 m from the cell centre, giving a
+    # 0.25 m circular footprint 0.02 m of geometric clearance. Runtime noise
+    # and costmap rasterization still require separate narrow-corridor tests.
+    # Costmap discretization/dynamics still require runtime validation.
     target_meta = []
     for index, target in enumerate(targets):
         tx, ty = xy(*target)
+        dx, grid_dy = target_wall_normal(rows, target)
+        dy = -grid_dy
         side = min(0.06, cell/10.0)
-        edge = cell/2.0 - side
-        box(world, "target_surrogate_{}".format(index), (tx+edge, ty, 0.10), (side, side, 0.20), "0.9 0.05 0.05 1")
-        target_meta.append({"x": tx+edge, "y": ty, "z": 0.10, "appearance": "red_box_surrogate"})
+        depth = side/2.0
+        offset = cell/2.0 - depth/2.0
+        px, py = tx+dx*offset, ty+dy*offset
+        size = (depth, side, 0.20) if dx else (side, depth, 0.20)
+        box(world, "target_surrogate_{}".format(index), (px, py, 0.10), size, "0.9 0.05 0.05 1")
+        target_meta.append({"x": px, "y": py, "z": 0.10, "appearance": "red_box_surrogate",
+                            "grid_xy": list(target),
+                            "wall_grid_xy": [target[0]+dx, target[1]+grid_dy],
+                            "wall_normal_world_xy": [dx, dy], "size_xyz": list(size),
+                            "mounting": "flush_to_adjacent_wall",
+                            "cell_center_clearance_m": cell/2.0-depth})
     metadata = {"role": "simulator_and_offline_evaluator_only", "cell_m": cell,
                 "wall_height_m": wall_height, "robot_spawn": {"x": 0, "y": 0, "yaw": 0},
                 "spawn_z": "use robot model launch default and verify ground clearance",
                 "targets_ground_truth": target_meta,
-                "note": "World geometry only; no robot or ROS integration. Target is an unvalidated visual surrogate."}
+                "note": "World geometry only; no robot or ROS integration. Target is an unvalidated wall-mounted red-box surrogate. Centreline clearance is geometric only; robot dynamics and costmaps require runtime validation."}
     return root, metadata
 
 

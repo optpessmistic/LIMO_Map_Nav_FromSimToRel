@@ -1,9 +1,16 @@
-"""Independent of ROS: safety, information boundary and multi-target evidence."""
+"""Pure core tests plus an isolated, optional real-ROS startup regression."""
 import math
 import ast
+import importlib.util
+import json
+import os
 import random
 from pathlib import Path
+import subprocess
 import sys
+import textwrap
+import tempfile
+from types import SimpleNamespace
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission'))
@@ -69,6 +76,71 @@ class GridTests(unittest.TestCase):
                 if not blocked:
                     reference.add(p)
             self.assertEqual(g.safe_cells(radius), reference)
+
+
+class FreePriorTests(unittest.TestCase):
+    def test_rotated_translated_origin_uses_world_center(self):
+        original = grid(['???']*3, resolution=1)
+        rotated = grid(['???']*3, resolution=1, origin=(4., -3., math.pi/3))
+        expected, count = original.with_free_prior(original.to_world((1, 1)), .8)
+        result, rotated_count = rotated.with_free_prior(rotated.to_world((1, 1)), .8)
+        self.assertEqual((count, rotated_count), (1, 1))
+        self.assertEqual(result.data, expected.data)
+        self.assertEqual(result.value((1, 1)), 0)
+        self.assertEqual(result.origin_x, rotated.origin_x)
+        self.assertEqual(result.origin_y, rotated.origin_y)
+        self.assertEqual(result.origin_yaw, rotated.origin_yaw)
+
+    def test_center_inside_is_not_enough_and_corners_on_boundary_are_allowed(self):
+        original = grid(['?'], resolution=1)
+        partial, count = original.with_free_prior((.5, .5), .6)
+        self.assertEqual(count, 0)  # Cell center is inside; all corners are outside.
+        self.assertEqual(partial.data, (-1,))
+        boundary, count = original.with_free_prior((.5, .5), math.hypot(.5, .5))
+        self.assertEqual((boundary.data, count), ((0,), 1))
+
+    def test_measured_values_and_all_other_fields_are_preserved(self):
+        original = Grid(5, 1, .1, 2., -1., .3, (-1, 0, 1, 64, 100), occupied_threshold=70)
+        result, count = original.with_free_prior(original.to_world((2, 0)), 1)
+        self.assertEqual(count, 1)
+        self.assertEqual(result.data, (0, 0, 1, 64, 100))
+        self.assertEqual(original.data, (-1, 0, 1, 64, 100))
+        self.assertIsNot(result, original)
+        for name in ('width', 'height', 'resolution', 'origin_x', 'origin_y', 'origin_yaw', 'occupied_threshold'):
+            self.assertEqual(getattr(result, name), getattr(original, name))
+
+    def test_prior_outside_map_never_expands_map(self):
+        original = grid(['??'], resolution=1)
+        result, count = original.with_free_prior((10., 10.), 1)
+        self.assertEqual((count, result.data), (0, original.data))
+        result, count = original.with_free_prior((-.5, .5), 2)
+        self.assertEqual((result.width, result.height, len(result.data)), (2, 1, 2))
+        self.assertEqual(count, 1)  # First cell is entirely in disk; second is not.
+        self.assertEqual(result.value((-1, 0)), -1)
+
+    def test_invalid_prior_geometry_is_rejected(self):
+        original = grid(['?'])
+        for center, radius in [((0, 0), 0), ((0, 0), -1), ((0, 0), math.inf),
+                               ((0, 0), math.nan), ((math.nan, 0), 1),
+                               ((0, math.inf), 1), ((0,), 1), ((0, 0, 0), 1),
+                               (None, 1), (('0', 0), 1), ((0, 0), True)]:
+            with self.subTest(center=center, radius=radius), self.assertRaises(ValueError):
+                original.with_free_prior(center, radius)
+
+    def test_using_copy_does_not_change_original_planning_or_coverage(self):
+        original = grid(['?????']*5)
+        pose = (*original.to_world((2, 2)), 0)
+        planner, coverage = Planner(radius=.04), Coverage()
+        before = planner.select(original, pose, coverage, FailureBook(), 0, False)
+        result, count = original.with_free_prior(pose[:2], .22)
+        self.assertGreater(count, 0)
+        self.assertTrue(result.free((2, 2)))
+        after = planner.select(original, pose, coverage, FailureBook(), 0, False)
+        self.assertEqual(before, after)
+        self.assertEqual(after.state, 'unsafe_or_unlocalized')
+        self.assertEqual(original.component((2, 2)), {})
+        self.assertEqual(original.safe_cells(.04), set())
+        self.assertEqual((coverage.frames, coverage.points), (0, set()))
 
 
 class PlanningTests(unittest.TestCase):
@@ -164,7 +236,91 @@ class PerceptionTests(unittest.TestCase):
         self.assertEqual(store.confirmed(), [])
 
 
+class PlanningEvidenceTests(unittest.TestCase):
+    def test_prior_does_not_remove_raw_frontiers_or_resolve_failures(self):
+        rows = ['#'*21] + ['#'+'.'*19+'#']*19 + ['#'*21]
+        rows[10] = rows[10][:10]+'?'+rows[10][11:]
+        observed = grid(rows)
+        pose = (*observed.to_world((10, 10)), 0.)
+        planning, count = observed.with_free_prior(pose[:2], .25)
+        self.assertEqual(count, 1)
+        coverage = cover_all(observed)
+        book = FailureBook(radius=.01)
+        anchor = observed.to_world((9, 10))
+        book.fail(Goal(*anchor, 0, 'frontier', anchor), 0, 'not_observed')
+        result = Planner().select(planning, pose, coverage, book, 1, True, observed_grid=observed)
+        self.assertEqual(result.frontier_count, 4)
+        self.assertEqual(result.unobserved_count, 1)
+        self.assertEqual(result.uncovered_count, 0)  # No impossible camera goal on a raw unknown cell.
+        self.assertNotEqual(result.state, 'complete')
+        self.assertEqual(len(book.entries), 1)
+        self.assertEqual(result.goal.kind, 'frontier')
+        self.assertTrue(observed.frontier(observed.to_cell(*result.goal.anchor)))
+        self.assertEqual(observed.value((10, 10)), -1)
+
+    def test_prior_alone_is_not_a_completed_map_even_without_raw_frontiers(self):
+        observed = grid(['?'*21]*21)
+        pose = (*observed.to_world((10, 10)), 0.)
+        planning, count = observed.with_free_prior(pose[:2], .8)
+        result = Planner().select(planning, pose, cover_all(planning), FailureBook(), 0,
+                                  True, observed_grid=observed)
+        self.assertGreater(count, 0)
+        self.assertEqual(result.frontier_count, 0)
+        self.assertEqual(result.unobserved_count, count)
+        self.assertEqual(result.state, 'mapping_evidence_incomplete')
+
+    def test_observed_and_planning_geometry_must_match(self):
+        planning = grid(['.....']*5)
+        shifted = grid(['.....']*5, origin=(.1, 0., 0.))
+        with self.assertRaisesRegex(ValueError, 'identical geometry'):
+            Planner(.04).select(planning, (.25, .25, 0), Coverage(), FailureBook(), 0,
+                                False, observed_grid=shifted)
+
+
 class AdapterCallbackTests(unittest.TestCase):
+    def test_timeout_latches_and_disqualifies_success_after_return_checks_pass(self):
+        # Execute the actual adapter methods without importing or starting ROS.
+        # Only external time/pose/publishing and result destination are fixtures.
+        node_path = Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission' / 'limo_maze_mission' / 'node.py'
+        tree = ast.parse(node_path.read_text(encoding='utf-8'))
+        cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
+        methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in ('tick', 'save_result')]
+        namespace = {'time': SimpleNamespace(monotonic=lambda: 1000., strftime=lambda _: 'test'),
+                     'Path': Path, 'json': json}
+        exec(compile(ast.Module(body=methods, type_ignores=[]), str(node_path), 'exec'), namespace)
+        # Keep the disposable result under this test's workspace in restricted
+        # Windows environments whose system temp directory is not writable.
+        with tempfile.TemporaryDirectory(prefix='limo-timeout-regression-',
+                                         dir=Path(__file__).resolve().parent) as directory:
+            node = SimpleNamespace(
+                last_clock=None, home=(1., 2., 0.), canceling=False, phase='exploring',
+                grid=object(), map_received=1000., started=0., mission_timed_out=False,
+                seconds=lambda: 1000., get_pose=lambda: (1., 2., 0.), publish_status=lambda: None,
+                result_written=False, map_complete=True, visual_complete=True,
+                failures=SimpleNamespace(entries=[]), targets=SimpleNamespace(confirmed=lambda: [], targets=[]),
+                coordinates_valid=True, map_epoch='test-epoch', prior_filled_cells=0,
+                sources=set(), events=[], get_logger=lambda: SimpleNamespace(info=lambda _: None, error=self.fail),
+                cfg={'mission_timeout_s': 900., 'map_max_age_s': 5., 'target_definition_verified': True,
+                     'map_frame': 'map', 'initial_clearance_radius_m': 0., 'initial_clearance_margin_m': .05,
+                     'initial_clearance_source': '', 'output_dir': directory})
+            def start_return(reason):
+                node.reason, node.phase = reason, 'returning'
+            node.start_return = start_return
+            namespace['tick'](node)
+            self.assertTrue(node.mission_timed_out)
+            self.assertEqual(node.reason, 'mission_timeout_incomplete')
+            self.assertEqual(node.phase, 'returning')
+            # Model later complete home checks: geometry/coverage are complete,
+            # the return pose is verified, and the detector definition is valid.
+            node.phase, node.reason = 'done', 'returned_after_deadline'
+            namespace['save_result'](node, True, node.home)
+            result = json.loads((Path(directory) / 'mission_test.json').read_text(encoding='utf-8'))
+            self.assertTrue(result['returned_pose_verified'])
+            self.assertTrue(result['map_complete'] and result['visual_coverage_complete'])
+            self.assertTrue(result['mission_timed_out'])
+            self.assertFalse(result['mission_success'])
+            self.assertIn('mission_timeout_incomplete', result['reason'])
+
     def test_late_goal_acceptance_after_cancel_timeout_is_canceled(self):
         # Load only this callback's AST so the regression also runs without ROS.
         node_path = Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission' / 'limo_maze_mission' / 'node.py'
@@ -194,8 +350,273 @@ class AdapterCallbackTests(unittest.TestCase):
 
         handle, adapter = Handle(), Adapter()
         namespace['on_goal_response'](adapter, Future(), 1)
-        self.assertIs(adapter.handle, handle)
+        self.assertIs(adapter.goal_handle, handle)
         self.assertEqual(adapter.canceled_token, 1)
+
+
+class MapEpochAdapterTests(unittest.TestCase):
+    def adapter(self):
+        # Run actual callbacks and startup/cancel transitions without ROS. The
+        # fixture substitutes only time, TF, Nav2 transport and publishers.
+        node_path = Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission' / 'limo_maze_mission' / 'node.py'
+        tree = ast.parse(node_path.read_text(encoding='utf-8'))
+        cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
+        names = ('on_epoch', 'tick', 'block', 'cancel_to')
+        methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in names]
+        marker = type('Marker', (), {'DELETEALL': 3})
+        namespace = {'time': SimpleNamespace(monotonic=lambda: 1000.),
+                     'Marker': marker, 'MarkerArray': SimpleNamespace}
+        exec(compile(ast.Module(body=methods, type_ignores=[]), str(node_path), 'exec'), namespace)
+        node = type('Adapter', (), {name: namespace[name] for name in names})()
+        node.__dict__.update(
+            last_clock=None, seconds=lambda: 1000., created=990., home=None,
+            map_epoch=None, map_epoch_ready=False, phase='waiting', reason='',
+            grid=object(), map_received=1000., started=None, canceling=False,
+            goal_handle=None, send_pending=False, token=12, map_complete=False,
+            visual_complete=False, coordinates_valid=True,
+            cfg={'startup_wait_s': 60., 'map_max_age_s': 5., 'autonomous': False,
+                 'cancel_timeout_s': 10.},
+            pose_queries=[], sent_goals=[], cancellations=[], markers=[], events=[], results=[],
+            nav=SimpleNamespace(server_is_ready=lambda: True), publish_status=lambda: None)
+        def pose():
+            node.pose_queries.append(True)
+            return (1., 2., .3)
+        node.get_pose = pose
+        node.send_goal = node.sent_goals.append
+        node.issue_cancel = node.cancellations.append
+        node.marker_pub = SimpleNamespace(publish=node.markers.append)
+        node.event = lambda name, **fields: node.events.append((name, fields))
+        node.save_result = node.results.append
+        return node
+
+    def test_missing_and_blank_epoch_cannot_record_home_or_send_goals(self):
+        for message in (None, '', ' \t\n'):
+            with self.subTest(epoch=message):
+                node = self.adapter()
+                node.cfg['autonomous'] = True
+                if message is not None:
+                    node.on_epoch(SimpleNamespace(data=message))
+                node.tick()
+                self.assertIsNone(node.home)
+                self.assertEqual(node.phase, 'waiting')
+                self.assertEqual(node.pose_queries, [])
+                self.assertEqual(node.sent_goals, [])
+
+    def test_missing_epoch_times_out_explicitly_without_recording_home(self):
+        node = self.adapter()
+        node.created = 940.  # Exactly startup_wait_s elapsed.
+        node.tick()
+        self.assertEqual(node.reason, 'startup_no_map_epoch')
+        self.assertTrue(node.canceling)
+        node.tick()
+        self.assertEqual(node.phase, 'blocked')
+        self.assertEqual(node.results, [False])
+        self.assertIsNone(node.home)
+        self.assertEqual(node.sent_goals, [])
+
+    def test_valid_epoch_allows_start_only_after_blank_state_is_replaced(self):
+        node = self.adapter()
+        node.on_epoch(SimpleNamespace(data=' session-a '))
+        node.on_epoch(SimpleNamespace(data='   '))
+        self.assertEqual(node.map_epoch, 'session-a')  # Audit ID is not erased.
+        self.assertFalse(node.map_epoch_ready)
+        node.tick()
+        self.assertIsNone(node.home)
+        node.on_epoch(SimpleNamespace(data=' session-a '))
+        node.tick()
+        self.assertTrue(node.map_epoch_ready)
+        self.assertEqual(node.home, (1., 2., .3))
+        self.assertEqual(node.phase, 'dry_run')
+        self.assertEqual(node.events[-1][0], 'home_recorded')
+        self.assertEqual(node.events[-1][1]['map_epoch'], 'session-a')
+        self.assertEqual(node.sent_goals, [])
+
+    def test_running_blank_or_changed_epoch_cancels_and_invalidates_coordinates(self):
+        for message, reason in (('  ', 'map_epoch_missing_requires_reanchor'),
+                                ('session-b', 'map_reset_requires_new_mission')):
+            with self.subTest(epoch=message):
+                node = self.adapter()
+                node.map_epoch, node.map_epoch_ready = 'session-a', True
+                node.home, node.phase, node.goal_handle = (1., 2., .3), 'exploring', object()
+                node.on_epoch(SimpleNamespace(data=message))
+                self.assertEqual(node.map_epoch, 'session-a')
+                self.assertFalse(node.map_epoch_ready)
+                self.assertFalse(node.coordinates_valid)
+                self.assertEqual(node.reason, reason)
+                self.assertEqual(node.phase, 'canceling')
+                self.assertEqual(node.cancel_next, 'blocked')
+                self.assertEqual(node.cancellations, [12])
+                self.assertEqual(len(node.markers), 1)
+                self.assertEqual(node.markers[0].markers[0].action, 3)
+                self.assertEqual(node.sent_goals, [])
+
+
+class ConfigurationConsistencyTests(unittest.TestCase):
+    @unittest.skipUnless(importlib.util.find_spec('yaml') is not None,
+                         'PyYAML unavailable; run with the ROS setup Python environment to validate generated Nav2 YAML')
+    def test_generated_nav2_padded_footprint_fits_mission_defaults(self):
+        import yaml
+        repository = Path(__file__).resolve().parents[1]
+        configuration = yaml.safe_load((repository / 'src' / 'limo_maze_bringup' / 'config' / 'nav2.yaml').read_text(encoding='utf-8'))
+        node_path = repository / 'src' / 'limo_maze_mission' / 'limo_maze_mission' / 'node.py'
+        tree = ast.parse(node_path.read_text(encoding='utf-8'))
+        cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
+        init = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == '__init__')
+        assignment = next(n for n in init.body if isinstance(n, ast.Assign)
+                          and any(isinstance(t, ast.Name) and t.id == 'defaults' for t in n.targets))
+        defaults = ast.literal_eval(assignment.value)
+        # Derive geometry from the generated configuration, not copied dimensions
+        # or a duplicated radius constant. Nav2 pads each vertex along x and y.
+        for name in ('local_costmap', 'global_costmap'):
+            parameters = configuration[name][name]['ros__parameters']
+            points = yaml.safe_load(parameters['footprint'])
+            padding = parameters['footprint_padding']
+            self.assertTrue(math.isfinite(padding) and padding >= 0)
+            self.assertGreaterEqual(len(points), 3)
+            required = max(math.hypot(abs(x)+padding, abs(y)+padding) for x, y in points)
+            with self.subTest(costmap=name, required_radius=required):
+                self.assertTrue(math.isfinite(required))
+                self.assertGreaterEqual(defaults['robot_radius_m'], required,
+                                        'MissionNode default must enclose the padded Nav2 footprint')
+                self.assertGreaterEqual(Planner().radius, required,
+                                        'Standalone Planner default must enclose the padded Nav2 footprint')
+
+
+class RosStartupTests(unittest.TestCase):
+    @unittest.skipUnless(importlib.util.find_spec('rclpy') is not None,
+                         'ROS rclpy is unavailable; source the ROS environment to run startup regression')
+    def test_construct_spin_and_destroy_with_autonomy_disabled(self):
+        # A child process isolates the ROS context and domain from other tests
+        # and any experiment on domain 73. No navigation server is required.
+        source = Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission'
+        environment = dict(os.environ, ROS_DOMAIN_ID='74', ROS_AUTOMATIC_DISCOVERY_RANGE='LOCALHOST')
+        environment['PYTHONPATH'] = str(source)+os.pathsep+environment.get('PYTHONPATH', '')
+        script = textwrap.dedent('''
+            import ast
+            from contextlib import contextmanager
+            import inspect
+            import json
+            from pathlib import Path
+            import tempfile
+            import rclpy
+            from rclpy.node import Node
+            from limo_maze_mission.core import Grid
+            from limo_maze_mission.node import MissionNode
+
+            # Check all assigned adapter attributes against the real base API,
+            # including read-only properties such as Node.handle.
+            tree = ast.parse(inspect.getsource(MissionNode))
+            assigned = {n.attr for n in ast.walk(tree)
+                        if isinstance(n, ast.Attribute) and isinstance(n.ctx, ast.Store)
+                        and isinstance(n.value, ast.Name) and n.value.id == 'self'}
+            conflicts = assigned.intersection(dir(Node))
+            assert not conflicts, 'Mission attributes shadow Node API: '+str(sorted(conflicts))
+
+            @contextmanager
+            def mission(parameters=()):
+                # Exercise real ROS parameter parsing and declaration. Retain a
+                # reference even if validation raises after Node construction.
+                arguments = ['--ros-args'] if parameters else []
+                for parameter in parameters:
+                    arguments.extend(['-p', parameter])
+                rclpy.init(args=arguments)
+                node = MissionNode.__new__(MissionNode)
+                try:
+                    node.__init__()
+                    assert node.cfg['autonomous'] is False
+                    def unexpected_goal(*args, **kwargs):
+                        raise AssertionError('Disabled-autonomy adapter sent a navigation goal')
+                    node.nav.send_goal_async = unexpected_goal
+                    yield node
+                finally:
+                    node.destroy_node()
+                    rclpy.shutdown()
+
+            values = [-1] * 81
+            values[4*9+5], values[5*9+4] = 100, 20
+            raw = Grid(9, 9, .1, 1.55, -2.45, 0., tuple(values))
+            home = (2., -2., 1.2)
+            with mission() as node:
+                assert node.cfg['autonomous'] is False
+                assert node.get_parameter('autonomous').value is False
+                assert node.handle is not None  # The native rclpy handle survives.
+                assert node.goal_handle is None
+                assert node.mission_timed_out is False
+                rclpy.spin_once(node, timeout_sec=0.6)
+                assert node.phase == 'waiting'
+                assert node.goal_handle is None and not node.send_pending
+                assert node.cfg['initial_clearance_radius_m'] == 0.
+                assert node.cfg['initial_clearance_source'] == ''
+                assert node.cfg['initial_clearance_margin_m'] == .05
+                node.grid, node.home = raw, home
+                assert node.planning_grid() is raw
+                assert node.prior_filled_cells == 0
+                print('ROS_STARTUP_OK domain=74 autonomous=False spin=ok')
+
+            for invalid in (
+                    ('initial_clearance_radius_m:=0.3',),
+                    ('initial_clearance_radius_m:=0.3', "initial_clearance_source:='   '"),
+                    ('initial_clearance_radius_m:=0.05', 'initial_clearance_source:=fixture'),
+                    ('initial_clearance_radius_m:=0.04', 'initial_clearance_source:=fixture')):
+                try:
+                    with mission(invalid):
+                        raise AssertionError('Invalid clearance prior was accepted: '+str(invalid))
+                except ValueError as error:
+                    assert 'independent source and radius greater than its margin' in str(error)
+
+            with tempfile.TemporaryDirectory(prefix='limo-adapter-regression-') as directory:
+                with mission(('initial_clearance_radius_m:=0.3',
+                              'initial_clearance_source:=independently_verified_test_fixture',
+                              'output_dir:='+directory)) as node:
+                    assert node.cfg['initial_clearance_radius_m'] == .3
+                    assert node.cfg['initial_clearance_margin_m'] == .05
+                    assert node.get_parameter('initial_clearance_source').value == node.cfg['initial_clearance_source']
+                    node.grid, node.map_epoch = raw, 'adapter-regression-epoch'
+                    assert node.planning_grid() is raw  # No home means no anchor.
+                    assert node.prior_filled_cells == 0
+                    node.home = home
+                    planning = node.planning_grid()
+                    # At .1 m resolution, only this 3x3 square lies wholly in
+                    # the effective .25 m disk. Two measured cells must survive.
+                    expected_filled = {(x, y) for x in (3, 4, 5) for y in (3, 4, 5)} - {(5, 4), (4, 5)}
+                    changed = {(x, y) for x, y in raw.cells()
+                               if raw.data[y*9+x] != planning.data[y*9+x]}
+                    assert changed == expected_filled, changed
+                    assert node.prior_filled_cells == 7
+                    assert planning is not raw and node.grid is raw
+                    assert raw.data == tuple(values)
+                    assert planning.data[4*9+5] == 100 and planning.data[5*9+4] == 20
+                    assert planning.data[4*9+6] == -1  # Inside .30, outside .25: margin applied.
+                    assert node.coverage.frames == 0 and not node.coverage.points
+                    node.last_home_pose = (2.3, -2., 0.)
+                    node.get_pose = lambda: (2.3, -2., 0.)
+                    assert node.planning_grid() == planning  # The prior cannot follow the robot.
+                    assert node.home == home and raw.data == tuple(values)
+                    node.phase, node.reason = 'done', 'adapter_regression_only'
+                    node.save_result(False)
+                    paths = list(Path(directory).glob('mission_*.json'))
+                    assert node.result_written and len(paths) == 1
+                    result = json.loads(paths[0].read_text(encoding='utf-8'))
+                    assert result['initial_clearance_prior'] == {
+                        'enabled': True, 'coordinates_valid': True, 'frame_id': 'map',
+                        'map_epoch': 'adapter-regression-epoch', 'center': [2., -2.],
+                        'verified_radius_m': .3, 'margin_m': .05,
+                        'source': 'independently_verified_test_fixture',
+                        'currently_filled_unknown_cells': 7,
+                        'sensor_observation': False, 'raw_slam_map_modified': False}
+                    assert result['visual_coverage_complete'] is False
+                    assert result['mission_success'] is False
+                    assert result['returned_pose_verified'] is False
+                    assert not node.send_pending and node.goal_handle is None
+            print('ROS_CLEARANCE_ADAPTER_OK defaults=off validation=ok copy=ok audit=ok')
+            print('ROS_TEARDOWN_OK')
+        ''')
+        result = subprocess.run([sys.executable, '-B', '-c', script], env=environment,
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout+'\n'+result.stderr)
+        self.assertIn('ROS_STARTUP_OK domain=74 autonomous=False spin=ok', result.stdout)
+        self.assertIn('ROS_CLEARANCE_ADAPTER_OK defaults=off validation=ok copy=ok audit=ok', result.stdout)
+        self.assertIn('ROS_TEARDOWN_OK', result.stdout)
 
 
 if __name__ == '__main__':

@@ -6,6 +6,8 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
+当前已完成环境安装、5 个 ROS 包构建、Gazebo 传感器/TF、在线建图和 Nav2 就绪检查，并获得实际 RGB-D 目标观测。完整自主探索与返航尚未通过；最新失败原因和证据见验证报告。
+
 ## 项目入口
 
 | 内容 | 入口 |
@@ -54,7 +56,7 @@ source scripts/env.sh
 
 ```bash
 source scripts/env.sh
-ros2 launch limo_sim_bringup sim.launch.py world:="$PWD/worlds/example_maze.world"
+ros2 launch limo_sim_bringup sim.launch.py world:="$PWD/worlds/smoke_maze.world"
 ```
 
 第二终端启动实时建图和导航：
@@ -64,7 +66,9 @@ source scripts/env.sh
 ros2 launch limo_maze_bringup mapping_navigation.launch.py
 ```
 
-传感器及 Nav2 就绪后，按任务节点文档显式启用 `autonomous:=true`。初版红色 RGB-D 检测只验证模拟视觉管线；正式物品类别未确定，不能将红盒检测通过记为课程目标识别完成。
+`smoke_maze` 的通道为 0.8 m，用于首轮集成；`example_maze` 保留 0.6 m 窄通道压力场景。两者都不提供地图或目标清单给机器人。默认 240° 扫描保留本模型的有效前向视场；360° 实验出现车身自回波，不能用它消除后方盲区。
+
+传感器及 Nav2 就绪后，还须检查起始 footprint 是否处于已观测自由区，再按任务节点文档显式启用 `autonomous:=true`。初版红色 RGB-D 检测只验证模拟视觉管线；正式物品类别未确定，不能将红盒检测通过记为课程目标识别完成。
 
 启动后可在第三终端运行只读接口检查；它们不会发送运动指令：
 

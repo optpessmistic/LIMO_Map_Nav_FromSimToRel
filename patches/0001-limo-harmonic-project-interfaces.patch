@@ -1,16 +1,20 @@
 diff --git a/src/gazebo_harmonic/urdf/limo_gazebo.xacro b/src/gazebo_harmonic/urdf/limo_gazebo.xacro
-index 8392303..a40b3ea 100644
+index 8392303..9046c68 100644
 --- a/src/gazebo_harmonic/urdf/limo_gazebo.xacro
 +++ b/src/gazebo_harmonic/urdf/limo_gazebo.xacro
-@@ -1,6 +1,6 @@
+@@ -1,6 +1,10 @@
  <?xml version="1.0"?>
  <robot name="limo" xmlns:xacro="http://www.ros.org/wiki/xacro">
 -  <xacro:include filename="$(find limo_base)/urdf/limo_four_diff.xacro"/>
 +  <xacro:include filename="$(find limo_harmonic_description)/urdf/limo_four_diff.xacro"/>
++  <!-- X2L emits 360 degrees; default front 240 avoids measured model self-returns. -->
++  <xacro:arg name="lidar_fov_deg" default="240"/>
++  <xacro:property name="lidar_half_angle"
++                  value="${float('$(arg lidar_fov_deg)') * 3.141592653589793 / 360.0}"/>
  
    <xacro:macro name="limo_wheel_surface" params="link">
      <gazebo reference="${link}">
-@@ -33,10 +33,14 @@
+@@ -33,10 +37,14 @@
        <frame_id>odom</frame_id>
        <child_frame_id>base_footprint</child_frame_id>
        <odom_publish_frequency>100</odom_publish_frequency>
@@ -29,7 +33,7 @@ index 8392303..a40b3ea 100644
      </plugin>
  
      <plugin filename="gz-sim-joint-state-publisher-system"
-@@ -48,11 +52,12 @@
+@@ -48,17 +56,18 @@
  
    <gazebo reference="laser_link">
      <sensor name="laser_sensor" type="gpu_lidar">
@@ -43,13 +47,15 @@ index 8392303..a40b3ea 100644
          <scan>
            <horizontal>
              <samples>720</samples>
-@@ -72,22 +77,23 @@
-           <max>8.0</max>
-           <resolution>0.01</resolution>
-         </range>
--        <noise>
--          <type>gaussian</type>
-+        <noise type="gaussian">
+             <resolution>1</resolution>
+-            <min_angle>-2.09439504</min_angle>
+-            <max_angle>2.09439504</max_angle>
++            <min_angle>${-lidar_half_angle}</min_angle>
++            <max_angle>${lidar_half_angle}</max_angle>
+           </horizontal>
+           <vertical>
+             <samples>1</samples>
+@@ -77,17 +86,19 @@
            <mean>0.0</mean>
            <stddev>0.01</stddev>
          </noise>
@@ -70,7 +76,7 @@ index 8392303..a40b3ea 100644
          <horizontal_fov>1.3962634</horizontal_fov>
          <image>
            <width>640</width>
-@@ -110,6 +116,7 @@
+@@ -110,6 +121,7 @@
  
    <gazebo reference="imu_link">
      <sensor name="imu_sensor" type="imu">

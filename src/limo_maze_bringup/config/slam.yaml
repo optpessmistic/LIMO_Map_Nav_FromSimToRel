@@ -29,6 +29,9 @@ slam_toolbox:
     use_scan_barycenter: true
     minimum_travel_distance: 0.10
     minimum_travel_heading: 0.10
+    # In slam_toolbox 2.8.5 the default false outer filter checks translation
+    # only; true also accepts scans after sufficient in-place rotation.
+    check_min_dist_and_heading_precisely: true
     scan_buffer_size: 10
     scan_buffer_maximum_scan_distance: 10.0
     link_match_minimum_response_fine: 0.1

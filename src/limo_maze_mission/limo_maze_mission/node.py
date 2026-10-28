@@ -46,7 +46,10 @@ class MissionNode(Node):
             'autonomous': False, 'map_topic': '/map', 'map_frame': 'map',
             'base_frame': 'base_link', 'odom_frame': 'odom',
             'navigation_action': 'navigate_to_pose', 'observation_topic': '/mission/target_observations',
-            'output_dir': 'mission_results', 'robot_radius_m': .24,
+            # Covers the padded Nav2 rectangle: hypot(.18+.02, .12+.02) < .25.
+            'output_dir': 'mission_results', 'robot_radius_m': .25,
+            'initial_clearance_radius_m': 0.0, 'initial_clearance_margin_m': .05,
+            'initial_clearance_source': '',
             'frontier_standoff_m': .55, 'goal_timeout_s': 90.0,
             'mission_timeout_s': 900.0, 'return_timeout_s': 180.0,
             'cancel_timeout_s': 10.0, 'tf_max_age_s': 1.0, 'map_max_age_s': 5.0,
@@ -64,12 +67,22 @@ class MissionNode(Node):
             self.declare_parameter(key, value)
         self.cfg = {key: self.get_parameter(key).value for key in defaults}
         for key, value in self.cfg.items():
+            if key == 'initial_clearance_radius_m':
+                if not isfinite(float(value)) or value < 0:
+                    raise ValueError(key + ' must be finite and nonnegative (zero disables the prior)')
+                continue
             if key.endswith(('_s', '_m')) and (not isfinite(float(value)) or value <= 0):
                 raise ValueError(f'{key} must be finite and positive')
+        if self.cfg['initial_clearance_radius_m'] > 0 and (
+                not self.cfg['initial_clearance_source'].strip() or
+                self.cfg['initial_clearance_radius_m'] <= self.cfg['initial_clearance_margin_m']):
+            raise ValueError('An initial clearance prior requires an independent source and radius greater than its margin')
+        self.prior_filled_cells = 0
         self.grid = None
         self.map_received = None
         self.map_signature = None
         self.map_epoch = None
+        self.map_epoch_ready = False
         self.tf_buffer = Buffer(cache_time=Duration(seconds=20.0))
         self.tf_listener = TransformListener(self.tf_buffer, self)
         self.nav = ActionClient(self, NavigateToPose, self.cfg['navigation_action'])
@@ -95,7 +108,7 @@ class MissionNode(Node):
         self.detector_received = None
         self.selection = None
         self.goal = None
-        self.handle = None
+        self.goal_handle = None
         self.send_pending = False
         self.token = 0
         self.goal_started = None
@@ -114,6 +127,7 @@ class MissionNode(Node):
         self.coordinates_valid = True
         self.map_complete = False
         self.visual_complete = False
+        self.mission_timed_out = False
         self.events = []
         self.create_timer(.5, self.tick)
         self.get_logger().info('Mission loaded; autonomous=' + str(self.cfg['autonomous']))
@@ -145,9 +159,19 @@ class MissionNode(Node):
         self.map_received = time.monotonic()
 
     def on_epoch(self, msg):
-        if self.map_epoch is not None and msg.data != self.map_epoch and self.home is not None:
+        epoch = msg.data.strip()
+        if not epoch:
+            # Retain the last legitimate ID for audit, but a blank current
+            # session announcement cannot authorize startup or continued use.
+            self.map_epoch_ready = False
+            if self.home is not None:
+                self.block('map_epoch_missing_requires_reanchor')
+            return
+        if self.home is not None and epoch != self.map_epoch:
+            self.map_epoch_ready = False
             self.block('map_reset_requires_new_mission')
-        self.map_epoch = msg.data
+            return
+        self.map_epoch, self.map_epoch_ready = epoch, True
 
     def get_pose(self):
         transform = self.tf_buffer.lookup_transform(self.cfg['map_frame'], self.cfg['base_frame'], Time())
@@ -168,6 +192,20 @@ class MissionNode(Node):
                 raise ValueError('localization_jump_requires_reanchor')
         self.last_map_odom = correction
         return p.x, p.y, yaw_of(q)
+
+    def planning_grid(self):
+        """Fixed, explicit starting-area prior; never modify the SLAM map.
+
+        This does not grow with the robot, clear measured obstacles, or count
+        as sensor coverage. The external setup guarantee is bound to home and
+        the current map epoch; normal reset/jump guards invalidate the mission.
+        """
+        self.prior_filled_cells = 0
+        if self.home is None or self.cfg['initial_clearance_radius_m'] == 0:
+            return self.grid
+        grid, self.prior_filled_cells = self.grid.with_free_prior(
+            self.home[:2], self.cfg['initial_clearance_radius_m']-self.cfg['initial_clearance_margin_m'])
+        return grid
 
     def on_observations(self, msg):
         if self.grid is None or self.phase in ('blocked', 'done') or self.cancel_next == 'blocked':
@@ -239,7 +277,7 @@ class MissionNode(Node):
         self.marker_pub.publish(array)
 
     def send_goal(self, goal):
-        if self.handle is not None or self.send_pending or self.canceling:
+        if self.goal_handle is not None or self.send_pending or self.canceling:
             raise RuntimeError('Attempt to overlap owned navigation goals')
         if not self.cfg['autonomous']:
             return
@@ -275,7 +313,7 @@ class MissionNode(Node):
             if self.canceling:
                 self.cancel_response = self.cancel_terminal = True
             return
-        self.handle = handle
+        self.goal_handle = handle
         handle.get_result_async().add_done_callback(lambda f: self.on_goal_result(f, token))
         if self.canceling or self.phase in ('blocked', 'done'):
             # A timed-out pending send can be accepted after we entered blocked.
@@ -293,16 +331,16 @@ class MissionNode(Node):
             # An exception is not proof of a terminal action; preserve the handle.
             self.block('navigation_result_unavailable:' + str(exc))
             return
-        self.handle = None
+        self.goal_handle = None
         self.goal_result = success, detail
         if self.canceling:
             self.cancel_terminal = True
         self.event('goal_terminal', token=token, success=success, detail=detail)
 
     def issue_cancel(self, token):
-        if self.handle is None:
+        if self.goal_handle is None:
             return
-        self.handle.cancel_goal_async().add_done_callback(lambda f: self.on_cancel_response(f, token))
+        self.goal_handle.cancel_goal_async().add_done_callback(lambda f: self.on_cancel_response(f, token))
 
     def on_cancel_response(self, future, token):
         if token != self.token or not self.canceling:
@@ -321,9 +359,9 @@ class MissionNode(Node):
             return
         self.canceling, self.cancel_next = True, next_phase
         self.cancel_started = time.monotonic()
-        self.cancel_response = self.cancel_terminal = self.handle is None and not self.send_pending
+        self.cancel_response = self.cancel_terminal = self.goal_handle is None and not self.send_pending
         self.phase = 'canceling'
-        if self.handle is not None:
+        if self.goal_handle is not None:
             self.issue_cancel(self.token)
         self.event('cancel_requested', next_phase=next_phase, reason=reason)
 
@@ -349,7 +387,7 @@ class MissionNode(Node):
             self.block('ros_clock_reset_requires_new_mission')
         self.last_clock = ros_now
         if self.canceling:
-            if self.cancel_terminal and (self.cancel_response or self.handle is None):
+            if self.cancel_terminal and (self.cancel_response or self.goal_handle is None):
                 # A terminal action is stronger evidence than a cancel response.
                 self.canceling = False
                 self.phase = self.cancel_next
@@ -365,6 +403,11 @@ class MissionNode(Node):
                 self.save_result(False)
             return
         if self.phase in ('done', 'blocked'):
+            self.publish_status()
+            return
+        if self.home is None and not self.map_epoch_ready:
+            if now-self.created >= self.cfg['startup_wait_s']:
+                self.block('startup_no_map_epoch')
             self.publish_status()
             return
         if self.grid is None or self.map_received is None or now-self.map_received > self.cfg['map_max_age_s']:
@@ -396,6 +439,7 @@ class MissionNode(Node):
             self.publish_status()
             return
         if self.phase in ('exploring', 'observing') and now-self.started >= self.cfg['mission_timeout_s']:
+            self.mission_timed_out = True
             self.start_return('mission_timeout_incomplete')
             self.publish_status()
             return
@@ -403,7 +447,7 @@ class MissionNode(Node):
             self.block('return_total_timeout')
             self.publish_status()
             return
-        if self.handle is not None or self.send_pending:
+        if self.goal_handle is not None or self.send_pending:
             timeout = self.cfg['return_timeout_s'] if self.phase == 'returning' else self.cfg['goal_timeout_s']
             if now-self.goal_started > timeout:
                 if self.phase == 'returning':
@@ -442,9 +486,11 @@ class MissionNode(Node):
         if self.phase == 'exploring':
             ready = (self.detector_received is not None and now-self.detector_received <= self.cfg['detector_timeout_s']
                      and self.coverage.frames > 0)
-            self.selection = self.planner.select(self.grid, pose, self.coverage, self.failures, now, ready)
+            self.selection = self.planner.select(self.planning_grid(), pose, self.coverage, self.failures,
+                                                 now, ready, observed_grid=self.grid)
             state = self.selection.state
-            self.map_complete = (self.selection.frontier_count == 0 and state != 'unsafe_or_unlocalized' and
+            self.map_complete = (self.selection.frontier_count == 0 and self.selection.unobserved_count == 0 and
+                                 state != 'unsafe_or_unlocalized' and
                                  not any(f.kind == 'frontier' for f in self.failures.entries))
             self.visual_complete = ready and self.selection.uncovered_count == 0
             if state == 'goal':
@@ -476,8 +522,10 @@ class MissionNode(Node):
                     # SLAM may reveal new frontiers on the return trip; recheck.
                     ready = (self.detector_received is not None and
                              now-self.detector_received <= self.cfg['detector_timeout_s'] and self.coverage.frames > 0)
-                    final = self.planner.select(self.grid, pose, self.coverage, self.failures, now, ready)
-                    self.map_complete = (final.frontier_count == 0 and final.state != 'unsafe_or_unlocalized' and
+                    final = self.planner.select(self.planning_grid(), pose, self.coverage, self.failures,
+                                                now, ready, observed_grid=self.grid)
+                    self.map_complete = (final.frontier_count == 0 and final.unobserved_count == 0 and
+                                         final.state != 'unsafe_or_unlocalized' and
                                          not any(f.kind == 'frontier' for f in self.failures.entries))
                     self.visual_complete = ready and final.uncovered_count == 0
                     if final.state == 'goal' and now-self.started < self.cfg['mission_timeout_s']:
@@ -506,13 +554,27 @@ class MissionNode(Node):
         if self.result_written:
             return
         mission_success = (returned and self.map_complete and self.visual_complete and
-                           not self.failures.entries and self.cfg['target_definition_verified'])
+                           not self.mission_timed_out and not self.failures.entries and
+                           self.cfg['target_definition_verified'])
+        if self.mission_timed_out and 'mission_timeout_incomplete' not in self.reason:
+            self.reason += (';' if self.reason else '') + 'mission_timeout_incomplete'
         result = {'schema_version': 1, 'frame_id': self.cfg['map_frame'], 'map_epoch': self.map_epoch,
                   'status': self.phase, 'reason': self.reason, 'mission_success': bool(mission_success),
                   'returned_pose_verified': returned, 'map_complete': self.map_complete,
                   'visual_coverage_complete': self.visual_complete,
+                  'mission_timed_out': self.mission_timed_out,
                   'target_definition_verified': self.cfg['target_definition_verified'],
                   'coordinates_valid': self.coordinates_valid,
+                  'initial_clearance_prior': {
+                      'enabled': self.cfg['initial_clearance_radius_m'] > 0,
+                      'coordinates_valid': self.coordinates_valid and self.home is not None,
+                      'frame_id': self.cfg['map_frame'], 'map_epoch': self.map_epoch,
+                      'center': self.home[:2] if self.home else None,
+                      'verified_radius_m': self.cfg['initial_clearance_radius_m'],
+                      'margin_m': self.cfg['initial_clearance_margin_m'],
+                      'source': self.cfg['initial_clearance_source'],
+                      'currently_filled_unknown_cells': self.prior_filled_cells,
+                      'sensor_observation': False, 'raw_slam_map_modified': False},
                   'target_count_prior': None, 'targets': [asdict(t) for t in self.targets.confirmed()],
                   'unconfirmed_target_candidates': [asdict(t) for t in self.targets.targets if not t.confirmed],
                   'observation_sources': sorted(self.sources), 'home': self.home, 'final_pose': final_pose,
@@ -539,8 +601,8 @@ def main(args=None):
         rclpy.spin(node)
     except KeyboardInterrupt:
         # Shutdown must not be called proof that the platform stopped.
-        if node.handle is not None:
-            future = node.handle.cancel_goal_async()
+        if node.goal_handle is not None:
+            future = node.goal_handle.cancel_goal_async()
             rclpy.spin_until_future_complete(node, future, timeout_sec=2.0)
         node.reason, node.phase = 'operator_shutdown_stop_not_verified', 'blocked'
         node.save_result(False)

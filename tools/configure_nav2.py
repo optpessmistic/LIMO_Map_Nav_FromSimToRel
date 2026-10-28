@@ -65,6 +65,10 @@ def configure(data):
         raise ValueError(f"Unreviewed controller plugin {plugin!r}; expected Jazzy DWB or MPPI defaults")
     for checker in controller.get("goal_checker_plugins", []):
         controller[checker].update(xy_goal_tolerance=0.15, yaw_goal_tolerance=0.26)
+    for checker in controller.get("progress_checker_plugins", []):
+        # At 0.4 rad/s an about-turn alone takes nearly 8 s. The generic
+        # 0.5 m / 10 s default can abort a valid low-speed turn and departure.
+        controller[checker].update(required_movement_radius=0.15, movement_time_allowance=30.0)
     for name in ("local_costmap", "global_costmap"):
         cost = data[name][name]["ros__parameters"]
         cost.pop("robot_radius", None)

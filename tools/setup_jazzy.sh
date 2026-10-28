@@ -30,5 +30,5 @@ apt-get -o DPkg::Lock::Timeout=300 install -y --no-remove \
   ros-jazzy-desktop ros-dev-tools ros-jazzy-ros-gz \
   ros-jazzy-navigation2 ros-jazzy-nav2-bringup ros-jazzy-slam-toolbox \
   ros-jazzy-robot-localization ros-jazzy-xacro ros-jazzy-joint-state-publisher \
-  ros-jazzy-tf-transformations python3-opencv
+  ros-jazzy-tf-transformations python3-opencv python3-pil python3-yaml
 echo 'Installed. In a fresh terminal: source /opt/ros/jazzy/setup.bash'

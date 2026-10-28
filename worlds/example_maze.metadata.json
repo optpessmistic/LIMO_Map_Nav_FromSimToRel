@@ -10,23 +10,80 @@
   "spawn_z": "use robot model launch default and verify ground clearance",
   "targets_ground_truth": [
     {
-      "x": 2.6399999999999997,
-      "y": 0.0,
+      "x": 2.4,
+      "y": 0.285,
       "z": 0.1,
-      "appearance": "red_box_surrogate"
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        5,
+        1
+      ],
+      "wall_grid_xy": [
+        5,
+        0
+      ],
+      "wall_normal_world_xy": [
+        0,
+        1
+      ],
+      "size_xyz": [
+        0.06,
+        0.03,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.27
     },
     {
-      "x": 6.24,
-      "y": -1.2,
+      "x": 6.0,
+      "y": -0.915,
       "z": 0.1,
-      "appearance": "red_box_surrogate"
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        11,
+        3
+      ],
+      "wall_grid_xy": [
+        11,
+        2
+      ],
+      "wall_normal_world_xy": [
+        0,
+        1
+      ],
+      "size_xyz": [
+        0.06,
+        0.03,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.27
     },
     {
-      "x": 5.04,
+      "x": 4.515,
       "y": -3.5999999999999996,
       "z": 0.1,
-      "appearance": "red_box_surrogate"
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        9,
+        7
+      ],
+      "wall_grid_xy": [
+        8,
+        7
+      ],
+      "wall_normal_world_xy": [
+        -1,
+        0
+      ],
+      "size_xyz": [
+        0.03,
+        0.06,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.27
     }
   ],
-  "note": "World geometry only; no robot or ROS integration. Target is an unvalidated visual surrogate."
+  "note": "World geometry only; no robot or ROS integration. Target is an unvalidated wall-mounted red-box surrogate. Centreline clearance is geometric only; robot dynamics and costmaps require runtime validation."
 }

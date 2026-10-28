@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-import shlex
 import xml.etree.ElementTree as ET
 
 from ament_index_python.packages import get_package_share_directory
@@ -10,15 +9,14 @@ from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     EmitEvent,
-    IncludeLaunchDescription,
+    ExecuteProcess,
     OpaqueFunction,
     RegisterEventHandler,
     SetEnvironmentVariable,
 )
 from launch.event_handlers import OnProcessExit
 from launch.events import Shutdown
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import FindExecutable, LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 import xacro
@@ -41,7 +39,10 @@ def _start(context):
     if world_element is None or not world_element.get("name"):
         raise ValueError(f"Expected an SDF <world name=...> in {world}")
     world_name = world_element.get("name")
-    robot_xml = xacro.process_file(str(model_share / "urdf/limo_gazebo.xacro")).toxml()
+    robot_xml = xacro.process_file(
+        str(model_share / "urdf/limo_gazebo.xacro"),
+        mappings={"lidar_fov_deg": LaunchConfiguration("lidar_fov_deg").perform(context)},
+    ).toxml()
 
     gazebo_args = ["-r", "-v", "3"]
     if _bool_arg(context, "headless"):
@@ -50,11 +51,13 @@ def _start(context):
         gazebo_args.append("--headless-rendering")
     gazebo_args.append(str(world))
 
-    simulator = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            str(Path(get_package_share_directory("ros_gz_sim")) / "launch/gz_sim.launch.py")
-        ),
-        launch_arguments={"gz_args": shlex.join(gazebo_args)}.items(),
+    # Launch without a shell: ros_gz_sim's shell wrapper can orphan the Ruby
+    # Gazebo process when only the wrapper receives SIGINT during shutdown.
+    simulator = ExecuteProcess(
+        cmd=[FindExecutable(name="gz"), "sim", *gazebo_args, "--force-version", "8"],
+        name="gazebo",
+        output="screen",
+        on_exit=[EmitEvent(event=Shutdown(reason="Gazebo server exited"))],
     )
     state_publisher = Node(
         package="robot_state_publisher",
@@ -118,6 +121,8 @@ def generate_launch_description():
                               description="Run the server without the Gazebo GUI."),
         DeclareLaunchArgument("headless_rendering", default_value="false",
                               description="Use EGL rendering when supported by the host GPU."),
+        DeclareLaunchArgument("lidar_fov_deg", default_value="240", choices=["240", "360"],
+                              description="240 uses the clear front sector; 360 exposes self-occlusion for study."),
         DeclareLaunchArgument("start_x", default_value="0.0"),
         DeclareLaunchArgument("start_y", default_value="0.0"),
         DeclareLaunchArgument("start_z", default_value="0.0"),

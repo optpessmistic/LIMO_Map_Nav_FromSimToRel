@@ -9,7 +9,9 @@ def defaults(plugin):
     # Minimal structural fixtures for the two released controller configurations.
     controller = {"FollowPath": {"plugin": plugin, "critics": ["ObstacleFootprint"],
                                   "CostCritic": {"consider_footprint": False}},
-                  "goal_checker_plugins": ["checker"], "checker": {"xy_goal_tolerance": .25}}
+                  "goal_checker_plugins": ["checker"], "checker": {"xy_goal_tolerance": .25},
+                  "progress_checker_plugins": ["progress"], "progress": {"required_movement_radius": .5,
+                                                                               "movement_time_allowance": 10.0}}
     cost = {"robot_base_frame": "base_footprint", "robot_radius": .22,
             "inflation_layer": {}, "static_layer": {}, "obstacle_layer": {"scan": {"topic": "scan"}}}
     return {"controller_server": {"ros__parameters": controller},
@@ -45,6 +47,8 @@ class Nav2ConfigurationTests(unittest.TestCase):
         self.assertEqual(follow["vx_max"], .15)
         self.assertEqual(follow["wz_max"], .4)
         self.assertTrue(follow["CostCritic"]["consider_footprint"])
+        self.assertEqual(controller["progress"]["required_movement_radius"], .15)
+        self.assertGreater(controller["progress"]["movement_time_allowance"], 3.1416/.4+.15/.15)
         self.assertNotIn("max_vel_x", follow)
         self.assertEqual(original["controller_server"]["ros__parameters"]["FollowPath"]["model_dt"], .05)
 

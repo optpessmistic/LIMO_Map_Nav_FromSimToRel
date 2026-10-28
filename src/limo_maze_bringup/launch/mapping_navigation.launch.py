@@ -10,7 +10,7 @@ from launch_ros.actions import Node
 
 
 def _launch_stack(context):
-    nav = get_package_share_directory("nav2_bringup")
+    nav = get_package_share_directory("limo_maze_bringup")
     slam = get_package_share_directory("slam_toolbox")
     use_sim_time = LaunchConfiguration("use_sim_time")
     for name in ("nav_params", "slam_params"):
@@ -21,9 +21,8 @@ def _launch_stack(context):
         IncludeLaunchDescription(PythonLaunchDescriptionSource(os.path.join(slam, "launch", "online_async_launch.py")),
             launch_arguments={"use_sim_time": use_sim_time, "slam_params_file": LaunchConfiguration("slam_params"),
                               "autostart": "true", "use_lifecycle_manager": "false"}.items()),
-        IncludeLaunchDescription(PythonLaunchDescriptionSource(os.path.join(nav, "launch", "navigation_launch.py")),
-            launch_arguments={"use_sim_time": use_sim_time, "params_file": LaunchConfiguration("nav_params"),
-                              "autostart": "true", "use_composition": "False"}.items()),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(os.path.join(nav, "launch", "navigation.launch.py")),
+            launch_arguments={"use_sim_time": use_sim_time, "params_file": LaunchConfiguration("nav_params")}.items()),
     ]
 
 
