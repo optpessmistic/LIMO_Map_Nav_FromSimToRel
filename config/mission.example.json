@@ -1,0 +1,26 @@
+{
+  "status": "design_only_not_loaded_by_sim_or_ros",
+  "mission_policy": "explore_then_return",
+  "target_definition": null,
+  "target_detector": "pending_tag_permission_and_camera_inventory",
+  "manipulation_required": false,
+  "ros_major_version": 2,
+  "ros_distribution": null,
+  "map_annotation_required": true,
+  "target_count_known_to_robot": false,
+  "autonomous_without_human_intervention": true,
+  "development_stack": "WSL Ubuntu 24.04 / ROS2 Jazzy / Gazebo Harmonic",
+  "frames": {"map": "map", "odom": "odom", "base": "base_link"},
+  "navigation_action": {"ros1": "/move_base", "ros2": "/navigate_to_pose"},
+  "proposed_initial_limits": {
+    "linear_speed_m_s": 0.15,
+    "angular_speed_rad_s": 0.4,
+    "home_xy_tolerance_m": 0.15,
+    "home_yaw_tolerance_deg": 15,
+    "target_confirmation_distinct_frames": 3,
+    "target_confirmation_window_s": 1.0,
+    "max_tf_age_s": 0.2,
+    "return_reserve_fraction": 0.3
+  },
+  "parameters_note": "Starting values to calibrate in Gazebo and on the actual robot; not manufacturer ratings or validated thresholds."
+}
