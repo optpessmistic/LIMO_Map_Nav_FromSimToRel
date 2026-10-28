@@ -21,6 +21,8 @@
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
 | 车体真实运动与接触近似 | [物理验证](docs/physics-validation.md) |
+| 激光输入与时间对照 | [只读扫描诊断](docs/scan-alignment.md) |
+| 当前 SLAM 错位调查 | [旋转建图对照](docs/slam-rotation-investigation.md) |
 | 完整搜索尚缺什么 | [验收差距](docs/acceptance-gaps.md) |
 | 分工与周报 | [周报模板](progress/weekly-template.md) |
 

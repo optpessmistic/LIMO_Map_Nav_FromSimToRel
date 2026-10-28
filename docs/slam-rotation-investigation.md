@@ -56,3 +56,27 @@ python outputs/ros_smoke/render_run5_map.py
 ```
 
 下一轮应使用新 epoch，比较扫描时间戳对应的 TF、扫描在机器人转动时的几何变化及同步物理姿态；每次只改变一个诊断条件。当前证据不支持直接放宽 footprint、将未知设为自由或修改完成条件。
+
+## 运动中的输入对照（run5b）
+
+同一模型、同一 SLAM 会话下再次执行受保护的 Spin，并在同一激光时间戳对齐原生测距、ROS `/scan`、`odom → laser_link` 和独立原生模型位姿。世界墙盒仅用于事后离线测距检验，不向机器人发布真值。此次延用了 run5 位姿图，不能当作新的 SLAM 冷启动复现。
+
+`scan_motion_run5b.json` 保存 579 帧对齐扫描，其中 137 帧发生运动、共 98,640 束。原生与 ROS ranges 逐值相同；插值后的 world/odom 激光平面朝向最大差约 35.6 µrad，平面位置最大差约 0.068 mm。零时间偏移的测距 RMS 为 0.01298 m，±20 ms 为约 0.041 m，±100 ms 为约 0.141 m；进一步的 ±1 ms 对照仍是零偏移残差最低。这些结果未发现足以解释约 0.555 rad 修正的桥接、外参或明显时间错配，不代表证明绝对零延迟。
+
+8 条运动射线的误差超过 0.1 m，最大 0.863 m，均紧邻预测深度不连续的遮挡边缘；未将其隐去。非边缘射线 RMS 约 0.01018 m，与配置的 0.01 m 噪声量级一致。诊断只验证本次视觉与碰撞几何一致的静态 box 场景；嵌套、其他几何或动态遮挡不能直接套用这个结论。
+
+据 [SLAM Toolbox 2.8.5 的 Mapper::Process](https://github.com/SteveMacenski/slam_toolbox/blob/2.8.5/lib/karto_sdk/src/Mapper.cpp#L2508)，`use_scan_matching: false` 同时跳过连续扫描匹配与图匹配，适合作为下一轮隔离对照；它不是实车建图方案。只关闭 `do_loop_closing` 仍保留 `AddEdges → LinkNearChains`，不足以排除图近邻修正。下一轮在新模型实例、新 epoch 下仅改前一项开关，保留原始地图与真实运动证据。
+
+## 全新实例的单参数对照（run6 / run7）
+
+两轮均重新启动相同模型与 smoke 世界、使用新 epoch、保留相同 Nav2/传感器配置，通过接口就绪检查后执行同一受保护 Spin，并采集独立 world/odom 证据。每次停止后确认所属 launcher、Gazebo、bridge、RSP、SLAM 和 Nav2 节点均结束，再启动下一轮。
+
+| 运行 | 相对 run5 基线的唯一 SLAM 参数变化 | 真实／odom 最大累计转角 rad | 最终 map→odom yaw rad | 原始地图 R=.25 m 安全格分块 |
+|---|---|---:|---:|---|
+| run5 | 无 | 6.399993 / 6.400000 | −0.55491 | 160、158、33（home） |
+| run6 | `use_scan_matching: false` | 6.406860 / 6.406867 | 约 0 | 326 格，单一分块；home 有 3 个未知格冲突 |
+| run7 | `use_scan_barycenter: false`，匹配仍开启 | 6.403851 / 6.403858 | −0.51652 | 152、83、57、37（home） |
+
+run6 的重复斜墙影消失，后墙也形成观测；起始碰撞先验副本填充 3 个未知格后，home 安全分量为 366 格。原始图仍保留这些未知格和 103 个 frontier，不能宣称完整建图。run7 依然存在错位墙影、没有可达 frontier，说明只改变重心选取未修复问题。
+
+这个对照把问题进一步缩小到匹配产生的姿态修正，尚未区分连续扫描匹配与图约束。不能将 run6 的精确仿真里程计当成实车方案。原始地图、诊断图、Spin 记录与独立运动记录均以 `run6` / `run7` 前缀保留于 `outputs/ros_smoke/`；新的 [扫描对齐工具](scan-alignment.md) 用于复核输入，后续使用只包含实测 ROS scan/odom 的隔离离线回放定位匹配过程。

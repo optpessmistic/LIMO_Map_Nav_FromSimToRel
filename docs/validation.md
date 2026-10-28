@@ -11,6 +11,7 @@
 | 真实 ROS Action 回归 | `RUN_ROS_SURVEY_TEST=1 ROS_DOMAIN_ID=74 python -m unittest discover -s tests -p test_initial_survey_ros.py -v` | 单项集成测试通过，覆盖真实 Action server 成功与延迟接受后同 UUID 取消两条路径；专用测试 Action，不连接速度话题。 |
 | 世界导出、地图坐标与导航配置 | `python -m unittest discover -s tools -p 'test_*.py' -v` | 本部分 16 项通过；检查贴墙目标净距、SDF、地图旋转/边界、DWB/MPPI 低速配置及速度消息链。与离线评分合计 37 项。 |
 | 离线目标评分 | `python -m unittest discover -s tools -p test_target_evaluation.py -v` | 新增 21 项通过，含 80 组穷举最优匹配对照；检查显式对齐、一对一匹配、重复/合并实例、零目标和非法输入。 |
+| 激光对齐诊断工具 | `python -m unittest discover -s tools -p test_scan_alignment.py -v` | 11/11 通过，不依赖 ROS/vendor/本地输出；包含不支持几何拒绝、时间插值/外参、缺 map TF、证据来源和禁止覆盖。全部离线工具合计 48/48 通过。 |
 | 二维任务场景 | `python -m sim.suite` | 15/15 通过；完整策略完成可达范围内的理想探索、搜索和返航。含 0/1/3 个目标、不可达区域、遮挡、预算终止等情况。 |
 | 上游固定版本 | `bash scripts/fetch_sim_vendor.sh --check-only` | 固定源 commit 和补丁检查通过；模型包与实车驱动包名称分离。 |
 | ROS / Gazebo 安装 | WSL Ubuntu 24.04；`sudo bash tools/setup_jazzy.sh` | 安装成功，退出码 0。Jazzy、Harmonic 8.15.0、Nav2 1.3.13、SLAM Toolbox 2.8.5。 |
@@ -25,6 +26,8 @@
 | 正式迷宫真实旋转 | run5，物理修复后的原生 model pose / ROS odom 对照 | 1431 组对齐记录：真实累计最大 6.399992745 / odom 6.399999999 rad，最大漂移约 0.065 mm。传感器/TF 九路检查及导航就绪复验通过。 |
 | 旋转后地图连通性 | run5 原始 `/map` 和任务 R=0.25 m | 起始 footprint 已安全，但地图产生约 −32° 的重复墙影；安全区分裂为 160、158、33 格，起点仅在 33 格分量，无可达 frontier。SLAM 仍阻断自主任务，未发送平移导航目标。 |
 | 前沿候选回归 | run6 保存快照离线规划，WSL Jazzy 任务测试 | 过滤实际距离不超过 0.20 m 和零朝向候选；新候选距离约 0.202 m，保留 3 个未观测格。41/41 任务测试通过，任务包重建通过；尚未宣称该候选已实际导航成功。 |
+| 运动中激光输入 | run5b 同时间戳原生 scan / ROS scan / TF / world pose | 137 运动帧、98,640 束，ranges 原生/ROS 逐值一致；零偏移测距 RMS 1.298 cm，优于 ±1/20/100 ms 对照。仅诊断当前静态 box 场景，不证明 SLAM 成功。 |
+| SLAM 单变量对照 | 新模型和 epoch 的 run6 / run7 | 关闭匹配时错位墙影消失；恢复匹配但只关闭重心选取仍出现约 −0.517 rad 修正。详见 [调查记录](slam-rotation-investigation.md)；诊断配置未替代正式 SLAM 默认值。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
