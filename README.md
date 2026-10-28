@@ -6,7 +6,7 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-当前已完成环境安装、5 个 ROS 包构建、Gazebo 传感器/TF、在线建图和 Nav2 就绪检查，并获得实际 RGB-D 目标观测。轮接触修复后，独立世界位姿确认车体真实完成整圈旋转；扫描匹配参数经离线对照和新场景复验，将旋转后的地图修正降至约 1.2°、1 厘米。地图最大边界漏墙的上游问题仍在补丁验证中，完整自主探索与返航尚未通过，证据见验证报告。
+当前已完成环境安装、ROS 包构建、Gazebo 传感器/TF、在线建图和 Nav2 就绪检查，并获得实际 RGB-D 目标观测。轮接触修复后，独立世界位姿确认车体真实完成整圈旋转；地图边界补丁已通过原生回归并恢复实际地图中的上墙。匹配参数在一轮中将旋转后的地图修正降至约 1.2°、1 厘米，但另一轮仍出现约 17 厘米轴向漂移，稳定性尚未通过。完整自主探索与返航未完成，证据见验证报告。
 
 ## 项目入口
 
@@ -23,6 +23,8 @@
 | 车体真实运动与接触近似 | [物理验证](docs/physics-validation.md) |
 | 激光输入与时间对照 | [只读扫描诊断](docs/scan-alignment.md) |
 | 当前 SLAM 错位调查 | [旋转建图对照](docs/slam-rotation-investigation.md) |
+| 固定输入的真实 SLAM 对照 | [隔离回放](docs/slam-replay.md) |
+| 地图最大边界缺墙修补 | [边界补丁及独立构建](docs/slam-grid-boundary.md) |
 | 完整搜索尚缺什么 | [验收差距](docs/acceptance-gaps.md) |
 | 分工与周报 | [周报模板](progress/weekly-template.md) |
 
@@ -64,8 +66,11 @@ ros2 launch limo_sim_bringup sim.launch.py world:="$PWD/worlds/smoke_maze.world"
 
 第二终端启动实时建图和导航：
 
+当前系统 SLAM 2.8.5 存在最大边界漏墙问题。先按[边界补丁说明](docs/slam-grid-boundary.md)构建独立 overlay，再在导航终端显式加载；不要把原版运行记为补丁验证。
+
 ```bash
 source scripts/env.sh
+source outputs/slam-boundary-ws/install/local_setup.bash
 ros2 launch limo_maze_bringup mapping_navigation.launch.py
 ```
 

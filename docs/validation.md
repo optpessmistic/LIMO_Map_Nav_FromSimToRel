@@ -12,6 +12,7 @@
 | 世界导出、地图坐标与导航配置 | `python -m unittest discover -s tools -p 'test_*.py' -v` | 本部分 16 项通过；检查贴墙目标净距、SDF、地图旋转/边界、DWB/MPPI 低速配置及速度消息链。与离线评分合计 37 项。 |
 | 离线目标评分 | `python -m unittest discover -s tools -p test_target_evaluation.py -v` | 新增 21 项通过，含 80 组穷举最优匹配对照；检查显式对齐、一对一匹配、重复/合并实例、零目标和非法输入。 |
 | 激光对齐诊断工具 | `python -m unittest discover -s tools -p test_scan_alignment.py -v` | 11/11 通过，不依赖 ROS/vendor/本地输出；包含不支持几何拒绝、时间插值/外参、缺 map TF、证据来源和禁止覆盖。全部离线工具合计 48/48 通过。 |
+| 隔离 SLAM 回放工具 | `python -m unittest discover -s tools -p test_slam_replay.py -v` | 14/14 通过；新增后全部离线工具 62/62 通过。真实回放 159 发出/45 接纳，与原型时间戳和栅格一致；实际进程来源和 SIGINT 失败报告/自有进程组回收也已验证。 |
 | 二维任务场景 | `python -m sim.suite` | 15/15 通过；完整策略完成可达范围内的理想探索、搜索和返航。含 0/1/3 个目标、不可达区域、遮挡、预算终止等情况。 |
 | 上游固定版本 | `bash scripts/fetch_sim_vendor.sh --check-only` | 固定源 commit 和补丁检查通过；模型包与实车驱动包名称分离。 |
 | ROS / Gazebo 安装 | WSL Ubuntu 24.04；`sudo bash tools/setup_jazzy.sh` | 安装成功，退出码 0。Jazzy、Harmonic 8.15.0、Nav2 1.3.13、SLAM Toolbox 2.8.5。 |
@@ -30,6 +31,8 @@
 | SLAM 单变量对照 | 新模型和 epoch 的 run6 / run7 | 关闭匹配时错位墙影消失；恢复匹配但只关闭重心选取仍出现约 −0.517 rad 修正。详见 [调查记录](slam-rotation-investigation.md)；诊断配置未替代正式 SLAM 默认值。 |
 | SLAM 匹配尺度对照 | 同一 159 帧记录、新建真实 SLAM 实例，45 个相同接受时刻 | 默认 smear=0.10 的最终 yaw 修正 −0.597 rad；仅改为 0.01 后为 −0.01745 rad、平移约 1.03 cm。禁用链匹配与改变相关搜索网格的对照未解决问题。半段独立初始化结果也保留；不宣称对所有地图或实车通用。 |
 | 新场景匹配参数复验 | run8，新模型/epoch、匹配与重心选取开启、仅 smear=0.01 | 2064 组独立位姿对照：实际最大转角 6.40706 rad、中心漂移 0.0654 mm；最终 map→odom 修正 −0.02094 rad（约 −1.20°）、平移 0.968 cm。原始安全区恢复为单一 292 格分块，但起点有 3 格未观测；先验规划副本可选有效前沿目标，尚未执行。该参数已采用为小迷宫仿真配置并重建 bringup。 |
+| Karto 最大边界修复 | 固定 2.8.5 源码，两行补丁、独立完整构建、实际 `CreateFromScans` 回归 | 原版 5 例均越界；补丁 5 例共 40 端点全部在界内且为 occupied，原点不变。未覆盖系统安装，未声称上游全套测试通过。 |
+| 补丁场景与稳定性反例 | run9，新模型/epoch、实际加载库/参数已核对 | 真实转角 6.39968 rad、漂移 0.0654 mm；上边界墙恢复。yaw 修正 −.02443 rad，但轴向平移修正约 17 cm，显示 run8 参数尚不足以稳定建图。起点先验副本可连通不代表定位可信；尚未发送平移导航目标。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 

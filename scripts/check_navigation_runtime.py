@@ -40,9 +40,17 @@ def main():
     pending, states, last_request = {}, {}, {}
     transform, errors = None, []
     started = time.monotonic()
+    previous_clock_ns, clock_advances, clock_received = 0, 0, None
     while time.monotonic() - started < args.timeout:
         rclpy.spin_once(node, timeout_sec=.1)
         now = time.monotonic()
+        clock_ns = node.get_clock().now().nanoseconds
+        if clock_ns > previous_clock_ns:
+            clock_advances += 1
+            clock_received = now
+        elif clock_ns < previous_clock_ns:
+            clock_advances, clock_received = 0, None
+        previous_clock_ns = clock_ns
         for name, client in clients.items():
             future = pending.get(name)
             if future is not None and future.done():
@@ -59,10 +67,16 @@ def main():
             transform = buffer.lookup_transform('map', 'base_link', Time())
         except TransformException:
             transform = None
-        if (len(maps) >= 2 and transform is not None and action.server_is_ready()
+        tf_age = ((clock_ns-Time.from_msg(transform.header.stamp).nanoseconds)/1e9
+                  if transform is not None else None)
+        if (clock_advances >= 2 and clock_received is not None and now-clock_received < 1
+                and len(maps) >= 2 and transform is not None and -.5 <= tf_age <= 1
+                and action.server_is_ready()
                 and all(states.get(name, {}).get('id') == 3 for name in names)):
             break
 
+    if clock_advances < 2 or clock_received is None or time.monotonic()-clock_received >= 1:
+        errors.append('Simulation clock has not advanced or is stale')
     if not action.server_is_ready():
         errors.append('NavigateToPose action unavailable')
     for name in names:
@@ -100,6 +114,8 @@ def main():
               'passed': not errors, 'read_only': True,
               'ros_distro': os.environ.get('ROS_DISTRO'),
               'ros_domain_id': os.environ.get('ROS_DOMAIN_ID'),
+              'clock': {'nanoseconds': previous_clock_ns, 'observed_advances': clock_advances,
+                        'wall_age_s': time.monotonic()-clock_received if clock_received is not None else None},
               'map': map_info, 'pose': pose, 'lifecycle': states, 'errors': errors}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')

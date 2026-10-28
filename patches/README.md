@@ -1,4 +1,14 @@
-# LIMO Harmonic vendor patch
+# Pinned upstream patches
+
+`0002-slam-toolbox-inclusive-grid.patch` applies to official SLAM Toolbox 2.8.5,
+commit `ec8f7635dea317b531c419f798f87d90a336f32e`. It adds one cell to each
+occupancy-grid dimension so the maximum quantized scan endpoint is valid. The
+origin, scans, matching and thresholds are unchanged. Fetch and verify with
+`scripts/fetch_slam_vendor.sh`; build in the separate overlay documented in
+[the boundary investigation](../docs/slam-grid-boundary.md). It does not replace
+the system ROS installation. Retain upstream LICENSE and source notices.
+
+## LIMO Harmonic model
 
 Source: <https://github.com/nevlife/hunter_gazebo> at
 `8e1d4aeb459e77d549262ca20cac819d9c7a32ee`.
