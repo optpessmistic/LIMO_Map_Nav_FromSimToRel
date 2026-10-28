@@ -34,10 +34,11 @@
 | 新场景匹配参数复验 | run8，新模型/epoch、匹配与重心选取开启、仅 smear=0.01 | 2064 组独立位姿对照：实际最大转角 6.40706 rad、中心漂移 0.0654 mm；最终 map→odom 修正 −0.02094 rad（约 −1.20°）、平移 0.968 cm。原始安全区恢复为单一 292 格分块，但起点有 3 格未观测；先验规划副本可选有效前沿目标，尚未执行。该参数已采用为小迷宫仿真配置并重建 bringup。 |
 | Karto 最大边界修复 | 固定 2.8.5 源码，两行补丁、独立完整构建、实际 `CreateFromScans` 回归 | 原版 5 例均越界；补丁 5 例共 40 端点全部在界内且为 occupied，原点不变。未覆盖系统安装，未声称上游全套测试通过。 |
 | 补丁场景与稳定性反例 | run9，新模型/epoch、实际加载库/参数已核对 | 真实转角 6.39968 rad、漂移 0.0654 mm；上边界墙恢复。yaw 修正 −.02443 rad，但轴向平移修正约 17 cm，显示 run8 参数尚不足以稳定建图。起点先验副本可连通不代表定位可信；尚未发送平移导航目标。 |
+| 首次自主平移、扩图及标注 | run10，180 s 探索预算、120 s 返航预算 | 实际最大位移 1.46670 m；已观测面积增加 1.8175 m²；确认 1 个红色替身。4 个目标中 2 个成功、1 个 ACK 超时中止、1 个受控取消。第 4 个到达后因安全包络检查 blocked，未返航/未完成；[详细证据](first-autonomous-run.md)。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `65d36ef` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40746891739)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
+GitHub Actions 的提交 `2bdaab9` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40753846582)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 
