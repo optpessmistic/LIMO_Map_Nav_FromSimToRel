@@ -26,6 +26,7 @@
 | 激光输入与时间对照 | [只读扫描诊断](docs/scan-alignment.md) |
 | 当前 SLAM 错位调查 | [旋转建图对照](docs/slam-rotation-investigation.md) |
 | 固定输入的真实 SLAM 对照 | [隔离回放](docs/slam-replay.md) |
+| 连续 TF、全局路径和速度链证据 | [仿真任务观察器](docs/mission-observer.md) |
 | 地图最大边界缺墙修补 | [边界补丁及独立构建](docs/slam-grid-boundary.md) |
 | 完整搜索尚缺什么 | [验收差距](docs/acceptance-gaps.md) |
 | 分工与周报 | [周报模板](progress/weekly-template.md) |

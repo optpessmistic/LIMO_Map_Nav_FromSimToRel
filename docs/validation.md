@@ -38,10 +38,12 @@
 | 到达误差与候选安全裕量 | `8a8e7ed`，WSL Jazzy domain 74 回归及冻结地图 | 54/54 任务核心与 ROS 参数测试、5/5 配置生成测试通过，4 个冻结快照与预检一致；mission/bringup 两包重建成功。候选终点预留 0.05 m 到达误差及半格对角线，路径半径仍为 0.25 m；Nav2 XY=0.05 m、stateful=false。新场景实际导航效果另行验证。 |
 | 到达修复后的自主流程 | run11，600 s 探索/180 s 返航预算 | 3 个探索目标成功且终态附近 XY 均在 5 cm 内、3 个探索目标超时取消；7 个终态附近原始地图 R 圆均安全。地图观测面积 3.855→8.170 m²，未以此声称真值覆盖率；返航中途超时，完整任务仍未通过。 |
 | 两个替身的独立评分 | run11，初始静止帧建立固定 map→world 对齐，阈值 0.20 m | TP=2、FP=0、FN=0；平面误差 8.49/2.22 cm，RMSE 6.21 cm。只比较可见表面点与盒中心，不证明视觉覆盖或正式目标识别。末段独立原生位姿确认 29.983 sim 秒静止；[完整记录](autonomous-run11.md)。 |
+| 真值几何与冻结路径复核 | run11，固定初始对齐，纯离线 | 真实自由区 7.0364 m² 中约 91% 被原图标为自由；细网格和地图分辨率不同，未分摊墙边离散化误差。真实 NavFn 库可在冻结地图上规划 3.3564 m 返航路径，743 密采点均通过 R=.25；不是实际历史 `/plan` 恢复。 |
+| 连续仿真观察器 | `python3 -m unittest tools.test_sim_mission_observer -v` | 23/23 通过，WSL 与 Windows 均验证；只读订阅与参数查询、同 stamp TF、速度接收时刻、完整全局路径、原生静止窗口、拒绝覆盖。冻结实验版在 run12 实际采得 1739 组完整 TF 链、180 条路径；通用入口尚未独立在线运行，详见[说明](mission-observer.md)。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `8a8e7ed` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40756995920)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
+GitHub Actions 的提交 `3d80629` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40761277617)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 
