@@ -44,11 +44,15 @@
 | 定位跳变保护与末端旋转诊断 | run12，实验 GoalAngle 阈值 .05 m，其他控制参数保持 | 目标 1 成功；目标 2 到达 XY 容差后仍在旋转时 90 wall 秒预算到期。目标 3 因 map→odom 约 2.23 m 跳变受控取消，历史坐标无效；同时间原生车体与 odom 仅正常前进约 2 cm。末 29.999 sim 秒原生静止，全部进程退出，未返航；[详细记录](autonomous-run12.md)。 |
 | 错误回环的固定输入对照 | run12，135 个已接受扫描，原生 Karto/Ceres 三组回放 | 原配置精确重现在线位姿及最终图；关闭回环消除 uid134 的 2.23647 m 净修正。保留回环、仅粗搜索窗 8→1 m 也排除此关联；尚未验证正确回环接受能力，正式默认未改。输入、实际参数、图和代码 hash 及独立复核保留。 |
 | 真实代价地图、预测路径及停点净空 | run13，实验回环搜索窗 1 m，单目标 120 wall 秒 | 前两个目标成功，第三个约 .21 m 处停滞后超时，地图 R=.25 安全区冲突；真实静态墙体仍有净空。未重现米级跳变，但仍未完成建图或返航。[详细记录](autonomous-run13.md)。录包全部 715557 条存储记录可读，传输层报告丢失 83 条，不能称采集无损。 |
-| 参数观察请求的有界重试 | `python3 -m unittest tools.test_sim_mission_observer -v` | 41/41 纯回归通过。run13 暴露单次参数回复缺失；修复后每服务最多 3 次、每次 5 wall 秒、间隔 1 wall 秒，先解除旧请求再重试，保留每次状态及最终缺口。历史 run13 错误未抹除。 |
+| 参数观察请求的有界重试 | `python3 -m unittest tools.test_sim_mission_observer -v` | 当时 41/41 纯回归通过。run13 暴露单次参数回复缺失；每查询阶段最多 3 次、每次 5 wall 秒、间隔 1 wall 秒，先解除旧请求再重试。历史错误保留，后续分阶段修复见下一行。 |
+| 插件专属参数查询 | 同一观察器 43 项纯测试，domain 74 的真实 C++ LifecycleNode 服务 | RPP/MPPI 混合请求均复现整批空响应，两阶段读取各一次成功、待处理请求归零。未启动 Nav2/Gazebo；完整观察器主循环另经静态复核，不追认 run14 冻结观察器的参数缺口。 |
+| 首次探索、替身标注及返航 | run14，RPP + 小迷宫实验 SLAM 配置 | 四次探索及返航成功，独立实际返航误差 6.43 cm / 13.32°；两个替身匹配，误差 4.63/1.76 cm。原始图在真值自由区 raw-free 91.9%；视觉覆盖/正式目标仍未验证，完整成功 false。[详细记录](autonomous-run14.md)。 |
+| run14 速度与终态足迹 | 闭合录包 490790 条，24 事件快照 | 三路速度均未超 .15 m/s、±.4 rad/s；五份终态关联快照三种包络均清。返航内部恢复一次，近点反复转向；非连续安全证明。末段30 sim秒原生静止、全进程退出。 |
+| 可复现 RPP 配置 | 10 项配置回归，独立 bringup 单包构建 | 两份新 YAML 与 run14 实际输入字典精确相等；默认 MPPI/SLAM 文件哈希不变，RPP 可幂等再生，安装文件核对通过。未启动新仿真。[运行顺序](rpp-smoke-reproduction.md)。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `db6c9d7` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40764090390)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
+GitHub Actions 的提交 `b65cac9` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40775626977)，包含插件参数查询修复及可选 RPP 配置。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 
