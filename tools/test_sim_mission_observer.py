@@ -148,6 +148,20 @@ class ParameterQueryTests(unittest.TestCase):
         self.assertIsNone(self.query.future)
         self.query.tick(10.);self.assertEqual(len(self.calls),1)
 
+    def test_plugin_specific_queries_exclude_undeclared_fields(self):
+        mppi=observer.controller_parameter_names('nav2_mppi_controller::MPPIController')
+        rpp=observer.controller_parameter_names('nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController')
+        self.assertIn('FollowPath.GoalAngleCritic.threshold_to_consider',mppi)
+        self.assertNotIn('FollowPath.desired_linear_vel',mppi)
+        self.assertIn('FollowPath.use_rotate_to_heading',rpp)
+        self.assertFalse(any('Critic' in name for name in rpp))
+        self.assertFalse(set(mppi)&set(rpp))
+
+    def test_unknown_or_absent_plugin_is_not_guessed(self):
+        for plugin in (None,'','custom::Controller'):
+            with self.subTest(plugin=plugin),self.assertRaises(ValueError):
+                observer.controller_parameter_names(plugin)
+
 
 class NativeStationarityTests(unittest.TestCase):
     def test_fresh_full_window_after_terminal_is_sufficient(self):

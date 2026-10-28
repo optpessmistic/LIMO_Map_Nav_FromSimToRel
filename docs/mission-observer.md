@@ -39,13 +39,17 @@ python3 scripts/observe_sim_mission.py --costmaps --seconds 1000 \
 | 任务状态与事件 | `/mission/status`、`/mission/map_epoch`、目标 Marker、原始目标观测、已接受的 SLAM `/pose`，以及 mission 的 `home_recorded`、`goal_sent`、`goal_terminal`、`cancel_requested` 日志。 |
 | 地图快照 | phase 改变、goal terminal 日志到达、其后约 1 wall 秒以及观察器退出时，保存原始 `/map`、当前 TF、关联目标及误差。按真实 TF 位姿检查半径为实际 mission `robot_radius_m`（查询前回退 .25 m）的圆盘是否碰到原始未知/占据格或地图边界；不填充起点先验。 |
 | 原生 world 轨迹 | 订阅 `/world/limo_maze/pose/info` 的 `limo` 模型，保留仿真 stamp、xyz、yaw、实体 ID、接收墙时。用于独立物理运动与静止诊断，不用轮里程计替代。 |
-| 实际参数 | 只读查询 `/limo_maze_mission/get_parameters` 和 `/controller_server/get_parameters`。每个服务最多尝试 3 次，每次响应等待 5 wall 秒，失败后至少隔 1 wall 秒再试；服务尚未出现不消耗次数。记录 mission 半径、到达裕量、超时、起点先验等，以及 `controller_plugins`、`FollowPath.GoalAngleCritic.threshold_to_consider/enabled/cost_weight`；未声明参数明确 unavailable，不猜 YAML 值。 |
+| 实际参数 | 只读查询 `/limo_maze_mission/get_parameters` 和 `/controller_server/get_parameters`。每个查询阶段最多尝试 3 次，每次响应等待 5 wall 秒，失败后至少隔 1 wall 秒再试；服务尚未出现不消耗次数。mission 为一个阶段，controller 的身份、插件专属参数为两个阶段。保留实际值与查询缺口，不猜 YAML 值。 |
 
 `FollowPath`、`map/odom/base_link`、上述 topic 与模型名是本项目约定。观察器取消了实验轮次硬编码；它不是自动发现任意机器人接口的通用工具。
 
 参数请求的发送、完成墙时和状态保留在 `parameter_queries`。超时请求先从客户端待处理列表移除，再取消 future；迟到回复不会覆盖后续成功结果。重试期间继续记录位姿、地图和速度，不阻塞采样。已成功则不再查询，退出时清理自己的未完成请求。长度错误、异常或非有限响应也会留下失败记录并消耗一次尝试。所有尝试失败或退出前未取得参数，仍记入 `errors`；不会用配置文件冒充实际运行参数。此修复来自 run13 首次 mission 参数回复丢失的证据，历史 run13 JSON 保持原样，其独立 `ros2 param dump` 是另一份证据。
 
-控制器查询还保留实际 `FollowPath.plugin` 与 RPP 的速度、lookahead、stateful、转向和碰撞检查参数；未声明的其他插件字段为 null。只有实际插件为 MPPI 才要求 GoalAngle 阈值，避免在 RPP 对照时误报该字段缺失。本机真实 Jazzy Future/Client 待处理列表 API 的内存回归已验证超时清理、取消后的状态差异及迟到回复隔离；此检查没有启动 ROS 节点，也不替代下一轮实时服务采集。
+控制器先查询 `controller_plugins` 和 `FollowPath.plugin`，成功后仅请求对应插件的参数：MPPI 的 GoalAngle 阈值/enabled/weight，或 RPP 的速度、lookahead、stateful、转向与碰撞检查参数。两次读取分别记录时间，合并结果明确非原子；未识别插件报错，不猜插件类型。
+
+run14 暴露了直接混合两组字段的错误：本机 [rclcpp 28.1.22 参数服务](https://github.com/ros2/rclcpp/blob/28.1.22/rclcpp/src/rclcpp/parameter_service.cpp) 遇到一个未声明字段便拒绝整批，返回空列表，不能假定只把该字段置为 null。因此先前冻结的 run14 观察器保留这项缺口，新版本分阶段查询。只有服务真正返回 `PARAMETER_NOT_SET` 才将值解码为 null，所需字段仍报缺失。本机真实 Jazzy Future/Client 待处理列表 API 的内存回归另已验证超时清理、取消后的状态差异及迟到回复隔离；内存检查没有启动 ROS 节点，不替代实时服务采集。
+
+随后用本机 rclcpp/rclcpp_lifecycle 28.1.22 构建隔离的 C++ LifecycleNode 参数服务，在 domain 74 分别声明 RPP、MPPI 字段：混合请求均复现空响应，两阶段请求均各一次成功，类型保留、客户端待处理请求归零，两个自有服务进程正常退出。43 项纯回归通过。该测试实际调用生产查询辅助函数和真实参数服务；观察器主循环的插入、合并与清理另经静态复核，尚不等于修复版完整观察器已重跑 Gazebo。证据保存在 `outputs/ros_smoke/parameter-query-cpp-service-test/`，没有修改历史 run14 输出。
 
 ### 可选成本地图的时间与数值合同
 

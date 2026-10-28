@@ -43,6 +43,18 @@ def decode_parameter(value):
     return list(data) if value.type>=5 else data
 
 
+def controller_parameter_names(plugin):
+    """Never mix undeclared plugin parameters into one GetParameters request."""
+    fields={
+        'nav2_mppi_controller::MPPIController':[
+            'GoalAngleCritic.threshold_to_consider','GoalAngleCritic.enabled','GoalAngleCritic.cost_weight'],
+        'nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController':[
+            'desired_linear_vel','lookahead_dist','stateful','use_rotate_to_heading',
+            'rotate_to_heading_angular_vel','use_collision_detection','max_angular_accel']}
+    if plugin not in fields:raise ValueError('Unsupported controller plugin for parameter observation: '+str(plugin))
+    return ['FollowPath.'+field for field in fields[plugin]]
+
+
 class ParameterQuery:
     """Bounded read-only service retries; detach timed-out futures before retrying."""
     def __init__(self, client, names, make_request, timeout=5., retry_delay=1., max_attempts=3):
@@ -281,7 +293,7 @@ def main():
             'costmaps_enabled':args.costmaps,'costmap_topics':COSTMAP_TOPICS,'costmap_wall_hz_max_per_map':1.,
             'costmap_sampling':'Only newly received full raw maps, sampled independently per topic; intermediate messages may be skipped. Full data are in external snapshot files. No updates reconstruction or synchronization with /plan.',
             'plan_sampling':'At most 1Hz wall-time, save latest newly received Path in full. Source/pose header stamps, frames and receipt times retained. Unchanged source is not duplicated; intermediate plans may be skipped.'},
-        'limitations':['No motion/goal actions or parameter writes; each parameter service receives at most three read-only GetParameters requests with bounded timeouts. SIGINT stops only this observer.',
+        'limitations':['No motion/goal actions or parameter writes; each read-only parameter query stage has at most three bounded attempts. Controller identity and plugin details are separate reads, not atomic. SIGINT stops only this observer.',
             'Native world trajectory is never transformed into or published to the controller.',
             'Goal snapshots are near log receipt, not an atomic mission/map transaction; all acquisition timestamps are retained.',
             'Snapshot footprint test uses only raw occupancy and queried mission radius (fallback .25m), not the externally guaranteed startup prior.',
@@ -330,15 +342,10 @@ def main():
             'initial_clearance_radius_m','initial_clearance_margin_m','initial_clearance_source',
             'home_position_tolerance_m','home_yaw_tolerance_rad','goal_timeout_s','autonomous','use_sim_time']
         parameter_client=node.create_client(GetParameters,'/limo_maze_mission/get_parameters')
-        controller_names=['controller_plugins','FollowPath.plugin','FollowPath.GoalAngleCritic.threshold_to_consider',
-                          'FollowPath.GoalAngleCritic.enabled','FollowPath.GoalAngleCritic.cost_weight',
-                          'FollowPath.desired_linear_vel','FollowPath.lookahead_dist','FollowPath.stateful',
-                          'FollowPath.use_rotate_to_heading','FollowPath.rotate_to_heading_angular_vel',
-                          'FollowPath.use_collision_detection','FollowPath.max_angular_accel']
         controller_client=node.create_client(GetParameters,'/controller_server/get_parameters')
         parameter_queries={
             'mission':ParameterQuery(parameter_client,parameter_names,GetParameters.Request),
-            'controller':ParameterQuery(controller_client,controller_names,GetParameters.Request)}
+            'controller_identity':ParameterQuery(controller_client,['controller_plugins','FollowPath.plugin'],GetParameters.Request)}
         report['parameter_queries']={name:query.evidence for name,query in parameter_queries.items()}
         def entry():return {'wall_s':time.monotonic()-began,'ros_s':node.get_clock().now().nanoseconds/1e9}
         def stamp(m):return m.header.stamp.sec+m.header.stamp.nanosec/1e9
@@ -505,18 +512,30 @@ def main():
         next_progress=0.
         while time.monotonic()-began<args.seconds and not stop['requested']:
             ros.spin_once(node,timeout_sec=.05);elapsed=time.monotonic()-began
-            for name,query in parameter_queries.items():
+            for name,query in list(parameter_queries.items()):
                 result=query.tick(elapsed)
                 if result is not None:
                     service='/limo_maze_mission/get_parameters' if name=='mission' else '/controller_server/get_parameters'
-                    report[name+'_parameters']={**entry(),'service':service,**result}
+                    if name=='controller_identity':
+                        report['controller_identity']={**entry(),'service':service,**result}
+                        try:
+                            fields=controller_parameter_names(result['values']['FollowPath.plugin'])
+                            parameter_queries['controller']=ParameterQuery(controller_client,fields,GetParameters.Request)
+                            report['parameter_queries']['controller']=parameter_queries['controller'].evidence
+                        except ValueError as exc:fault(exc)
+                        continue
+                    observation={**entry(),'service':service,**result}
+                    if name=='controller':
+                        identity=report['controller_identity']
+                        observation['values']={**identity['values'],**result['values']}
+                        observation['types']={**identity['types'],**result['types']}
+                        observation['identity_observation']={'wall_s':identity['wall_s'],'ros_s':identity['ros_s'],
+                            'atomic_with_details':False}
+                    report[name+'_parameters']=observation
                     print(name.upper()+'_PARAMETERS '+json.dumps(report[name+'_parameters']),flush=True)
                     if name=='controller':
-                        plugin=result['values'].get('FollowPath.plugin')
-                        if plugin is None:
-                            fault('FollowPath.plugin is unavailable; controller type not assumed')
-                        if plugin=='nav2_mppi_controller::MPPIController' and result['values'].get('FollowPath.GoalAngleCritic.threshold_to_consider') is None:
-                            fault('FollowPath.GoalAngleCritic.threshold_to_consider is unavailable; no assumed value substituted')
+                        missing=[key for key,value in result['values'].items() if value is None]
+                        if missing:fault('Controller parameters unavailable; no assumed values substituted: '+', '.join(missing))
             if tf_gate.due(elapsed):continuous_tf(elapsed)
             if command_gate.due(elapsed):sample_commands(elapsed)
             if plan_gate.due(elapsed):
