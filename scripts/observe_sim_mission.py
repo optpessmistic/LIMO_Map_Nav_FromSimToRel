@@ -43,6 +43,62 @@ def decode_parameter(value):
     return list(data) if value.type>=5 else data
 
 
+class ParameterQuery:
+    """Bounded read-only service retries; detach timed-out futures before retrying."""
+    def __init__(self, client, names, make_request, timeout=5., retry_delay=1., max_attempts=3):
+        self.client=client;self.names=names;self.make_request=make_request
+        self.timeout=timeout;self.retry_delay=retry_delay;self.max_attempts=max_attempts
+        self.future=None;self.next_attempt=0.;self.done=False
+        self.evidence={'timeout_wall_s':timeout,'retry_delay_wall_s':retry_delay,
+                       'max_attempts':max_attempts,'attempts':[]}
+
+    def detach(self):
+        if self.future is not None:
+            self.client.remove_pending_request(self.future)
+            self.future.cancel()
+            self.future=None
+
+    def tick(self, elapsed):
+        if self.done:return None
+        if self.future is not None:
+            attempt=self.evidence['attempts'][-1]
+            if self.future.done():
+                try:
+                    values=self.future.result().values
+                    if len(values)!=len(self.names):raise ValueError('GetParameters response length mismatch')
+                    result={'values':{n:decode_parameter(v) for n,v in zip(self.names,values)},
+                            'types':{n:int(v.type) for n,v in zip(self.names,values)}}
+                    json.dumps(result,allow_nan=False)
+                except Exception as exc:
+                    attempt.update(status='failed',error=str(exc),finished_wall_s=elapsed)
+                    self.detach();self.next_attempt=elapsed+self.retry_delay
+                else:
+                    attempt.update(status='succeeded',finished_wall_s=elapsed)
+                    self.detach();self.done=True
+                    return result
+            elif elapsed-attempt['sent_wall_s']>=self.timeout:
+                attempt.update(status='timed_out',finished_wall_s=elapsed)
+                self.detach();self.next_attempt=elapsed+self.retry_delay
+        if self.future is None and len(self.evidence['attempts'])>=self.max_attempts:
+            self.done=True
+        if not self.done and self.future is None and elapsed>=self.next_attempt and self.client.service_is_ready():
+            attempt={'sent_wall_s':elapsed,'status':'pending'}
+            self.evidence['attempts'].append(attempt)
+            try:
+                request=self.make_request();request.names=list(self.names)
+                self.future=self.client.call_async(request)
+            except Exception as exc:
+                attempt.update(status='failed',error=str(exc),finished_wall_s=elapsed)
+                self.next_attempt=elapsed+self.retry_delay
+        return None
+
+    def close(self, elapsed):
+        self.done=True
+        if self.future is not None:
+            self.evidence['attempts'][-1].update(status='observer_stopped',finished_wall_s=elapsed)
+            self.detach()
+
+
 def yaw(q):
     return math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))
 
@@ -210,7 +266,7 @@ def main():
     args,snapshots=parse_arguments()
     args.output.parent.mkdir(parents=True,exist_ok=True)
     stream=args.output.open('x',encoding='utf-8');snapshots.mkdir()
-    began=time.monotonic();node=ros=gz=listener=None;lock=threading.Lock();world=[];counts=Counter()
+    began=time.monotonic();node=ros=gz=listener=None;lock=threading.Lock();world=[];counts=Counter();parameter_queries={}
     costmaps=CostmapRecorder(args.costmaps,snapshots)
     report={'schema_version':1,'read_only':True,'application_publishers':[],'status':'error',
         'requested_wall_seconds':args.seconds,'world_topic':'/world/limo_maze/pose/info','world_entity':'limo',
@@ -225,7 +281,7 @@ def main():
             'costmaps_enabled':args.costmaps,'costmap_topics':COSTMAP_TOPICS,'costmap_wall_hz_max_per_map':1.,
             'costmap_sampling':'Only newly received full raw maps, sampled independently per topic; intermediate messages may be skipped. Full data are in external snapshot files. No updates reconstruction or synchronization with /plan.',
             'plan_sampling':'At most 1Hz wall-time, save latest newly received Path in full. Source/pose header stamps, frames and receipt times retained. Unchanged source is not duplicated; intermediate plans may be skipped.'},
-        'limitations':['No motion/goal actions or parameter writes; mission and controller each receive one read-only GetParameters request. SIGINT stops only this observer.',
+        'limitations':['No motion/goal actions or parameter writes; each parameter service receives at most three read-only GetParameters requests with bounded timeouts. SIGINT stops only this observer.',
             'Native world trajectory is never transformed into or published to the controller.',
             'Goal snapshots are near log receipt, not an atomic mission/map transaction; all acquisition timestamps are retained.',
             'Snapshot footprint test uses only raw occupancy and queried mission radius (fallback .25m), not the externally guaranteed startup prior.',
@@ -274,11 +330,16 @@ def main():
             'initial_clearance_radius_m','initial_clearance_margin_m','initial_clearance_source',
             'home_position_tolerance_m','home_yaw_tolerance_rad','goal_timeout_s','autonomous','use_sim_time']
         parameter_client=node.create_client(GetParameters,'/limo_maze_mission/get_parameters')
-        parameter_future=None;parameter_done=False
-        controller_names=['controller_plugins','FollowPath.GoalAngleCritic.threshold_to_consider',
-                          'FollowPath.GoalAngleCritic.enabled','FollowPath.GoalAngleCritic.cost_weight']
+        controller_names=['controller_plugins','FollowPath.plugin','FollowPath.GoalAngleCritic.threshold_to_consider',
+                          'FollowPath.GoalAngleCritic.enabled','FollowPath.GoalAngleCritic.cost_weight',
+                          'FollowPath.desired_linear_vel','FollowPath.lookahead_dist','FollowPath.stateful',
+                          'FollowPath.use_rotate_to_heading','FollowPath.rotate_to_heading_angular_vel',
+                          'FollowPath.use_collision_detection','FollowPath.max_angular_accel']
         controller_client=node.create_client(GetParameters,'/controller_server/get_parameters')
-        controller_future=None;controller_done=False
+        parameter_queries={
+            'mission':ParameterQuery(parameter_client,parameter_names,GetParameters.Request),
+            'controller':ParameterQuery(controller_client,controller_names,GetParameters.Request)}
+        report['parameter_queries']={name:query.evidence for name,query in parameter_queries.items()}
         def entry():return {'wall_s':time.monotonic()-began,'ros_s':node.get_clock().now().nanoseconds/1e9}
         def stamp(m):return m.header.stamp.sec+m.header.stamp.nanosec/1e9
         def stamp_ns(m):return m.header.stamp.sec*1_000_000_000+m.header.stamp.nanosec
@@ -444,34 +505,18 @@ def main():
         next_progress=0.
         while time.monotonic()-began<args.seconds and not stop['requested']:
             ros.spin_once(node,timeout_sec=.05);elapsed=time.monotonic()-began
-            if not parameter_done:
-                if parameter_future is None and parameter_client.service_is_ready():
-                    request=GetParameters.Request();request.names=parameter_names
-                    parameter_future=parameter_client.call_async(request)
-                if parameter_future is not None and parameter_future.done():
-                    parameter_done=True
-                    try:
-                        values=parameter_future.result().values
-                        decoded={name:decode_parameter(value) for name,value in zip(parameter_names,values)}
-                        report['mission_parameters']={**entry(),'service':'/limo_maze_mission/get_parameters','values':decoded,
-                                                       'types':{name:int(v.type) for name,v in zip(parameter_names,values)}}
-                        print('MISSION_PARAMETERS '+json.dumps(report['mission_parameters']),flush=True)
-                    except Exception as exc:fault('GetParameters: '+str(exc))
-            if not controller_done:
-                if controller_future is None and controller_client.service_is_ready():
-                    request=GetParameters.Request();request.names=controller_names
-                    controller_future=controller_client.call_async(request)
-                if controller_future is not None and controller_future.done():
-                    controller_done=True
-                    try:
-                        values=controller_future.result().values
-                        decoded={name:decode_parameter(value) for name,value in zip(controller_names,values)}
-                        report['controller_parameters']={**entry(),'service':'/controller_server/get_parameters','values':decoded,
-                            'types':{name:int(v.type) for name,v in zip(controller_names,values)}}
-                        print('CONTROLLER_PARAMETERS '+json.dumps(report['controller_parameters']),flush=True)
-                        if decoded.get('FollowPath.GoalAngleCritic.threshold_to_consider') is None:
+            for name,query in parameter_queries.items():
+                result=query.tick(elapsed)
+                if result is not None:
+                    service='/limo_maze_mission/get_parameters' if name=='mission' else '/controller_server/get_parameters'
+                    report[name+'_parameters']={**entry(),'service':service,**result}
+                    print(name.upper()+'_PARAMETERS '+json.dumps(report[name+'_parameters']),flush=True)
+                    if name=='controller':
+                        plugin=result['values'].get('FollowPath.plugin')
+                        if plugin is None:
+                            fault('FollowPath.plugin is unavailable; controller type not assumed')
+                        if plugin=='nav2_mppi_controller::MPPIController' and result['values'].get('FollowPath.GoalAngleCritic.threshold_to_consider') is None:
                             fault('FollowPath.GoalAngleCritic.threshold_to_consider is unavailable; no assumed value substituted')
-                    except Exception as exc:fault('Controller GetParameters: '+str(exc))
             if tf_gate.due(elapsed):continuous_tf(elapsed)
             if command_gate.due(elapsed):sample_commands(elapsed)
             if plan_gate.due(elapsed):
@@ -493,6 +538,9 @@ def main():
     except Exception as exc:
         report['error']=f'{type(exc).__name__}: {exc}'
     finally:
+        for query in parameter_queries.values():
+            try:query.close(time.monotonic()-began)
+            except Exception as exc:fault('GetParameters cleanup: '+str(exc))
         if gz is not None:
             try:gz.unsubscribe(report['world_topic'])
             except Exception as exc:fault(exc)

@@ -2,6 +2,7 @@
 from contextlib import redirect_stderr
 from array import array
 import copy
+from concurrent.futures import Future
 import importlib.util
 import io
 import json
@@ -80,6 +81,72 @@ class SamplingTests(unittest.TestCase):
                 (NS(type=9, string_array_value=('FollowPath',)), ['FollowPath'])]:
             with self.subTest(type=value.type):
                 self.assertEqual(observer.decode_parameter(value), expected)
+
+
+class ParameterQueryTests(unittest.TestCase):
+    def setUp(self):
+        self.calls=[];self.removed=[];self.ready=True
+        def send(request):
+            future=Future();self.calls.append((request,future));return future
+        client=NS(service_is_ready=lambda:self.ready,call_async=send,
+                  remove_pending_request=self.removed.append)
+        self.query=observer.ParameterQuery(client,['radius'],NS)
+
+    def complete(self, value=.25):
+        self.calls[-1][1].set_result(NS(values=[NS(type=3,double_value=value)]))
+
+    def test_absent_service_does_not_consume_attempts_or_block(self):
+        self.ready=False
+        for elapsed in (0.,5.,50.):self.assertIsNone(self.query.tick(elapsed))
+        self.assertEqual(self.calls,[])
+        self.ready=True;self.query.tick(51.)
+        self.complete();self.assertEqual(self.query.tick(51.1)['values'],{'radius':.25})
+        self.query.tick(100.);self.assertEqual(len(self.calls),1)
+
+    def test_timeout_detaches_old_request_and_retries_after_delay(self):
+        self.query.tick(0.);old=self.calls[0][1]
+        self.query.tick(4.9);self.assertFalse(old.cancelled())
+        self.query.tick(5.)
+        self.assertTrue(old.cancelled());self.assertEqual(self.removed,[old])
+        self.query.tick(5.9);self.assertEqual(len(self.calls),1)
+        self.query.tick(6.);self.complete(.3)
+        self.assertEqual(self.query.tick(6.1)['values'],{'radius':.3})
+        self.assertEqual([a['status'] for a in self.query.evidence['attempts']],['timed_out','succeeded'])
+
+    def test_completion_observed_at_timeout_wins(self):
+        self.query.tick(0.);self.complete()
+        self.assertIsNotNone(self.query.tick(5.))
+        self.assertEqual(self.query.evidence['attempts'][0]['status'],'succeeded')
+
+    def test_permanently_lost_replies_stop_after_three_attempts(self):
+        for elapsed in (0.,5.,6.,11.,12.,17.,100.):self.query.tick(elapsed)
+        self.assertTrue(self.query.done);self.assertEqual(len(self.calls),3)
+        self.assertTrue(all(f.cancelled() for _,f in self.calls))
+        self.assertEqual(len(self.removed),3)
+
+    def test_failed_or_malformed_response_is_recorded_and_retryable(self):
+        for failure in ('exception','short','nonfinite'):
+            self.setUp();self.query.tick(0.);future=self.calls[0][1]
+            if failure=='exception':future.set_exception(RuntimeError('server unavailable'))
+            elif failure=='short':future.set_result(NS(values=[]))
+            else:self.complete(math.nan)
+            self.assertIsNone(self.query.tick(.1))
+            self.assertEqual(self.query.evidence['attempts'][0]['status'],'failed')
+            self.query.tick(1.2);self.complete();self.assertIsNotNone(self.query.tick(1.3))
+
+    def test_send_exception_is_bounded_and_does_not_create_pending_future(self):
+        def fail(_request):raise RuntimeError('send failed')
+        self.query.client.call_async=fail
+        for elapsed in (0.,1.,2.,3.,50.):self.query.tick(elapsed)
+        self.assertEqual(len(self.query.evidence['attempts']),3)
+        self.assertTrue(self.query.done);self.assertIsNone(self.query.future)
+
+    def test_shutdown_detaches_pending_request_without_inventing_result(self):
+        self.query.tick(0.);future=self.calls[0][1];self.query.close(.2)
+        self.assertTrue(future.cancelled());self.assertEqual(self.removed,[future])
+        self.assertEqual(self.query.evidence['attempts'][0]['status'],'observer_stopped')
+        self.assertIsNone(self.query.future)
+        self.query.tick(10.);self.assertEqual(len(self.calls),1)
 
 
 class NativeStationarityTests(unittest.TestCase):
