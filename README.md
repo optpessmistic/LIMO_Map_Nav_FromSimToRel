@@ -6,7 +6,7 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-当前已完成 WSL 环境与 ROS 集成，并开始真实物理仿真中的自主探索。首次平移实验中车体离起点约 1.47 m，原始地图已观测面积增加约 1.82 m²，确认并标注 1 个红色视觉替身；随后因导航到达容差与探索安全裕量不匹配而停止。完整探索和返航尚未通过，SLAM 稳定性也仍需复验；详见首次自主运行与验证报告。
+当前已完成 WSL 环境与 ROS 集成，并运行真实物理仿真中的自主探索。最新 run11 确认并标注了 2 个红色视觉替身，独立对齐后的平面定位误差为 8.49、2.22 cm；原始地图已观测面积从 3.855 增至 8.170 m²。到达裕量修复通过了三个成功目标的仿真检查，但部分探索目标和返航仍会停滞超时，完整任务尚未通过；详见 run11 与验证报告。
 
 ## 项目入口
 
@@ -21,6 +21,7 @@
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
 | 首次真实平移、扩图与目标标注 | [run10 自主实验](docs/first-autonomous-run.md) |
+| 两目标评分、到达裕量与返航停滞 | [run11 自主实验](docs/autonomous-run11.md) |
 | 车体真实运动与接触近似 | [物理验证](docs/physics-validation.md) |
 | 激光输入与时间对照 | [只读扫描诊断](docs/scan-alignment.md) |
 | 当前 SLAM 错位调查 | [旋转建图对照](docs/slam-rotation-investigation.md) |

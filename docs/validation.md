@@ -35,10 +35,13 @@
 | Karto 最大边界修复 | 固定 2.8.5 源码，两行补丁、独立完整构建、实际 `CreateFromScans` 回归 | 原版 5 例均越界；补丁 5 例共 40 端点全部在界内且为 occupied，原点不变。未覆盖系统安装，未声称上游全套测试通过。 |
 | 补丁场景与稳定性反例 | run9，新模型/epoch、实际加载库/参数已核对 | 真实转角 6.39968 rad、漂移 0.0654 mm；上边界墙恢复。yaw 修正 −.02443 rad，但轴向平移修正约 17 cm，显示 run8 参数尚不足以稳定建图。起点先验副本可连通不代表定位可信；尚未发送平移导航目标。 |
 | 首次自主平移、扩图及标注 | run10，180 s 探索预算、120 s 返航预算 | 实际最大位移 1.46670 m；已观测面积增加 1.8175 m²；确认 1 个红色替身。4 个目标中 2 个成功、1 个 ACK 超时中止、1 个受控取消。第 4 个到达后因安全包络检查 blocked，未返航/未完成；[详细证据](first-autonomous-run.md)。 |
+| 到达误差与候选安全裕量 | `8a8e7ed`，WSL Jazzy domain 74 回归及冻结地图 | 54/54 任务核心与 ROS 参数测试、5/5 配置生成测试通过，4 个冻结快照与预检一致；mission/bringup 两包重建成功。候选终点预留 0.05 m 到达误差及半格对角线，路径半径仍为 0.25 m；Nav2 XY=0.05 m、stateful=false。新场景实际导航效果另行验证。 |
+| 到达修复后的自主流程 | run11，600 s 探索/180 s 返航预算 | 3 个探索目标成功且终态附近 XY 均在 5 cm 内、3 个探索目标超时取消；7 个终态附近原始地图 R 圆均安全。地图观测面积 3.855→8.170 m²，未以此声称真值覆盖率；返航中途超时，完整任务仍未通过。 |
+| 两个替身的独立评分 | run11，初始静止帧建立固定 map→world 对齐，阈值 0.20 m | TP=2、FP=0、FN=0；平面误差 8.49/2.22 cm，RMSE 6.21 cm。只比较可见表面点与盒中心，不证明视觉覆盖或正式目标识别。末段独立原生位姿确认 29.983 sim 秒静止；[完整记录](autonomous-run11.md)。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `2bdaab9` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40753846582)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
+GitHub Actions 的提交 `8a8e7ed` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40756995920)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 
