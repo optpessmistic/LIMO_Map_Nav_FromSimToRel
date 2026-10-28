@@ -1,14 +1,46 @@
 #!/usr/bin/env python3
-"""Derive checked-in robot parameters from the installed Jazzy Nav2 defaults.
+"""Derive robot parameters from the installed Jazzy Nav2 defaults.
 
 Run with /usr/bin/python3 in WSL after setup_jazzy.sh. Requires python3-yaml.
+The optional --controller rpp profile reproduces the small-maze run14 experiment;
+the default keeps the installed DWB/MPPI controller and writes nav2.yaml.
 """
 import argparse
 from copy import deepcopy
 from pathlib import Path
 
 
-def configure(data):
+RPP_FOLLOW_PATH = {
+    "plugin": "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController",
+    "desired_linear_vel": 0.15,
+    "lookahead_dist": 0.3,
+    "use_velocity_scaled_lookahead_dist": False,
+    "rotate_to_heading_angular_vel": 0.4,
+    "max_angular_accel": 0.6,
+    "rotate_to_heading_min_angle": 0.3,
+    "stateful": False,
+    "use_rotate_to_heading": True,
+    "use_collision_detection": True,
+    "max_allowed_time_to_collision_up_to_carrot": 1.2,
+    "cost_scaling_dist": 0.3,
+    "inflation_cost_scaling_factor": 4.0,
+    "regulated_linear_scaling_min_radius": 0.5,
+    "regulated_linear_scaling_min_speed": 0.03,
+    "min_approach_linear_velocity": 0.02,
+    "approach_velocity_scaling_dist": 0.3,
+    "allow_reversing": False,
+    "use_cancel_deceleration": False,
+    "use_regulated_linear_velocity_scaling": True,
+    "use_cost_regulated_linear_velocity_scaling": True,
+    "cost_scaling_gain": 1.0,
+    "use_fixed_curvature_lookahead": False,
+    "transform_tolerance": 0.1,
+}
+
+
+def configure(data, controller_profile="installed"):
+    if controller_profile not in ("installed", "rpp"):
+        raise ValueError(f"Unknown controller profile {controller_profile!r}")
     if not isinstance(data, dict):
         raise ValueError("Nav2 defaults must be a YAML mapping")
     data = deepcopy(data)
@@ -48,9 +80,15 @@ def configure(data):
     controller["min_x_velocity_threshold"] = 0.001
     controller["min_y_velocity_threshold"] = 0.001
     controller["min_theta_velocity_threshold"] = 0.001
+    if controller_profile == "rpp":
+        # Replace the complete block: MPPI/DWB critics and diagnostic settings
+        # are not RPP parameters. Explicit selection is also safe to regenerate.
+        controller["FollowPath"] = deepcopy(RPP_FOLLOW_PATH)
     follow = controller["FollowPath"]
     plugin = follow.get("plugin")
-    if plugin == "dwb_core::DWBLocalPlanner":
+    if controller_profile == "rpp":
+        pass
+    elif plugin == "dwb_core::DWBLocalPlanner":
         follow.update(max_vel_x=0.15, min_vel_x=0.0, max_vel_y=0.0,
                       max_vel_theta=0.4, max_speed_xy=0.15, min_speed_xy=0.0,
                       min_speed_theta=0.0, acc_lim_x=0.3, acc_lim_y=0.0,
@@ -124,17 +162,35 @@ def configure(data):
     return data
 
 
-if __name__ == "__main__":
-    import yaml
+def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=Path("/opt/ros/jazzy/share/nav2_bringup/params/nav2_params.yaml"))
-    parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "src/limo_maze_bringup/config/nav2.yaml")
-    args = parser.parse_args()
+    parser.add_argument("--controller", choices=("installed", "rpp"), default="installed",
+                        help="Keep the installed controller (default), or select the run14 RPP experiment")
+    parser.add_argument("--output", type=Path,
+                        help="Default: config/nav2.yaml for installed, config/nav2_rpp.yaml for rpp")
+    args = parser.parse_args(argv)
+    if args.output is None:
+        filename = "nav2_rpp.yaml" if args.controller == "rpp" else "nav2.yaml"
+        args.output = Path(__file__).resolve().parents[1] / "src/limo_maze_bringup/config" / filename
+    return parser, args
+
+
+def main(argv=None):
+    import yaml
+    parser, args = parse_args(argv)
     try:
-        document = configure(yaml.safe_load(args.source.read_text(encoding="utf-8")))
+        document = configure(yaml.safe_load(args.source.read_text(encoding="utf-8")), args.controller)
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text("# Derived from installed ROS2 Jazzy Nav2 defaults. See tools/configure_nav2.py.\n" +
-                               yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+        header = "# Derived from installed ROS2 Jazzy Nav2 defaults. See tools/configure_nav2.py.\n"
+        if args.controller == "rpp":
+            header += ("# Optional run14 small-maze RPP experiment; default nav2.yaml remains unchanged.\n"
+                       "# Select via mapping_navigation nav_params or navigation params_file. Revalidate elsewhere.\n")
+        args.output.write_text(header + yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
         print(args.output)
     except (OSError, KeyError, TypeError, ValueError, yaml.YAMLError) as exc:
         parser.error(str(exc))
+
+
+if __name__ == "__main__":
+    main()
