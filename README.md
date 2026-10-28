@@ -6,7 +6,7 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-当前已完成环境安装、5 个 ROS 包构建、Gazebo 传感器/TF、在线建图和 Nav2 就绪检查，并获得实际 RGB-D 目标观测。完整自主探索与返航尚未通过；最新失败原因和证据见验证报告。
+当前已完成环境安装、5 个 ROS 包构建、Gazebo 传感器/TF、在线建图和 Nav2 就绪检查，并获得实际 RGB-D 目标观测。轮接触模型修复后，独立世界位姿已确认车体真实完成整圈旋转；旋转中的 SLAM 墙影错位仍阻断导航。完整自主探索与返航尚未通过，证据见验证报告。
 
 ## 项目入口
 
@@ -20,6 +20,7 @@
 | ROS2 任务管理 | [任务节点](docs/ros2-mission.md) |
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
+| 车体真实运动与接触近似 | [物理验证](docs/physics-validation.md) |
 | 完整搜索尚缺什么 | [验收差距](docs/acceptance-gaps.md) |
 | 分工与周报 | [周报模板](progress/weekly-template.md) |
 

@@ -20,11 +20,14 @@
 | RGB-D 实际观测 | `scripts/capture_rgbd_evidence.py` | 同一 260.3 s 采样时刻保存 RGB、深度、标定及检测 topic；视野中的 1 个红色替身有三维观测。不等于全场找齐。 |
 | 自主任务首次运行 | `mission.launch.py autonomous:=true` | 起点记录成功，但因起点 footprint 不在已知安全连通区而 blocked；未发运动目标。正在核对 240° 雷达盲区和起始地图。 |
 | 初始旋转与地图检查 | `scripts/initial_survey.py`，独立确认初始 0.30 m 净空后显式执行 | Nav2 Spin、里程计累计转角、回正与停止检查通过；地图仍未覆盖后方，故不计物理转向或完整扫描通过。 |
-| 独立运动对照 | 原生 model pose、ROS odom 与同时间 TF；run4d | 3637 组对齐记录：odom 最大累计 6.39642 rad，实际车体仅 0.0000509 rad，实际最大位移 0.12507 m。物理转向失败；全栈已停止并转入隔离模型诊断，尚未发送平移导航目标。 |
+| 独立运动对照（修复前） | 原生 model pose、ROS odom 与同时间 TF；run4d | 3637 组对齐记录：odom 最大累计 6.39642 rad，实际车体仅 0.0000509 rad，实际最大位移 0.12507 m。物理转向失败；保留失败记录。 |
+| 轮接触模型修复 | `scripts/check_sim_physics.py`，隔离原生 Gazebo 场景 | 正式安装模型完整圈：world 6.404542595 / odom 6.404549999 rad，最大漂移 0.00002454 m；IMU、停车及自身 server 回收通过。球接触/侧向柔顺是仿真近似，详见 [物理验证](physics-validation.md)。 |
+| 正式迷宫真实旋转 | run5，物理修复后的原生 model pose / ROS odom 对照 | 1431 组对齐记录：真实累计最大 6.399992745 / odom 6.399999999 rad，最大漂移约 0.065 mm。传感器/TF 九路检查及导航就绪复验通过。 |
+| 旋转后地图连通性 | run5 原始 `/map` 和任务 R=0.25 m | 起始 footprint 已安全，但地图产生约 −32° 的重复墙影；安全区分裂为 160、158、33 格，起点仅在 33 格分量，无可达 frontier。SLAM 仍阻断自主任务，未发送平移导航目标。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `662d252` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40723597538)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；随后本机修复需在后续提交对应的 CI 中再次核对。
+GitHub Actions 的提交 `0b0ef37` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40740222499)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 

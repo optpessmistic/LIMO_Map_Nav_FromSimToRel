@@ -15,6 +15,16 @@ and IMU frame IDs, adds a ROS optical camera frame, and uses Harmonic's camera
 `optical_frame_id` for RGB, depth, CameraInfo and point-cloud headers. It also
 uses conservative simulation velocity and acceleration limits.
 
+The native DART contact profile uses spherical wheel collisions with the same
+wheel centers/radii, exact pi rotations, collision-local axial friction direction,
+and lateral slip compliance 0.035 (longitudinal 0), following Gazebo's skid-steer
+example. Visual meshes, masses and sensor poses remain inherited. The DiffDrive
+separation is derived from the model's collision centers (`track + wheel_width`,
+0.175 m). This is a simulation contact approximation, not measured LIMO tire
+physics or a change to the physical chassis driver's calibration. The expanded
+collision width is 0.265 m and remains inside the padded navigation footprint.
+Independent native-pose/IMU checks are required; wheel odometry alone is insufficient.
+
 The X2L has a documented 360-degree nominal emission FOV (the supplied LIMO
 manual, PDF page 46, section 5.1). A 360-degree run measured extensive rear
 self-returns in this model, so `lidar_fov_deg` defaults to the upstream 240-degree
