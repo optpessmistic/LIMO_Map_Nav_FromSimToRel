@@ -1,8 +1,10 @@
 """Pure observer regressions. No ROS/Gazebo imports, nodes, or motion."""
 from contextlib import redirect_stderr
+from array import array
 import copy
 import importlib.util
 import io
+import json
 import math
 from pathlib import Path
 import tempfile
@@ -28,6 +30,15 @@ def pose(x=1., frame='', quaternion=None):
 def native_samples(duration=30.):
     return [{'sim_s':i * .03, 'x':0., 'y':0., 'yaw':0.,
              'receipt_wall_elapsed_s':i * .03} for i in range(round(duration / .03) + 1)]
+
+
+def costmap_message():
+    return NS(header=header('odom', 12, 345), metadata=NS(
+        map_load_time=NS(sec=0, nanosec=0), update_time=NS(sec=11, nanosec=123),
+        layer='master', resolution=.05, size_x=3, size_y=2,
+        origin=NS(position=NS(x=-1., y=2., z=.1),
+            orientation=NS(x=0., y=0., z=math.sqrt(.5), w=math.sqrt(.5)))),
+        data=array('B', [0, 1, 252, 253, 254, 255]))
 
 
 class SamplingTests(unittest.TestCase):
@@ -183,6 +194,12 @@ class FileAndWindowTests(unittest.TestCase):
                 self.assertFalse(output.exists())
             args, _ = observer.parse_arguments(['--output', str(output)])
             self.assertEqual(args.seconds, 1000.)
+            self.assertFalse(args.costmaps)
+
+    def test_costmaps_are_explicitly_opted_in_before_loading_ros(self):
+        with tempfile.TemporaryDirectory() as directory:
+            args, _ = observer.parse_arguments(['--output', str(Path(directory) / 'capture.json'), '--costmaps'])
+            self.assertTrue(args.costmaps)
 
     def test_invalid_windows_are_rejected_before_loading_ros(self):
         for value in ('9.99', '1500.01', 'nan', 'inf', '-inf'):
@@ -224,6 +241,140 @@ class FootprintSnapshotTests(unittest.TestCase):
         self.assertTrue(observer.disk_conflicts(record, [8.5, 21.5], .25)['raw_exact_pose_disk_clear'])
         outside = observer.disk_conflicts(record, [9.9, 20.1], .25)
         self.assertGreater(outside['conflict_counts']['outside'], 0)
+
+
+class CostmapEvidenceTests(unittest.TestCase):
+    def test_raw_bytes_metadata_and_rotated_origin_are_preserved(self):
+        msg = costmap_message()
+        record = observer.costmap_record(msg)
+        self.assertEqual(record['data'], [0, 1, 252, 253, 254, 255])
+        self.assertEqual(record['frame_id'], 'odom')
+        self.assertEqual(record['stamp_ns'], 12_000_000_345)
+        meta = record['metadata']
+        self.assertEqual((meta['map_load_time_ns'], meta['update_time_ns']), (0, 11_000_000_123))
+        self.assertEqual((meta['size_x'], meta['size_y'], meta['resolution'], meta['layer']), (3, 2, .05, 'master'))
+        self.assertEqual(meta['origin']['xyz'], [-1., 2., .1])
+        self.assertEqual(meta['origin']['quaternion_xyzw'], [0., 0., math.sqrt(.5), math.sqrt(.5)])
+        self.assertAlmostEqual(meta['origin']['yaw'], math.pi / 2)
+        record['data'][0] = 255
+        self.assertEqual(list(msg.data), [0, 1, 252, 253, 254, 255])
+
+    def test_unset_origin_orientation_does_not_invent_a_yaw(self):
+        msg = costmap_message(); msg.metadata.origin.orientation = NS(x=0., y=0., z=0., w=0.)
+        origin = observer.costmap_record(msg)['metadata']['origin']
+        self.assertFalse(origin['orientation_valid'])
+        self.assertIsNone(origin['yaw'])
+
+    def test_invalid_geometry_dimensions_and_data_are_rejected(self):
+        mutations = [lambda m: setattr(m.metadata, 'size_x', 0),
+            lambda m: setattr(m.metadata, 'size_y', 1.5),
+            lambda m: setattr(m.metadata, 'resolution', 0.),
+            lambda m: setattr(m.metadata, 'resolution', math.inf),
+            lambda m: setattr(m.metadata.origin.position, 'x', math.nan),
+            lambda m: setattr(m.metadata.origin.orientation, 'w', math.nan),
+            lambda m: setattr(m, 'data', [0] * 5)]
+        mutations += [lambda m, value=value: setattr(m, 'data', [0, 1, 2, 3, 4, value])
+                      for value in (-1, 256, 1.5, True)]
+        for index, mutate in enumerate(mutations):
+            msg = costmap_message(); mutate(msg)
+            with self.subTest(index=index), self.assertRaises(ValueError):
+                observer.costmap_record(msg)
+
+    def test_invalid_source_or_metadata_stamp_is_rejected(self):
+        for field in ('header', 'map_load_time', 'update_time'):
+            msg = costmap_message()
+            stamp = msg.header.stamp if field == 'header' else getattr(msg.metadata, field)
+            stamp.nanosec = 1_000_000_000
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                observer.costmap_record(msg)
+
+    def test_only_new_receipts_are_saved_at_most_once_per_wall_second(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recorder = observer.CostmapRecorder(True, Path(directory))
+            msg = costmap_message()
+            def receive(t):recorder.receive('global', msg, {'wall_s':t, 'ros_s':12.}, 2, 'epoch')
+            def sample(t):return recorder.sample('global', {'wall_s':t, 'ros_s':12.}, 2, 'epoch')
+            receive(0.); first = sample(0.)
+            receive(.1); receive(.2)
+            self.assertIsNone(sample(.999))
+            second = sample(1.)
+            self.assertEqual(second['sequence'], 3)
+            self.assertEqual(second['messages_since_previous_sample'], 2)
+            self.assertIsNone(sample(2.))  # Cached message is not a new sample.
+            receive(2.1); third = sample(2.1)  # New receipt of identical bytes/stamp is still a message.
+            self.assertEqual(third['sequence'], 4)
+            self.assertEqual(len(recorder.files), 3)
+            self.assertNotIn('data', first)
+            self.assertNotIn('metadata', first)
+            self.assertEqual(json.loads(Path(first['file']).read_text())['data'], list(msg.data))
+
+    def test_source_receipt_sample_times_and_goal_epoch_changes_are_distinct(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recorder = observer.CostmapRecorder(True, Path(directory))
+            msg = costmap_message()
+            recorder.receive('local', msg, {'wall_s':2., 'ros_s':13.}, 2, 'old')
+            manifest = recorder.sample('local', {'wall_s':2.25, 'ros_s':14.}, 3, 'new')
+            row = json.loads(Path(manifest['file']).read_text())
+            self.assertEqual(row['receipt_age_wall_s'], .25)
+            self.assertAlmostEqual(row['header_age_ros_s'], 1.999999655)
+            self.assertAlmostEqual(row['header_age_at_receipt_ros_s'], .999999655)
+            self.assertEqual((row['active_goal_token_at_receipt'], row['active_goal_token']), (2, 3))
+            self.assertEqual((row['map_epoch_at_receipt'], row['map_epoch']), ('old', 'new'))
+            self.assertIn('not synchronized', row['synchronization'])
+            msg = costmap_message(); msg.header.stamp.sec = 20
+            recorder.receive('local', msg, {'wall_s':4., 'ros_s':15.}, None, 'new')
+            row = recorder.sample('local', {'wall_s':4., 'ros_s':15.}, None, 'new')
+            self.assertLess(row['header_age_ros_s'], 0.)  # Do not hide a future source stamp by clamping age.
+
+    def test_both_maps_sample_independently_and_unsampled_tail_is_counted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recorder = observer.CostmapRecorder(True, Path(directory))
+            at = {'wall_s':0., 'ros_s':12.}
+            for name in observer.COSTMAP_TOPICS:
+                recorder.receive(name, costmap_message(), at, None, None)
+                self.assertIsNotNone(recorder.sample(name, at, None, None))
+            recorder.receive('local', costmap_message(), {'wall_s':.5, 'ros_s':12.1}, None, None)
+            self.assertIsNone(recorder.sample('local', {'wall_s':.5, 'ros_s':12.1}, None, None))
+            summary = recorder.summary()
+            self.assertEqual(summary['missing_maps'], [])
+            self.assertEqual(summary['topics']['local']['received_message_count'], 2)
+            self.assertEqual(summary['topics']['local']['saved_sample_count'], 1)
+            self.assertEqual(summary['topics']['local']['messages_after_last_saved_sample'], 1)
+
+    def test_missing_maps_are_explicit_only_when_enabled(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recorder = observer.CostmapRecorder(False, Path(directory))
+            self.assertIsNone(recorder.sample('global', {'wall_s':0., 'ros_s':0.}, None, None))
+            self.assertEqual(recorder.summary()['missing_maps'], [])
+            self.assertEqual(list(Path(directory).iterdir()), [])
+            recorder = observer.CostmapRecorder(True, Path(directory))
+            self.assertEqual(recorder.summary()['missing_maps'], ['global', 'local'])
+            at = {'wall_s':0., 'ros_s':12.}
+            recorder.receive('global', costmap_message(), at, None, None)
+            recorder.sample('global', at, None, None)
+            self.assertEqual(recorder.summary()['missing_maps'], ['local'])
+
+    def test_invalid_receipt_is_not_retried_in_a_busy_loop(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recorder = observer.CostmapRecorder(True, Path(directory))
+            msg = costmap_message(); msg.data = [0]
+            at = {'wall_s':0., 'ros_s':12.}
+            recorder.receive('global', msg, at, None, None)
+            with self.assertRaises(ValueError):recorder.sample('global', at, None, None)
+            self.assertIsNone(recorder.sample('global', {'wall_s':2., 'ros_s':13.}, None, None))
+            recorder.receive('global', costmap_message(), {'wall_s':2., 'ros_s':13.}, None, None)
+            self.assertIsNotNone(recorder.sample('global', {'wall_s':2., 'ros_s':13.}, None, None))
+            summary = recorder.summary()['topics']['global']
+            self.assertEqual((summary['attempted_sample_count'], summary['failed_sample_count'], summary['saved_sample_count']), (2, 1, 1))
+
+    def test_snapshot_file_is_never_overwritten(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'costmap-global-00000001.json'; path.write_text('existing evidence')
+            recorder = observer.CostmapRecorder(True, Path(directory)); at = {'wall_s':0., 'ros_s':12.}
+            recorder.receive('global', costmap_message(), at, None, None)
+            with self.assertRaises(FileExistsError):recorder.sample('global', at, None, None)
+            self.assertEqual(path.read_text(), 'existing evidence')
+            self.assertEqual(recorder.summary()['topics']['global']['saved_sample_count'], 0)
 
 
 if __name__ == '__main__':

@@ -68,6 +68,90 @@ def path_geometry_key(record):
     return (record['frame_id'],tuple((p['frame_id'],*p['xyz'],*p['quaternion_xyzw']) for p in record['poses']))
 
 
+COSTMAP_TOPICS={'global':'/global_costmap/costmap_raw','local':'/local_costmap/costmap_raw'}
+
+
+def costmap_record(msg):
+    """Preserve nav2_msgs/Costmap bytes; never convert them to OccupancyGrid values."""
+    def ns(stamp):
+        if (type(stamp.sec) is not int or type(stamp.nanosec) is not int
+                or not 0<=stamp.nanosec<1_000_000_000):
+            raise ValueError('Invalid costmap timestamp')
+        return stamp.sec*1_000_000_000+stamp.nanosec
+    m=msg.metadata;p,q=m.origin.position,m.origin.orientation
+    if (type(m.size_x) is not int or type(m.size_y) is not int
+            or m.size_x<=0 or m.size_y<=0):raise ValueError('Invalid costmap dimensions')
+    values=[m.resolution,p.x,p.y,p.z,q.x,q.y,q.z,q.w]
+    if not all(math.isfinite(v) for v in values) or m.resolution<=0:
+        raise ValueError('Invalid costmap geometry')
+    data=list(msg.data)
+    if len(data)!=m.size_x*m.size_y:raise ValueError('Costmap data size does not match dimensions')
+    if any(type(v) is not int or not 0<=v<=255 for v in data):raise ValueError('Invalid costmap uint8 data')
+    norm=math.sqrt(q.x*q.x+q.y*q.y+q.z*q.z+q.w*q.w)
+    return {'stamp_ns':ns(msg.header.stamp),'frame_id':msg.header.frame_id,
+        'metadata':{'map_load_time_ns':ns(m.map_load_time),'update_time_ns':ns(m.update_time),
+            'layer':m.layer,'resolution':m.resolution,'size_x':m.size_x,'size_y':m.size_y,
+            'origin':{'xyz':[p.x,p.y,p.z],'quaternion_xyzw':[q.x,q.y,q.z,q.w],
+                'yaw':yaw(q) if abs(norm-1.)<1e-3 else None,'orientation_valid':abs(norm-1.)<1e-3}},
+        'data_encoding':'row-major uint8, index = y * size_x + x; 253/254/255 unchanged','data':data}
+
+
+class CostmapRecorder:
+    """Latest-message capture, at most 1 Hz wall per map, with external full snapshots."""
+    def __init__(self, enabled, directory):
+        self.enabled=enabled;self.directory=directory;self.latest={};self.files=[]
+        self.received=Counter();self.attempted=Counter();self.saved=Counter()
+        self.last_attempted=Counter();self.last_saved=Counter()
+        self.gates={name:SampleGate(1.) for name in COSTMAP_TOPICS}
+
+    def receive(self, name, message, at, token, epoch):
+        if not self.enabled:raise ValueError('Costmap sampling is disabled')
+        if name not in COSTMAP_TOPICS:raise ValueError('Unknown costmap name')
+        if not all(math.isfinite(at[k]) for k in ('wall_s','ros_s')):raise ValueError('Nonfinite receipt time')
+        self.received[name]+=1
+        # Keep the immutable received ROS message; defer copying its full data to the sampling tick.
+        self.latest[name]={'message':message,'sequence':self.received[name],
+            'receipt_wall_s':at['wall_s'],'receipt_ros_s':at['ros_s'],
+            'active_goal_token_at_receipt':token,'map_epoch_at_receipt':epoch}
+
+    def sample(self, name, at, token, epoch):
+        if not self.enabled:return None
+        latest=self.latest.get(name)
+        if latest is None or latest['sequence']<=self.last_attempted[name]:return None
+        if not all(math.isfinite(at[k]) for k in ('wall_s','ros_s')):raise ValueError('Nonfinite sample time')
+        if not self.gates[name].due(at['wall_s']):return None
+        # An invalid message/write failure is reported once, not retried at every spin iteration.
+        self.last_attempted[name]=latest['sequence'];self.attempted[name]+=1
+        record=costmap_record(latest['message'])
+        row={'schema_version':1,'read_only':True,'topic':COSTMAP_TOPICS[name],**at,**record,
+            **{k:v for k,v in latest.items() if k!='message'},
+            'active_goal_token':token,'map_epoch':epoch,
+            'messages_since_previous_sample':latest['sequence']-self.last_saved[name],
+            'receipt_age_wall_s':at['wall_s']-latest['receipt_wall_s'],
+            'header_age_ros_s':at['ros_s']-record['stamp_ns']*1e-9,
+            'header_age_at_receipt_ros_s':latest['receipt_ros_s']-record['stamp_ns']*1e-9,
+            'synchronization':'Independent latest costmap receipt; not synchronized with /plan, TF, or goal events.'}
+        path=self.directory/f"costmap-{name}-{latest['sequence']:08d}.json"
+        with path.open('x',encoding='utf-8') as handle:json.dump(row,handle,allow_nan=False)
+        self.saved[name]+=1;self.last_saved[name]=latest['sequence']
+        keys=('topic','wall_s','ros_s','stamp_ns','frame_id','sequence','receipt_wall_s','receipt_ros_s',
+            'receipt_age_wall_s','header_age_ros_s','active_goal_token','active_goal_token_at_receipt',
+            'map_epoch','map_epoch_at_receipt','messages_since_previous_sample')
+        manifest={'file':str(path),**{k:row[k] for k in keys}}
+        self.files.append(manifest)
+        return manifest
+
+    def summary(self):
+        return {'enabled':self.enabled,'max_wall_hz_per_map':1.,
+            'topics':{name:{'topic':topic,'received_message_count':self.received[name],
+                'saved_sample_count':self.saved[name],'attempted_sample_count':self.attempted[name],
+                'failed_sample_count':self.attempted[name]-self.saved[name],
+                'latest_received_sequence':self.received[name],'last_saved_sequence':self.last_saved[name],
+                'messages_after_last_saved_sample':self.received[name]-self.last_saved[name]}
+                for name,topic in COSTMAP_TOPICS.items()},
+            'missing_maps':[name for name in COSTMAP_TOPICS if not self.saved[name]] if self.enabled else []}
+
+
 def native_tail(samples, now_wall, terminal_ros=None):
     if len(samples)<2:
         return {'evidence_sufficient':False,'reason':'insufficient_native_samples'}
@@ -113,6 +197,7 @@ def parse_arguments(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,default=Path('outputs/ros_smoke/mission-observer.json'))
     parser.add_argument('--seconds',type=float,default=1000.,help='Wall-time window, 10..1500 seconds; SIGINT saves earlier')
+    parser.add_argument('--costmaps',action='store_true',help='Also save full raw global/local costmaps, at most 1 Hz wall per map')
     args=parser.parse_args(argv)
     if not math.isfinite(args.seconds) or not 10<=args.seconds<=1500:
         parser.error('--seconds must be 10..1500 wall seconds; a short window cannot establish a 30sim-second stop')
@@ -126,25 +211,29 @@ def main():
     args.output.parent.mkdir(parents=True,exist_ok=True)
     stream=args.output.open('x',encoding='utf-8');snapshots.mkdir()
     began=time.monotonic();node=ros=gz=listener=None;lock=threading.Lock();world=[];counts=Counter()
+    costmaps=CostmapRecorder(args.costmaps,snapshots)
     report={'schema_version':1,'read_only':True,'application_publishers':[],'status':'error',
         'requested_wall_seconds':args.seconds,'world_topic':'/world/limo_maze/pose/info','world_entity':'limo',
         'truth_used_only_for_offline_diagnosis':True,'status_changes':[],'target_changes':[],
         'target_observations':[],'slam_poses':[],'mission_events':[],'snapshot_files':[],'errors':[],
-        'continuous_tf_samples':[],'command_samples':[],'plan_samples':[],
+        'continuous_tf_samples':[],'command_samples':[],'plan_samples':[],'costmap_samples':costmaps.files,
         'sampling':{'tf_wall_hz':5.,'command_wall_hz':10.,'tf_reference':'latest map-to-base_link stamp; other transforms queried at exactly this stamp',
             'command_topics':['/cmd_vel_nav','/cmd_vel_smoothed','/cmd_vel'],
             'command_time_basis':'Twist has no header. ROS clock and monotonic wall values are receipt times, not acquisition timestamps.',
             'command_sampling':'Latest received message per topic at each wall-time tick; receipt age and sequence expose stale/reused values and skipped messages.',
             'plan_topic':'/plan','plan_wall_hz_max':1.,
+            'costmaps_enabled':args.costmaps,'costmap_topics':COSTMAP_TOPICS,'costmap_wall_hz_max_per_map':1.,
+            'costmap_sampling':'Only newly received full raw maps, sampled independently per topic; intermediate messages may be skipped. Full data are in external snapshot files. No updates reconstruction or synchronization with /plan.',
             'plan_sampling':'At most 1Hz wall-time, save latest newly received Path in full. Source/pose header stamps, frames and receipt times retained. Unchanged source is not duplicated; intermediate plans may be skipped.'},
         'limitations':['No motion/goal actions or parameter writes; mission and controller each receive one read-only GetParameters request. SIGINT stops only this observer.',
             'Native world trajectory is never transformed into or published to the controller.',
             'Goal snapshots are near log receipt, not an atomic mission/map transaction; all acquisition timestamps are retained.',
-            'Snapshot footprint test uses only raw occupancy and radius .25m, not the externally guaranteed startup prior.',
+            'Snapshot footprint test uses only raw occupancy and queried mission radius (fallback .25m), not the externally guaranteed startup prior.',
             'Physical stationarity requires advancing native samples; wheel odometry is not substituted.',
             'Velocity-topic samples are asynchronous receipt records, not matched pipeline messages. Short transients may occur between 10Hz samples.',
             'Latest /odom velocity is not interpolated to the TF time; its own header stamp, child frame, receipt time and age are retained.',
-            '/plan is the published global path, not MPPI local trajectories or the controller-internal transformed/pruned plan. Geometry changes ignore timestamp-only differences. Invalid/unset pose orientation has yaw=null.']}
+            '/plan is the published global path, not MPPI local trajectories or the controller-internal transformed/pruned plan. Geometry changes ignore timestamp-only differences. Invalid/unset pose orientation has yaw=null.',
+            'Optional costmaps are asynchronous latest receipts, not the exact costmap used for a saved plan or controller rollout. A latched full map can be old; source age is retained. Source header is publisher time, not a scan acquisition stamp. Metadata times are preserved even when zero.']}
     command_topics=report['sampling']['command_topics']
     state={'status':None,'map':None,'epoch':None,'terminal_ros':None,'goals':{},'pending':[],'snap_index':0,
            'active_goal_token':None,'odom':None,'plan':None,'commands':{topic:None for topic in command_topics}}
@@ -168,6 +257,8 @@ def main():
         from rclpy.time import Time
         from geometry_msgs.msg import PoseWithCovarianceStamped, Twist
         from nav_msgs.msg import OccupancyGrid, Odometry, Path as NavPath
+        if args.costmaps:
+            from nav2_msgs.msg import Costmap
         from rcl_interfaces.msg import Log
         from rcl_interfaces.srv import GetParameters
         from std_msgs.msg import String
@@ -343,6 +434,10 @@ def main():
             node.create_subscription(kind,topic,guarded(callback),qos)
         for topic in command_topics:
             node.create_subscription(Twist,topic,guarded(lambda msg,topic=topic:command(topic,msg)),qos_profile_sensor_data)
+        if args.costmaps:
+            for name,topic in COSTMAP_TOPICS.items():
+                node.create_subscription(Costmap,topic,guarded(lambda msg,name=name:
+                    costmaps.receive(name,msg,entry(),state['active_goal_token'],state['epoch'])),latched)
         gz=GzNode()
         if not gz.subscribe(Pose_V,report['world_topic'],native):raise RuntimeError('Native subscription failed')
         print('READY: simulation observer subscriptions created; waiting for native data. No motion/action commands.',flush=True)
@@ -382,6 +477,10 @@ def main():
             if plan_gate.due(elapsed):
                 try:sample_plan(elapsed)
                 except Exception as exc:fault('Path sample: '+str(exc))
+            if args.costmaps:
+                for name in COSTMAP_TOPICS:
+                    try:costmaps.sample(name,entry(),state['active_goal_token'],state['epoch'])
+                    except Exception as exc:fault(name+' costmap sample: '+str(exc))
             for due,token in list(state['pending']):
                 if time.monotonic()>=due:snapshot('goal-terminal-plus-1wall',token);state['pending'].remove((due,token))
             if elapsed>=next_progress:
@@ -413,6 +512,9 @@ def main():
             'raw_received_command_counts':{topic:counts[topic] for topic in command_topics},'raw_received_odom_count':counts['odom'],
             'plan_sample_count':len(report['plan_samples']),'raw_received_plan_count':counts['plan']}
         if not report['plan_samples']:report['errors'].append('No /plan samples captured; global path analysis unavailable')
+        report['costmap_summary']=costmaps.summary()
+        for name in report['costmap_summary']['missing_maps']:
+            report['errors'].append('No '+COSTMAP_TOPICS[name]+' samples captured with --costmaps; raw costmap evidence missing')
         if not world or state['status'] is None:
             report['status']='missing_required_evidence';report['errors'].append('Missing native world poses or mission status')
         try:
@@ -423,7 +525,8 @@ def main():
         with stream:json.dump(report,stream,indent=2,allow_nan=False);stream.write('\n')
         signal.signal(signal.SIGINT,previous_sigint)
         print('SAVED '+json.dumps({'path':str(args.output),'status':report['status'],'native_count':len(world),
-            'goal_terminal_logs':report['goal_terminal_log_count'],'tail':report['final_native_tail_30sim']}),flush=True)
+            'goal_terminal_logs':report['goal_terminal_log_count'],'tail':report['final_native_tail_30sim'],
+            'costmaps':report['costmap_summary']}),flush=True)
     return 0 if report['status'] in ('window_complete','operator_interrupt_saved') and not report['errors'] else 2
 
 
