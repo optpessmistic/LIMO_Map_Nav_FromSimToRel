@@ -6,7 +6,7 @@
 
 | 检查 | 环境与命令 | 结果与适用范围 |
 |---|---|---|
-| 核心测试 | WSL 系统 Python 3.12；`python -m unittest discover -s tests -v` | 87 项，86 通过、1 项显式集成测试默认 skip：二维仿真 22、任务核心/ROS 适配 34、感知 12、旋转守卫 18、可选真实 Action 1。覆盖先验与观测分离、超时锁存、epoch 门槛、取消异常及重复里程计。 |
+| 核心测试 | WSL 系统 Python 3.12；`python -m unittest discover -s tests -v` | 94 项，93 通过、1 项显式集成测试默认 skip：二维仿真 22、任务核心/ROS 适配 41、感知 12、旋转守卫 18、可选真实 Action 1。覆盖先验与观测分离、超时锁存、epoch 门槛、取消异常、重复里程计及前沿有效平移过滤。 |
 | 真实 ROS 节点启动回归 | source Jazzy 后运行 `test_ros_mission_core.py` | 包含真实 ROS 构造/spin/销毁、启动先验配置拒绝与结果保存检查；独立 domain 74，autonomous=false，无运动目标。修复 `Node.handle` 只读属性冲突。无 ROS 时明确 skip。 |
 | 真实 ROS Action 回归 | `RUN_ROS_SURVEY_TEST=1 ROS_DOMAIN_ID=74 python -m unittest discover -s tests -p test_initial_survey_ros.py -v` | 单项集成测试通过，覆盖真实 Action server 成功与延迟接受后同 UUID 取消两条路径；专用测试 Action，不连接速度话题。 |
 | 世界导出、地图坐标与导航配置 | `python -m unittest discover -s tools -p 'test_*.py' -v` | 本部分 16 项通过；检查贴墙目标净距、SDF、地图旋转/边界、DWB/MPPI 低速配置及速度消息链。与离线评分合计 37 项。 |
@@ -24,10 +24,11 @@
 | 轮接触模型修复 | `scripts/check_sim_physics.py`，隔离原生 Gazebo 场景 | 正式安装模型完整圈：world 6.404542595 / odom 6.404549999 rad，最大漂移 0.00002454 m；IMU、停车及自身 server 回收通过。球接触/侧向柔顺是仿真近似，详见 [物理验证](physics-validation.md)。 |
 | 正式迷宫真实旋转 | run5，物理修复后的原生 model pose / ROS odom 对照 | 1431 组对齐记录：真实累计最大 6.399992745 / odom 6.399999999 rad，最大漂移约 0.065 mm。传感器/TF 九路检查及导航就绪复验通过。 |
 | 旋转后地图连通性 | run5 原始 `/map` 和任务 R=0.25 m | 起始 footprint 已安全，但地图产生约 −32° 的重复墙影；安全区分裂为 160、158、33 格，起点仅在 33 格分量，无可达 frontier。SLAM 仍阻断自主任务，未发送平移导航目标。 |
+| 前沿候选回归 | run6 保存快照离线规划，WSL Jazzy 任务测试 | 过滤实际距离不超过 0.20 m 和零朝向候选；新候选距离约 0.202 m，保留 3 个未观测格。41/41 任务测试通过，任务包重建通过；尚未宣称该候选已实际导航成功。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `0b0ef37` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40740222499)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
+GitHub Actions 的提交 `11f4514` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40743656941)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 

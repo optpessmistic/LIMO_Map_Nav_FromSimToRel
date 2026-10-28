@@ -262,8 +262,13 @@ class Selection:
 
 
 class Planner:
-    def __init__(self, radius=.25, standoff=.55):
+    def __init__(self, radius=.25, standoff=.55, frontier_min_translation_m=.20):
+        if not isfinite(frontier_min_translation_m) or frontier_min_translation_m <= 0:
+            raise ValueError('frontier_min_translation_m must be finite and positive')
         self.radius, self.standoff = radius, standoff
+        # Simulation baseline: Nav2's .15 m XY goal tolerance plus margin.
+        # Verify against the actual goal checker before adapting a real robot.
+        self.frontier_min_translation_m = frontier_min_translation_m
 
     def select(self, grid, pose, coverage, failures, now, perception_ready, observed_grid=None):
         # The optional planning prior permits collision checks in an independently
@@ -313,12 +318,17 @@ class Planner:
                     distance = hypot(xy[0]-anchor[0], xy[1]-anchor[1])
                     if distance > self.standoff or (kind == 'coverage' and distance < .20):
                         continue
+                    if kind == 'frontier' and (p == anchor_cell or
+                            hypot(xy[0]-pose[0], xy[1]-pose[1]) <= self.frontier_min_translation_m):
+                        # No zero-vector heading or goal already inside the
+                        # configured translation margin. Use the actual pose,
+                        # not its cell center; coverage may still turn in place.
+                        continue
                     local.append((reachable[p]*grid.resolution + .2*distance, p))
             if local:
                 cost, p = min(local)
                 xy = grid.to_world(p)
                 yaw = atan2(anchor[1]-xy[1], anchor[0]-xy[0])
-                # Avoid an unchanged-position frontier goal; orienting is still useful.
                 return Selection('goal', Goal(*xy, yaw, kind, anchor), **stats)
         if failures.entries:
             return Selection('retry_wait' if failures.has_retry() else 'blocked_frontiers_or_coverage', **stats)

@@ -144,6 +144,59 @@ class FreePriorTests(unittest.TestCase):
 
 
 class PlanningTests(unittest.TestCase):
+    def test_frontier_translation_parameter_must_be_finite_and_positive(self):
+        for minimum in (0, -.1, math.nan, math.inf):
+            with self.subTest(minimum=minimum), self.assertRaisesRegex(ValueError, 'frontier_min_translation_m'):
+                Planner(frontier_min_translation_m=minimum)
+
+    def test_frontier_filter_uses_actual_pose_not_cell_center(self):
+        g = grid(['#########', '#......?#', '#......?#', '#......?#', '#########'])
+        center = g.to_world((2, 2))
+        # Both poses occupy the same cell. A target .20 m from its center can
+        # lie outside or inside the threshold measured from the real pose.
+        for offset, expected_cell in ((-.024, (4, 2)), (.024, (5, 2))):
+            with self.subTest(offset=offset):
+                pose = (center[0]+offset, center[1], 0.)
+                result = Planner(.04).select(g, pose, Coverage(), FailureBook(), 0, False)
+                self.assertEqual(result.state, 'goal')
+                self.assertEqual(g.to_cell(result.goal.x, result.goal.y), expected_cell)
+                self.assertGreater(math.dist((result.goal.x, result.goal.y), pose[:2]), .20)
+
+    def test_frontier_translation_threshold_is_strict(self):
+        g = grid(['#########', '#......?#', '#......?#', '#......?#', '#########'])
+        pose = (*g.to_world((2, 2)), 0.)
+        boundary_xy = g.to_world((4, 2))
+        distance = math.dist(boundary_xy, pose[:2])
+        at_boundary = Planner(.04, frontier_min_translation_m=distance).select(
+            g, pose, Coverage(), FailureBook(), 0, False)
+        below_boundary = Planner(.04, frontier_min_translation_m=distance-1e-6).select(
+            g, pose, Coverage(), FailureBook(), 0, False)
+        self.assertEqual(at_boundary.state, 'goal')
+        self.assertGreater(math.dist((at_boundary.goal.x, at_boundary.goal.y), pose[:2]), distance)
+        self.assertEqual((below_boundary.goal.x, below_boundary.goal.y), boundary_xy)
+
+    def test_frontier_zero_heading_vector_is_rejected_even_after_translation(self):
+        g = grid(['#########', '#......?#', '#......?#', '#......?#', '#########'])
+        pose = (*g.to_world((1, 2)), 0.)
+        # A standoff below one grid step leaves only the anchor itself as a
+        # candidate. It is far from the robot but has no defined look direction.
+        result = Planner(.04, .04).select(g, pose, Coverage(), FailureBook(), 0, False)
+        self.assertGreater(result.frontier_count, 0)
+        self.assertEqual(result.state, 'unreachable_frontiers_or_coverage')
+        self.assertIsNone(result.goal)
+
+    def test_coverage_can_still_choose_current_position(self):
+        g = grid(['#########']+['#.......#']*5+['#########'])
+        pose = (*g.to_world((2, 3)), 0.)
+        coverage = cover_all(g)
+        coverage.points.remove(coverage.key(g.to_world((5, 3))))
+        default = Planner(.04).select(g, pose, coverage, FailureBook(), 0, True)
+        large_minimum = Planner(.04, frontier_min_translation_m=1.).select(
+            g, pose, coverage, FailureBook(), 0, True)
+        self.assertEqual(default, large_minimum)
+        self.assertEqual(default.goal.kind, 'coverage')
+        self.assertEqual((default.goal.x, default.goal.y), pose[:2])
+
     def test_frontier_goal_uses_reachable_inflated_free_space(self):
         g = grid(['#########', '#......?#', '#......?#', '#......?#', '#########'])
         planner = Planner(radius=.04, standoff=.25)
@@ -237,6 +290,45 @@ class PerceptionTests(unittest.TestCase):
 
 
 class PlanningEvidenceTests(unittest.TestCase):
+    def test_near_field_unknowns_choose_translated_safe_goal_without_evidence_credit(self):
+        # Simplified run6: an observed corridor and three unseen near-field
+        # cells. The independently verified start disk only affects collision.
+        rows = ['#'*61]+['#'+'.'*59+'#']*15+['#'*61]
+        unknown = {(9, 8), (8, 9), (9, 9)}
+        for x, y in unknown:
+            rows[y] = rows[y][:x]+'?'+rows[y][x+1:]
+        raw = grid(rows, resolution=.05)
+        cx, cy = raw.to_world((8, 8))
+        pose = (cx+.014, cy-.011, -.029)
+        planning, filled = raw.with_free_prior(pose[:2], .25)
+        self.assertEqual(filled, 3)
+        self.assertNotIn(raw.to_cell(*pose[:2]), raw.safe_cells(.25))
+        result = Planner().select(planning, pose, cover_all(raw), FailureBook(), 0,
+                                  True, observed_grid=raw)
+        self.assertEqual(result.state, 'goal')
+        self.assertEqual(result.goal.kind, 'frontier')
+        xy = (result.goal.x, result.goal.y)
+        self.assertGreater(math.dist(xy, pose[:2]), .20)
+        self.assertNotEqual(xy, result.goal.anchor)
+        self.assertIn(planning.to_cell(*xy), planning.component(planning.to_cell(*pose[:2]), planning.safe_cells(.25)))
+        self.assertEqual(result.unobserved_count, 3)
+        self.assertGreater(result.frontier_count, 0)
+        self.assertTrue(all(raw.value(p) == -1 for p in unknown))
+
+    def test_only_current_safe_position_does_not_complete_prior_frontier(self):
+        raw = grid(['#####', '#...#', '#..?#', '#...#', '#####'])
+        pose = (*raw.to_world((2, 2)), 0.)
+        planning, filled = raw.with_free_prior(pose[:2], .25)
+        self.assertEqual(filled, 1)
+        self.assertEqual(planning.safe_cells(.10), {(2, 2)})
+        result = Planner(.10).select(planning, pose, cover_all(raw), FailureBook(), 0,
+                                     True, observed_grid=raw)
+        self.assertEqual(result.state, 'unreachable_frontiers_or_coverage')
+        self.assertIsNone(result.goal)
+        self.assertEqual(result.unobserved_count, 1)
+        self.assertGreater(result.frontier_count, 0)
+        self.assertEqual(raw.value((3, 2)), -1)
+
     def test_prior_does_not_remove_raw_frontiers_or_resolve_failures(self):
         rows = ['#'*21] + ['#'+'.'*19+'#']*19 + ['#'*21]
         rows[10] = rows[10][:10]+'?'+rows[10][11:]
@@ -454,7 +546,7 @@ class MapEpochAdapterTests(unittest.TestCase):
 class ConfigurationConsistencyTests(unittest.TestCase):
     @unittest.skipUnless(importlib.util.find_spec('yaml') is not None,
                          'PyYAML unavailable; run with the ROS setup Python environment to validate generated Nav2 YAML')
-    def test_generated_nav2_padded_footprint_fits_mission_defaults(self):
+    def test_generated_nav2_footprint_and_goal_tolerance_fit_mission_defaults(self):
         import yaml
         repository = Path(__file__).resolve().parents[1]
         configuration = yaml.safe_load((repository / 'src' / 'limo_maze_bringup' / 'config' / 'nav2.yaml').read_text(encoding='utf-8'))
@@ -465,6 +557,12 @@ class ConfigurationConsistencyTests(unittest.TestCase):
         assignment = next(n for n in init.body if isinstance(n, ast.Assign)
                           and any(isinstance(t, ast.Name) and t.id == 'defaults' for t in n.targets))
         defaults = ast.literal_eval(assignment.value)
+        controller = configuration['controller_server']['ros__parameters']
+        for name in controller['goal_checker_plugins']:
+            tolerance = controller[name]['xy_goal_tolerance']
+            self.assertGreater(defaults['frontier_min_translation_m'], tolerance,
+                               'Mission frontier translation must exceed the configured Nav2 XY goal tolerance')
+            self.assertGreater(Planner().frontier_min_translation_m, tolerance)
         # Derive geometry from the generated configuration, not copied dimensions
         # or a duplicated radius constant. Nav2 pads each vertex along x and y.
         for name in ('local_costmap', 'global_costmap'):
@@ -542,6 +640,8 @@ class RosStartupTests(unittest.TestCase):
                 assert node.handle is not None  # The native rclpy handle survives.
                 assert node.goal_handle is None
                 assert node.mission_timed_out is False
+                assert node.cfg['frontier_min_translation_m'] == .20
+                assert node.planner.frontier_min_translation_m == node.cfg['frontier_min_translation_m']
                 rclpy.spin_once(node, timeout_sec=0.6)
                 assert node.phase == 'waiting'
                 assert node.goal_handle is None and not node.send_pending
@@ -566,9 +666,12 @@ class RosStartupTests(unittest.TestCase):
 
             with tempfile.TemporaryDirectory(prefix='limo-adapter-regression-') as directory:
                 with mission(('initial_clearance_radius_m:=0.3',
+                              'frontier_min_translation_m:=0.32',
                               'initial_clearance_source:=independently_verified_test_fixture',
                               'output_dir:='+directory)) as node:
                     assert node.cfg['initial_clearance_radius_m'] == .3
+                    assert node.cfg['frontier_min_translation_m'] == .32
+                    assert node.planner.frontier_min_translation_m == .32
                     assert node.cfg['initial_clearance_margin_m'] == .05
                     assert node.get_parameter('initial_clearance_source').value == node.cfg['initial_clearance_source']
                     node.grid, node.map_epoch = raw, 'adapter-regression-epoch'

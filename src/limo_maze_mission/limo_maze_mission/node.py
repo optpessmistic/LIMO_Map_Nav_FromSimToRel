@@ -50,7 +50,8 @@ class MissionNode(Node):
             'output_dir': 'mission_results', 'robot_radius_m': .25,
             'initial_clearance_radius_m': 0.0, 'initial_clearance_margin_m': .05,
             'initial_clearance_source': '',
-            'frontier_standoff_m': .55, 'goal_timeout_s': 90.0,
+            'frontier_standoff_m': .55, 'frontier_min_translation_m': .20,
+            'goal_timeout_s': 90.0,
             'mission_timeout_s': 900.0, 'return_timeout_s': 180.0,
             'cancel_timeout_s': 10.0, 'tf_max_age_s': 1.0, 'map_max_age_s': 5.0,
             'observation_max_age_s': 1.5, 'detector_timeout_s': 5.0,
@@ -93,7 +94,8 @@ class MissionNode(Node):
         self.create_subscription(String, '/mission/map_epoch', self.on_epoch, latched)
         self.status_pub = self.create_publisher(String, '/mission/status', latched)
         self.marker_pub = self.create_publisher(MarkerArray, '/mission/targets', latched)
-        self.planner = Planner(self.cfg['robot_radius_m'], self.cfg['frontier_standoff_m'])
+        self.planner = Planner(self.cfg['robot_radius_m'], self.cfg['frontier_standoff_m'],
+                               self.cfg['frontier_min_translation_m'])
         self.failures = FailureBook(max_attempts=self.cfg['max_goal_attempts'])
         self.coverage = Coverage()
         self.targets = TargetStore(self.cfg['target_min_hits'], self.cfg['target_merge_radius_m'],

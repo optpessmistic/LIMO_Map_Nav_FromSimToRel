@@ -95,6 +95,8 @@ ros2 launch limo_maze_mission mission.launch.py \
 
 前沿是与未知区域相邻的已知自由格。候选必须属于机器人可达的安全连通分量，并在前沿附近有可见路径；目标方向朝向前沿。几何探索结束后，若检测器提供有效覆盖，规划器继续选择视觉未覆盖区域的观察位姿；否则明确记录视觉未验证。
 
+前沿候选还必须离当前实际估计位姿严格超过 `frontier_min_translation_m`，默认 0.20 m，并排除站位与前沿 anchor 重合、朝向向量为零的情况。0.20 m 是当前仿真 Nav2 `xy_goal_tolerance=0.15 m` 加余量的配置，避免目标一发出即被判到达；实车必须随实际 goal checker 核对，不能直接照搬。可通过 `mission.launch.py frontier_min_translation_m:=0.20` 配置；仓库没有额外的 `mission.yaml`。此限制仅用于前沿目标，视觉覆盖目标仍允许有意义的原地转向。目标距离超过阈值不保证实际行驶同样距离，也不保证产生新观测；完成判据仍依据原始地图和有效视觉证据。过滤后没有候选时保留不完整结果，不用先验填充或缩小 footprint 放行。
+
 本版按距离排序寻找首个可行观察区域，再在该区域内选择已知格网路径较短的站位，不保证全局最优探索顺序。圆形 footprint 用逐行前缀和检查，避免对所有格反复枚举整个圆盘。2026-10-28 Windows 配套 Python 的空房测试中，0.05 m 分辨率下 31×31、51×51、201×201 地图的覆盖候选选择约为 0.005、0.014、0.248 秒；这是本机微基准，不是 ROS 实时性能保证。更大地图、复杂不可达前沿和真实相机覆盖流仍需测量回调延迟。
 
 失败按区域保存，默认每区域最多 2 次、重试冷却 8 秒。导航失败、被拒绝、超时以及到达后没有获得新观测都会计入失败。只有实际观测证明该前沿/覆盖目标已解决时才清除对应记录。“无候选”和“所有目标被拉黑”均不直接表示成功；未处理黑名单、不可达候选、视觉未验证和任务超时均保留不完整状态后返航。
@@ -134,6 +136,6 @@ ros2 launch limo_maze_mission mission.launch.py \
 python -m unittest discover -s tests -p test_ros_mission_core.py -v
 ```
 
-18 项测试覆盖旋转地图原点、未知/障碍 footprint、优化膨胀与直接碰撞检查一致性、对角遮挡、可达安全目标、地图与视觉覆盖分离、过期检测器、黑名单与重试边界、多目标确认、重复时间戳、异常点和置信度，以及取消超时后迟到接受响应仍会被取消。最后一项通过提取真实回调函数并用假 Future 执行验证，不运行 ROS executor，也不证明实际回调交错已通过。尚待 ROS 环境验证的项目包括启动顺序、地图 QoS、Nav2 完整取消与拒绝回调链、时钟/TF 重置、目标视觉输入、晚到前沿及完整返航流程。
+测试覆盖旋转地图原点、未知/障碍 footprint、优化膨胀与直接碰撞检查一致性、对角遮挡、可达安全目标、前沿最小平移阈值和实际位姿偏移、零朝向候选、先验不计观测完成、地图与视觉覆盖分离、过期检测器、黑名单与重试边界、多目标确认、重复时间戳、异常点和置信度，以及取消超时后迟到接受响应仍会被取消。取消回调回归通过提取真实函数并用假 Future 执行验证，不运行 ROS executor，也不证明实际回调交错已通过。可选 Jazzy 启动回归在独立 domain 74、`autonomous=false` 下验证节点与参数接线；没有 ROS 的环境明确跳过。配置回归读取实际 Nav2 YAML，检查任务半径覆盖 padded footprint，且前沿最小平移大于 XY goal tolerance。尚待完整 ROS 流程验证的项目包括 Nav2 取消与拒绝回调链、运动中的时钟/TF 重置、目标视觉输入、晚到前沿及完整返航。
 
 上游接口依据：[Nav2 NavigateToPose](https://api.nav2.org/actions/jazzy/navigatetopose.html)、[Nav2 Simple Commander](https://docs.nav2.org/jazzy/configuration_and_development/simple_commander_api/simple_commander_api/)、[ROS REP 105](https://github.com/ros-infrastructure/rep/blob/master/rep-0105.rst)。具体环境可能需要调节 TF 时间容差、车体 footprint 和候选距离，必须以联调结果为准。
