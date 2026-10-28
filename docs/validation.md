@@ -6,8 +6,9 @@
 
 | 检查 | 环境与命令 | 结果与适用范围 |
 |---|---|---|
-| 核心测试 | WSL 系统 Python 3.12；`python -m unittest discover -s tests -v` | 94 项，93 通过、1 项显式集成测试默认 skip：二维仿真 22、任务核心/ROS 适配 41、感知 12、旋转守卫 18、可选真实 Action 1。覆盖先验与观测分离、超时锁存、epoch 门槛、取消异常、重复里程计及前沿有效平移过滤。 |
+| 核心测试 | WSL 系统 Python 3.12；`python -m unittest discover -s tests -v` | 101 项，100 通过、1 项显式集成测试默认 skip：二维仿真 22、任务核心/ROS 适配 48、感知 12、旋转守卫 18、可选真实 Action 1。覆盖先验与观测分离、超时锁存、epoch 门槛、取消异常、重复里程计及前沿有效平移过滤。 |
 | 真实 ROS 节点启动回归 | source Jazzy 后运行 `test_ros_mission_core.py` | 包含真实 ROS 构造/spin/销毁、启动先验配置拒绝与结果保存检查；独立 domain 74，autonomous=false，无运动目标。修复 `Node.handle` 只读属性冲突。无 ROS 时明确 skip。 |
+| 任务信号退出与取消异常 | 48 项任务回归，独立复核，任务包重建 | 真实 ROS main 的 SIGINT/静止 odom 退出已通过；迟到接受、结果请求异常、UNKNOWN/活动状态、发送响应异常及慢速非停车由行为回归覆盖。超时 pending 仍可能在客户端销毁后接受，明确报告未验证；尚未证明在动实车或在动 Nav2 退出。 |
 | 真实 ROS Action 回归 | `RUN_ROS_SURVEY_TEST=1 ROS_DOMAIN_ID=74 python -m unittest discover -s tests -p test_initial_survey_ros.py -v` | 单项集成测试通过，覆盖真实 Action server 成功与延迟接受后同 UUID 取消两条路径；专用测试 Action，不连接速度话题。 |
 | 世界导出、地图坐标与导航配置 | `python -m unittest discover -s tools -p 'test_*.py' -v` | 本部分 16 项通过；检查贴墙目标净距、SDF、地图旋转/边界、DWB/MPPI 低速配置及速度消息链。与离线评分合计 37 项。 |
 | 离线目标评分 | `python -m unittest discover -s tools -p test_target_evaluation.py -v` | 新增 21 项通过，含 80 组穷举最优匹配对照；检查显式对齐、一对一匹配、重复/合并实例、零目标和非法输入。 |

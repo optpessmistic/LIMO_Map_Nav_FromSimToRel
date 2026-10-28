@@ -543,6 +543,144 @@ class MapEpochAdapterTests(unittest.TestCase):
                 self.assertEqual(node.sent_goals, [])
 
 
+class ShutdownTests(unittest.TestCase):
+    def run_cleanup(self, terminal=True, odometry='stopped', pending=True, accept_goal=True,
+                    result_request_error=False, result_status=5, send_response_error=False):
+        # Execute the real cleanup and action callbacks. Only ROS transport,
+        # clock and odometry delivery are substituted; no navigation is started.
+        path = Path(__file__).resolve().parents[1] / 'src/limo_maze_mission/limo_maze_mission/node.py'
+        tree = ast.parse(path.read_text(encoding='utf-8'))
+        cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
+        names = ('cancel_to', 'on_goal_response', 'issue_cancel', 'on_cancel_response', 'on_goal_result', 'block')
+        methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in names]
+        cleanup = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'shutdown_mission')
+        clock = SimpleNamespace(now=0., steps=0)
+        namespace = {'time': SimpleNamespace(monotonic=lambda: clock.now, strftime=lambda _: 'test'),
+                     'Path': Path, 'json': json, 'isfinite': math.isfinite,
+                     'Odometry': object, 'qos_profile_sensor_data': object(),
+                     'GoalStatus': SimpleNamespace(STATUS_SUCCEEDED=4, STATUS_CANCELED=5, STATUS_ABORTED=6)}
+        exec(compile(ast.Module(body=methods+[cleanup], type_ignores=[]), str(path), 'exec'), namespace)
+        class Future:
+            def __init__(self):
+                self.callbacks, self.value, self.error = [], None, None
+            def result(self):
+                if self.error is not None:
+                    raise self.error
+                return self.value
+            def add_done_callback(self, callback):
+                self.callbacks.append(callback)
+            def finish(self, value):
+                self.value = value
+                for callback in self.callbacks:
+                    callback(self)
+        result, cancel, accepted = Future(), Future(), Future()
+        def get_result():
+            if result_request_error:
+                raise RuntimeError('synchronous result request failure')
+            return result
+        handle = SimpleNamespace(accepted=True, get_result_async=get_result,
+                                 cancel_goal_async=lambda: cancel)
+        node = type('Adapter', (), {name: namespace[name] for name in names})()
+        node.__dict__.update(token=1, goal_handle=None, send_pending=pending, canceling=False,
+                             phase='exploring', cancel_response=False, cancel_terminal=False,
+                             seconds=lambda: clock.now, event=lambda *a, **k: None,
+                             saved=[], timer_stopped=False)
+        node._mission_timer = SimpleNamespace(cancel=lambda: setattr(node, 'timer_stopped', True))
+        def subscribe(_type, _topic, callback, _qos):
+            node.odom_callback = callback
+            return object()
+        node.create_subscription = subscribe
+        node.destroy_subscription = lambda _: None
+        node.save_result = node.saved.append
+        node.get_logger = lambda: SimpleNamespace(info=lambda _: None)
+        def spin_once(_node, timeout_sec):
+            clock.now += timeout_sec
+            clock.steps += 1
+            if pending and accept_goal and clock.steps == 2:
+                accepted.value = handle
+                if send_response_error:
+                    accepted.error = RuntimeError('send RPC response unavailable')
+                node.on_goal_response(accepted, node.token)  # Accepted after cancel intent.
+            if pending and accept_goal and clock.steps == 3:
+                cancel.finish(SimpleNamespace(goals_canceling=[object()]))
+            if pending and accept_goal and terminal and clock.steps == 5:
+                result.finish(SimpleNamespace(status=result_status, result=SimpleNamespace(error_msg='fixture')))
+            if odometry != 'missing':
+                stamp = clock.now-(2. if odometry == 'stale' else 0.)
+                seconds = math.floor(stamp)
+                velocity = .1 if odometry == 'moving' else (.006 if odometry == 'slow_linear' else 0.)
+                angular = .021 if odometry == 'slow_angular' else 0.
+                node.odom_callback(SimpleNamespace(
+                    header=SimpleNamespace(stamp=SimpleNamespace(sec=seconds, nanosec=int((stamp-seconds)*1e9))),
+                    twist=SimpleNamespace(twist=SimpleNamespace(
+                        linear=SimpleNamespace(x=velocity, y=0., z=0.),
+                        angular=SimpleNamespace(x=0., y=0., z=angular)))))
+        namespace['rclpy'] = SimpleNamespace(ok=lambda: True, spin_once=spin_once)
+        with tempfile.TemporaryDirectory(prefix='limo-shutdown-', dir=Path(__file__).parent) as directory:
+            node.cfg = {'cancel_timeout_s': 2., 'output_dir': directory}
+            evidence = namespace['shutdown_mission'](node, 'operator_sigint')
+            audit = json.loads((Path(directory)/'shutdown_test.json').read_text())
+            self.assertEqual(audit, evidence)
+        self.assertTrue(node.timer_stopped)
+        self.assertEqual(node.saved, [False])
+        self.assertLessEqual(clock.now, 2.001)
+        return evidence
+
+    def test_pending_acceptance_is_canceled_and_terminal_precedes_stop_verification(self):
+        result = self.run_cleanup()
+        self.assertTrue(result['cancel_ack_received'])
+        self.assertTrue(result['goal_terminal_verified'])
+        self.assertTrue(result['stop_verified'])
+        self.assertGreaterEqual(result['elapsed_s'], 1.)
+        self.assertFalse(result['send_pending'] or result['goal_handle_present'])
+
+    def test_cancel_ack_and_stationary_odometry_without_terminal_are_not_enough(self):
+        result = self.run_cleanup(terminal=False)
+        self.assertTrue(result['cancel_ack_received'])
+        self.assertFalse(result['goal_terminal_verified'])
+        self.assertFalse(result['stop_verified'])
+        self.assertTrue(result['goal_handle_present'])
+
+    def test_unanswered_send_remains_pending_at_bounded_exit(self):
+        result = self.run_cleanup(accept_goal=False)
+        self.assertTrue(result['send_pending'])
+        self.assertFalse(result['goal_terminal_verified'])
+        self.assertFalse(result['stop_verified'])
+        self.assertFalse(result['cancel_ack_received'])
+        self.assertTrue(result['late_acceptance_after_client_destroy_possible'])
+        self.assertGreaterEqual(result['elapsed_s'], 2.)
+
+    def test_synchronous_result_request_failure_cannot_block_late_acceptance_cancel(self):
+        result = self.run_cleanup(result_request_error=True)
+        self.assertTrue(result['cancel_ack_received'])
+        self.assertTrue(result['goal_handle_present'])
+        self.assertFalse(result['goal_terminal_verified'])
+        self.assertFalse(result['stop_verified'])
+
+    def test_unknown_or_active_result_status_is_not_terminal_evidence(self):
+        for status in (0, 1, 2, 3):
+            with self.subTest(status=status):
+                result = self.run_cleanup(result_status=status)
+                self.assertTrue(result['cancel_ack_received'])
+                self.assertTrue(result['goal_handle_present'])
+                self.assertFalse(result['goal_terminal_verified'])
+                self.assertFalse(result['stop_verified'])
+
+    def test_send_response_exception_preserves_unknown_ownership(self):
+        result = self.run_cleanup(send_response_error=True)
+        self.assertTrue(result['send_pending'])
+        self.assertTrue(result['late_acceptance_after_client_destroy_possible'])
+        self.assertFalse(result['goal_terminal_verified'])
+        self.assertFalse(result['stop_verified'])
+
+    def test_missing_moving_or_stale_odometry_keeps_stop_unverified(self):
+        for kind in ('missing', 'moving', 'stale', 'slow_linear', 'slow_angular'):
+            with self.subTest(odometry=kind):
+                result = self.run_cleanup(odometry=kind, pending=False)
+                self.assertTrue(result['goal_terminal_verified'])
+                self.assertFalse(result['stop_verified'])
+
+
 class ConfigurationConsistencyTests(unittest.TestCase):
     @unittest.skipUnless(importlib.util.find_spec('yaml') is not None,
                          'PyYAML unavailable; run with the ROS setup Python environment to validate generated Nav2 YAML')
@@ -712,6 +850,52 @@ class RosStartupTests(unittest.TestCase):
                     assert result['returned_pose_verified'] is False
                     assert not node.send_pending and node.goal_handle is None
             print('ROS_CLEARANCE_ADAPTER_OK defaults=off validation=ok copy=ok audit=ok')
+            # Exercise the actual main SIGINT path with a live context. Domain
+            # 74 has only a stationary odometry fixture, no navigation server.
+            import os
+            import signal
+            import subprocess
+            import sys
+            import time
+            from nav_msgs.msg import Odometry
+            rclpy.init(args=[])
+            fixture = rclpy.create_node('mission_shutdown_odometry_fixture')
+            publisher = fixture.create_publisher(Odometry, '/odom', 10)
+            try:
+                with tempfile.TemporaryDirectory(prefix='limo-signal-regression-') as directory:
+                    log_path = Path(directory)/'child.log'
+                    with log_path.open('w') as log:
+                        child = subprocess.Popen([sys.executable, '-B', '-c',
+                            'from limo_maze_mission.node import main; main()', '--ros-args',
+                            '-p', 'autonomous:=false', '-p', 'use_sim_time:=false',
+                            '-p', 'cancel_timeout_s:=3.0', '-p', 'output_dir:='+directory],
+                            stdout=log, stderr=subprocess.STDOUT)
+                        sent_signal = False
+                        deadline = time.monotonic()+10.
+                        try:
+                            while child.poll() is None and time.monotonic() < deadline:
+                                msg = Odometry()
+                                msg.header.stamp = fixture.get_clock().now().to_msg()
+                                publisher.publish(msg)
+                                rclpy.spin_once(fixture, timeout_sec=.05)
+                                if not sent_signal and 'Mission loaded' in log_path.read_text():
+                                    child.send_signal(signal.SIGINT)
+                                    sent_signal = True
+                            assert child.poll() == 0, log_path.read_text()
+                            assert sent_signal
+                        finally:
+                            if child.poll() is None:
+                                child.kill()  # Own disabled-autonomy test process only.
+                                child.wait(timeout=3.)
+                    audit = json.loads(next(Path(directory).glob('shutdown_*.json')).read_text())
+                    assert audit['reason'] == 'operator_sigint', audit
+                    assert audit['goal_terminal_verified'] and audit['stop_verified'], audit
+                    assert not audit['send_pending'] and not audit['goal_handle_present'], audit
+                    assert audit['stop_verification_source'] == 'wheel_odometry'
+            finally:
+                fixture.destroy_node()
+                rclpy.shutdown()
+            print('ROS_SIGNAL_CLEANUP_OK context=alive terminal=verified odometry=stationary')
             print('ROS_TEARDOWN_OK')
         ''')
         result = subprocess.run([sys.executable, '-B', '-c', script], env=environment,
@@ -719,6 +903,7 @@ class RosStartupTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout+'\n'+result.stderr)
         self.assertIn('ROS_STARTUP_OK domain=74 autonomous=False spin=ok', result.stdout)
         self.assertIn('ROS_CLEARANCE_ADAPTER_OK defaults=off validation=ok copy=ok audit=ok', result.stdout)
+        self.assertIn('ROS_SIGNAL_CLEANUP_OK context=alive terminal=verified odometry=stationary', result.stdout)
         self.assertIn('ROS_TEARDOWN_OK', result.stdout)
 
 

@@ -7,6 +7,7 @@ from dataclasses import asdict
 import json
 from math import atan2, cos, hypot, isfinite, sin
 from pathlib import Path
+import signal
 import time
 
 import rclpy
@@ -14,10 +15,12 @@ from rclpy.action import ActionClient
 from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from rclpy.qos import qos_profile_sensor_data
+from rclpy.signals import SignalHandlerOptions
 from rclpy.time import Time
 from action_msgs.msg import GoalStatus
 from geometry_msgs.msg import PoseStamped
-from nav_msgs.msg import OccupancyGrid
+from nav_msgs.msg import OccupancyGrid, Odometry
 from nav2_msgs.action import NavigateToPose
 from std_msgs.msg import String
 from tf2_ros import Buffer, TransformListener, TransformException
@@ -131,7 +134,7 @@ class MissionNode(Node):
         self.visual_complete = False
         self.mission_timed_out = False
         self.events = []
-        self.create_timer(.5, self.tick)
+        self._mission_timer = self.create_timer(.5, self.tick)
         self.get_logger().info('Mission loaded; autonomous=' + str(self.cfg['autonomous']))
 
     def seconds(self):
@@ -302,7 +305,9 @@ class MissionNode(Node):
             handle = future.result()
         except Exception as exc:
             if token == self.token:
-                self.send_pending = False
+                # Transport failure is neither rejection nor proof that the
+                # server did not accept. Retain unknown ownership/pending so
+                # bounded shutdown cannot certify terminal or stop from this.
                 self.block('goal_send_exception_stop_not_verified:' + str(exc))
             return
         if token != self.token:
@@ -316,17 +321,30 @@ class MissionNode(Node):
                 self.cancel_response = self.cancel_terminal = True
             return
         self.goal_handle = handle
-        handle.get_result_async().add_done_callback(lambda f: self.on_goal_result(f, token))
         if self.canceling or self.phase in ('blocked', 'done'):
             # A timed-out pending send can be accepted after we entered blocked.
             # Blocking the scheduler must not erase the intent to cancel it.
             self.issue_cancel(token)
+        try:
+            handle.get_result_async().add_done_callback(lambda f: self.on_goal_result(f, token))
+        except Exception as exc:
+            # A failed result channel must not prevent canceling an accepted
+            # goal. Keep its handle: cancellation alone cannot prove terminal.
+            self.event('result_request_error', error=str(exc))
+            self.block('navigation_result_request_unavailable:' + str(exc))
 
     def on_goal_result(self, future, token):
         if token != self.token:
             return
         try:
             result = future.result()
+            if result.status not in (GoalStatus.STATUS_SUCCEEDED, GoalStatus.STATUS_CANCELED,
+                                     GoalStatus.STATUS_ABORTED):
+                # rclpy can return UNKNOWN for an unrecognized goal UUID. That
+                # response (or an active status) does not establish termination.
+                self.event('nonterminal_result_status', token=token, status=result.status)
+                self.block('navigation_terminal_status_unverified:' + str(result.status))
+                return
             success = result.status == GoalStatus.STATUS_SUCCEEDED
             detail = str(result.status) + ':' + str(getattr(result.result, 'error_msg', ''))
         except Exception as exc:
@@ -342,7 +360,11 @@ class MissionNode(Node):
     def issue_cancel(self, token):
         if self.goal_handle is None:
             return
-        self.goal_handle.cancel_goal_async().add_done_callback(lambda f: self.on_cancel_response(f, token))
+        try:
+            self.goal_handle.cancel_goal_async().add_done_callback(lambda f: self.on_cancel_response(f, token))
+        except Exception as exc:
+            # Preserve the handle and cancel intent; this is not a terminal ACK.
+            self.event('cancel_error', error=str(exc))
 
     def on_cancel_response(self, future, token):
         if token != self.token or not self.canceling:
@@ -596,19 +618,128 @@ class MissionNode(Node):
             self.get_logger().error('Failed to save mission evidence: ' + str(exc))
 
 
-def main(args=None):
-    rclpy.init(args=args)
-    node = MissionNode()
+def shutdown_mission(node, reason):
+    """Cancel owned work with the context alive; a cancel ACK alone is insufficient.
+
+    Stop evidence is fresh wheel odometry, not proof of physical braking. The
+    deadline limits callback polling; this is not a replacement for an E-stop.
+    """
+    started = time.monotonic()
+    deadline = started + node.cfg['cancel_timeout_s']
+    evidence = {'reason': reason, 'goal_terminal_verified': False, 'stop_verified': False,
+                'stop_verification_source': 'wheel_odometry', 'errors': [],
+                'linear_stop_threshold_m_s': .005, 'angular_stop_threshold_rad_s': .02,
+                'limitations': ['Wheel odometry is not independent physical braking evidence.',
+                    'After bounded cleanup destroys this client, an unresolved send may still be accepted by Nav2.',
+                    'No controller lease or independent velocity watchdog is implemented here.']}
+    stationary = {'since': None, 'count': 0, 'received': None, 'stamp': None}
+    terminal_since = None
+    subscription = None
+
+    def odometry(msg):
+        now = time.monotonic()
+        stamp = msg.header.stamp.sec + msg.header.stamp.nanosec/1e9
+        twist = msg.twist.twist
+        values = (twist.linear.x, twist.linear.y, twist.linear.z,
+                  twist.angular.x, twist.angular.y, twist.angular.z)
+        fresh = (isfinite(stamp) and -.1 <= node.seconds()-stamp <= .3 and
+                 (stationary['stamp'] is None or stamp > stationary['stamp']))
+        continuous = stationary['received'] is None or now-stationary['received'] <= .3
+        still = (all(isfinite(v) for v in values) and
+                 max(abs(v) for v in values[:3]) <= .005 and
+                 max(abs(v) for v in values[3:]) <= .02)
+        if terminal_since is None or not fresh or not still or not continuous:
+            stationary['since'], stationary['count'] = None, 0
+        else:
+            stationary['since'] = stationary['since'] if stationary['since'] is not None else now
+            stationary['count'] += 1
+        stationary['received'], stationary['stamp'] = now, stamp
+
     try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        # Shutdown must not be called proof that the platform stopped.
-        if node.goal_handle is not None:
-            future = node.goal_handle.cancel_goal_async()
-            rclpy.spin_until_future_complete(node, future, timeout_sec=2.0)
-        node.reason, node.phase = 'operator_shutdown_stop_not_verified', 'blocked'
+        node._mission_timer.cancel()  # No new goals while callbacks drain.
+    except Exception as exc:
+        evidence['errors'].append('stop_mission_timer: ' + str(exc))
+    try:
+        subscription = node.create_subscription(Odometry, '/odom', odometry, qos_profile_sensor_data)
+    except Exception as exc:
+        evidence['errors'].append('subscribe_odometry: ' + str(exc))
+    try:
+        # This also preserves cancel intent for a send still awaiting acceptance.
+        node.cancel_to('blocked', reason + '_stop_unverified')
+    except Exception as exc:
+        evidence['errors'].append('request_cancel: ' + str(exc))
+    while time.monotonic() < deadline and rclpy.ok():
+        terminal = (node.cancel_terminal and not node.send_pending and node.goal_handle is None)
+        if terminal and terminal_since is None:
+            terminal_since = time.monotonic()
+            stationary['since'], stationary['count'] = None, 0
+        evidence['goal_terminal_verified'] = terminal
+        now = time.monotonic()
+        if (terminal and stationary['count'] >= 3 and stationary['since'] is not None and
+                now-stationary['since'] >= .5 and now-stationary['received'] <= .3):
+            evidence['stop_verified'] = True
+            break
+        try:
+            rclpy.spin_once(node, timeout_sec=min(.1, max(0., deadline-now)))
+        except Exception as exc:
+            evidence['errors'].append('drain_callbacks: ' + str(exc))
+            # Keep the cancel intent and try remaining callbacks until deadline.
+    if subscription is not None:
+        try:
+            node.destroy_subscription(subscription)
+        except Exception as exc:
+            evidence['errors'].append('destroy_subscription: ' + str(exc))
+    evidence.update(elapsed_s=time.monotonic()-started, stationary_samples=stationary['count'],
+                    cancel_ack_received=node.cancel_response,
+                    send_pending=node.send_pending, goal_handle_present=node.goal_handle is not None,
+                    late_acceptance_after_client_destroy_possible=node.send_pending)
+    node.reason = reason + ('_stop_verified' if evidence['stop_verified'] else '_stop_unverified')
+    node.phase = 'blocked'
+    # Existing completed mission files remain immutable; always create a separate
+    # shutdown audit so a later process exit cannot replace the mission outcome.
+    try:
         node.save_result(False)
+        output = Path(node.cfg['output_dir']).expanduser()
+        output.mkdir(parents=True, exist_ok=True)
+        path = output / ('shutdown_' + time.strftime('%Y%m%d_%H%M%S') + '.json')
+        path.write_text(json.dumps(evidence, indent=2), encoding='utf-8')
+        node.get_logger().info('Shutdown ' + node.reason + '; evidence: ' + str(path))
+    except Exception as exc:
+        evidence['errors'].append('save_shutdown_evidence: ' + str(exc))
+    return evidence
+
+
+def main(args=None):
+    # rclpy's automatic SIGINT handler would invalidate the context before the
+    # late-accept/cancel/result callbacks can run. Own signals until cleanup ends.
+    rclpy.init(args=args, signal_handler_options=SignalHandlerOptions.NO)
+    requested, previous = {'reason': None}, {}
+    def request_shutdown(signum, _frame):
+        requested['reason'] = 'operator_' + signal.Signals(signum).name.lower()
+    for signum in (signal.SIGINT, signal.SIGTERM):
+        previous[signum] = signal.signal(signum, request_shutdown)
+    node = None
+    try:
+        node = MissionNode()
+        while rclpy.ok() and requested['reason'] is None:
+            rclpy.spin_once(node, timeout_sec=.1)
+    except KeyboardInterrupt:
+        requested['reason'] = 'operator_sigint'
+    except Exception:
+        requested['reason'] = 'executor_exception'
+        raise
     finally:
-        node.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+        try:
+            if node is not None:
+                shutdown_mission(node, requested['reason'] or 'context_shutdown')
+        finally:
+            try:
+                if node is not None:
+                    node.destroy_node()
+            finally:
+                try:
+                    if rclpy.ok():
+                        rclpy.shutdown()
+                finally:
+                    for signum, handler in previous.items():
+                        signal.signal(signum, handler)
