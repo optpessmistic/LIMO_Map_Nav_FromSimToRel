@@ -44,7 +44,11 @@ slam_toolbox:
     loop_match_minimum_response_fine: 0.45
     correlation_search_space_dimension: 0.5
     correlation_search_space_resolution: 0.01
-    correlation_search_space_smear_deviation: 0.1
+    # Small-maze simulation profile: .01 m matched the measured range-noise
+    # scale and removed most pure-rotation bias in replay and a fresh full run.
+    # Revalidate for the actual lidar/noise/environment; this is not a global
+    # odometry override. Scan matching and loop closure remain enabled.
+    correlation_search_space_smear_deviation: 0.01
     loop_search_space_dimension: 8.0
     loop_search_space_resolution: 0.05
     loop_search_space_smear_deviation: 0.03

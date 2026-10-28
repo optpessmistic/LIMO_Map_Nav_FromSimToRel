@@ -28,10 +28,12 @@
 | 前沿候选回归 | run6 保存快照离线规划，WSL Jazzy 任务测试 | 过滤实际距离不超过 0.20 m 和零朝向候选；新候选距离约 0.202 m，保留 3 个未观测格。41/41 任务测试通过，任务包重建通过；尚未宣称该候选已实际导航成功。 |
 | 运动中激光输入 | run5b 同时间戳原生 scan / ROS scan / TF / world pose | 137 运动帧、98,640 束，ranges 原生/ROS 逐值一致；零偏移测距 RMS 1.298 cm，优于 ±1/20/100 ms 对照。仅诊断当前静态 box 场景，不证明 SLAM 成功。 |
 | SLAM 单变量对照 | 新模型和 epoch 的 run6 / run7 | 关闭匹配时错位墙影消失；恢复匹配但只关闭重心选取仍出现约 −0.517 rad 修正。详见 [调查记录](slam-rotation-investigation.md)；诊断配置未替代正式 SLAM 默认值。 |
+| SLAM 匹配尺度对照 | 同一 159 帧记录、新建真实 SLAM 实例，45 个相同接受时刻 | 默认 smear=0.10 的最终 yaw 修正 −0.597 rad；仅改为 0.01 后为 −0.01745 rad、平移约 1.03 cm。禁用链匹配与改变相关搜索网格的对照未解决问题。半段独立初始化结果也保留；不宣称对所有地图或实车通用。 |
+| 新场景匹配参数复验 | run8，新模型/epoch、匹配与重心选取开启、仅 smear=0.01 | 2064 组独立位姿对照：实际最大转角 6.40706 rad、中心漂移 0.0654 mm；最终 map→odom 修正 −0.02094 rad（约 −1.20°）、平移 0.968 cm。原始安全区恢复为单一 292 格分块，但起点有 3 格未观测；先验规划副本可选有效前沿目标，尚未执行。该参数已采用为小迷宫仿真配置并重建 bringup。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `11f4514` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40743656941)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
+GitHub Actions 的提交 `65d36ef` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40746891739)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 
