@@ -1,0 +1,162 @@
+diff --git a/src/gazebo_harmonic/urdf/limo_gazebo.xacro b/src/gazebo_harmonic/urdf/limo_gazebo.xacro
+index 8392303..a40b3ea 100644
+--- a/src/gazebo_harmonic/urdf/limo_gazebo.xacro
++++ b/src/gazebo_harmonic/urdf/limo_gazebo.xacro
+@@ -1,6 +1,6 @@
+ <?xml version="1.0"?>
+ <robot name="limo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+-  <xacro:include filename="$(find limo_base)/urdf/limo_four_diff.xacro"/>
++  <xacro:include filename="$(find limo_harmonic_description)/urdf/limo_four_diff.xacro"/>
+ 
+   <xacro:macro name="limo_wheel_surface" params="link">
+     <gazebo reference="${link}">
+@@ -33,10 +33,14 @@
+       <frame_id>odom</frame_id>
+       <child_frame_id>base_footprint</child_frame_id>
+       <odom_publish_frequency>100</odom_publish_frequency>
+-      <min_velocity>-1.5</min_velocity>
+-      <max_velocity>1.5</max_velocity>
+-      <min_acceleration>-2.0</min_acceleration>
+-      <max_acceleration>2.0</max_acceleration>
++      <min_linear_velocity>-0.2</min_linear_velocity>
++      <max_linear_velocity>0.2</max_linear_velocity>
++      <min_angular_velocity>-0.6</min_angular_velocity>
++      <max_angular_velocity>0.6</max_angular_velocity>
++      <min_linear_acceleration>-0.3</min_linear_acceleration>
++      <max_linear_acceleration>0.3</max_linear_acceleration>
++      <min_angular_acceleration>-0.8</min_angular_acceleration>
++      <max_angular_acceleration>0.8</max_angular_acceleration>
+     </plugin>
+ 
+     <plugin filename="gz-sim-joint-state-publisher-system"
+@@ -48,11 +52,12 @@
+ 
+   <gazebo reference="laser_link">
+     <sensor name="laser_sensor" type="gpu_lidar">
++      <gz_frame_id>laser_link</gz_frame_id>
+       <topic>/limo/scan</topic>
+       <update_rate>8</update_rate>
+       <always_on>true</always_on>
+       <visualize>false</visualize>
+-      <ray>
++      <lidar>
+         <scan>
+           <horizontal>
+             <samples>720</samples>
+@@ -72,22 +77,23 @@
+           <max>8.0</max>
+           <resolution>0.01</resolution>
+         </range>
+-        <noise>
+-          <type>gaussian</type>
++        <noise type="gaussian">
+           <mean>0.0</mean>
+           <stddev>0.01</stddev>
+         </noise>
+-      </ray>
++      </lidar>
+     </sensor>
+   </gazebo>
+ 
+   <gazebo reference="camera_link">
+     <sensor name="camera_sensor" type="rgbd_camera">
++      <gz_frame_id>camera_link</gz_frame_id>
+       <topic>/limo/camera</topic>
+       <update_rate>10</update_rate>
+       <always_on>true</always_on>
+       <visualize>false</visualize>
+       <camera>
++        <optical_frame_id>camera_optical_frame</optical_frame_id>
+         <horizontal_fov>1.3962634</horizontal_fov>
+         <image>
+           <width>640</width>
+@@ -110,6 +116,7 @@
+ 
+   <gazebo reference="imu_link">
+     <sensor name="imu_sensor" type="imu">
++      <gz_frame_id>imu_link</gz_frame_id>
+       <topic>/limo/imu</topic>
+       <update_rate>100</update_rate>
+       <always_on>true</always_on>
+diff --git a/src/limo_base/CMakeLists.txt b/src/limo_base/CMakeLists.txt
+index a9a8582..66d3834 100644
+--- a/src/limo_base/CMakeLists.txt
++++ b/src/limo_base/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ cmake_minimum_required(VERSION 3.8)
+-project(limo_base)
++project(limo_harmonic_description)
+ 
+ find_package(ament_cmake REQUIRED)
+ 
+@@ -13,4 +13,15 @@ install(
+   DESTINATION share/${PROJECT_NAME}
+ )
+ 
++install(
++  FILES ../gazebo_harmonic/urdf/limo_gazebo.xacro
++  DESTINATION share/${PROJECT_NAME}/urdf
++)
++
++install(
++  FILES ../../LICENSE
++  DESTINATION share/${PROJECT_NAME}
++  RENAME LICENSE-APACHE-2.0
++)
++
+ ament_package()
+diff --git a/src/limo_base/package.xml b/src/limo_base/package.xml
+index 6901c21..72a06bf 100644
+--- a/src/limo_base/package.xml
++++ b/src/limo_base/package.xml
+@@ -1,11 +1,12 @@
+ <?xml version="1.0"?>
+ <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+ <package format="3">
+-  <name>limo_base</name>
++  <name>limo_harmonic_description</name>
+   <version>0.1.0</version>
+   <description>LIMO four-wheel differential robot model for ROS 2 and Gazebo Harmonic</description>
+   <maintainer email="nevlife000720@gmail.com">nevlife</maintainer>
+   <license>BSD-3-Clause</license>
++  <license>Apache-2.0</license>
+ 
+   <buildtool_depend>ament_cmake</buildtool_depend>
+ 
+diff --git a/src/limo_base/urdf/limo_four_diff.xacro b/src/limo_base/urdf/limo_four_diff.xacro
+index 57ce3c7..16786a8 100644
+--- a/src/limo_base/urdf/limo_four_diff.xacro
++++ b/src/limo_base/urdf/limo_four_diff.xacro
+@@ -23,7 +23,7 @@
+     <visual>
+       <origin xyz="0 0 -0.15" rpy="0 0 1.5708"/>
+       <geometry>
+-        <mesh filename="file://$(find limo_base)/meshes/limo_base.dae"/>
++        <mesh filename="file://$(find limo_harmonic_description)/meshes/limo_base.dae"/>
+       </geometry>
+     </visual>
+     <collision>
+@@ -43,7 +43,7 @@
+       </inertial>
+       <visual>
+         <geometry>
+-          <mesh filename="file://$(find limo_base)/meshes/limo_wheel.dae"/>
++          <mesh filename="file://$(find limo_harmonic_description)/meshes/limo_wheel.dae"/>
+         </geometry>
+       </visual>
+       <collision>
+@@ -121,6 +121,14 @@
+     <origin xyz="0.084 0 0.03"/>
+   </joint>
+ 
++  <!-- ROS camera convention: x right, y down, z forward. -->
++  <link name="camera_optical_frame"/>
++  <joint name="camera_optical_joint" type="fixed">
++    <parent link="camera_link"/>
++    <child link="camera_optical_frame"/>
++    <origin xyz="0 0 0" rpy="-1.5707963267948966 0 -1.5707963267948966"/>
++  </joint>
++
+   <link name="imu_link">
+     <inertial>
+       <mass value="0.01"/>

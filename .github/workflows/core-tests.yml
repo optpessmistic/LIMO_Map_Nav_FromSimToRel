@@ -1,0 +1,21 @@
+name: Core logic
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  python:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy opencv-python-headless PyYAML Pillow
+      - run: python -m unittest discover -s tests -v
+      - run: python -m unittest discover -s tools -p 'test_*.py' -v
+      - run: python -m sim.suite
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: logic-simulation-results
+          path: outputs/simulation/
