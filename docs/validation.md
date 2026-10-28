@@ -40,10 +40,11 @@
 | 两个替身的独立评分 | run11，初始静止帧建立固定 map→world 对齐，阈值 0.20 m | TP=2、FP=0、FN=0；平面误差 8.49/2.22 cm，RMSE 6.21 cm。只比较可见表面点与盒中心，不证明视觉覆盖或正式目标识别。末段独立原生位姿确认 29.983 sim 秒静止；[完整记录](autonomous-run11.md)。 |
 | 真值几何与冻结路径复核 | run11，固定初始对齐，纯离线 | 真实自由区 7.0364 m² 中约 91% 被原图标为自由；细网格和地图分辨率不同，未分摊墙边离散化误差。真实 NavFn 库可在冻结地图上规划 3.3564 m 返航路径，743 密采点均通过 R=.25；不是实际历史 `/plan` 恢复。 |
 | 连续仿真观察器 | `python3 -m unittest tools.test_sim_mission_observer -v` | 23/23 通过，WSL 与 Windows 均验证；只读订阅与参数查询、同 stamp TF、速度接收时刻、完整全局路径、原生静止窗口、拒绝覆盖。冻结实验版在 run12 实际采得 1739 组完整 TF 链、180 条路径；通用入口尚未独立在线运行，详见[说明](mission-observer.md)。 |
+| 定位跳变保护与末端旋转诊断 | run12，实验 GoalAngle 阈值 .05 m，其他控制参数保持 | 目标 1 成功；目标 2 到达 XY 容差后仍在旋转时 90 wall 秒预算到期。目标 3 因 map→odom 约 2.23 m 跳变受控取消，历史坐标无效；同时间原生车体与 odom 仅正常前进约 2 cm。末 29.999 sim 秒原生静止，全部进程退出，未返航；[详细记录](autonomous-run12.md)。 |
 
 二维测试使用精确位姿和理想局部观测；它不含真实图像识别误差、SLAM 漂移、物理碰撞或轮胎滑移。当前 Gazebo 使用 llvmpipe 软件渲染；SLAM/Nav2 开启后的实测实时率约 0.49，不能据此宣称已启用 GPU 加速。
 
-GitHub Actions 的提交 `3d80629` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40761277617)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
+GitHub Actions 的提交 `db6c9d7` [运行通过](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/40764090390)。该 CI 验证纯逻辑与离线工具，不含 ROS/Gazebo；本机 ROS/物理验证须分别报告，后续修改需核对对应提交的检查结果。
 
 生成的 `outputs/` 不入 Git。正式记录应保留测试日志、JSON、地图、回放与 commit；CI 的产物保留规则以 GitHub Actions 配置为准。
 
