@@ -95,7 +95,15 @@ ros2 launch limo_maze_mission mission.launch.py \
 
 前沿是与未知区域相邻的已知自由格。候选必须属于机器人可达的安全连通分量，并在前沿附近有可见路径；目标方向朝向前沿。几何探索结束后，若检测器提供有效覆盖，规划器继续选择视觉未覆盖区域的观察位姿；否则明确记录视觉未验证。
 
-前沿候选还必须离当前实际估计位姿严格超过 `frontier_min_translation_m`，默认 0.20 m，并排除站位与前沿 anchor 重合、朝向向量为零的情况。0.20 m 是当前仿真 Nav2 `xy_goal_tolerance=0.15 m` 加余量的配置，避免目标一发出即被判到达；实车必须随实际 goal checker 核对，不能直接照搬。可通过 `mission.launch.py frontier_min_translation_m:=0.20` 配置；仓库没有额外的 `mission.yaml`。此限制仅用于前沿目标，视觉覆盖目标仍允许有意义的原地转向。目标距离超过阈值不保证实际行驶同样距离，也不保证产生新观测；完成判据仍依据原始地图和有效视觉证据。过滤后没有候选时保留不完整结果，不用先验填充或缩小 footprint 放行。
+前沿候选还必须离当前实际估计位姿严格超过 `frontier_min_translation_m`，默认 0.20 m，并排除站位与前沿 anchor 重合、朝向向量为零的情况。0.20 m 大于当前仿真 Nav2 `xy_goal_tolerance=0.05 m`，避免目标一发出即被判到达；实车必须随实际 goal checker 核对，不能直接照搬。可通过 `mission.launch.py frontier_min_translation_m:=0.20` 配置；仓库没有额外的 `mission.yaml`。此限制仅用于前沿目标，视觉覆盖目标仍允许有意义的原地转向。目标距离超过阈值不保证实际行驶同样距离，也不保证产生新观测；完成判据仍依据原始地图和有效视觉证据。过滤后没有候选时保留不完整结果，不用先验填充或缩小 footprint 放行。
+
+前沿和视觉覆盖**终点**还要求额外到达余量：`goal_arrival_margin_m` 默认 0.05 m，须不小于 Nav2 XY 到达容差。路径和当前格检查仍用 R=0.25 m；候选终点用 `R + goal_arrival_margin_m + sqrt(2) * resolution / 2` 检查。最后一项覆盖实际到达点转换成栅格中心时最多半格对角线的偏移。在同一张固定地图、实际到达位置误差不超过该 margin 的前提下，三角不等式保证到达位置所在格的 R 圆仍安全；这不保证执行轨迹、定位误差或 SLAM 更新后的安全。当前分辨率 0.05 m 时终点检查半径约 0.33536 m，yaw 容差保持 0.26 rad，因为圆形包络不依赖 yaw。参数可通过 `mission.launch.py goal_arrival_margin_m:=0.05` 配置。
+
+该终点策略明显保守：0.6 m 通道可能允许 R=0.25 m 的路径通过，却没有合格终点。当前配置针对 0.8 m smoke 迷宫；无合格候选仍是不完整状态，不能通过缩半径、给 unknown 记观测完成或默默禁用 margin 通过验收。返航 home 是直接保存的目标，不经过前沿/覆盖候选筛选，仍使用既有 TF 验收和最终地图检查；本段终点合同不宣称自动覆盖返航目标。冻结 run10 启动图和后期地图离线评估仍存在有效前沿；真实 blocked 停点保持 unsafe，不自动恢复运动。
+
+Nav2 配置由 `tools/configure_nav2.py` 生成。`SimpleGoalChecker` 设为 `stateful=false`，使最终转向后成功判定仍检查 XY；默认的 `stateful=true` 在首次通过 XY 后会跳过后续 XY 检查，不能支撑上述到达误差合同。[Nav2 1.3.13 源码](https://github.com/ros-navigation/navigation2/blob/1.3.13/nav2_controller/plugins/simple_goal_checker.cpp#L103) 仍不以速度判断停车，后续滑移或地图更新必须单独检查。
+
+另将仿真 `bt_navigator.default_server_timeout` 设为 200 ms，保留 `bt_loop_duration=10 ms`、`wait_for_service_timeout=1000 ms`。这是针对已经观察到的 action 请求 ACK 超时增加调度容忍的实验配置，不是已证明第三个导航目标超时的根因，也不替代任务/动作总超时。
 
 本版按距离排序寻找首个可行观察区域，再在该区域内选择已知格网路径较短的站位，不保证全局最优探索顺序。圆形 footprint 用逐行前缀和检查，避免对所有格反复枚举整个圆盘。2026-10-28 Windows 配套 Python 的空房测试中，0.05 m 分辨率下 31×31、51×51、201×201 地图的覆盖候选选择约为 0.005、0.014、0.248 秒；这是本机微基准，不是 ROS 实时性能保证。更大地图、复杂不可达前沿和真实相机覆盖流仍需测量回调延迟。
 

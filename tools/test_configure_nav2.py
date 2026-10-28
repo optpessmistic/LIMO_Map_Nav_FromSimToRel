@@ -9,12 +9,14 @@ def defaults(plugin):
     # Minimal structural fixtures for the two released controller configurations.
     controller = {"FollowPath": {"plugin": plugin, "critics": ["ObstacleFootprint"],
                                   "CostCritic": {"consider_footprint": False}},
-                  "goal_checker_plugins": ["checker"], "checker": {"xy_goal_tolerance": .25},
+                  "goal_checker_plugins": ["checker"], "checker": {"xy_goal_tolerance": .25, "stateful": True},
                   "progress_checker_plugins": ["progress"], "progress": {"required_movement_radius": .5,
                                                                                "movement_time_allowance": 10.0}}
     cost = {"robot_base_frame": "base_footprint", "robot_radius": .22,
             "inflation_layer": {}, "static_layer": {}, "obstacle_layer": {"scan": {"topic": "scan"}}}
     return {"controller_server": {"ros__parameters": controller},
+            "bt_navigator": {"ros__parameters": {"default_server_timeout": 20,
+                "bt_loop_duration": 10, "wait_for_service_timeout": 1000}},
             "local_costmap": {"local_costmap": {"ros__parameters": deepcopy(cost)}},
             "global_costmap": {"global_costmap": {"ros__parameters": deepcopy(cost)}},
             "planner_server": {"ros__parameters": {"GridBased": {"allow_unknown": True}}},
@@ -71,6 +73,25 @@ class Nav2ConfigurationTests(unittest.TestCase):
     def test_unreviewed_plugin_is_rejected(self):
         with self.assertRaises(ValueError):
             configure(defaults("some_vendor::UnreviewedController"))
+
+    def test_arrival_tolerance_and_ack_profile_are_regenerated_for_both_controllers(self):
+        for plugin in ("dwb_core::DWBLocalPlanner", "nav2_mppi_controller::MPPIController"):
+            with self.subTest(plugin=plugin):
+                original = defaults(plugin)
+                result = configure(original)
+                controller = result["controller_server"]["ros__parameters"]
+                self.assertEqual(controller["checker"]["xy_goal_tolerance"], .05)
+                self.assertEqual(controller["checker"]["yaw_goal_tolerance"], .26)
+                self.assertFalse(controller["checker"]["stateful"])
+                if plugin == "dwb_core::DWBLocalPlanner":
+                    self.assertEqual(controller["FollowPath"]["xy_goal_tolerance"], .05)
+                bt = result["bt_navigator"]["ros__parameters"]
+                self.assertEqual(bt["default_server_timeout"], 200)
+                self.assertEqual(bt["bt_loop_duration"], 10)
+                self.assertEqual(bt["wait_for_service_timeout"], 1000)
+                self.assertEqual(configure(result), result)
+                self.assertEqual(original["bt_navigator"]["ros__parameters"]["default_server_timeout"], 20)
+                self.assertTrue(original["controller_server"]["ros__parameters"]["checker"]["stateful"])
 
 
 if __name__ == "__main__":

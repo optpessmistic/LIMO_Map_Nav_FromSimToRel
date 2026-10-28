@@ -34,6 +34,11 @@ def configure(data):
             else:
                 walk(item)
     walk(data)
+    if "bt_navigator" in data:
+        # Simulation scheduling profile: allow action request/ACK round trips
+        # more than 20 ms. This does not change loop/service-wait durations or
+        # establish the cause of a separate controller/mission goal timeout.
+        data["bt_navigator"]["ros__parameters"]["default_server_timeout"] = 200
     # The native LIMO bridge consumes Twist; do not mix TwistStamped.
     for node in ("controller_server", "velocity_smoother", "behavior_server", "collision_monitor"):
         if node in data:
@@ -51,7 +56,7 @@ def configure(data):
                       min_speed_theta=0.0, acc_lim_x=0.3, acc_lim_y=0.0,
                       acc_lim_theta=0.6, decel_lim_x=-0.3, decel_lim_y=0.0,
                       decel_lim_theta=-0.6, vy_samples=1,
-                      trans_stopped_velocity=0.03, xy_goal_tolerance=0.15)
+                      trans_stopped_velocity=0.03, xy_goal_tolerance=0.05)
     elif plugin == "nav2_mppi_controller::MPPIController":
         # Newer Jazzy defaults use MPPI. Its optimizer rejects a controller
         # period greater than model_dt, so changing frequency requires both.
@@ -64,7 +69,9 @@ def configure(data):
     else:
         raise ValueError(f"Unreviewed controller plugin {plugin!r}; expected Jazzy DWB or MPPI defaults")
     for checker in controller.get("goal_checker_plugins", []):
-        controller[checker].update(xy_goal_tolerance=0.15, yaw_goal_tolerance=0.26)
+        # SimpleGoalChecker must recheck XY after its final heading adjustment;
+        # stateful=true latches the first XY pass and breaks the arrival bound.
+        controller[checker].update(xy_goal_tolerance=0.05, yaw_goal_tolerance=0.26, stateful=False)
     for checker in controller.get("progress_checker_plugins", []):
         # At 0.4 rad/s an about-turn alone takes nearly 8 s. The generic
         # 0.5 m / 10 s default can abort a valid low-speed turn and departure.

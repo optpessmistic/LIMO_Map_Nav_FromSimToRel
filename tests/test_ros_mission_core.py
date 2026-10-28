@@ -144,6 +144,9 @@ class FreePriorTests(unittest.TestCase):
 
 
 class PlanningTests(unittest.TestCase):
+    # These .1 m toy grids use a .04 m robot and explicitly scaled .01 m
+    # arrival margin when testing unrelated translation/blacklist semantics.
+    # The real profile remains .25 m robot / .05 m arrival margin below.
     def test_frontier_translation_parameter_must_be_finite_and_positive(self):
         for minimum in (0, -.1, math.nan, math.inf):
             with self.subTest(minimum=minimum), self.assertRaisesRegex(ValueError, 'frontier_min_translation_m'):
@@ -157,7 +160,7 @@ class PlanningTests(unittest.TestCase):
         for offset, expected_cell in ((-.024, (4, 2)), (.024, (5, 2))):
             with self.subTest(offset=offset):
                 pose = (center[0]+offset, center[1], 0.)
-                result = Planner(.04).select(g, pose, Coverage(), FailureBook(), 0, False)
+                result = Planner(.04, goal_arrival_margin_m=.01).select(g, pose, Coverage(), FailureBook(), 0, False)
                 self.assertEqual(result.state, 'goal')
                 self.assertEqual(g.to_cell(result.goal.x, result.goal.y), expected_cell)
                 self.assertGreater(math.dist((result.goal.x, result.goal.y), pose[:2]), .20)
@@ -167,9 +170,9 @@ class PlanningTests(unittest.TestCase):
         pose = (*g.to_world((2, 2)), 0.)
         boundary_xy = g.to_world((4, 2))
         distance = math.dist(boundary_xy, pose[:2])
-        at_boundary = Planner(.04, frontier_min_translation_m=distance).select(
+        at_boundary = Planner(.04, frontier_min_translation_m=distance, goal_arrival_margin_m=.01).select(
             g, pose, Coverage(), FailureBook(), 0, False)
-        below_boundary = Planner(.04, frontier_min_translation_m=distance-1e-6).select(
+        below_boundary = Planner(.04, frontier_min_translation_m=distance-1e-6, goal_arrival_margin_m=.01).select(
             g, pose, Coverage(), FailureBook(), 0, False)
         self.assertEqual(at_boundary.state, 'goal')
         self.assertGreater(math.dist((at_boundary.goal.x, at_boundary.goal.y), pose[:2]), distance)
@@ -190,8 +193,8 @@ class PlanningTests(unittest.TestCase):
         pose = (*g.to_world((2, 3)), 0.)
         coverage = cover_all(g)
         coverage.points.remove(coverage.key(g.to_world((5, 3))))
-        default = Planner(.04).select(g, pose, coverage, FailureBook(), 0, True)
-        large_minimum = Planner(.04, frontier_min_translation_m=1.).select(
+        default = Planner(.04, goal_arrival_margin_m=.01).select(g, pose, coverage, FailureBook(), 0, True)
+        large_minimum = Planner(.04, frontier_min_translation_m=1., goal_arrival_margin_m=.01).select(
             g, pose, coverage, FailureBook(), 0, True)
         self.assertEqual(default, large_minimum)
         self.assertEqual(default.goal.kind, 'coverage')
@@ -199,7 +202,7 @@ class PlanningTests(unittest.TestCase):
 
     def test_frontier_goal_uses_reachable_inflated_free_space(self):
         g = grid(['#########', '#......?#', '#......?#', '#......?#', '#########'])
-        planner = Planner(radius=.04, standoff=.25)
+        planner = Planner(radius=.04, standoff=.25, goal_arrival_margin_m=.01)
         pose = (*g.to_world((2, 2)), 0.)
         result = planner.select(g, pose, Coverage(), FailureBook(), 0, False)
         self.assertEqual(result.state, 'goal')
@@ -222,7 +225,7 @@ class PlanningTests(unittest.TestCase):
 
     def test_unresolved_blacklist_does_not_mean_complete(self):
         g = grid(['#########', '#......?#', '#......?#', '#......?#', '#########'])
-        planner, book, coverage = Planner(.04, .4), FailureBook(radius=2, max_attempts=1), Coverage()
+        planner, book, coverage = Planner(.04, .4, goal_arrival_margin_m=.01), FailureBook(radius=2, max_attempts=1), Coverage()
         pose = (*g.to_world((2, 2)), 0)
         first = planner.select(g, pose, coverage, book, 0, True)
         book.fail(first.goal, 0, 'navigation_failed')
@@ -245,6 +248,88 @@ class PlanningTests(unittest.TestCase):
         self.assertEqual(len(book.entries), 1)
         result = Planner(.04, .4).select(g, (*g.to_world((2, 2)), 0), cover_all(g), book, 100, True)
         self.assertNotEqual(result.state, 'complete')
+
+
+class ArrivalMarginTests(unittest.TestCase):
+    def test_arrival_margin_must_be_finite_positive(self):
+        for margin in (0, -.01, math.inf, math.nan, True):
+            with self.subTest(margin=margin), self.assertRaisesRegex(ValueError, 'goal_arrival_margin_m'):
+                Planner(goal_arrival_margin_m=margin)
+
+    def test_arrival_disk_maps_only_to_radius_safe_cells_in_rotated_grid(self):
+        for angle in (0., .37, math.pi/2):
+            rows = ['#'*41]+['#'+'.'*32+'?'*7+'#']*29+['#'*41]
+            g = grid(rows, resolution=.05, origin=(2.3, -1.7, angle))
+            planner = Planner()
+            selection = planner.select(g, (*g.to_world((12, 15)), 0.), Coverage(), FailureBook(), 0, False)
+            self.assertEqual(selection.state, 'goal')
+            safe = g.safe_cells(planner.radius)
+            # Exercise actual to_cell rounding at all arrival-disk directions,
+            # including the tolerance boundary, rather than duplicating its
+            # radius formula as the only assertion.
+            for fraction in (0., .25, .5, .75, 1.):
+                for i in range(96):
+                    offset = planner.goal_arrival_margin_m*fraction
+                    a = i*2*math.pi/96
+                    arrived = (selection.goal.x+offset*math.cos(a), selection.goal.y+offset*math.sin(a))
+                    self.assertIn(g.to_cell(*arrived), safe)
+
+    def test_endpoint_margin_does_not_inflate_connecting_corridor(self):
+        rows = [list('#'*41)]+[list('#'+'.'*38+'?#') for _ in range(29)]+[list('#'*41)]
+        for y in range(1, 30):
+            if not 10 <= y <= 20:
+                for x in range(18, 23):
+                    rows[y][x] = '#'
+        g = grid([''.join(row) for row in rows], resolution=.05)
+        start = (10, 15)
+        planner = Planner()
+        selected = planner.select(g, (*g.to_world(start), 0.), Coverage(), FailureBook(), 0, False)
+        self.assertEqual(selected.state, 'goal')
+        end = g.to_cell(selected.goal.x, selected.goal.y)
+        self.assertGreater(end[0], 23)
+        self.assertIn(end, g.component(start, g.safe_cells(.25)))
+        # Endpoints cannot occupy the .55 m passage, but the R=.25 route can
+        # traverse it to reach a roomy observation position in the next room.
+        endpoint_radius = .25+.05+math.hypot(g.resolution, g.resolution)/2
+        self.assertNotIn(end, g.component(start, g.safe_cells(endpoint_radius)))
+
+    def test_coverage_endpoints_receive_same_arrival_protection(self):
+        g = grid(['#'*31]+['#'+'.'*29+'#']*29+['#'*31], resolution=.05)
+        pose = (*g.to_world((24, 15)), 0.)
+        coverage = cover_all(g)
+        coverage.points.remove(coverage.key(g.to_world((18, 15))))
+        selected = Planner().select(g, pose, coverage, FailureBook(), 0, True)
+        self.assertEqual(selected.state, 'goal')
+        self.assertEqual(selected.goal.kind, 'coverage')
+        self.assertNotEqual((selected.goal.x, selected.goal.y), pose[:2])
+        safe = g.safe_cells(.25)
+        for a in range(0, 360, 5):
+            arrived = (selected.goal.x+.05*math.cos(math.radians(a)),
+                       selected.goal.y+.05*math.sin(math.radians(a)))
+            self.assertIn(g.to_cell(*arrived), safe)
+
+    def test_no_roomy_endpoint_stays_incomplete_for_frontier_or_coverage(self):
+        for unknown in (False, True):
+            interior = '#'+'.'*38+('?' if unknown else '.')+'#'
+            g = grid(['#'*41]+[interior]*11+['#'*41], resolution=.05)
+            selected = Planner().select(g, (*g.to_world((10, 6)), 0.), Coverage(), FailureBook(), 0, True)
+            self.assertEqual(selected.state, 'unreachable_frontiers_or_coverage')
+            self.assertIsNone(selected.goal)
+            self.assertGreater(selected.uncovered_count, 0)
+            self.assertEqual(selected.frontier_count > 0, unknown)
+
+    def test_run10_style_small_arrival_error_can_leave_original_safe_disk(self):
+        rows = [list('.'*41) for _ in range(41)]
+        rows[10][10] = '#'
+        g = grid([''.join(row) for row in rows], resolution=.05)
+        nominal = g.to_world((15, 13))
+        arrived = nominal[0]-.041, nominal[1]
+        self.assertIn((15, 13), g.safe_cells(.25))
+        self.assertNotIn(g.to_cell(*arrived), g.safe_cells(.25))
+        self.assertLess(math.dist(nominal, arrived), .05)
+        # The new endpoint condition excludes this thin-margin nominal goal.
+        endpoint_radius = .25+.05+math.hypot(g.resolution, g.resolution)/2
+        self.assertNotIn((15, 13), g.safe_cells(endpoint_radius))
 
 
 class PerceptionTests(unittest.TestCase):
@@ -701,6 +786,14 @@ class ConfigurationConsistencyTests(unittest.TestCase):
             self.assertGreater(defaults['frontier_min_translation_m'], tolerance,
                                'Mission frontier translation must exceed the configured Nav2 XY goal tolerance')
             self.assertGreater(Planner().frontier_min_translation_m, tolerance)
+            self.assertGreaterEqual(defaults['goal_arrival_margin_m'], tolerance)
+            self.assertGreaterEqual(Planner().goal_arrival_margin_m, tolerance)
+            self.assertFalse(controller[name]['stateful'],
+                             'Final goal success must recheck XY after heading adjustment')
+        bt = configuration['bt_navigator']['ros__parameters']
+        self.assertEqual(bt['default_server_timeout'], 200)
+        self.assertEqual(bt['bt_loop_duration'], 10)
+        self.assertEqual(bt['wait_for_service_timeout'], 1000)
         # Derive geometry from the generated configuration, not copied dimensions
         # or a duplicated radius constant. Nav2 pads each vertex along x and y.
         for name in ('local_costmap', 'global_costmap'):
@@ -780,6 +873,8 @@ class RosStartupTests(unittest.TestCase):
                 assert node.mission_timed_out is False
                 assert node.cfg['frontier_min_translation_m'] == .20
                 assert node.planner.frontier_min_translation_m == node.cfg['frontier_min_translation_m']
+                assert node.cfg['goal_arrival_margin_m'] == .05
+                assert node.planner.goal_arrival_margin_m == .05
                 rclpy.spin_once(node, timeout_sec=0.6)
                 assert node.phase == 'waiting'
                 assert node.goal_handle is None and not node.send_pending
@@ -805,11 +900,14 @@ class RosStartupTests(unittest.TestCase):
             with tempfile.TemporaryDirectory(prefix='limo-adapter-regression-') as directory:
                 with mission(('initial_clearance_radius_m:=0.3',
                               'frontier_min_translation_m:=0.32',
+                              'goal_arrival_margin_m:=0.08',
                               'initial_clearance_source:=independently_verified_test_fixture',
                               'output_dir:='+directory)) as node:
                     assert node.cfg['initial_clearance_radius_m'] == .3
                     assert node.cfg['frontier_min_translation_m'] == .32
                     assert node.planner.frontier_min_translation_m == .32
+                    assert node.cfg['goal_arrival_margin_m'] == .08
+                    assert node.planner.goal_arrival_margin_m == .08
                     assert node.cfg['initial_clearance_margin_m'] == .05
                     assert node.get_parameter('initial_clearance_source').value == node.cfg['initial_clearance_source']
                     node.grid, node.map_epoch = raw, 'adapter-regression-epoch'

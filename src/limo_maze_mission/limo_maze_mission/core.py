@@ -262,11 +262,16 @@ class Selection:
 
 
 class Planner:
-    def __init__(self, radius=.25, standoff=.55, frontier_min_translation_m=.20):
+    def __init__(self, radius=.25, standoff=.55, frontier_min_translation_m=.20,
+                 goal_arrival_margin_m=.05):
         if not isfinite(frontier_min_translation_m) or frontier_min_translation_m <= 0:
             raise ValueError('frontier_min_translation_m must be finite and positive')
         self.radius, self.standoff = radius, standoff
-        # Simulation baseline: Nav2's .15 m XY goal tolerance plus margin.
+        if (isinstance(goal_arrival_margin_m, bool) or not isfinite(goal_arrival_margin_m)
+                or goal_arrival_margin_m <= 0):
+            raise ValueError('goal_arrival_margin_m must be finite and positive')
+        self.goal_arrival_margin_m = goal_arrival_margin_m
+        # Simulation baseline: greater than Nav2's .05 m XY goal tolerance.
         # Verify against the actual goal checker before adapting a real robot.
         self.frontier_min_translation_m = frontier_min_translation_m
 
@@ -304,6 +309,12 @@ class Planner:
         # We still inspect every anchor if earlier ones have no feasible goal,
         # so sampling cannot incorrectly produce a completion decision.
         ordered = sorted(anchors, key=lambda p: ((p[0]-start[0])**2 + (p[1]-start[1])**2, p))
+        # Keep routes/start checks at R, but leave endpoint room for arrival
+        # error plus the worst to_cell center displacement. For a fixed map,
+        # any arrival within margin of this center maps to an R-safe cell.
+        # This is not a bound on SLAM changes, localization error or the path.
+        endpoint_radius = self.radius + self.goal_arrival_margin_m + hypot(grid.resolution, grid.resolution)/2
+        endpoints = grid.safe_cells(endpoint_radius)
         for anchor_cell in ordered:
             anchor = grid.to_world(anchor_cell)
             if not failures.allowed(anchor, kind, now):
@@ -312,7 +323,7 @@ class Planner:
             for dy in range(-reach, reach+1):
                 for dx in range(-reach, reach+1):
                     p = anchor_cell[0]+dx, anchor_cell[1]+dy
-                    if p not in reachable or not grid.line_free(p, anchor_cell):
+                    if p not in reachable or p not in endpoints or not grid.line_free(p, anchor_cell):
                         continue
                     xy = grid.to_world(p)
                     distance = hypot(xy[0]-anchor[0], xy[1]-anchor[1])
