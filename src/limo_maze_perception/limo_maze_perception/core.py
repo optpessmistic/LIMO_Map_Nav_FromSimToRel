@@ -126,6 +126,14 @@ def components(mask: np.ndarray, min_area: int):
 def detect_red_objects(color: np.ndarray, depth: np.ndarray, intrinsics: Intrinsics,
                        depth_encoding: str, color_encoding: str = "rgb8",
                        config: DetectorConfig = DetectorConfig()) -> list[dict]:
+    """Compatibility API: detection values and ordering remain unchanged."""
+    return process_red_frame(color, depth, intrinsics, depth_encoding, color_encoding, config)[0]
+
+
+def process_red_frame(color: np.ndarray, depth: np.ndarray, intrinsics: Intrinsics,
+                      depth_encoding: str, color_encoding: str = "rgb8",
+                      config: DetectorConfig = DetectorConfig()) -> tuple[list[dict], dict]:
+    """Run once and retain input quality and depth-rejected component counts."""
     intrinsics.validate()
     config.validate()
     if depth.ndim != 2 or depth.shape != color.shape[:2] or depth.shape != (intrinsics.height, intrinsics.width):
@@ -138,7 +146,15 @@ def detect_red_objects(color: np.ndarray, depth: np.ndarray, intrinsics: Intrins
         raise ValueError("Depth must be 32FC1 float32 meters or 16UC1 uint16 millimeters")
     mask = red_mask(color, color_encoding, config)
     detections = []
+    stats = {"total_pixels": int(depth_m.size),
+             "valid_depth_pixels": int(np.count_nonzero(np.isfinite(depth_m) &
+                (depth_m >= config.min_depth_m) & (depth_m <= config.max_depth_m))),
+             "candidate_count": 0, "detection_count": 0, "unlocalized_candidate_count": 0,
+             "rejection_counts": {"too_few_inner_pixels": 0, "insufficient_valid_depth": 0,
+                                  "mixed_depth": 0, "insufficient_depth_inliers": 0,
+                                  "nonfinite_projection": 0}, "empty_reason": None}
     for ys, xs in components(mask, config.min_area_pixels):
+        stats["candidate_count"] += 1
         # Restrict samples to red pixels inside the central component bounding
         # box, reducing mixed foreground/background depth along object edges.
         center_x, center_y = (xs.min() + xs.max()) / 2, (ys.min() + ys.max()) / 2
@@ -147,10 +163,12 @@ def detect_red_objects(color: np.ndarray, depth: np.ndarray, intrinsics: Intrins
         inner = (np.abs(xs - center_x) <= half_x) & (np.abs(ys - center_y) <= half_y)
         xs, ys = xs[inner], ys[inner]
         if len(xs) < config.min_depth_pixels:
+            stats["rejection_counts"]["too_few_inner_pixels"] += 1
             continue
         values = depth_m[ys, xs]
         valid = np.isfinite(values) & (values >= config.min_depth_m) & (values <= config.max_depth_m)
         if np.count_nonzero(valid) < config.min_depth_pixels or valid.mean() < config.min_valid_depth_fraction:
+            stats["rejection_counts"]["insufficient_valid_depth"] += 1
             continue
         xs, ys, values = xs[valid], ys[valid], values[valid]
         median = float(np.median(values))
@@ -158,19 +176,26 @@ def detect_red_objects(color: np.ndarray, depth: np.ndarray, intrinsics: Intrins
         if mad > max(0.02, 0.10 * median):
             # A component containing two comparable depth surfaces is not a
             # reliable point observation; do not average foreground/background.
+            stats["rejection_counts"]["mixed_depth"] += 1
             continue
         inliers = np.abs(values - median) <= max(0.05, 3 * 1.4826 * mad)
         if np.count_nonzero(inliers) < config.min_depth_pixels:
+            stats["rejection_counts"]["insufficient_depth_inliers"] += 1
             continue
         u, v, z = float(np.median(xs[inliers])), float(np.median(ys[inliers])), float(np.median(values[inliers]))
         position = [(u - intrinsics.cx) * z / intrinsics.fx,
                     (v - intrinsics.cy) * z / intrinsics.fy, z]
         if not all(isfinite(value) for value in position):
+            stats["rejection_counts"]["nonfinite_projection"] += 1
             continue
         # A baseline quality score, not a calibrated identity probability.
         confidence = float(min(0.95, 0.6 + 0.35 * valid.mean() * inliers.mean()))
         detections.append({"class_id": "red_object", "position": position, "confidence": confidence})
-    return detections
+    stats["detection_count"] = len(detections)
+    stats["unlocalized_candidate_count"] = sum(stats["rejection_counts"].values())
+    if not detections:
+        stats["empty_reason"] = "no_red_candidates" if not stats["candidate_count"] else "all_candidates_rejected"
+    return detections, stats
 
 
 def observation_payload(stamp: float, frame_id: str, detections: list[dict]) -> dict:

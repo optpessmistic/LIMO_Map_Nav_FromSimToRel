@@ -4,13 +4,16 @@ from math import isfinite
 
 import message_filters
 import rclpy
+from rclpy.clock import JumpThreshold
+from rclpy.duration import Duration
 from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
+from rclpy.qos import qos_profile_sensor_data, QoSProfile, DurabilityPolicy, ReliabilityPolicy
 from sensor_msgs.msg import CameraInfo, Image
 from std_msgs.msg import String
 from cv_bridge import CvBridge, CvBridgeError
 
-from .core import DetectorConfig, Intrinsics, detect_red_objects, observation_payload, validate_frame_metadata
+from .core import DetectorConfig, Intrinsics, process_red_frame, observation_payload, validate_frame_metadata
+from .evidence import FrameEvidence
 
 
 def stamp_seconds(stamp):
@@ -20,11 +23,12 @@ def stamp_seconds(stamp):
 
 
 class RedRGBDBaseline(Node):
-    def __init__(self):
-        super().__init__("red_rgbd_sim_baseline")
+    def __init__(self, **kwargs):
+        super().__init__("red_rgbd_sim_baseline", **kwargs)
         defaults = {"enabled": False, "depth_registered_to_color": False,
                     "color_topic": "/camera/color/image_raw", "depth_topic": "/camera/depth/image_raw",
                     "camera_info_topic": "/camera/color/camera_info", "output_topic": "/mission/target_observations",
+                    "publish_frame_processing": False, "frame_processing_topic": "/mission/frame_processing",
                     "sync_slop_seconds": 0.05, "camera_info_max_age_seconds": 2.0,
                     "min_area_pixels": 30, "min_depth_pixels": 8,
                     "min_depth_m": 0.15, "max_depth_m": 6.0}
@@ -43,6 +47,16 @@ class RedRGBDBaseline(Node):
         self.config.validate()
         self.bridge, self.info, self.last_stamp = CvBridge(), None, None
         self.publisher = self.create_publisher(String, self.get_parameter("output_topic").value, 10)
+        self.frame_evidence = self.frame_publisher = self.evidence_clock_jump = None
+        if self.get_parameter("publish_frame_processing").value:
+            self.frame_evidence = FrameEvidence(self.config, self.slop, self.info_max_age)
+            self.frame_publisher = self.create_publisher(String, self.get_parameter("frame_processing_topic").value, 10)
+            epoch_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                                   reliability=ReliabilityPolicy.RELIABLE)
+            self.epoch_sub = self.create_subscription(String, "/mission/map_epoch", self.on_epoch, epoch_qos)
+            self.evidence_clock_jump = self.get_clock().create_jump_callback(
+                JumpThreshold(min_forward=None, min_backward=Duration(nanoseconds=-1), on_clock_change=True),
+                pre_callback=self.frame_evidence.invalidate_clock)
         self.info_sub = self.create_subscription(CameraInfo, self.get_parameter("camera_info_topic").value,
                                                  self.on_info, qos_profile_sensor_data)
         self.rgb_sub = message_filters.Subscriber(self, Image, self.get_parameter("color_topic").value,
@@ -59,8 +73,24 @@ class RedRGBDBaseline(Node):
     def on_info(self, msg):
         self.info = msg
 
+    def destroy_node(self):
+        if getattr(self, "evidence_clock_jump", None) is not None:
+            self.evidence_clock_jump.unregister()
+            self.evidence_clock_jump = None
+        return super().destroy_node()
+
+    def on_epoch(self, msg):
+        self.frame_evidence.on_epoch(msg.data, self.get_clock().now().nanoseconds)
+
     def on_pair(self, color, depth):
+        # Epoch and sample watermarks qualify only the optional evidence stream;
+        # the existing target-observation contract and defaults stay unchanged.
+        record = (self.frame_evidence.begin(color, depth, self.info, self.get_clock().now().nanoseconds,
+                                            enabled=self.enabled, registered=self.registered)
+                  if self.frame_evidence is not None else None)
+        stats, evidence_error = None, "algorithm_not_completed"
         if not self.enabled or not self.registered or self.info is None:
+            self.publish_frame_record(record, stats, evidence_error)
             return
         try:
             info = self.info
@@ -70,6 +100,7 @@ class RedRGBDBaseline(Node):
                                     depth_frame=depth.header.frame_id, info_frame=info.header.frame_id,
                                     registered=self.registered, slop=self.slop, max_info_age=self.info_max_age)
             if self.last_stamp == stamp:
+                self.publish_frame_record(record, stats, "duplicate_target_sample")
                 return
             if color.encoding not in ("rgb8", "bgr8"):
                 raise ValueError("This baseline requires RGB8 or BGR8 color images")
@@ -80,12 +111,20 @@ class RedRGBDBaseline(Node):
             intrinsics = Intrinsics(info.width, info.height, info.k[0], info.k[4], info.k[2], info.k[5])
             color_array = self.bridge.imgmsg_to_cv2(color, desired_encoding="passthrough")
             depth_array = self.bridge.imgmsg_to_cv2(depth, desired_encoding="passthrough")
-            detections = detect_red_objects(color_array, depth_array, intrinsics, depth.encoding, color.encoding, self.config)
+            detections, stats = process_red_frame(color_array, depth_array, intrinsics, depth.encoding, color.encoding, self.config)
             payload = observation_payload(stamp, color.header.frame_id, detections)
             self.publisher.publish(String(data=json.dumps(payload, allow_nan=False)))
             self.last_stamp = stamp
+            evidence_error = None
         except (ValueError, TypeError, IndexError, CvBridgeError) as exc:
+            evidence_error = "input_or_processing_error"
             self.get_logger().warn(f"Dropped RGB-D pair: {exc}", throttle_duration_sec=5.0)
+        self.publish_frame_record(record, stats, evidence_error)
+
+    def publish_frame_record(self, record, stats, error):
+        if record is not None:
+            payload = self.frame_evidence.finish(record, stats, self.get_clock().now().nanoseconds, error)
+            self.frame_publisher.publish(String(data=json.dumps(payload, allow_nan=False)))
 
 
 def main(args=None):

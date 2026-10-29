@@ -4,6 +4,8 @@
 
 节点默认停用，必须同时显式设置 `enabled:=true` 和 `depth_registered_to_color:=true`。第二个参数是运行者确认深度已注册到彩色图的声明；尺寸相同并不能自动证明注册正确。当前仿真约定同一个 RGB-D 传感器生成两路图像，共用 `camera_optical_frame`。
 
+另有默认关闭的 `publish_frame_processing`，用于输出带采样时间、原图摘要和输入质量统计的[图像处理证据](frame-processing-evidence.md)。它不改变目标观测 schema，不产生 coverage；主动观察队列及 mission 消费仍待接入。
+
 ## 接口
 
 | 方向 | 默认 topic | 类型 / 约定 |

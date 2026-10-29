@@ -9,7 +9,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src" / "limo_maze_perception"))
 from limo_maze_perception import core
-from limo_maze_perception.core import DetectorConfig, Intrinsics, detect_red_objects, observation_payload, validate_frame_metadata
+from limo_maze_perception.core import DetectorConfig, Intrinsics, detect_red_objects, observation_payload, validate_frame_metadata, process_red_frame
 
 
 class PerceptionCoreTests(unittest.TestCase):
@@ -39,6 +39,20 @@ class PerceptionCoreTests(unittest.TestCase):
         millimeters = np.full((60, 80), 2000, np.uint16)
         actual = self.detect(bgr, millimeters, "16UC1", "bgr8")
         np.testing.assert_allclose(actual[0]["position"], expected[0]["position"], rtol=1e-6)
+
+    def test_single_pass_statistics_preserve_detections_and_depth_rejections(self):
+        detections, stats = process_red_frame(self.rgb, self.depth, self.intrinsics, "32FC1")
+        self.assertEqual(detections, self.detect())
+        self.assertEqual((stats["candidate_count"], stats["detection_count"], stats["unlocalized_candidate_count"]), (1, 1, 0))
+        self.depth[20:40, 30:50] = np.nan
+        detections, stats = process_red_frame(self.rgb, self.depth, self.intrinsics, "32FC1")
+        self.assertEqual(detections, [])
+        self.assertGreater(stats["valid_depth_pixels"], 8)
+        self.assertEqual(stats["rejection_counts"]["insufficient_valid_depth"], 1)
+        self.assertEqual(stats["empty_reason"], "all_candidates_rejected")
+        _, empty = process_red_frame(np.zeros_like(self.rgb), self.depth, self.intrinsics, "32FC1")
+        self.assertEqual(empty["empty_reason"], "no_red_candidates")
+        self.assertEqual(empty["unlocalized_candidate_count"], 0)
 
     def test_optical_axes_and_multiple_components(self):
         image = np.zeros_like(self.rgb)

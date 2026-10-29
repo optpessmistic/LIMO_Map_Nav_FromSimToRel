@@ -16,11 +16,13 @@
 |---|---|
 | PPT 要求及范围 | [课程要求](docs/course-requirements.md) |
 | 现有实现、仓库版本与兼容性 | [上游审计](docs/upstream-audit.md) |
+| 确认实车系统、ROS 和传感器 | [只读环境采集](docs/hardware-inventory.md) |
 | 探索、识别、返航设计 | [探索与感知方案](docs/exploration-perception.md) |
 | 实验矩阵与完成标准 | [实验验收](docs/experiment-plan.md) |
 | ROS2 / Gazebo 接入 | [Jazzy 仿真](docs/jazzy-simulation.md) |
 | ROS2 任务管理 | [任务节点](docs/ros2-mission.md) |
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
+| 有效空检测、拒收与采样帧证据 | [图像处理证据](docs/frame-processing-evidence.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
 | 首次真实平移、扩图与目标标注 | [run10 自主实验](docs/first-autonomous-run.md) |
 | 两目标评分、到达裕量与返航停滞 | [run11 自主实验](docs/autonomous-run11.md) |
