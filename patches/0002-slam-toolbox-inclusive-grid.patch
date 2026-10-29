@@ -1,0 +1,15 @@
+diff --git a/lib/karto_sdk/include/karto_sdk/Karto.h b/lib/karto_sdk/include/karto_sdk/Karto.h
+index cfce65d9be2e6442027b4c19e2e5de9aef3154d8..b95e688c0b137557102d3847819927ec543c14b3 100644
+--- a/lib/karto_sdk/include/karto_sdk/Karto.h
++++ b/lib/karto_sdk/include/karto_sdk/Karto.h
+@@ -6108,8 +6108,8 @@ protected:
+     kt_double scale = 1.0 / resolution;
+     Size2<kt_double> size = boundingBox.GetSize();
+ 
+-    rWidth = static_cast<kt_int32s>(math::Round(size.GetWidth() * scale));
+-    rHeight = static_cast<kt_int32s>(math::Round(size.GetHeight() * scale));
++    rWidth = static_cast<kt_int32s>(math::Round(size.GetWidth() * scale)) + 1;
++    rHeight = static_cast<kt_int32s>(math::Round(size.GetHeight() * scale)) + 1;
+     rOffset = boundingBox.GetMinimum();
+   }
+ 

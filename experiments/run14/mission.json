@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "frame_id": "map",
+  "map_epoch": "bd3559e3-9e9a-46b2-b15f-19c7dd68e6d3",
+  "status": "done",
+  "reason": "perception_unverified_incomplete;final_observation_checks_incomplete",
+  "mission_success": false,
+  "returned_pose_verified": true,
+  "map_complete": true,
+  "visual_coverage_complete": false,
+  "mission_timed_out": false,
+  "target_definition_verified": false,
+  "coordinates_valid": true,
+  "initial_clearance_prior": {
+    "enabled": true,
+    "coordinates_valid": true,
+    "frame_id": "map",
+    "map_epoch": "bd3559e3-9e9a-46b2-b15f-19c7dd68e6d3",
+    "center": [
+      0.018801716268400815,
+      0.008723638571023826
+    ],
+    "verified_radius_m": 0.3,
+    "margin_m": 0.05,
+    "source": "smoke_run13_independent_setup_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+    "currently_filled_unknown_cells": 0,
+    "sensor_observation": false,
+    "raw_slam_map_modified": false
+  },
+  "target_count_prior": null,
+  "targets": [
+    {
+      "uid": 1,
+      "class_id": "red_object",
+      "x": 3.5789427618037406,
+      "y": -0.04592526465037921,
+      "z": -0.040425821411089476,
+      "hits": 176,
+      "first_stamp": 135.4,
+      "last_stamp": 276.3,
+      "confirmed": true,
+      "source_id": ""
+    },
+    {
+      "uid": 2,
+      "class_id": "red_object",
+      "x": -0.3917150546394526,
+      "y": -1.583731110271941,
+      "z": -0.04279611498803774,
+      "hits": 74,
+      "first_stamp": 176.9,
+      "last_stamp": 210.2,
+      "confirmed": true,
+      "source_id": ""
+    }
+  ],
+  "unconfirmed_target_candidates": [],
+  "observation_sources": [
+    "red_rgbd_sim_baseline"
+  ],
+  "home": [
+    0.018801716268400815,
+    0.008723638571023826,
+    -0.03970030330147007
+  ],
+  "final_pose": [
+    0.07574379219761118,
+    0.008793021091695816,
+    0.19827035398156442
+  ],
+  "failures": [],
+  "events": [
+    {
+      "stamp": 136.0,
+      "event": "home_recorded",
+      "pose": [
+        0.018801716268400815,
+        0.008723638571023826,
+        -0.03970030330147007
+      ],
+      "map_epoch": "bd3559e3-9e9a-46b2-b15f-19c7dd68e6d3"
+    },
+    {
+      "stamp": 136.0,
+      "event": "goal_sent",
+      "token": 1,
+      "goal": {
+        "x": 1.3421092597235198,
+        "y": -0.00863175655083237,
+        "yaw": -1.695151321341658,
+        "kind": "frontier",
+        "anchor": [
+          1.2921092589784617,
+          -0.40863176251129685
+        ]
+      }
+    },
+    {
+      "stamp": 151.1,
+      "event": "goal_terminal",
+      "token": 1,
+      "success": true,
+      "detail": "4:"
+    },
+    {
+      "stamp": 153.5,
+      "event": "goal_sent",
+      "token": 2,
+      "goal": {
+        "x": 1.59210926344881,
+        "y": -0.8891050085965264,
+        "yaw": -2.4227626539681686,
+        "kind": "frontier",
+        "anchor": [
+          1.1921092574883456,
+          -1.2391050138119328
+        ]
+      }
+    },
+    {
+      "stamp": 164.9,
+      "event": "goal_terminal",
+      "token": 2,
+      "success": true,
+      "detail": "4:"
+    },
+    {
+      "stamp": 167.5,
+      "event": "goal_sent",
+      "token": 3,
+      "goal": {
+        "x": 1.442109261213636,
+        "y": -1.5480662087481987,
+        "yaw": 2.279422598922567,
+        "kind": "frontier",
+        "anchor": [
+          1.1421092567432876,
+          -1.1980662035327923
+        ]
+      }
+    },
+    {
+      "stamp": 180.125,
+      "event": "goal_terminal",
+      "token": 3,
+      "success": true,
+      "detail": "4:"
+    },
+    {
+      "stamp": 182.5,
+      "event": "goal_sent",
+      "token": 4,
+      "goal": {
+        "x": 2.306635855182903,
+        "y": -1.609759568853387,
+        "yaw": 0.8519663271732721,
+        "kind": "frontier",
+        "anchor": [
+          2.6566358603983096,
+          -1.2097595628929225
+        ]
+      }
+    },
+    {
+      "stamp": 197.8,
+      "event": "goal_terminal",
+      "token": 4,
+      "success": true,
+      "detail": "4:"
+    },
+    {
+      "stamp": 199.5,
+      "event": "cancel_requested",
+      "next_phase": "returning",
+      "reason": "perception_unverified_incomplete"
+    },
+    {
+      "stamp": 200.5,
+      "event": "goal_sent",
+      "token": 5,
+      "goal": {
+        "x": 0.018801716268400815,
+        "y": 0.008723638571023826,
+        "yaw": -0.03970030330147007,
+        "kind": "home",
+        "anchor": [
+          0.018801716268400815,
+          0.008723638571023826
+        ]
+      }
+    },
+    {
+      "stamp": 274.6,
+      "event": "goal_terminal",
+      "token": 5,
+      "success": true,
+      "detail": "4:"
+    }
+  ],
+  "limitations": [
+    "Map-frame observations are not pose-graph landmarks.",
+    "2D coverage needs a validated detector and target-height assumption.",
+    "Navigation success is independently checked against TF at home.",
+    "A red simulation surrogate does not establish real target recognition."
+  ]
+}

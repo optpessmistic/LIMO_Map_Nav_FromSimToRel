@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "role": "offline_target_evaluation_only",
+  "mission_status": "done",
+  "reported_mission_success": false,
+  "map_frame": "map",
+  "map_epoch": "bd3559e3-9e9a-46b2-b15f-19c7dd68e6d3",
+  "alignment": {
+    "direction": "map_to_world",
+    "x_m": 1.2433490348406906e-10,
+    "y_m": 3.620610179641311e-18,
+    "yaw_rad": -1.6437125138727438e-18,
+    "source": "run14-independent-alignment.json; fixed pre-Spin same-stamp gauge at 29.375 sim s; epoch bd3559e3-9e9a-46b2-b15f-19c7dd68e6d3",
+    "estimated_from_targets": false
+  },
+  "appearance_to_class": {
+    "red_box_surrogate": "red_object"
+  },
+  "distance_metric": "planar_xy_euclidean_m",
+  "max_distance_m": 0.2,
+  "prediction_count": 2,
+  "ground_truth_count": 2,
+  "TP": 2,
+  "FP": 0,
+  "FN": 0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "zero_target_case": false,
+  "target_inventory_exact": true,
+  "position_error_m": {
+    "mean": 0.0319616225886416,
+    "median": 0.0319616225886416,
+    "rmse": 0.03503989723438194,
+    "max": 0.04632299716412295
+  },
+  "matches": [
+    {
+      "prediction_uid": 1,
+      "truth_index": 0,
+      "class_id": "red_object",
+      "distance_m": 0.04632299716412295
+    },
+    {
+      "prediction_uid": 2,
+      "truth_index": 1,
+      "class_id": "red_object",
+      "distance_m": 0.017600248013160256
+    }
+  ],
+  "unmatched_prediction_uids": [],
+  "unmatched_truth_indices": [],
+  "transformed_predictions": [
+    {
+      "uid": 1,
+      "class_id": "red_object",
+      "map_xyz": [
+        3.5789427618037406,
+        -0.04592526465037921,
+        -0.040425821411089476
+      ],
+      "world_x": 3.5789427619280754,
+      "world_y": -0.04592526465037921
+    },
+    {
+      "uid": 2,
+      "class_id": "red_object",
+      "map_xyz": [
+        -0.3917150546394526,
+        -1.583731110271941,
+        -0.04279611498803774
+      ],
+      "world_x": -0.3917150545151177,
+      "world_y": -1.583731110271941
+    }
+  ],
+  "limitations": [
+    "Target matching does not assess map coverage, visual coverage, autonomy, or return home.",
+    "Zero-truth recall and zero-prediction precision are undefined (null).",
+    "Alignment provenance is supplied by the evaluator, not verified by this program.",
+    "Error is planar; no surface-to-centre correction or target-height validation is applied."
+  ]
+}

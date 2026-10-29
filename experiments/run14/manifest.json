@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "role": "closed_run14_selected_evidence_only",
+  "run_code_commit": "7b300d9851a1cfb258a11f995463fa901874d512",
+  "map_epoch": "bd3559e3-9e9a-46b2-b15f-19c7dd68e6d3",
+  "mission_success": false,
+  "files": [
+    {
+      "file": "mission.json",
+      "source": "outputs/ros_smoke/mission_run14/mission_20261028_143528.json",
+      "sha256": "3903e276aed6c3f2c8266e2e965719f43ae54621c8419e7fb5ebbf0b3e060087",
+      "bytes": 4859
+    },
+    {
+      "file": "target-evaluation.json",
+      "source": "outputs/ros_smoke/run14-target-evaluation.json",
+      "sha256": "db930143b0d95cfdbb5dbf3315defe27d9c2d0e2c8deb9654b57630076f72d0a",
+      "bytes": 2398
+    },
+    {
+      "file": "run14-final-map.yaml",
+      "source": "outputs/ros_smoke/run14-final-map.yaml",
+      "sha256": "956cb738166b1946abe13dab793a6bb3c66a3951619016a4813dc76699d7971a",
+      "bytes": 137
+    },
+    {
+      "file": "run14-final-map.pgm",
+      "source": "outputs/ros_smoke/run14-final-map.pgm",
+      "sha256": "e75f3f9bffce90d2fc224a7208417eb7cd20e592af513f94acd850810778d65d",
+      "bytes": 4246
+    },
+    {
+      "file": "final-snapshot.json",
+      "source": "outputs/ros_smoke/run14-final-snapshot.json",
+      "sha256": "a9c603cd4ef7c5935badef8ba1bc17f6fcccdd4eed605b81c3a6e80a23bba455",
+      "bytes": 68041
+    }
+  ],
+  "limitations": [
+    "Original selected files copied without modification; large bags and observer trajectories remain local.",
+    "Use final-snapshot raw OccupancyGrid for precise geometry; map-server YAML/PGM is a trinary export.",
+    "World truth is offline evaluation only and must not be used as a new exploration input."
+  ]
+}
