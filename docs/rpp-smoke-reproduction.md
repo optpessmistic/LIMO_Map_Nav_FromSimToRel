@@ -53,14 +53,6 @@ ros2 param get /controller_server FollowPath.plugin
 ros2 param get /slam_toolbox loop_search_space_dimension
 ```
 
-另一个终端启动[只读观察器](mission-observer.md)，保留本轮状态、路径、速度与原生轨迹；文件存在会拒绝覆盖：
-
-```bash
-source scripts/env.sh
-/usr/bin/python3 scripts/observe_sim_mission.py --costmaps --seconds 1350 \
-  --output outputs/ros_smoke/rpp_trial_01/observer.json
-```
-
 ## 初始观察与自主任务
 
 run14 的初始净空依据只适用于未移动障碍、默认 `(0,0,0)` 起点的同一静态 world。其 SHA256 为 `1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811`；最近地上静态障碍距车心 .4 m，允许 .30 m 起始净空声明。核对的是**实验布置**，不把真值地图交给控制器。修改 world、起点或添加动态物体后须重新核验，不能照抄声明。
@@ -74,6 +66,16 @@ sha256sum worlds/smoke_maze.world
 ```
 
 环视后检查原始地图、当前 TF 和 .25 m 车体安全包络。地图出现重复墙影、定位跳变或实际运动异常时保留失败结果，不能靠填墙/清墙继续。起始盲区先验仅覆盖固定 home 附近的规划副本，不改原图；详见[任务节点说明](ros2-mission.md)。
+
+完成初始环视及上述检查后，在另一个终端启动[只读观察器](mission-observer.md)，保留后续任务状态、路径、速度与原生轨迹；文件存在会拒绝覆盖：
+
+```bash
+source scripts/env.sh
+/usr/bin/python3 scripts/observe_sim_mission.py --costmaps --seconds 1350 \
+  --output outputs/ros_smoke/rpp_trial_01/observer.json
+```
+
+观察器必须在环视结束后启动：初始环视的协作检查拒绝节点名含 `mission` 或 `explor` 的节点，观察器的名字 `limo_sim_mission_observer` 也会触发该检查。这个顺序下观察器不记录初始环视；如果需要独立验证环视时的物理运动，应在环视前另行启动原生轨迹采集，并保留其时间和来源记录。
 
 先在独立终端启动红盒感知；本仿真同一 RGB-D 传感器确实提供注册后的深度，实车不能直接沿用该声明：
 

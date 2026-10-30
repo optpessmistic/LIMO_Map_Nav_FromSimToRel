@@ -20,6 +20,7 @@
 | 探索、识别、返航设计 | [探索与感知方案](docs/exploration-perception.md) |
 | 实验矩阵与完成标准 | [实验验收](docs/experiment-plan.md) |
 | ROS2 / Gazebo 接入 | [Jazzy 仿真](docs/jazzy-simulation.md) |
+| 打开三维场景、地图和相机窗口 | [Gazebo / RViz 可视化](docs/visualization.md) |
 | ROS2 任务管理 | [任务节点](docs/ros2-mission.md) |
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
 | 有效空检测、拒收与采样帧证据 | [图像处理证据](docs/frame-processing-evidence.md) |
