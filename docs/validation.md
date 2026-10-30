@@ -1,8 +1,32 @@
 # 验证记录
 
-验证日期：2026-10-28。以下记录区分逻辑测试、ROS 接口、物理仿真和实车；某一层通过不代表其他层通过。完整课程任务仍未验收。
+最近验证日期：2026-10-29。以下记录区分逻辑测试、ROS 接口、物理仿真和实车；某一层通过不代表其他层通过。完整课程任务仍未验收。
 
-## 已运行的检查
+## 2026-10-29：停稳观察等待
+
+新增默认关闭的[停稳观察等待](settled-inspection.md)，将处理证据与采样时刻 TF、当前目标位姿和连续停车里程计关联。观察超时按 wall time 执行，暂停仿真时钟也会结束等待；启动前时钟回退要求新 epoch，任务开始后回退使任务阻断。返航同样不能用冻结里程计满足稳定判据。修复了 ActionClient waitable 未显式释放造成的节点资源残留。
+
+- WSL Ubuntu 24.04 / ROS2 Jazzy，隔离 domain 74 / LOCALHOST：完整 `tests/` 发现 166 项，165 通过、1 跳过。跳过的是独立 Spin Action 回归开关，新增 27 项观察纯逻辑和 8 项真实 DDS 用例全部执行通过；原图像生产端 DDS 回归也通过。
+- `tools/` 111/111 通过；二维理想逻辑仿真 15/15 通过。后者不包含 SLAM、真实图像或物理碰撞。
+- mission/perception 两包最终构建通过。安装产物哈希、测试日志摘要和测试后节点检查见[验证摘要](../experiments/inspection-dds-20261029/validation.json)。
+- DDS 数据来自合成 Clock、地图、Odometry、动态 TF 与证据消息；导航结果是显式 Future 夹具。没有启动 Nav2/Gazebo 或发布运动命令，没有新增物理仿真成功记录。
+
+首轮回归保留了 ActionClient 未释放导致隔离检查失败的日志；修复后最终套件通过。另一条断言曾错误假设深层 JSON 必然抛 RecursionError，实际运行时解析后按 schema 拒收；最终测试检查两种合法拒收路径，均要求不增加帧数、节点继续运行。
+
+复验命令（在仓库根目录，确保没有其他节点占用 domain 74）：
+
+```bash
+source /opt/ros/jazzy/setup.bash
+export ROS_DOMAIN_ID=74 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s tools -p 'test_*.py' -v
+python3 -m sim.suite
+colcon build --packages-select limo_maze_mission limo_maze_perception
+```
+
+仍需在新 Gazebo 回合验证该等待模式，并增加有界观察朝向队列、标定替身可识别范围。视觉覆盖、正式物品识别和实车实验仍未通过。
+
+## 此前已运行的检查
 
 | 检查 | 环境与命令 | 结果与适用范围 |
 |---|---|---|

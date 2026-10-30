@@ -23,6 +23,7 @@
 | ROS2 任务管理 | [任务节点](docs/ros2-mission.md) |
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
 | 有效空检测、拒收与采样帧证据 | [图像处理证据](docs/frame-processing-evidence.md) |
+| 到达后停稳并等待新处理帧 | [可选自主观察等待](docs/settled-inspection.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
 | 首次真实平移、扩图与目标标注 | [run10 自主实验](docs/first-autonomous-run.md) |
 | 两目标评分、到达裕量与返航停滞 | [run11 自主实验](docs/autonomous-run11.md) |

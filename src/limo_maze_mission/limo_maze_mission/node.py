@@ -12,6 +12,7 @@ import time
 
 import rclpy
 from rclpy.action import ActionClient
+from rclpy.clock import Clock, ClockType, JumpThreshold
 from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
@@ -27,6 +28,7 @@ from tf2_ros import Buffer, TransformListener, TransformException
 from visualization_msgs.msg import Marker, MarkerArray
 
 from .core import Coverage, FailureBook, Goal, Grid, Planner, TargetStore, angle_delta
+from .inspection import EvidenceError, InspectionLedger, InspectionPolicy, validate_record
 
 
 def yaw_of(q):
@@ -43,8 +45,8 @@ def rotate(q, p):
 
 
 class MissionNode(Node):
-    def __init__(self):
-        super().__init__('limo_maze_mission')
+    def __init__(self, **kwargs):
+        super().__init__('limo_maze_mission', **kwargs)
         defaults = {
             'autonomous': False, 'map_topic': '/map', 'map_frame': 'map',
             'base_frame': 'base_link', 'odom_frame': 'odom',
@@ -67,6 +69,14 @@ class MissionNode(Node):
             'target_min_confidence': .70, 'target_confirmation_window_s': 3.0,
             'target_definition_verified': False, 'camera_heading_offset_rad': 0.0,
             'coverage_max_range_m': 3.0,
+            'require_processed_inspection': False,
+            'frame_processing_topic': '/mission/frame_processing',
+            'frame_processing_source': 'red_rgbd_sim_baseline',
+            'inspection_timeout_s': 12.0, 'inspection_settle_s': .5,
+            'inspection_yaw_tolerance_rad': .26,
+            'inspection_required_frames': 3, 'inspection_min_span_s': .2,
+            'inspection_odom_topic': '/odom', 'inspection_odom_max_age_s': .3,
+            'inspection_linear_stop_m_s': .005, 'inspection_angular_stop_rad_s': .02,
         }
         for key, value in defaults.items():
             self.declare_parameter(key, value)
@@ -82,6 +92,8 @@ class MissionNode(Node):
                 not self.cfg['initial_clearance_source'].strip() or
                 self.cfg['initial_clearance_radius_m'] <= self.cfg['initial_clearance_margin_m']):
             raise ValueError('An initial clearance prior requires an independent source and radius greater than its margin')
+        if self.cfg['require_processed_inspection'] and self.cfg['inspection_timeout_s'] > 300:
+            raise ValueError('inspection_timeout_s must be at most 300 seconds')
         self.prior_filled_cells = 0
         self.grid = None
         self.map_received = None
@@ -135,7 +147,32 @@ class MissionNode(Node):
         self.visual_complete = False
         self.mission_timed_out = False
         self.events = []
-        self._mission_timer = self.create_timer(.5, self.tick)
+        self.inspection = None
+        self.inspection_clock_jump = None
+        self.inspection_clock_invalid = False
+        self.inspection_deadline = None
+        self.inspection_terminal_received = None
+        self.inspection_pose_since = None
+        self.inspection_odom = dict(since=None, count=0, received=None, stamp_ns=None,
+                                    first_stamp_ns=None, stationary=False)
+        if self.cfg['require_processed_inspection']:
+            self.inspection = InspectionLedger(InspectionPolicy(
+                required_frames=self.cfg['inspection_required_frames'],
+                min_span_ns=round(self.cfg['inspection_min_span_s']*1e9),
+                max_sample_age_ns=round(self.cfg['observation_max_age_s']*1e9),
+                max_processing_age_ns=round(self.cfg['observation_max_age_s']*1e9),
+                xy_tolerance=self.cfg['goal_arrival_margin_m'],
+                yaw_tolerance=self.cfg['inspection_yaw_tolerance_rad'],
+                allowed_source=self.cfg['frame_processing_source']))
+            self.create_subscription(String, self.cfg['frame_processing_topic'], self.on_frame_processing, 10)
+            self.create_subscription(Odometry, self.cfg['inspection_odom_topic'],
+                                     self.on_inspection_odom, qos_profile_sensor_data)
+            self.inspection_clock_jump = self.get_clock().create_jump_callback(
+                JumpThreshold(min_forward=None, min_backward=Duration(nanoseconds=-1), on_clock_change=True),
+                pre_callback=self.on_inspection_clock_jump)
+        # ROS time still timestamps measurements; wall deadlines must run while /clock is paused.
+        timer_options = {'clock': Clock(clock_type=ClockType.STEADY_TIME)} if self.inspection else {}
+        self._mission_timer = self.create_timer(.1 if self.inspection else .5, self.tick, **timer_options)
         self.get_logger().info('Mission loaded; autonomous=' + str(self.cfg['autonomous']))
 
     def seconds(self):
@@ -166,6 +203,11 @@ class MissionNode(Node):
 
     def on_epoch(self, msg):
         epoch = msg.data.strip()
+        if getattr(self, 'inspection', None) is not None:
+            if self.inspection_clock_invalid and self.home is None:
+                self.inspection.invalidate('clock_reset_requires_new_epoch')
+                self.inspection_clock_invalid = False
+            self.inspection.set_epoch(epoch, self.get_clock().now().nanoseconds)
         if not epoch:
             # Retain the last legitimate ID for audit, but a blank current
             # session announcement cannot authorize startup or continued use.
@@ -186,10 +228,14 @@ class MissionNode(Node):
         if age < -.1 or age > self.cfg['tf_max_age_s']:
             raise ValueError('stale_base_tf')
         p, q = transform.transform.translation, transform.transform.rotation
-        if not all(isfinite(v) for v in (p.x, p.y, p.z, q.x, q.y, q.z, q.w)):
+        if (not all(isfinite(v) for v in (p.x, p.y, p.z, q.x, q.y, q.z, q.w)) or
+                abs(q.x*q.x+q.y*q.y+q.z*q.z+q.w*q.w-1.) > 1e-3):
             raise ValueError('invalid_base_tf')
         map_odom = self.tf_buffer.lookup_transform(self.cfg['map_frame'], self.cfg['odom_frame'], Time())
         p2, q2 = map_odom.transform.translation, map_odom.transform.rotation
+        if (not all(isfinite(v) for v in (p2.x, p2.y, p2.z, q2.x, q2.y, q2.z, q2.w)) or
+                abs(q2.x*q2.x+q2.y*q2.y+q2.z*q2.z+q2.w*q2.w-1.) > 1e-3):
+            raise ValueError('invalid_localization_tf_requires_reanchor')
         correction = p2.x, p2.y, yaw_of(q2)
         if self.last_map_odom is not None:
             old = self.last_map_odom
@@ -259,6 +305,171 @@ class MissionNode(Node):
             self.publish_targets()
         except (KeyError, ValueError, TypeError, TransformException) as exc:
             self.get_logger().warning('Rejected target observation: ' + str(exc))
+
+    def on_inspection_clock_jump(self):
+        # Jump callbacks run under the clock lock. Defer ROS calls to the steady timer.
+        self.inspection_clock_invalid = True
+
+    def reset_inspection_stop(self):
+        self.inspection_odom.update(since=None, count=0, first_stamp_ns=None, stationary=False)
+        self.inspection_pose_since = None
+
+    def on_inspection_odom(self, msg):
+        if self.phase not in ('settling', 'inspecting', 'home_verification'):
+            return
+        now, now_ns = time.monotonic(), self.get_clock().now().nanoseconds
+        state = self.inspection_odom
+        stamp = msg.header.stamp.sec*1_000_000_000 + msg.header.stamp.nanosec
+        twist = msg.twist.twist
+        values = (twist.linear.x, twist.linear.y, twist.linear.z,
+                  twist.angular.x, twist.angular.y, twist.angular.z)
+        maximum_age = self.cfg['inspection_odom_max_age_s']
+        fresh = (msg.header.stamp.sec >= 0 and 0 <= msg.header.stamp.nanosec < 1_000_000_000 and
+                 0 <= now_ns-stamp <= maximum_age*1e9 and
+                 (state['stamp_ns'] is None or stamp > state['stamp_ns']) and
+                 stamp > self.inspection_terminal_received[1])
+        continuous = state['received'] is None or now-state['received'] <= maximum_age
+        stationary = (msg.header.frame_id == self.cfg['odom_frame'] and
+                      msg.child_frame_id in (self.cfg['base_frame'], 'base_footprint') and
+                      all(isfinite(v) for v in values) and
+                      hypot(values[0], values[1]) <= self.cfg['inspection_linear_stop_m_s'] and
+                      abs(values[2]) <= self.cfg['inspection_linear_stop_m_s'] and
+                      max(abs(v) for v in values[3:]) <= self.cfg['inspection_angular_stop_rad_s'])
+        if not fresh or not stationary or not continuous:
+            self.restart_inspection_window('odometry_not_continuously_stationary')
+        else:
+            state['since'] = now if state['since'] is None else state['since']
+            state['first_stamp_ns'] = stamp if state['first_stamp_ns'] is None else state['first_stamp_ns']
+            state['count'] += 1
+            state['stationary'] = True
+        state['received'], state['stamp_ns'] = now, stamp
+
+    def inspection_stopped(self, now):
+        state = self.inspection_odom
+        return (state['stationary'] and state['count'] >= 3 and state['since'] is not None and
+                now-state['since'] >= self.cfg['inspection_settle_s'] and
+                now-state['received'] <= self.cfg['inspection_odom_max_age_s'] and
+                0 <= self.get_clock().now().nanoseconds-state['stamp_ns'] <=
+                self.cfg['inspection_odom_max_age_s']*1e9 and
+                state['stamp_ns']-state['first_stamp_ns'] >= self.cfg['inspection_min_span_s']*1e9)
+
+    def restart_inspection_window(self, reason):
+        self.reset_inspection_stop()
+        if self.phase == 'inspecting':
+            self.inspection.reset_window(self.get_clock().now().nanoseconds, reason)
+            self.phase = 'settling'
+            self.event('inspection_window_reset', reason=reason)
+
+    def inspection_pose_matches(self, pose):
+        return (hypot(pose[0]-self.goal.x, pose[1]-self.goal.y) <= self.cfg['goal_arrival_margin_m'] and
+                abs(angle_delta(pose[2], self.goal.yaw)) <= self.cfg['inspection_yaw_tolerance_rad'])
+
+    def begin_inspection(self, now):
+        self.phase = 'settling'
+        terminal_wall, _ = self.inspection_terminal_received
+        self.inspection_deadline = terminal_wall+self.cfg['inspection_timeout_s']
+        self.reset_inspection_stop()
+        self.event('inspection_settling', token=self.token, timeout_s=self.cfg['inspection_timeout_s'])
+
+    def update_inspection(self, now, pose):
+        if now >= self.inspection_deadline:
+            self.event('inspection_failed', reason='inspection_wall_timeout', evidence=self.inspection.snapshot())
+            self.block('inspection_wall_timeout_incomplete')
+            return False
+        if not self.inspection_pose_matches(pose):
+            self.restart_inspection_window('current_pose_outside_goal_tolerance')
+            return False
+        if self.inspection_pose_since is None:
+            self.inspection_pose_since = now
+        if not self.inspection_stopped(now):
+            if self.phase == 'inspecting':
+                self.restart_inspection_window('stationary_odometry_unavailable')
+            return False
+        if now-self.inspection_pose_since < self.cfg['inspection_settle_s']:
+            return False
+        if self.phase == 'settling':
+            if self.inspection.request_id == 'goal-'+str(self.token) and self.inspection.status == 'waiting':
+                self.inspection.reset_window(self.get_clock().now().nanoseconds, 'stationarity_reestablished')
+            else:
+                self.inspection.begin(after_stamp_ns=self.get_clock().now().nanoseconds,
+                                      expected_pose=(self.goal.x, self.goal.y, self.goal.yaw),
+                                      wall_now=now, timeout_seconds=self.inspection_deadline-now,
+                                      request_id='goal-'+str(self.token))
+            self.phase = 'inspecting'
+            self.event('inspection_started', token=self.token)
+        self.inspection.tick(self.get_clock().now().nanoseconds, now)
+        if self.inspection.snapshot()['status'] == 'satisfied':
+            self.event('inspection_complete', evidence=self.inspection.snapshot())
+            self.phase, self.dwell_until = 'observing', now
+            self.inspection_deadline = None
+            return True
+        return False
+
+    def inspection_sample_transform(self, frame, stamp_ns):
+        # Exact acquisition-time lookup; missing TF is rejected, never replaced by latest TF.
+        transform = self.tf_buffer.lookup_transform(self.cfg['map_frame'], frame,
+                                                   Time(nanoseconds=stamp_ns))
+        p, q = transform.transform.translation, transform.transform.rotation
+        values = (p.x, p.y, p.z, q.x, q.y, q.z, q.w)
+        if (not all(isfinite(v) for v in values) or
+                abs(sum(v*v for v in values[3:])-1.) > 1e-3):
+            raise ValueError('invalid_sample_transform')
+        return values
+
+    def on_frame_processing(self, msg):
+        if self.inspection is None or self.phase != 'inspecting' or self.canceling:
+            return
+        now, now_ns = time.monotonic(), self.get_clock().now().nanoseconds
+        if now >= self.inspection_deadline or self.inspection_clock_invalid:
+            return  # The steady timer owns bounded failure transitions.
+        if not self.inspection_stopped(now):
+            self.restart_inspection_window('frame_received_without_stationary_odometry')
+            return
+        try:
+            if len(msg.data) > 65536:
+                raise ValueError('evidence_payload_too_large')
+            record = json.loads(msg.data)
+            validate_record(record, now_ns, self.inspection.policy)
+            stamp_ns = record['rgb']['stamp_ns']
+            # Require an odometry sample at or after both image samples.
+            if self.inspection_odom['stamp_ns'] < max(stamp_ns, record['depth']['stamp_ns']):
+                raise ValueError('odometry_does_not_cover_sample_time')
+            camera = self.inspection_sample_transform(record['rgb']['frame_id'], stamp_ns)
+            base = self.inspection_sample_transform(self.cfg['base_frame'], stamp_ns)
+            qx, qy, qz, qw = base[3:]
+            pose = (base[0], base[1], atan2(2*(qw*qz+qx*qy), 1-2*(qy*qy+qz*qz)))
+            decision = self.inspection.observe(record, now_ns=now_ns, wall_now=now, base_pose=pose,
+                                               camera_pose=camera, tf_stamp_ns=stamp_ns)
+            if decision['reason'] == 'sample_pose_outside_tolerance':
+                self.restart_inspection_window('sample_pose_outside_tolerance')
+        except TransformException:
+            self.inspection.reject('sample_tf_unavailable')
+        except EvidenceError as exc:
+            self.inspection.reject(str(exc))
+        except (ValueError, TypeError, KeyError, RecursionError) as exc:
+            reason = str(exc) if str(exc) in ('evidence_payload_too_large', 'invalid_sample_transform',
+                                              'odometry_does_not_cover_sample_time') else 'invalid_json'
+            self.inspection.reject(reason)
+
+    def destroy_node(self):
+        try:
+            handle = getattr(self, 'inspection_clock_jump', None)
+            if handle is not None:
+                handle.unregister()
+                self.inspection_clock_jump = None
+            # ActionClient is a waitable; Node.destroy_node does not destroy it.
+            # Its retained handle otherwise keeps the ROS node alive.
+            client = getattr(self, 'nav', None)
+            if client is not None:
+                client.destroy()
+                self.nav = None
+            listener = getattr(self, 'tf_listener', None)
+            if listener is not None:
+                listener.unregister()
+                self.tf_listener = None
+        finally:
+            result = super().destroy_node()
+        return result
 
     def publish_targets(self):
         array = MarkerArray()
@@ -354,6 +565,8 @@ class MissionNode(Node):
             return
         self.goal_handle = None
         self.goal_result = success, detail
+        if success and getattr(self, 'inspection', None) is not None:
+            self.inspection_terminal_received = time.monotonic(), self.get_clock().now().nanoseconds
         if self.canceling:
             self.cancel_terminal = True
         self.event('goal_terminal', token=token, success=success, detail=detail)
@@ -377,6 +590,10 @@ class MissionNode(Node):
             self.event('cancel_error', error=str(exc))
 
     def cancel_to(self, next_phase, reason):
+        if getattr(self, 'inspection', None) is not None and self.phase in ('settling', 'inspecting'):
+            self.event('inspection_interrupted', reason=reason, evidence=self.inspection.snapshot())
+            self.inspection.invalidate(reason)
+            self.inspection_deadline = None
         self.reason = reason
         if self.canceling:
             if next_phase == 'blocked':
@@ -408,6 +625,12 @@ class MissionNode(Node):
     def tick(self):
         now = time.monotonic()
         ros_now = self.seconds()
+        if getattr(self, 'inspection_clock_invalid', False):
+            if self.home is None:
+                self.inspection.invalidate('clock_reset_requires_new_epoch')
+                self.inspection_clock_invalid = False
+            else:
+                self.block('ros_clock_reset_requires_new_mission')
         if self.last_clock is not None and ros_now < self.last_clock - .1 and self.home is not None:
             self.block('ros_clock_reset_requires_new_mission')
         self.last_clock = ros_now
@@ -430,7 +653,8 @@ class MissionNode(Node):
         if self.phase in ('done', 'blocked'):
             self.publish_status()
             return
-        if self.home is None and not self.map_epoch_ready:
+        if self.home is None and (not self.map_epoch_ready or
+                getattr(self, 'inspection', None) is not None and not self.inspection.ready):
             if now-self.created >= self.cfg['startup_wait_s']:
                 self.block('startup_no_map_epoch')
             self.publish_status()
@@ -463,7 +687,7 @@ class MissionNode(Node):
         if self.phase == 'dry_run':
             self.publish_status()
             return
-        if self.phase in ('exploring', 'observing') and now-self.started >= self.cfg['mission_timeout_s']:
+        if self.phase in ('exploring', 'observing', 'settling', 'inspecting') and now-self.started >= self.cfg['mission_timeout_s']:
             self.mission_timed_out = True
             self.start_return('mission_timeout_incomplete')
             self.publish_status()
@@ -489,15 +713,24 @@ class MissionNode(Node):
                 if success:
                     self.phase = 'home_verification'
                     self.home_stable_since = None
+                    if getattr(self, 'inspection', None) is not None:
+                        self.reset_inspection_stop()
                 elif self.return_attempts < self.cfg['max_goal_attempts']:
                     self.event('return_retry', detail=detail)
                 else:
                     self.block('return_navigation_failed')
             elif success:
-                self.phase, self.dwell_until = 'observing', now+self.cfg['observation_dwell_s']
+                if self.cfg.get('require_processed_inspection', False):
+                    self.begin_inspection(now)
+                else:
+                    self.phase, self.dwell_until = 'observing', now+self.cfg['observation_dwell_s']
             else:
                 self.failures.fail(self.goal, now, detail)
                 self.phase = 'exploring'
+        if self.phase in ('settling', 'inspecting'):
+            if not self.update_inspection(now, pose):
+                self.publish_status()
+                return
         if self.phase == 'observing':
             if now < self.dwell_until:
                 self.publish_status()
@@ -540,6 +773,8 @@ class MissionNode(Node):
             aligned = abs(angle_delta(pose[2], self.home[2])) <= self.cfg['home_yaw_tolerance_rad']
             stable = self.last_home_pose is None or (hypot(pose[0]-self.last_home_pose[0], pose[1]-self.last_home_pose[1]) < .03 and
                                                      abs(angle_delta(pose[2], self.last_home_pose[2])) < .04)
+            if getattr(self, 'inspection', None) is not None:
+                stable = stable and self.inspection_stopped(now)
             self.last_home_pose = pose
             if distance <= self.cfg['home_position_tolerance_m'] and aligned and stable:
                 self.home_stable_since = self.home_stable_since or now
@@ -572,6 +807,7 @@ class MissionNode(Node):
                  'confirmed_target_count': len(self.targets.confirmed()),
                  'map_complete': self.map_complete, 'visual_coverage_complete': self.visual_complete,
                  'unresolved_failures': len(self.failures.entries),
+                 'inspection': self.inspection.snapshot() if getattr(self, 'inspection', None) else None,
                  'selection': asdict(self.selection) if self.selection else None}
         self.status_pub.publish(String(data=json.dumps(value)))
 
@@ -590,6 +826,7 @@ class MissionNode(Node):
                   'mission_timed_out': self.mission_timed_out,
                   'target_definition_verified': self.cfg['target_definition_verified'],
                   'coordinates_valid': self.coordinates_valid,
+                  'inspection': self.inspection.snapshot() if getattr(self, 'inspection', None) else None,
                   'initial_clearance_prior': {
                       'enabled': self.cfg['initial_clearance_radius_m'] > 0,
                       'coordinates_valid': self.coordinates_valid and self.home is not None,

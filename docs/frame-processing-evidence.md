@@ -15,7 +15,7 @@ ros2 run limo_maze_perception red_rgbd_detector --ros-args \
 
 `depth_registered_to_color` 仍是已核验注册的运行前提，不能仅凭两图尺寸相同就设置。新证据使用 `/mission/frame_processing` 的 `std_msgs/String` JSON；现有 `/mission/target_observations` 格式保持不变。两路发布不是原子事务，处理证据不证明目标消息已被任务节点接收。
 
-当前只实现证据生产端。mission 尚未订阅此主题，没有新增主动观察站位或等待状态机；记录处理帧也不会写入 `Coverage.frames`，不会自动使 `visual_coverage_complete` 或 `mission_success` 成立。
+mission 现在可通过默认关闭的 `require_processed_inspection` 订阅此主题，在到达后停稳并等待新处理帧，详见[停稳观察等待](settled-inspection.md)。尚未新增主动观察站位/朝向队列；记录处理帧不会写入 `Coverage.frames`，不会自动使 `visual_coverage_complete` 或 `mission_success` 成立。
 
 ## 记录内容
 
@@ -46,4 +46,4 @@ CameraInfo 保留采样时刻和完整 K/D/R/P、尺寸、ROI、binning、畸变
 
 通过 ROS clock jump 回调和回调时刻检查监控时钟，回退或切换时钟源后锁住成功证据；即使两张图像之间发生回退、随后时间又追上，也不会漏过锁定。需新地图代次才能恢复，相同 epoch 的重复公告不会解除锁。节点重启有新的 session ID。没有 epoch 时不产生 `processed`。这些规则不能检测从未公告的 SLAM 静默重置，仍需遵守现有地图会话协议。
 
-状态只保留当前代次、水位、序号和一次回调的数据，不累积无界图像历史。当前生产端不查询 TF，也不宣称机器人已经停止或处于某个观察朝向。未来消费者仍须核对采样新鲜度、采样时刻 TF、实际姿态/停车、观察请求屏障和有界等待时间；仅有递增时间戳或 `processed` 不能替代这些条件。
+状态只保留当前代次、水位、序号和一次回调的数据，不累积无界图像历史。生产端不查询 TF，也不宣称机器人已经停止或处于某个观察朝向。可选 mission 消费者另行核对采样新鲜度、采样时刻 TF、实际姿态/停车、观察请求屏障和有界等待时间；仅有递增时间戳或 `processed` 不能替代这些条件。
