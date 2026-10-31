@@ -2,6 +2,14 @@
 
 最近验证日期：2026-10-31。以下记录区分逻辑测试、ROS 接口、物理仿真和实车；某一层通过不代表其他层通过。完整课程任务仍未验收。
 
+## 2026-10-31：有界录包与可视化入口
+
+新增[限时录包](bounded-recording.md)，在独立 wall 上限、当前 epoch 的首次任务终态或磁盘软阈值触发后，只关闭自己启动且核验身份的 recorder。18 项纯标准库回归全部通过，含真实 dummy 进程、退出竞态、强制关闭和外部进程保留。WSL Jazzy 的真实录包在隔离 domain 76 接收合成 `/clock`，15 秒后触发关闭，约 0.203 秒清理完毕、退出码 0，无升级信号；metadata 声明 223 条消息。报告与摘要见[验证存档](../experiments/bounded-recording-20261031/README.md)。
+
+首次真实录包 smoke 的 helper 在 Context/executor 预检阶段失败，未启动 recorder；修正测试 helper 后使用新目录复验。以上不是 MCAP 无丢包审计，也没有新增自主探索、返航或实车成功记录。
+
+[可视化说明](visualization.md)补充本机 F 盘完整 runtime 与 C 盘 checkout 的三个终端启动步骤；模型、Nav2 配置、SLAM overlay 路径已核对。Bash 示例经过语法检查，未启动 GUI 做像素验收。
+
 ## 2026-10-31：run15 观察证据与超时归属修复
 
 [run15](autonomous-run15.md) 的五个到达后处理窗口各由任务接受三组 RGB-D 帧；离线审计核对各窗口最后一帧的数据摘要、标定和精确采样 TF，5/5 一致。只审计接收时间 ≤700 s 的前缀，不证明全部十五帧或整包完整。第六点停车后当前 map 误差为 52.898 mm，超过 50 mm，因此 `map_complete`、`returned_pose_verified`、`mission_success` 均为 false。原始地图/位姿图保存、终态后 native 静止和自有进程退出分别核实。

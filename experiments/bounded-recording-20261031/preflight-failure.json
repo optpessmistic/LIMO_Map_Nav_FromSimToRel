@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "stage": "test_helper_preflight",
+  "recorder_started": false,
+  "error": "The smoke helper used rclpy.spin_once's default executor with a separately initialized Context. No default Context had been initialized. Fixed by binding an explicit SingleThreadedExecutor to the test Context; rerun uses a new output directory."
+}

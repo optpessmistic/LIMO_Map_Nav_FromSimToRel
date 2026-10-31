@@ -1,0 +1,6 @@
+# Preserve the latched static transforms when recording starts after the model.
+/tf_static:
+  history: keep_last
+  depth: 1
+  reliability: reliable
+  durability: transient_local

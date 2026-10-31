@@ -44,6 +44,42 @@ bash scripts/view_sim.sh rviz --frame odom \
 
 建图已启动时省略 `--frame odom`。其他电脑将 `--runtime` 改为自己的完整工作区路径。脚本找不到模型包时会报错，不会自动安装或切换到其他工作区。`--dry-run` 仅输出最终命令，可用于检查路径和环境。
 
+## 本机从零打开场景与实时地图
+
+以下使用本机 F 盘的完整运行环境，以及 C 盘当前 checkout 的 RViz 预设。仅在没有已有仿真时执行第一步；三个终端都保持打开。若终端提示 `(base)`，先执行 `conda deactivate`。
+
+**终端 1：启动三维迷宫及 Gazebo 窗口。**
+
+```bash
+cd /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source scripts/env.sh
+ros2 launch limo_sim_bringup sim.launch.py \
+  world:="$PWD/worlds/smoke_maze.world" headless:=false
+```
+
+**终端 2：启动在线建图和导航服务。**
+
+```bash
+cd /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source scripts/env.sh
+source outputs/slam-boundary-ws/install/local_setup.bash
+ros2 launch limo_maze_bringup mapping_navigation.launch.py \
+  nav_params:="$PWD/src/limo_maze_bringup/config/nav2_rpp.yaml" \
+  slam_params:="$PWD/src/limo_maze_bringup/config/slam_smoke_experimental.yaml"
+```
+
+加载边界补丁后不要再次 `source scripts/env.sh`，以免改变 overlay 顺序。
+
+**终端 3：打开 RViz 地图、雷达和相机。**
+
+```bash
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+bash scripts/view_sim.sh rviz \
+  --runtime /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+```
+
+如果省略终端 2，给终端 3 的命令加 `--frame odom`，即可只查看模型和传感器。以上步骤没有启动自主探索，机器人保持等待；自主实验还须执行[初始检查、环视、感知与任务启动](rpp-smoke-reproduction.md)。不要同时启动第二套自主任务。任务结束后仍可保留这些窗口查看现场。
+
 ## RViz 各图层的含义
 
 | 图层 | 话题 | 何时有数据 |
