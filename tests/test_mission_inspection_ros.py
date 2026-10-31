@@ -179,17 +179,18 @@ class RealMissionInspectionTests(unittest.TestCase):
         self.odom(self.now_ns, speed)
         self.spin(wall)
 
-    def terminal_success(self, *, returning=False):
+    def terminal_success(self, *, returning=False, token=1, goal_pose=(1., 1., 0.)):
         from action_msgs.msg import GoalStatus
         from rclpy.task import Future
         from limo_maze_mission.core import Goal
         node = self.mission
-        node.home, node.started = ((1., 1., 0.) if returning else (0., 0., 0.)), time.monotonic()
+        if node.home is None:
+            node.home, node.started = ((1., 1., 0.) if returning else (0., 0., 0.)), time.monotonic()
         node.phase = "returning" if returning else "exploring"
         if returning:
             node.return_started = time.monotonic()
-        node.goal = Goal(1., 1., 0., "home" if returning else "frontier", (1., 1.))
-        node.token = 1
+        node.goal = Goal(*goal_pose, "home" if returning else "frontier", goal_pose[:2])
+        node.token = token
         future = Future()
         future.set_result(SimpleNamespace(status=GoalStatus.STATUS_SUCCEEDED,
                                           result=SimpleNamespace(error_msg="")))
@@ -312,12 +313,16 @@ class RealMissionInspectionTests(unittest.TestCase):
         self.assertEqual(self.accepted(), 0)
         self.assertEqual(self.mission.inspection_deadline, deadline_before)
 
-    def test_paused_ros_clock_hits_wall_deadline_and_blocks_without_completion(self):
-        self.create_mission(timeout=2.)
+    def paused_clock_timeout(self, *, after_settling):
+        timeout = 4. if after_settling else 2.
+        self.create_mission(timeout=timeout)
         self.terminal_success()
-        self.settle()
+        if after_settling:
+            self.settle()
+        original_deadline = self.mission.inspection_terminal_received[0]+timeout
+        self.assertEqual(self.mission.inspection_deadline, original_deadline)
         paused = self.mission.get_clock().now().nanoseconds
-        deadline = time.monotonic()+2.5
+        deadline = original_deadline+.7
         while self.mission.phase != "blocked" and time.monotonic() < deadline:
             self.spin(.05)
         self.assertEqual(self.mission.get_clock().now().nanoseconds, paused)
@@ -325,9 +330,16 @@ class RealMissionInspectionTests(unittest.TestCase):
         self.assertEqual(self.mission.reason, "inspection_wall_timeout_incomplete")
         self.assertFalse(any(e["event"] == "inspection_complete" for e in self.mission.events))
         self.assertEqual(self.accepted(), 0)
+        self.assertEqual(self.mission.last_inspection_failure['evidence']['deadline_wall'], original_deadline)
         saved = list(Path(self.output.name).glob("mission_*.json"))
         self.assertEqual(len(saved), 1)
         self.assertFalse(json.loads(saved[0].read_text())["mission_success"])
+
+    def test_paused_ros_clock_hits_wall_deadline_and_blocks_without_completion(self):
+        self.paused_clock_timeout(after_settling=True)
+
+    def test_paused_ros_clock_during_settling_still_hits_terminal_wall_deadline(self):
+        self.paused_clock_timeout(after_settling=False)
 
     def test_paused_ros_clock_cannot_verify_home_from_frozen_stop_evidence(self):
         self.create_mission()
@@ -388,6 +400,88 @@ class RealMissionInspectionTests(unittest.TestCase):
         self.assertEqual(self.mission.inspection.epoch, "inspection-dds-new-epoch")
         self.assertFalse(self.mission.inspection_clock_invalid)
         self.assertEqual(self.mission.phase, "waiting", "There is still no navigation server in this fixture")
+
+    def second_goal_timeout(self, *, wrong_pose):
+        from limo_maze_mission.core import Selection
+        self.create_mission(timeout=2.)
+        # Isolate two successive terminal-result fixtures from map-completion
+        # planning. The production inspection timer/callbacks stay active.
+        self.mission.planner.select = lambda *args, **kwargs: Selection('retry_wait', frontier_count=1)
+        self.terminal_success()
+        self.settle()
+        for _ in range(3):
+            self.step()
+            self.publish_record(self.record())
+        self.spin(.12)
+        complete = [e for e in self.mission.events if e['event'] == 'inspection_complete']
+        self.assertEqual(len(complete), 1)
+        previous_ledger = self.mission.inspection
+        self.assertEqual(previous_ledger.status, 'satisfied')
+        self.assertEqual(self.mission.phase, 'exploring')
+
+        expected = (1.3, 1.1, .2)
+        self.terminal_success(token=2, goal_pose=expected)
+        current = self.mission.inspection_snapshot()
+        self.assertIsNot(self.mission.inspection, previous_ledger)
+        self.assertEqual((current['request_id'], current['goal_token'], current['status']),
+                         ('goal-2', 2, 'waiting'))
+        self.assertEqual(current['expected_pose'], list(expected))
+        self.assertEqual(current['accepted_frames'], 0)
+        self.assertIsNone(current['last_evidence'])
+        self.assertIsNone(current['producer_identity'])
+        self.assertIsNone(current['sampling_after_stamp_ns'])
+        terminal_wall = self.mission.inspection_terminal_received[0]
+        self.assertEqual(current['deadline_wall'], terminal_wall+2.)
+        self.assertEqual(previous_ledger.accepted_frames, 3)
+
+        pose = (expected[0]+.12, expected[1], expected[2]+.4) if wrong_pose else expected
+        deadline = terminal_wall+3.
+        while self.mission.phase not in ('blocked', 'canceling') and time.monotonic() < deadline:
+            self.step(speed=0. if wrong_pose else .03, pose=pose)
+            self.publish_record(self.record())
+        self.spin(.15)
+        self.assertEqual(self.mission.phase, 'blocked', self.mission.reason)
+        self.assertEqual(self.mission.reason, 'inspection_wall_timeout_incomplete')
+        failed = [e for e in self.mission.events if e['event'] == 'inspection_failed']
+        interrupted = [e for e in self.mission.events if e['event'] == 'inspection_interrupted']
+        self.assertEqual(len(failed), 1)
+        self.assertEqual(len(interrupted), 1)
+        for event in failed+interrupted:
+            evidence = event['evidence']
+            self.assertEqual(evidence['request_id'], 'goal-2')
+            self.assertEqual(evidence['goal_token'], 2)
+            self.assertEqual(evidence['expected_pose'], list(expected))
+            self.assertEqual(evidence['accepted_frames'], 0)
+            self.assertIsNone(evidence['last_evidence'])
+            self.assertIsNone(evidence['producer_identity'])
+            self.assertIsNone(evidence['sampling_after_stamp_ns'])
+            conditions = evidence['conditions']
+            self.assertTrue(conditions['odom_fresh'])
+            self.assertFalse(conditions['stop_confirmed'])
+            self.assertEqual(conditions['blocking_condition'],
+                             'current_pose_outside_goal_tolerance' if wrong_pose else
+                             'stationary_odometry_unavailable')
+            self.assertEqual(conditions['odom_sample_stationary'], wrong_pose)
+            if wrong_pose:
+                self.assertGreater(conditions['distance_m'], conditions['position_tolerance_m'])
+                self.assertGreater(conditions['yaw_error_rad'], conditions['yaw_tolerance_rad'])
+            else:
+                self.assertTrue(conditions['pose_within_tolerance'])
+        last = self.mission.last_inspection_failure
+        self.assertEqual(last['reason'], 'inspection_wall_timeout')
+        self.assertEqual(last['evidence']['request_id'], 'goal-2')
+        saved = list(Path(self.output.name).glob('mission_*.json'))
+        self.assertEqual(len(saved), 1)
+        result = json.loads(saved[0].read_text())
+        self.assertEqual(result['last_inspection_failure'], json.loads(json.dumps(last)))
+        self.assertFalse(result['mission_success'])
+        self.assertEqual(len([e for e in self.mission.events if e['event'] == 'inspection_complete']), 1)
+
+    def test_second_goal_pose_timeout_does_not_reuse_first_goal_evidence(self):
+        self.second_goal_timeout(wrong_pose=True)
+
+    def test_second_goal_moving_timeout_does_not_reuse_first_goal_evidence(self):
+        self.second_goal_timeout(wrong_pose=False)
 
 
 if __name__ == "__main__":

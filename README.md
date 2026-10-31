@@ -31,6 +31,7 @@
 | 末端旋转超时与 SLAM 定位跳变 | [run12 自主实验](docs/autonomous-run12.md) |
 | 预测路径、近目标停滞与净空保护 | [run13 自主实验](docs/autonomous-run13.md) |
 | 首次探索、替身标注和返航 | [run14 自主实验](docs/autonomous-run14.md) |
+| 新图像观察验证与到位超差诊断 | [run15 实验及保留的失败证据](docs/autonomous-run15.md) |
 | 可选 RPP 小迷宫配置与运行顺序 | [复现步骤](docs/rpp-smoke-reproduction.md) |
 | 车体真实运动与接触近似 | [物理验证](docs/physics-validation.md) |
 | 激光输入与时间对照 | [只读扫描诊断](docs/scan-alignment.md) |

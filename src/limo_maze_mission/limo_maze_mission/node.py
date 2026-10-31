@@ -153,8 +153,13 @@ class MissionNode(Node):
         self.inspection_deadline = None
         self.inspection_terminal_received = None
         self.inspection_pose_since = None
+        self.inspection_goal_token = None
+        self.inspection_sampling_after_ns = None
+        self.inspection_conditions = None
+        self.last_inspection_failure = None
         self.inspection_odom = dict(since=None, count=0, received=None, stamp_ns=None,
-                                    first_stamp_ns=None, stationary=False)
+                                    first_stamp_ns=None, stationary=False,
+                                    sample_fresh=False, sample_stationary=False)
         if self.cfg['require_processed_inspection']:
             self.inspection = InspectionLedger(InspectionPolicy(
                 required_frames=self.cfg['inspection_required_frames'],
@@ -343,6 +348,9 @@ class MissionNode(Node):
             state['count'] += 1
             state['stationary'] = True
         state['received'], state['stamp_ns'] = now, stamp
+        # Preserve the latest sample facts independently of the settling window:
+        # a pose-window reset is not evidence that a stationary sample moved.
+        state['sample_fresh'], state['sample_stationary'] = fresh, stationary
 
     def inspection_stopped(self, now):
         state = self.inspection_odom
@@ -357,6 +365,7 @@ class MissionNode(Node):
         self.reset_inspection_stop()
         if self.phase == 'inspecting':
             self.inspection.reset_window(self.get_clock().now().nanoseconds, reason)
+            self.inspection_sampling_after_ns = None
             self.phase = 'settling'
             self.event('inspection_window_reset', reason=reason)
 
@@ -365,15 +374,88 @@ class MissionNode(Node):
                 abs(angle_delta(pose[2], self.goal.yaw)) <= self.cfg['inspection_yaw_tolerance_rad'])
 
     def begin_inspection(self, now):
+        terminal_wall, terminal_ns = self.inspection_terminal_received
+        previous = self.inspection
+        # Never turn a new request into authority to recover an invalid epoch.
+        if (not previous.ready or self.inspection_clock_invalid or
+                previous.epoch != self.map_epoch or terminal_ns < previous.epoch_barrier_ns):
+            self.block('inspection_epoch_invalid_requires_reanchor')
+            return
+        current = InspectionLedger(previous.policy)
+        current.set_epoch(previous.epoch, previous.epoch_barrier_ns)
+        # This initial lower bound belongs to the terminal result. Acquisition
+        # is still disabled until settling establishes the sampling barrier.
+        current.begin(after_stamp_ns=terminal_ns,
+                      expected_pose=(self.goal.x, self.goal.y, self.goal.yaw),
+                      wall_now=terminal_wall, timeout_seconds=self.cfg['inspection_timeout_s'],
+                      request_id='goal-'+str(self.token))
+        self.inspection = current
+        self.inspection_goal_token = self.token
+        self.inspection_sampling_after_ns = None
+        self.inspection_conditions = None
         self.phase = 'settling'
-        terminal_wall, _ = self.inspection_terminal_received
-        self.inspection_deadline = terminal_wall+self.cfg['inspection_timeout_s']
+        self.inspection_deadline = current.deadline_wall
+        self.inspection_odom.update(received=None, stamp_ns=None,
+                                    sample_fresh=False, sample_stationary=False)
         self.reset_inspection_stop()
-        self.event('inspection_settling', token=self.token, timeout_s=self.cfg['inspection_timeout_s'])
+        self.event('inspection_settling', token=self.token, timeout_s=self.cfg['inspection_timeout_s'],
+                   evidence=self.inspection_snapshot())
+
+    def inspection_snapshot(self):
+        if getattr(self, 'inspection', None) is None:
+            return None
+        result = self.inspection.snapshot()
+        result.update(goal_token=getattr(self, 'inspection_goal_token', None),
+                      sampling_after_stamp_ns=getattr(self, 'inspection_sampling_after_ns', None),
+                      conditions=getattr(self, 'inspection_conditions', None))
+        return result
+
+    def inspection_wait_conditions(self, now, pose):
+        """Bounded diagnostic facts; these do not alter any acceptance check."""
+        state = self.inspection_odom
+        now_ns = self.get_clock().now().nanoseconds
+        wall_age = None if state['received'] is None else now-state['received']
+        ros_age = None if state['stamp_ns'] is None else (now_ns-state['stamp_ns'])/1e9
+        fresh = (state.get('sample_fresh', False) and wall_age is not None and ros_age is not None and
+                 0 <= wall_age <= self.cfg['inspection_odom_max_age_s'] and
+                 0 <= ros_age <= self.cfg['inspection_odom_max_age_s'])
+        distance = hypot(pose[0]-self.goal.x, pose[1]-self.goal.y)
+        yaw_error = abs(angle_delta(pose[2], self.goal.yaw))
+        pose_matches = self.inspection_pose_matches(pose)
+        stopped = self.inspection_stopped(now)
+        pose_stable = 0. if self.inspection_pose_since is None else now-self.inspection_pose_since
+        if not pose_matches:
+            reason = 'current_pose_outside_goal_tolerance'
+        elif not stopped:
+            reason = 'stationary_odometry_unavailable'
+        elif pose_stable < self.cfg['inspection_settle_s']:
+            reason = 'pose_settle_time_not_elapsed'
+        elif self.inspection.status != 'satisfied':
+            reason = 'processed_frames_pending'
+        else:
+            reason = None
+        return {'stamp_ns': now_ns, 'phase': self.phase, 'blocking_condition': reason,
+                'current_pose': list(pose), 'distance_m': distance, 'yaw_error_rad': yaw_error,
+                'position_tolerance_m': self.cfg['goal_arrival_margin_m'],
+                'yaw_tolerance_rad': self.cfg['inspection_yaw_tolerance_rad'],
+                'pose_within_tolerance': pose_matches, 'pose_stable_wall_s': pose_stable,
+                'odom_stamp_ns': state['stamp_ns'], 'odom_wall_age_s': wall_age,
+                'odom_ros_age_s': ros_age, 'odom_fresh': bool(fresh),
+                'odom_sample_stationary': state.get('sample_stationary', False),
+                'odom_stationary_count': state['count'], 'stop_confirmed': bool(stopped)}
+
+    def record_inspection_failure(self, reason):
+        self.last_inspection_failure = {'reason': reason, 'stamp': self.seconds(),
+                                        'goal': asdict(self.goal), 'evidence': self.inspection_snapshot()}
+        return self.last_inspection_failure
 
     def update_inspection(self, now, pose):
+        # Refresh before checking the deadline so a timeout describes this
+        # goal's actual pose/odometry guard, even if it never reached inspecting.
+        self.inspection_conditions = self.inspection_wait_conditions(now, pose)
         if now >= self.inspection_deadline:
-            self.event('inspection_failed', reason='inspection_wall_timeout', evidence=self.inspection.snapshot())
+            failure = self.record_inspection_failure('inspection_wall_timeout')
+            self.event('inspection_failed', **failure)
             self.block('inspection_wall_timeout_incomplete')
             return False
         if not self.inspection_pose_matches(pose):
@@ -388,18 +470,13 @@ class MissionNode(Node):
         if now-self.inspection_pose_since < self.cfg['inspection_settle_s']:
             return False
         if self.phase == 'settling':
-            if self.inspection.request_id == 'goal-'+str(self.token) and self.inspection.status == 'waiting':
-                self.inspection.reset_window(self.get_clock().now().nanoseconds, 'stationarity_reestablished')
-            else:
-                self.inspection.begin(after_stamp_ns=self.get_clock().now().nanoseconds,
-                                      expected_pose=(self.goal.x, self.goal.y, self.goal.yaw),
-                                      wall_now=now, timeout_seconds=self.inspection_deadline-now,
-                                      request_id='goal-'+str(self.token))
+            self.inspection_sampling_after_ns = self.get_clock().now().nanoseconds
+            self.inspection.reset_window(self.inspection_sampling_after_ns, 'stationarity_established')
             self.phase = 'inspecting'
             self.event('inspection_started', token=self.token)
         self.inspection.tick(self.get_clock().now().nanoseconds, now)
         if self.inspection.snapshot()['status'] == 'satisfied':
-            self.event('inspection_complete', evidence=self.inspection.snapshot())
+            self.event('inspection_complete', evidence=self.inspection_snapshot())
             self.phase, self.dwell_until = 'observing', now
             self.inspection_deadline = None
             return True
@@ -591,7 +668,10 @@ class MissionNode(Node):
 
     def cancel_to(self, next_phase, reason):
         if getattr(self, 'inspection', None) is not None and self.phase in ('settling', 'inspecting'):
-            self.event('inspection_interrupted', reason=reason, evidence=self.inspection.snapshot())
+            previous_failure = getattr(self, 'last_inspection_failure', None)
+            if previous_failure is None or previous_failure['evidence']['request_id'] != self.inspection.request_id:
+                self.record_inspection_failure(reason)
+            self.event('inspection_interrupted', reason=reason, evidence=self.inspection_snapshot())
             self.inspection.invalidate(reason)
             self.inspection_deadline = None
         self.reason = reason
@@ -807,7 +887,8 @@ class MissionNode(Node):
                  'confirmed_target_count': len(self.targets.confirmed()),
                  'map_complete': self.map_complete, 'visual_coverage_complete': self.visual_complete,
                  'unresolved_failures': len(self.failures.entries),
-                 'inspection': self.inspection.snapshot() if getattr(self, 'inspection', None) else None,
+                 'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
+                 'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
                  'selection': asdict(self.selection) if self.selection else None}
         self.status_pub.publish(String(data=json.dumps(value)))
 
@@ -826,7 +907,8 @@ class MissionNode(Node):
                   'mission_timed_out': self.mission_timed_out,
                   'target_definition_verified': self.cfg['target_definition_verified'],
                   'coordinates_valid': self.coordinates_valid,
-                  'inspection': self.inspection.snapshot() if getattr(self, 'inspection', None) else None,
+                  'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
+                  'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
                   'initial_clearance_prior': {
                       'enabled': self.cfg['initial_clearance_radius_m'] > 0,
                       'coordinates_valid': self.coordinates_valid and self.home is not None,

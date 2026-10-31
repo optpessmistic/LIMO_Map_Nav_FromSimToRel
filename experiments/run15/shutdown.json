@@ -1,0 +1,20 @@
+{
+  "reason": "operator_sigint",
+  "goal_terminal_verified": true,
+  "stop_verified": true,
+  "stop_verification_source": "wheel_odometry",
+  "errors": [],
+  "linear_stop_threshold_m_s": 0.005,
+  "angular_stop_threshold_rad_s": 0.02,
+  "limitations": [
+    "Wheel odometry is not independent physical braking evidence.",
+    "After bounded cleanup destroys this client, an unresolved send may still be accepted by Nav2.",
+    "No controller lease or independent velocity watchdog is implemented here."
+  ],
+  "elapsed_s": 0.5720730559987715,
+  "stationary_samples": 20,
+  "cancel_ack_received": true,
+  "send_pending": false,
+  "goal_handle_present": false,
+  "late_acceptance_after_client_destroy_possible": false
+}

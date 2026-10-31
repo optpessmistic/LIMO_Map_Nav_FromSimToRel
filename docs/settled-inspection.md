@@ -49,6 +49,8 @@ ros2 launch limo_maze_mission mission.launch.py \
 
 `/mission/status` 和任务 JSON 增加 `inspection`；事件记录 `inspection_started`、`inspection_window_reset`、`inspection_complete` 或失败/中断。账本仅保留一个窗口、一个生产端身份、计数和最后一帧的摘要/位姿，不累积所有图像。成功事件保留完成窗口快照；实际 RGB/Depth、CameraInfo、TF 和证据主题仍需单独录包，摘要不能代替图像存档。
 
+新目标进入 `settling` 时立即建立该目标的空账本，清除前一目标的帧、生产端身份和计数；这时仍不接收图像。`sampling_after_stamp_ns` 仅在连续停稳后设置，区别于 Action 终态的初始时间下界。`conditions` 保留当前位置/yaw 误差、odom 新鲜度和阻塞条件；`last_inspection_failure` 在账本失效后仍保存当前目标的失败前快照。新建请求不会恢复已失效的地图 epoch，也不延长截止时间。
+
 现有目标观测接口仍可由其他识别器实现。当前处理证据 schema 1 的校验器针对红色替身，包含颜色检测配置及拒绝原因；仅改 `frame_processing_source` 不足以接入任意 AprilTag/YOLO 输出。替换识别器需要对应的证据适配器或新版本校验器。
 
 合格空检测可以满足“处理过图像”的等待；存在但无法定位的候选也保留计数。两者都不证明没有物品，也不证明目标消息已被任务节点接收。`Coverage.frames`、`target_definition_verified` 和完整任务成功判据不因此改变。
@@ -57,4 +59,4 @@ ros2 launch limo_maze_mission mission.launch.py \
 
 纯逻辑回归验证元数据、重复帧、身份改变、采样 TF、位姿、时钟和有界状态。隔离 ROS 回归使用实际 DDS Clock、地图、Odometry、动态 TF 和证据消息；导航终态由显式 Future 测试夹具给出，没有启动 Nav2 或 Gazebo，也没有发布运动指令。具体测试结果见 [验证记录](validation.md)。
 
-下一步是在新的 Gazebo 运行中启用本功能，录制图像与 TF，检验停车阈值和相机等待是否适合真实仿真数据；之后再增加有限观察朝向队列及红色替身识别范围标定。当前不能把消息回归当作新的一轮物理仿真成功。
+[run15](autonomous-run15.md) 已在真实 Gazebo 中完成五个处理窗口，各末帧的原始数据和采样 TF 离线一致；第六点因停车后 map 位置误差 52.898 mm 超过 50 mm 而停止，未完成建图/返航。该轮还暴露了停稳前失败误引用上个账本的缺陷，上述归属修复在其后完成，尚未重新运行 Gazebo。下一轮须复验到位余量和完整流程，随后增加有限观察朝向队列及替身识别范围标定；消息回归不能替代物理仿真或实车验收。
