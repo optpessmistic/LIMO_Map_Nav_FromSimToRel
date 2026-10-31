@@ -1,0 +1,273 @@
+{
+  "run": "run18-arrival-margin",
+  "epoch": "6816e273-0c13-4a8c-ac7f-8563b578ce14",
+  "status": "orchestration_failed",
+  "stages": [
+    {
+      "name": "sim_start_and_sensor_check",
+      "elapsed_wall_s": 7.1478417769999965
+    },
+    {
+      "name": "navigation_start_and_parameter_check",
+      "elapsed_wall_s": 59.50901718099999
+    },
+    {
+      "name": "recording_perception_and_initial_survey",
+      "elapsed_wall_s": 84.803826442
+    },
+    {
+      "name": "owned_shutdown",
+      "elapsed_wall_s": 119.687040964
+    }
+  ],
+  "errors": [
+    "RuntimeError: survey exited 1"
+  ],
+  "stops": {
+    "recorder": {
+      "signals": [
+        {
+          "pid": 1353,
+          "start_ticks": 24493,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.8102658220000194,
+      "exit_code": 0
+    },
+    "perception": {
+      "signals": [
+        {
+          "pid": 1354,
+          "start_ticks": 24494,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1391,
+          "start_ticks": 25191,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.8190782390000209,
+      "exit_code": 1
+    },
+    "motion": {
+      "signals": [
+        {
+          "pid": 1423,
+          "start_ticks": 25883,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.2152384450000113,
+      "exit_code": -6
+    },
+    "survey": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.002355809999983194,
+      "exit_code": 1
+    },
+    "navigation": {
+      "signals": [
+        {
+          "pid": 1085,
+          "start_ticks": 21964,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1147,
+          "start_ticks": 22995,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1148,
+          "start_ticks": 22998,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1149,
+          "start_ticks": 23000,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1150,
+          "start_ticks": 23002,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1151,
+          "start_ticks": 23005,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1152,
+          "start_ticks": 23007,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1153,
+          "start_ticks": 23010,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1154,
+          "start_ticks": 23011,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1155,
+          "start_ticks": 23012,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1156,
+          "start_ticks": 23018,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [
+        "ownership/read uncertain for pid 1151"
+      ],
+      "remaining": [
+        {
+          "pid": 1085,
+          "state": "D",
+          "pgid": 1085,
+          "sid": 1085,
+          "start_ticks": 21964
+        }
+      ],
+      "remaining_check_complete": false,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.6107316609999884,
+      "exit_code": null
+    },
+    "sim": {
+      "signals": [
+        {
+          "pid": 858,
+          "start_ticks": 16727,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 907,
+          "start_ticks": 18130,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 908,
+          "start_ticks": 18131,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 909,
+          "start_ticks": 18132,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 2.840017359000001,
+      "exit_code": 0
+    },
+    "sim-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008829730000456948,
+      "exit_code": 0
+    },
+    "nav-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0006739180000181477,
+      "exit_code": 0
+    },
+    "parameter-gate": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.00112398400000302,
+      "exit_code": 0
+    }
+  },
+  "active_wall_budget_seconds": 1800,
+  "native_terminal_tail_verified": false,
+  "cleanup_budget_note": "Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.",
+  "stage": "owned_shutdown",
+  "shutdown_signal_poll_budget_seconds": 280,
+  "recorder_inner_recheck": {
+    "owner": {
+      "pid": 1388,
+      "pgid": 1388,
+      "sid": 1388,
+      "start_ticks": 25147,
+      "token": "f7d4abfb6737492ea3bdb82dcacf91e8"
+    },
+    "remaining": [],
+    "ownership_errors": [],
+    "remaining_check_complete": true,
+    "reported_cleanup": {
+      "signals": [
+        {
+          "pid": 1388,
+          "start_ticks": 25147,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 15.0,
+      "elapsed_wall_seconds": 0.6085418150000237
+    }
+  },
+  "elapsed_wall_s": 128.438137449,
+  "all_owned_groups_empty": false,
+  "evidence_collection_complete": false
+}

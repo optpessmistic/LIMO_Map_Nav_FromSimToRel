@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "success": false,
+  "reason": "SurveyAbort: SurveyAbort: Pose changed at duplicate odometry timestamp; SurveyAbort: Pose changed at duplicate odometry timestamp",
+  "executed": true,
+  "motion_started": false,
+  "map_epoch": "6816e273-0c13-4a8c-ac7f-8563b578ce14",
+  "assumption": {
+    "independently_verified_clear_radius_m": 0.3,
+    "source": "operator_setup_guarantee_not_scan_or_world_metadata",
+    "rotation_envelope_m": 0.25,
+    "clearance_margin_m": 0.03
+  },
+  "control": "Nav2 Spin action; no custom nonzero Twist publisher",
+  "behavior_max_angular_rad_s_at_verified_startup": 0.4,
+  "odom_angular_abort_rad_s": 0.45,
+  "wall_seconds": 0.25771042700000635,
+  "phase": "preflight",
+  "counts": {
+    "scan": 0,
+    "odom": 1,
+    "clock": 10
+  },
+  "yaw_accumulated_rad": 0.0,
+  "maximum_yaw_rad": 0.0,
+  "max_displacement_m": 0.0,
+  "final_heading_error_rad": null,
+  "spin_goals": [],
+  "action_statuses_received": {},
+  "action_status_topics_monitored": [],
+  "cancel_required": false,
+  "stop_verified": null,
+  "stop_stage_stamp": 10.16,
+  "stop_new_odom_samples": 0,
+  "fallback_zero_messages": 0,
+  "cleanup_errors": [],
+  "samples": [],
+  "stop_verification_source": "wheel_odometry",
+  "physical_motion_independently_verified": false,
+  "limitations": [
+    "Wheel odometry alone cannot prove physical rotation or stopping; compare independent motion evidence.",
+    "Partial-FOV scan cannot establish unseen starting clearance.",
+    "An offset partial-FOV lidar may leave a central blind disk after rotation.",
+    "Action UUID/status and graph monitoring are cooperative, not an atomic ownership lock.",
+    "Rotation does not establish map completion, safe map cells, or search coverage."
+  ]
+}

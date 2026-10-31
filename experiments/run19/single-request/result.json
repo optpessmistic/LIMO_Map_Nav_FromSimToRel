@@ -1,0 +1,156 @@
+{
+  "trial": "single-request",
+  "egl": false,
+  "motion_started": false,
+  "probe_timeout_s": 120,
+  "supervisor_active_budget_s": 220,
+  "errors": [],
+  "stops": {
+    "native-check-warm": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0012774159999935364,
+      "exit_code": 0
+    },
+    "warm-probe": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0009882269999934579,
+      "exit_code": 0
+    },
+    "native-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008747730000777665,
+      "exit_code": 0
+    },
+    "probe": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008950349999850005,
+      "exit_code": 0
+    },
+    "sim": {
+      "signals": [
+        {
+          "pid": 888,
+          "start_ticks": 54199,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 905,
+          "start_ticks": 54760,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 906,
+          "start_ticks": 54761,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 907,
+          "start_ticks": 54762,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.6189658810000083,
+      "exit_code": 0
+    }
+  },
+  "commands": {
+    "sim": [
+      "ros2",
+      "launch",
+      "limo_sim_bringup",
+      "sim.launch.py",
+      "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/worlds/smoke_maze.world",
+      "headless:=true",
+      "headless_rendering:=false",
+      "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run19-single-spawn-check/single-request/spawn"
+    ],
+    "probe": [
+      "/usr/bin/python3",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+      "--timeout",
+      "120",
+      "--max-initial-sim-time",
+      "30",
+      "--output",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run19-single-spawn-check/single-request/sim-runtime.json"
+    ],
+    "native-check": [
+      "/usr/bin/python3",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+      "--execute",
+      "--world",
+      "limo_maze",
+      "--name",
+      "limo",
+      "--output",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run19-single-spawn-check/single-request/native-scene.json"
+    ],
+    "warm-probe": [
+      "/usr/bin/python3",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+      "--timeout",
+      "30",
+      "--output",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run19-single-spawn-check/single-request/sim-runtime-warm.json"
+    ],
+    "native-check-warm": [
+      "/usr/bin/python3",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+      "--execute",
+      "--world",
+      "limo_maze",
+      "--name",
+      "limo",
+      "--output",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run19-single-spawn-check/single-request/native-scene-warm.json"
+    ]
+  },
+  "environment": {
+    "DISPLAY": ":0",
+    "WAYLAND_DISPLAY": "wayland-0",
+    "ROS_DOMAIN_ID": "73",
+    "GZ_PARTITION": "limo_maze_jazzy",
+    "LIBGL_ALWAYS_SOFTWARE": null,
+    "MESA_D3D12_DEFAULT_ADAPTER_NAME": null
+  },
+  "isolation_passed": true,
+  "probe_exit_code": 0,
+  "sensor_passed": true,
+  "spawn_acknowledged_once": true,
+  "native_first_unique_passed": true,
+  "warm_passed": true,
+  "native_unique_passed": true,
+  "native_uniqueness_scope": "Two snapshots have the same single model ID; not continuous or future uniqueness",
+  "all_owned_groups_empty": true,
+  "elapsed_wall_s": 76.09973477800008
+}

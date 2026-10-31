@@ -46,15 +46,16 @@ bash scripts/view_sim.sh rviz --frame odom \
 
 ## 本机从零打开场景与实时地图
 
-以下使用本机 F 盘的完整运行环境，以及 C 盘当前 checkout 的 RViz 预设。仅在没有已有仿真时执行第一步；三个终端都保持打开。若终端提示 `(base)`，先执行 `conda deactivate`。
+以下使用本机 F 盘的模型依赖，以及 C 盘当前 checkout 构建的仿真启动包和 RViz 预设。C 盘 overlay 包含单次模型生成修复，必须在 F 盘环境后加载。仅在没有已有仿真时执行第一步；三个终端都保持打开。若终端提示 `(base)`，先执行 `conda deactivate`。
 
 从 Windows PowerShell 可用 `wsl -d Ubuntu-24.04` 打开 Ubuntu；下面的命令均在 Ubuntu 内执行。WSLg 会把 Gazebo/RViz 显示为 Windows 桌面窗口。
 
 **终端 1：启动三维迷宫及 Gazebo 窗口。**
 
 ```bash
-cd /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
-source scripts/env.sh
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/env.sh
+source install/local_setup.bash
 ros2 launch limo_sim_bringup sim.launch.py \
   world:="$PWD/worlds/smoke_maze.world" headless:=false
 ```
@@ -62,19 +63,21 @@ ros2 launch limo_sim_bringup sim.launch.py \
 本机软件渲染的首次传感器就绪实测约 45 秒；窗口或桥接节点出现不代表传感器已经就绪。先保留终端等待，不要重复启动服务器。需要确认数据时，在另一个 Ubuntu 终端执行：
 
 ```bash
-cd /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
-source scripts/env.sh
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/env.sh
+source install/local_setup.bash
 /usr/bin/python3 scripts/check_sim_runtime.py --timeout 120
 ```
 
-该只读检查会验证推进的仿真时间、九路消息、RGB-D 同步和 TF；超过上限仍失败时保留日志排查。上述 45 秒来自无 GUI 的传感器测试，不是窗口启动时间保证，详见[启动诊断](simulation-startup-diagnosis.md)。
+该只读检查会验证推进的仿真时间、九路消息、RGB-D 同步、TF 和至少一秒的里程计一致性；超过上限仍失败时保留日志排查。上述 45 秒来自历史无 GUI 传感器测试，不是窗口启动时间保证，详见[启动诊断](simulation-startup-diagnosis.md)及[单次模型生成](single-spawn-diagnosis.md)。
 
 **终端 2：启动在线建图和导航服务。**
 
 ```bash
-cd /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
-source scripts/env.sh
-source outputs/slam-boundary-ws/install/local_setup.bash
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/env.sh
+source /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/local_setup.bash
+source install/local_setup.bash
 ros2 launch limo_maze_bringup mapping_navigation.launch.py \
   nav_params:="$PWD/src/limo_maze_bringup/config/nav2_rpp.yaml" \
   slam_params:="$PWD/src/limo_maze_bringup/config/slam_smoke_experimental.yaml"
@@ -110,15 +113,9 @@ bash scripts/view_sim.sh rviz \
 
 ## 当前没有仿真时
 
-先按[复现步骤](rpp-smoke-reproduction.md)启动仿真、建图和任务，再用以上查看脚本连接。仅启动三维迷宫、查看传感器时，在**完整工作区**运行：
+本机使用上面的“三终端”步骤；只看模型与传感器时启动终端 1，终端 3 加 `--frame odom`。不要仅进入 F 盘旧工作区启动仿真，那会绕过 C 盘的单次模型生成修复。其他电脑应先构建当前版本，再按[复现步骤](rpp-smoke-reproduction.md)加载自己的完整工作区。
 
-```bash
-source scripts/env.sh
-ros2 launch limo_sim_bringup sim.launch.py \
-  world:="$PWD/worlds/smoke_maze.world" headless:=false
-```
-
-这条命令会新建仿真 server，并自带 GUI；只在没有已有仿真时使用。车不会因打开窗口自动执行探索。只关查看脚本打开的 GUI/RViz 窗口不会停止独立运行的仿真 server；如需结束实验，按复现步骤关闭各运行终端。
+终端 1 会新建仿真 server 并自带 GUI，只在没有已有仿真时使用。车不会因打开窗口自动执行探索。只关查看脚本打开的 GUI/RViz 窗口不会停止独立运行的仿真 server；如需结束实验，按复现步骤关闭各运行终端。
 
 ## 窗口或画面异常
 

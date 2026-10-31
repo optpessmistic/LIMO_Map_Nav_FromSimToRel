@@ -1,11 +1,14 @@
 """Start native Harmonic simulation; never start a physical LIMO driver."""
 
 import os
+import json
 from pathlib import Path
+import tempfile
 import xml.etree.ElementTree as ET
 
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_prefix, get_package_share_directory
 from launch import LaunchDescription
+from launch.logging import launch_config
 from launch.actions import (
     DeclareLaunchArgument,
     EmitEvent,
@@ -13,6 +16,7 @@ from launch.actions import (
     OpaqueFunction,
     RegisterEventHandler,
     SetEnvironmentVariable,
+    TimerAction,
 )
 from launch.event_handlers import OnProcessExit
 from launch.events import Shutdown
@@ -77,26 +81,47 @@ def _start(context):
         }],
         output="screen",
     )
-    spawn = Node(
-        package="ros_gz_sim",
-        executable="create",
+    # A create request is not idempotent. A slow reply must never cause this
+    # client to submit another robot creation to the same running server.
+    spawn_executable = (Path(get_package_prefix("limo_sim_bringup")) /
+                        "lib/limo_sim_bringup/spawn_once.py")
+    if not spawn_executable.is_file() or not os.access(spawn_executable, os.X_OK):
+        raise RuntimeError(f"Build limo_sim_bringup first; spawn helper is unavailable: {spawn_executable}")
+    artifacts_arg = LaunchConfiguration("spawn_artifacts").perform(context)
+    if artifacts_arg:
+        artifacts = Path(artifacts_arg).expanduser().resolve()
+        artifacts.mkdir(parents=True, exist_ok=False)
+    else:
+        artifacts = Path(tempfile.mkdtemp(prefix="limo-spawn-", dir=launch_config.log_dir))
+    (artifacts / "robot.urdf").write_text(robot_xml, encoding="utf-8")
+    spawn_parameters = {
+        "world": world_name, "name": "limo", "model_file": "robot.urdf",
+        "allow_renaming": False,
+        "pose": {**{axis: float(LaunchConfiguration("start_" + axis).perform(context))
+                    for axis in ("x", "y", "z", "yaw")}, "roll": 0.0, "pitch": 0.0},
+        "discovery_seconds": 120.0, "response_seconds": 30.0, "total_seconds": 150.0,
+    }
+    params_file = artifacts / "parameters.json"
+    params_file.write_text(json.dumps(spawn_parameters, indent=2, allow_nan=False) + "\n",
+                           encoding="utf-8")
+    spawn = ExecuteProcess(
+        cmd=[str(spawn_executable),
+             "--params-file", str(params_file), "--report-dir", str(artifacts / "result"),
+             "--execute"],
         name="spawn_limo",
-        arguments=[
-            "-world", world_name,
-            "-name", "limo",
-            "-allow_renaming", "false",
-            "-string", robot_xml,
-            "-x", LaunchConfiguration("start_x"),
-            "-y", LaunchConfiguration("start_y"),
-            "-z", LaunchConfiguration("start_z"),
-            "-Y", LaunchConfiguration("start_yaw"),
-        ],
         output="screen",
     )
+    spawn_state = {"finished": False}
 
     def spawn_finished(event, _context):
+        spawn_state["finished"] = True
         if event.returncode != 0:
             return [EmitEvent(event=Shutdown(reason="LIMO model spawn failed"))]
+        return []
+
+    def spawn_deadline(_context):
+        if not spawn_state["finished"]:
+            return [EmitEvent(event=Shutdown(reason="LIMO model spawn exceeded wall deadline"))]
         return []
 
     paths = [str(model_share), str(model_share.parent)]
@@ -110,6 +135,7 @@ def _start(context):
         state_publisher,
         bridge,
         spawn,
+        TimerAction(period=180.0, actions=[OpaqueFunction(function=spawn_deadline)]),
     ]
 
 
@@ -127,5 +153,7 @@ def generate_launch_description():
         DeclareLaunchArgument("start_y", default_value="0.0"),
         DeclareLaunchArgument("start_z", default_value="0.0"),
         DeclareLaunchArgument("start_yaw", default_value="0.0"),
+        DeclareLaunchArgument("spawn_artifacts", default_value="",
+                              description="New directory for spawn inputs/report; defaults to launch log directory."),
         OpaqueFunction(function=_start),
     ])

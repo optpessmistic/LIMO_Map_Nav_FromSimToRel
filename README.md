@@ -22,8 +22,10 @@
 | ROS2 / Gazebo 接入 | [Jazzy 仿真](docs/jazzy-simulation.md) |
 | 打开三维场景、地图和相机窗口 | [Gazebo / RViz 可视化](docs/visualization.md) |
 | 首次启动等待与传感器就绪 | [冷启动诊断](docs/simulation-startup-diagnosis.md) |
+| 防止重复生成模型与同戳状态冲突 | [单次生成和原生模型检查](docs/single-spawn-diagnosis.md) |
 | ROS2 任务管理 | [任务节点](docs/ros2-mission.md) |
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
+| 距离、角度、遮挡及相邻目标测试 | [红色替身标定场景](docs/red-surrogate-calibration.md) |
 | 有效空检测、拒收与采样帧证据 | [图像处理证据](docs/frame-processing-evidence.md) |
 | 到达后停稳并等待新处理帧 | [可选自主观察等待](docs/settled-inspection.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |

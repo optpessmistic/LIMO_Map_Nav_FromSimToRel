@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "status": "stopped",
+  "command": [
+    "ros2",
+    "bag",
+    "record",
+    "--storage",
+    "mcap",
+    "--storage-preset-profile",
+    "zstd_fast",
+    "--use-sim-time",
+    "--disable-keyboard-controls",
+    "--output",
+    "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run18-arrival-margin/recording/bag",
+    "--max-bag-size",
+    "268435456",
+    "--qos-profile-overrides-path",
+    "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/config/recording_qos.yaml",
+    "--topics",
+    "/scan",
+    "/tf",
+    "/tf_static",
+    "/odom",
+    "/clock",
+    "/pose",
+    "/map",
+    "/plan",
+    "/received_global_plan",
+    "/lookahead_point",
+    "/lookahead_collision_arc",
+    "/is_rotating_to_heading",
+    "/global_costmap/costmap_raw",
+    "/local_costmap/costmap_raw",
+    "/cmd_vel_nav",
+    "/cmd_vel_smoothed",
+    "/cmd_vel",
+    "/rosout",
+    "/mission/status",
+    "/mission/map_epoch",
+    "/mission/targets",
+    "/mission/target_observations",
+    "/mission/frame_processing",
+    "/camera/color/image_raw",
+    "/camera/depth/image_raw",
+    "/camera/color/camera_info",
+    "/camera/depth/camera_info"
+  ],
+  "mission_dir": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run18-arrival-margin/mission",
+  "map_epoch": "6816e273-0c13-4a8c-ac7f-8563b578ce14",
+  "limits": {
+    "max_wall_seconds": 1650.0,
+    "post_terminal_wall_seconds": 120.0,
+    "max_bytes": 8589934592,
+    "min_free_bytes": 4294967296
+  },
+  "terminal": null,
+  "reason": "supervisor_SIGINT",
+  "errors": [],
+  "owner": {
+    "pid": 1388,
+    "pgid": 1388,
+    "sid": 1388,
+    "start_ticks": 25147,
+    "token": "f7d4abfb6737492ea3bdb82dcacf91e8"
+  },
+  "mission_success_inferred": false,
+  "robot_stop_verified": false,
+  "limitations": [
+    "Only the original owned recorder process group is supervised.",
+    "Limits initiate shutdown; cleanup budgets and scheduling/I/O delays add time.",
+    "Byte/free-space limits are polled soft thresholds.",
+    "A terminal file or tail period does not prove robot stop or mission success."
+  ],
+  "observed_bytes": 8574042,
+  "observed_free_bytes": 59646967808,
+  "stop_requested_elapsed_wall_seconds": 28.387975134000015,
+  "cleanup": {
+    "signals": [
+      {
+        "pid": 1388,
+        "start_ticks": 25147,
+        "signal": "SIGINT"
+      }
+    ],
+    "ownership_errors": [],
+    "remaining": [],
+    "remaining_check_complete": true,
+    "forced_kill": false,
+    "terminate_used": false,
+    "cleanup_budget_seconds": 15.0,
+    "elapsed_wall_seconds": 0.6085418150000237
+  },
+  "recorder_exit_code": 0,
+  "graceful_recorder_shutdown": true,
+  "elapsed_wall_seconds": 28.996539023999986,
+  "metadata": {
+    "exists": true,
+    "integrity_verified": false
+  }
+}

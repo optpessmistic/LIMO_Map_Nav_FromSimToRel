@@ -30,3 +30,5 @@ run17 只启动 Gazebo、模型状态发布者、桥接、模型生成和只读�
 将检查脚本默认等待改为 120 秒，仍支持显式覆盖；外层自动化的 wall budget 也应覆盖启动及检查时间。GUI 显示尚未做像素验收。下一轮自主实验须使用新目录和 epoch；视觉覆盖、正式物品识别、跨迷宫重复性和实车验收仍未完成。
 
 原始精简证据与 SHA256 清单见[实验存档](../experiments/startup-20261031/README.md)。渲染日志位置和 OpenGL 排查方法参考 [Gazebo Harmonic 官方说明](https://gazebosim.org/docs/harmonic/troubleshooting/)。
+
+后续 run18 在运动前发现同戳 odom 冲突，说明本页历史探针的“三帧 + 一个 ROS 发布者”不能排除重复原生来源。新探针增加至少一秒的里程计一致性采样，启动改为单次创建；历史 run17 的通过只针对当时判据，详见[后续诊断](single-spawn-diagnosis.md)。

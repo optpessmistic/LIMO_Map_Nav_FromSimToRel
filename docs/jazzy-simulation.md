@@ -23,6 +23,7 @@
 
 ```bash
 sudo apt install ros-jazzy-ros-gz ros-jazzy-xacro \
+  ros-jazzy-gz-transport-vendor ros-jazzy-gz-msgs-vendor \
   ros-jazzy-robot-state-publisher ros-jazzy-tf2-ros \
   ros-jazzy-teleop-twist-keyboard python3-colcon-common-extensions
 source scripts/env.sh
@@ -60,6 +61,8 @@ ros2 launch limo_sim_bringup sim.launch.py \
 `headless` 仅指关闭 GUI。传感器仍通过 ogre2 渲染。正常 WSLg 可保留其 DISPLAY；若环境已正确支持 EGL，可设置 `headless_rendering:=true`。该开关不保证主机 GPU 一定支持 EGL。遇到渲染错误应解决 WSLg/GPU 环境，不能关闭激光或用地图真值假装建图数据。
 
 world 参数接受 SDF world 文件；启动时读取其 `<world name>`，用于正确的 Gazebo spawn 服务。迷宫世界必须提供 Physics、UserCommands、SceneBroadcaster、Sensors（ogre2）和 Imu 系统。项目内置空场景有这些插件，可用于排除世界配置问题。世界真值只参与物理仿真与实验评价，不输入 SLAM 或目标检测节点。
+
+模型生成先等待服务发现，再至多发出一次创建请求；回复超时会失败退出，不自动重试。展开的 URDF、参数与请求记录默认保存在本次 launch 日志目录的 `limo-spawn-*` 下，也可设置 `spawn_artifacts:=/绝对路径/新目录`，该目录必须尚不存在。出现失败时保留记录并结束本次服务器，排查后在新会话中启动，不要对同一服务器重复调用创建程序。原因及实测见[单次生成诊断](single-spawn-diagnosis.md)。
 
 ## ROS 数据接口
 

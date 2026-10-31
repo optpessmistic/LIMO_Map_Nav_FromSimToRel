@@ -21,6 +21,8 @@ from rosgraph_msgs.msg import Clock
 from sensor_msgs.msg import CameraInfo, Image, Imu, JointState, LaserScan
 from tf2_ros import Buffer, TransformException, TransformListener
 
+from odom_integrity import MIN_OBSERVATION_NS, OdomIntegrity, stamp_to_nanoseconds
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -46,6 +48,7 @@ def main():
     )
     counts, latest, first_stamps = Counter(), {}, {}
     observed_stamps = defaultdict(set)
+    odom_integrity = OdomIntegrity()
     subscriptions = []
     topics = {
         "/clock": Clock,
@@ -66,6 +69,17 @@ def main():
         stamp_ns = stamp.sec * 1_000_000_000 + stamp.nanosec
         first_stamps.setdefault(topic, stamp_ns)
         observed_stamps[topic].add(stamp_ns)
+        if topic == "/odom":
+            try:
+                odom_stamp_ns = stamp_to_nanoseconds(stamp.sec, stamp.nanosec)
+            except ValueError:
+                odom_stamp_ns = None
+            p, q = msg.pose.pose.position, msg.pose.pose.orientation
+            linear, angular = msg.twist.twist.linear, msg.twist.twist.angular
+            odom_integrity.observe(
+                odom_stamp_ns, (p.x, p.y, p.z, q.x, q.y, q.z, q.w),
+                (linear.x, linear.y, linear.z, angular.x, angular.y, angular.z),
+            )
 
     for topic, msg_type in topics.items():
         subscriptions.append(node.create_subscription(
@@ -79,7 +93,12 @@ def main():
     transforms = {}
     while time.monotonic() - start < args.timeout:
         rclpy.spin_once(node, timeout_sec=0.1)
-        if all(counts[topic] >= 3 for topic in topics):
+        clock_span_ns = (latest["/clock"].clock.sec * 1_000_000_000
+                         + latest["/clock"].clock.nanosec - first_stamps["/clock"]
+                         if "/clock" in latest else 0)
+        if (all(counts[topic] >= 3 for topic in topics)
+                and odom_integrity.observation_sufficient
+                and clock_span_ns >= MIN_OBSERVATION_NS):
             try:
                 image_transform = buffer.lookup_transform(
                     "odom", "camera_optical_frame",
@@ -96,7 +115,13 @@ def main():
             except TransformException:
                 pass
 
-    errors = []
+    odom_report = odom_integrity.report()
+    errors = list(odom_report["errors"])
+    clock_span_ns = (latest["/clock"].clock.sec * 1_000_000_000
+                     + latest["/clock"].clock.nanosec - first_stamps["/clock"]
+                     if "/clock" in latest else 0)
+    if clock_span_ns < MIN_OBSERVATION_NS:
+        errors.append(f"/clock: observed span {clock_span_ns} ns is shorter than {MIN_OBSERVATION_NS} ns")
     publisher_counts = {topic: node.count_publishers(topic) for topic in topics}
     for topic, count in publisher_counts.items():
         if count != 1:
@@ -158,6 +183,8 @@ def main():
                   "ROS_DISTRO", "ROS_DOMAIN_ID", "ROS_AUTOMATIC_DISCOVERY_RANGE", "GZ_PARTITION")},
               "wall_seconds": round(time.monotonic() - start, 2), "counts": dict(counts),
               "shared_rgb_depth_stamps": len(shared_image_stamps),
+              "odom_integrity": odom_report,
+              "observed_clock_span_ns": clock_span_ns,
               "ros_publisher_counts": publisher_counts,
               "first_clock_seconds": first_stamps.get("/clock", 0) * 1e-9,
               "max_initial_sim_time": args.max_initial_sim_time}

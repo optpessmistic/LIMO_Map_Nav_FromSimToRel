@@ -1,0 +1,102 @@
+{
+  "input_summary_sha256": "0f07b9f294583ecd692dcbee3ded4844e976083e21eba2c9cd4d51ea232666e0",
+  "source_stamp_first_ns": 6810000000,
+  "source_stamp_last_ns": 10250000000,
+  "message_count": 690,
+  "unique_stamp_count": 345,
+  "group_size_histogram": {
+    "2": 345
+  },
+  "duplicate_xy_distance_min_m": 1.3404215482907252e-07,
+  "duplicate_xy_distance_max_m": 1.3404297553892606e-07,
+  "duplicate_xy_distance_median_m": 1.3404283786961667e-07,
+  "duplicate_yaw_delta_max_rad": 2.09134994054476e-10,
+  "all_same_stamp_odom_pose_sets_exactly_match_tf": true,
+  "odom_tf_matching_stamp_groups": 345,
+  "odom_overall_x_range_m": [
+    -1.0342373065029032e-07,
+    4.4331025956690924e-08
+  ],
+  "odom_lower_x_branch_first_to_last_delta_m": -1.3712601777908713e-08,
+  "odom_upper_x_branch_first_to_last_delta_m": -1.3712058102515143e-08,
+  "odom_max_measured_linear_speed_m_s": 5.468032221404304e-09,
+  "odom_max_measured_angular_z_rad_s": 3.927192869527521e-09,
+  "integer_stamp_float_alias_count": 0,
+  "guard_replay_accepted_count": 345,
+  "guard_replay_error_count": 345,
+  "guard_replay_error_types": {
+    "SurveyAbort: Pose changed at duplicate odometry timestamp": 345
+  },
+  "example_at_reported_stop_stage_stamp_ns": 10160000000,
+  "example_odom_rows": [
+    {
+      "index": 670,
+      "receipt_ns": 10160000000,
+      "stamp_ns": 10160000000,
+      "survey_stamp": 10.16,
+      "parent": "odom",
+      "child": "base_footprint",
+      "xyz": [
+        3.1106949198567296e-08,
+        9.160641318682841e-16,
+        0.0
+      ],
+      "q": [
+        0.0,
+        0.0,
+        -1.898583531456971e-08,
+        0.9999999999999999
+      ],
+      "yaw": -3.797167062913942e-08,
+      "twist": [
+        -5.2469820403348105e-09,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.934758569817294e-09
+      ],
+      "payload_sha256": "5bfa0b5eff2fed6804578662872542789e783f9f6e1d54d6e4411ee4bc269c5b"
+    },
+    {
+      "index": 671,
+      "receipt_ns": 10160000000,
+      "stamp_ns": 10160000000,
+      "survey_stamp": 10.16,
+      "parent": "odom",
+      "child": "base_footprint",
+      "xyz": [
+        -1.0293576303922852e-07,
+        9.194912527280586e-16,
+        0.0
+      ],
+      "q": [
+        0.0,
+        0.0,
+        -1.9089964177207802e-08,
+        0.9999999999999999
+      ],
+      "yaw": -3.817992835441561e-08,
+      "twist": [
+        -5.246813088169437e-09,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.9349029492093336e-09
+      ],
+      "payload_sha256": "e2915aa68f6971ae6058b322820de89d0046c65b01e218bf02018bc1c76fa3cd"
+    }
+  ],
+  "example_not_claimed_as_exact_rejected_survey_delivery": true,
+  "commands_recorded": {},
+  "native_motion_file_exists": false,
+  "interpretation_limits": [
+    "Odom payloads genuinely differ numerically at identical integer stamps; this is not float-stamp aliasing.",
+    "Exact TF agreement is not independent physical ground truth: both are bridged from the same simulation drive output.",
+    "No native-motion artifact survived, so same-stamp physical truth differences remain unmeasured.",
+    "No recorded command messages is evidence only for this bag interval, not proof that every possible command source was inactive.",
+    "The two smooth numerical branches suggest duplicated odometry sources; publisher/plugin identity was not captured and cannot be inferred definitively from ROS messages.",
+    "The survey report stores accepted samples only; bag order need not equal subscriber delivery order."
+  ]
+}

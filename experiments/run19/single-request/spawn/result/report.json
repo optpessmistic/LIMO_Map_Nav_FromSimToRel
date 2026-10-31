@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "status": "create_acknowledged",
+  "request_attempts": 1,
+  "create_outcome": "positive_reply",
+  "discovery_polls": 16,
+  "service_publishers": [
+    {
+      "request_type": "gz.msgs.EntityFactory",
+      "response_type": "gz.msgs.Boolean",
+      "socket_id": "3ce5aec7-ba53-4aff-954c-628cde4dd7a6"
+    }
+  ],
+  "unique_instance_verified": false,
+  "motion_authorized": false,
+  "request_retry_allowed": false,
+  "input": {
+    "world": "limo_maze",
+    "name": "limo",
+    "model_file": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run19-single-spawn-check/single-request/spawn/robot.urdf",
+    "model_sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502",
+    "pose_xyz_rpy": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "allow_renaming": false,
+    "service": "/world/limo_maze/create",
+    "discovery_seconds": 120.0,
+    "response_seconds": 30.0,
+    "total_seconds": 150.0,
+    "poll_seconds": 0.1
+  },
+  "deadline_enforcement": "cooperative discovery and native request timeout; outer hard process deadline required",
+  "request_timeout_ms": 30000,
+  "elapsed_wall_seconds": 3.6353495160000193
+}
