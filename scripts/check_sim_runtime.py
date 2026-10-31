@@ -24,7 +24,8 @@ from tf2_ros import Buffer, TransformException, TransformListener
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--timeout", type=float, default=30.0)
+    parser.add_argument("--timeout", type=float, default=120.0,
+                        help="Maximum wall-clock wait for sensors (default: %(default)s s).")
     parser.add_argument("--expected-lidar-fov-deg", type=float, choices=(240.0, 360.0),
                         default=240.0)
     parser.add_argument("--max-initial-sim-time", type=float, default=None,

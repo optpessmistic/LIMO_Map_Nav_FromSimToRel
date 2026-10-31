@@ -48,6 +48,8 @@ bash scripts/view_sim.sh rviz --frame odom \
 
 以下使用本机 F 盘的完整运行环境，以及 C 盘当前 checkout 的 RViz 预设。仅在没有已有仿真时执行第一步；三个终端都保持打开。若终端提示 `(base)`，先执行 `conda deactivate`。
 
+从 Windows PowerShell 可用 `wsl -d Ubuntu-24.04` 打开 Ubuntu；下面的命令均在 Ubuntu 内执行。WSLg 会把 Gazebo/RViz 显示为 Windows 桌面窗口。
+
 **终端 1：启动三维迷宫及 Gazebo 窗口。**
 
 ```bash
@@ -56,6 +58,16 @@ source scripts/env.sh
 ros2 launch limo_sim_bringup sim.launch.py \
   world:="$PWD/worlds/smoke_maze.world" headless:=false
 ```
+
+本机软件渲染的首次传感器就绪实测约 45 秒；窗口或桥接节点出现不代表传感器已经就绪。先保留终端等待，不要重复启动服务器。需要确认数据时，在另一个 Ubuntu 终端执行：
+
+```bash
+cd /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source scripts/env.sh
+/usr/bin/python3 scripts/check_sim_runtime.py --timeout 120
+```
+
+该只读检查会验证推进的仿真时间、九路消息、RGB-D 同步和 TF；超过上限仍失败时保留日志排查。上述 45 秒来自无 GUI 的传感器测试，不是窗口启动时间保证，详见[启动诊断](simulation-startup-diagnosis.md)。
 
 **终端 2：启动在线建图和导航服务。**
 

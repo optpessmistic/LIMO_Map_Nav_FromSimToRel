@@ -1,0 +1,161 @@
+"""Bounded, sensor-only rendering comparison. No motion or navigation nodes."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import signal
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / 'outputs/ros_smoke/run17-rendering-check'
+sys.path.insert(0, str(ROOT / 'scripts'))
+from record_bounded import TOKEN_KEY, proc_stat, scan_owned_group, stop_owned
+
+def write(path, value):
+    path.write_text(json.dumps(value, indent=2) + '\n')
+
+def interrupted(signum, frame):
+    raise KeyboardInterrupt(signal.Signals(signum).name)
+
+def isolated():
+    import rclpy
+    rclpy.init()
+    node = rclpy.create_node('rendering_isolation_probe', enable_rosout=False,
+                              start_parameter_services=False)
+    try:
+        until = time.monotonic() + 3
+        while time.monotonic() < until:
+            rclpy.spin_once(node, timeout_sec=.1)
+        found = [n for n in node.get_node_names() if n != node.get_name()]
+        if found:
+            raise RuntimeError('Domain occupied: ' + repr(found))
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+def trial(name, egl):
+    directory = OUT / name
+    directory.mkdir()
+    token = 'run17-' + name + '-' + str(os.getpid())
+    jobs = {}
+    started = time.monotonic()
+    report = {'trial': name, 'egl': egl, 'motion_started': False,
+              'probe_timeout_s': 120, 'supervisor_active_budget_s': 180,
+              'errors': [], 'stops': {}, 'commands': {},
+              'environment': {key: os.environ.get(key) for key in
+                  ('DISPLAY', 'WAYLAND_DISPLAY', 'ROS_DOMAIN_ID', 'GZ_PARTITION',
+                   'LIBGL_ALWAYS_SOFTWARE', 'MESA_D3D12_DEFAULT_ADAPTER_NAME')}}
+    def start(component, command):
+        environment = dict(os.environ, **{TOKEN_KEY: token,
+                           'ROS_LOG_DIR': str(directory / 'ros_logs' / component)})
+        gate_read, gate_write = os.pipe()
+        # Child cannot launch the actual command until its identity is recorded.
+        bootstrap = ('import os,sys; fd=int(sys.argv[1]); ready=os.read(fd,1); '
+                     'os.close(fd); '
+                     'os.execvpe(sys.argv[2],sys.argv[2:],os.environ) if ready==b"1" else sys.exit(125)')
+        try:
+            with (directory / (component + '.log')).open('xb') as log:
+                proc = subprocess.Popen(['/usr/bin/python3', '-c', bootstrap,
+                        str(gate_read), *command], stdin=subprocess.DEVNULL, stdout=log,
+                        stderr=subprocess.STDOUT, start_new_session=True,
+                        pass_fds=(gate_read,), cwd=ROOT, env=environment)
+            jobs[component] = (proc, None)
+            row = proc_stat(proc.pid)
+            if row['pgid'] != proc.pid or row['sid'] != proc.pid:
+                raise RuntimeError('Expected isolated child session')
+            owner = {key: row[key] for key in ('pid', 'pgid', 'sid', 'start_ticks')}
+            owner['token'] = token
+            jobs[component] = (proc, owner)
+            report['commands'][component] = command
+            write(directory / ('process-' + component + '.json'), owner)
+            os.write(gate_write, b'1')
+        finally:
+            os.close(gate_read)
+            os.close(gate_write)
+        return proc
+    print('START ' + name, flush=True)
+    try:
+        isolated()
+        report['isolation_passed'] = True
+        start('sim', ['ros2', 'launch', 'limo_sim_bringup', 'sim.launch.py',
+              'world:=' + str(ROOT / 'worlds/smoke_maze.world'), 'headless:=true',
+              'headless_rendering:=' + ('true' if egl else 'false')])
+        probe = start('probe', ['/usr/bin/python3', str(ROOT / 'scripts/check_sim_runtime.py'),
+                      '--timeout', '120', '--max-initial-sim-time', '30',
+                      '--output', str(directory / 'sim-runtime.json')])
+        while probe.poll() is None and time.monotonic() - started < 145:
+            if jobs['sim'][0].poll() is not None:
+                raise RuntimeError('Simulator exited before probe completion')
+            time.sleep(.2)
+        if probe.poll() is None:
+            raise TimeoutError('Sensor probe exceeded overall wall budget')
+        report['probe_exit_code'] = probe.returncode
+        report['sensor_passed'] = bool(probe.returncode == 0 and
+            json.loads((directory / 'sim-runtime.json').read_text()).get('passed'))
+        if report['sensor_passed']:
+            time.sleep(10)
+            warm = start('warm-probe', ['/usr/bin/python3', str(ROOT / 'scripts/check_sim_runtime.py'),
+                         '--timeout', '30', '--output', str(directory / 'sim-runtime-warm.json')])
+            while warm.poll() is None and time.monotonic() - started < 180:
+                if jobs['sim'][0].poll() is not None:
+                    raise RuntimeError('Simulator exited before warm probe completion')
+                time.sleep(.2)
+            if warm.poll() is None:
+                raise TimeoutError('Warm probe exceeded overall wall budget')
+            report['warm_passed'] = bool(warm.returncode == 0 and
+                json.loads((directory / 'sim-runtime-warm.json').read_text()).get('passed'))
+    except BaseException as exc:
+        report['errors'].append(type(exc).__name__ + ': ' + str(exc))
+        report['interrupted'] = isinstance(exc, KeyboardInterrupt)
+    finally:
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        for component in ('warm-probe', 'probe', 'sim'):
+            if component not in jobs:
+                continue
+            proc, owner = jobs[component]
+            try:
+                if owner is None:
+                    # Gate closed before exec; no command descendants were started.
+                    proc.wait(timeout=3)
+                    report['stops'][component] = {'launch_gate_not_released': True,
+                        'exit_code': proc.returncode, 'remaining_check_complete': False}
+                    continue
+                stopped = stop_owned(owner, proc, graces=(20., 5., 3.))
+                stopped['exit_code'] = proc.poll()
+                report['stops'][component] = stopped
+            except Exception as exc:
+                report['stops'][component] = {'error': str(exc)}
+        report['all_owned_groups_empty'] = bool(jobs) and all(
+            stop.get('remaining_check_complete') and not stop.get('remaining') and
+            not stop.get('ownership_errors') for stop in report['stops'].values())
+        report['elapsed_wall_s'] = time.monotonic() - started
+        renderer = Path.home() / '.gz/rendering/ogre2.log'
+        if renderer.exists():
+            shutil.copyfile(renderer, directory / 'ogre2.log')
+        write(directory / 'result.json', report)
+        print('RESULT ' + json.dumps(report), flush=True)
+        signal.signal(signal.SIGINT, interrupted)
+        signal.signal(signal.SIGTERM, interrupted)
+    return report
+
+if OUT.exists():
+    raise SystemExit('Refuse overwriting existing diagnosis')
+OUT.mkdir(parents=True)
+write(OUT / 'inputs.json', {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+      for path in (Path(__file__), ROOT / 'scripts/check_sim_runtime.py',
+                   ROOT / 'worlds/smoke_maze.world', ROOT / 'scripts/record_bounded.py')})
+signal.signal(signal.SIGINT, interrupted)
+signal.signal(signal.SIGTERM, interrupted)
+baseline = trial('glx-120s', False)
+if (not baseline.get('isolation_passed') or baseline.get('interrupted') or
+        not baseline.get('all_owned_groups_empty')):
+    raise SystemExit(2)
+if baseline.get('sensor_passed') and baseline.get('warm_passed') and not baseline.get('errors'):
+    raise SystemExit(0)
+egl = trial('egl-120s', True)
+raise SystemExit(0 if egl.get('sensor_passed') and egl.get('warm_passed') and egl.get('all_owned_groups_empty')
+                 and not egl.get('errors') else 1)

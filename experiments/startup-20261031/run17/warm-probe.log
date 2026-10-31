@@ -1,0 +1,299 @@
+{
+  "passed": true,
+  "errors": [],
+  "checked_at_utc": "2026-10-31T09:06:32.911052+00:00",
+  "environment": {
+    "ROS_DISTRO": "jazzy",
+    "ROS_DOMAIN_ID": "73",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+    "GZ_PARTITION": "limo_maze_jazzy"
+  },
+  "wall_seconds": 0.72,
+  "counts": {
+    "/clock": 374,
+    "/scan": 4,
+    "/camera/color/camera_info": 4,
+    "/camera/depth/camera_info": 4,
+    "/odom": 37,
+    "/imu": 37,
+    "/joint_states": 18,
+    "/camera/depth/image_raw": 3,
+    "/camera/color/image_raw": 3
+  },
+  "shared_rgb_depth_stamps": 3,
+  "ros_publisher_counts": {
+    "/clock": 1,
+    "/odom": 1,
+    "/scan": 1,
+    "/imu": 1,
+    "/joint_states": 1,
+    "/camera/color/image_raw": 1,
+    "/camera/depth/image_raw": 1,
+    "/camera/color/camera_info": 1,
+    "/camera/depth/camera_info": 1
+  },
+  "first_clock_seconds": 7.601000000000001,
+  "max_initial_sim_time": null,
+  "frames": {
+    "/odom": "odom",
+    "/scan": "laser_link",
+    "/imu": "imu_link",
+    "/camera/color/image_raw": "camera_optical_frame",
+    "/camera/depth/image_raw": "camera_optical_frame",
+    "/camera/color/camera_info": "camera_optical_frame",
+    "/camera/depth/camera_info": "camera_optical_frame"
+  },
+  "images": {
+    "/camera/color/image_raw": {
+      "encoding": "rgb8",
+      "width": 640,
+      "height": 480
+    },
+    "/camera/depth/image_raw": {
+      "encoding": "32FC1",
+      "width": 640,
+      "height": 480
+    }
+  },
+  "depth_values_m": {
+    "finite_positive_count": 230210,
+    "minimum": 0.3279504179954529,
+    "maximum": 3.516000509262085
+  },
+  "rgb_byte_range": [
+    25,
+    218
+  ],
+  "timestamps": {
+    "/odom": {
+      "sec": 7,
+      "nanosec": 970000000
+    },
+    "/scan": {
+      "sec": 7,
+      "nanosec": 875000000
+    },
+    "/imu": {
+      "sec": 7,
+      "nanosec": 970000000
+    },
+    "/camera/color/image_raw": {
+      "sec": 7,
+      "nanosec": 900000000
+    },
+    "/camera/depth/image_raw": {
+      "sec": 7,
+      "nanosec": 900000000
+    },
+    "/camera/color/camera_info": {
+      "sec": 7,
+      "nanosec": 900000000
+    },
+    "/camera/depth/camera_info": {
+      "sec": 7,
+      "nanosec": 900000000
+    }
+  },
+  "camera_info": {
+    "/camera/color/camera_info": {
+      "width": 640,
+      "height": 480,
+      "k": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "p": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distortion_model": "plumb_bob"
+    },
+    "/camera/depth/camera_info": {
+      "width": 640,
+      "height": 480,
+      "k": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "p": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distortion_model": "plumb_bob"
+    }
+  },
+  "tf_chain": {
+    "odom->base_footprint": {
+      "xyz": [
+        6.76288773158553e-20,
+        2.622565860192411e-38,
+        0.0
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        2.761705440627484e-19,
+        1.0
+      ]
+    },
+    "base_footprint->base_link": {
+      "xyz": [
+        0.0,
+        0.0,
+        0.15
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "base_link->laser_link": {
+      "xyz": [
+        0.103,
+        0.0,
+        -0.034
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "base_link->camera_optical_frame": {
+      "xyz": [
+        0.084,
+        0.0,
+        0.03
+      ],
+      "quaternion_xyzw": [
+        -0.5,
+        0.4999999999999999,
+        -0.5,
+        0.5000000000000001
+      ]
+    }
+  },
+  "odom_to_camera_at_rgb_stamp": {
+    "stamp": {
+      "sec": 7,
+      "nanosec": 900000000
+    },
+    "xyz": [
+      0.084,
+      4.611256160505052e-20,
+      0.18
+    ],
+    "quaternion_xyzw": [
+      -0.5,
+      0.4999999999999999,
+      -0.5,
+      0.5000000000000001
+    ]
+  },
+  "scan": {
+    "beams": 720,
+    "finite": 720,
+    "minimum_m": 0.36908069252967834,
+    "angle_min": -2.094395160675049,
+    "angle_max": 2.094395160675049,
+    "angle_increment": 0.005825855769217014,
+    "range_min": 0.05000000074505806,
+    "range_max": 8.0,
+    "fov_deg": 240.00000667860846,
+    "expected_fov_deg": 240.0,
+    "rear_abs_angle_over_120_deg": {
+      "beams": 0,
+      "finite": 0,
+      "negative_infinity": 0,
+      "positive_infinity": 0,
+      "nan": 0,
+      "minimum_m": null,
+      "finite_at_min_range": 0,
+      "finite_within_0_12_m": 0
+    },
+    "selected_beams": [
+      {
+        "index": 0,
+        "angle_deg": -120.00000333930423,
+        "range_m": 0.4611193537712097,
+        "nonfinite": null
+      },
+      {
+        "index": 90,
+        "angle_deg": -89.95827805277732,
+        "range_m": 0.40273842215538025,
+        "nonfinite": null
+      },
+      {
+        "index": 360,
+        "angle_deg": 0.1668978068033772,
+        "range_m": 3.463893413543701,
+        "nonfinite": null
+      },
+      {
+        "index": 629,
+        "angle_deg": 89.958276718756,
+        "range_m": 0.40450745820999146,
+        "nonfinite": null
+      },
+      {
+        "index": 719,
+        "angle_deg": 120.0000020052829,
+        "range_m": 0.45671337842941284,
+        "nonfinite": null
+      }
+    ]
+  }
+}
+Saved: /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run17-rendering-check/glx-120s/sim-runtime-warm.json
