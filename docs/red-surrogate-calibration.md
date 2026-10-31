@@ -20,7 +20,7 @@
 
 ```bash
 /usr/bin/python3 tools/build_red_calibration.py \
-  --output outputs/red-calibration/new-batch \
+  --output outputs/red-calibration/new-fixtures \
   --model-xacro /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/vendor/hunter_gazebo/src/limo_base/urdf/limo_four_diff.xacro \
   --sensor-xacro /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/vendor/hunter_gazebo/src/gazebo_harmonic/urdf/limo_gazebo.xacro
 ```
@@ -29,8 +29,14 @@
 
 生成器从当前支持的固定相机结构提取名义位姿和内参；不能解析的相机旋转、额外 sensor/camera pose 或自定义投影会报错。每个场景检查物体实体相交、起点净空、背板贴合/承托、目标朝向、视锥裁切及解析射线遮挡。实际物理沉降、渲染自遮挡和有效深度仍须在 Gazebo 中测量。
 
+## 实际采集
+
+使用 [有界采集工具](../tools/red_calibration/README.md) 加载生成的 manifest。默认只输出计划；显式 `--execute` 才启动场景。单次先用 `--case 01_blank` 检查链路，再用 `--all` 顺序执行 12 场景。每场景固定保存首先收到的六组新同步 RGB-D，拒绝和空检测也保留；采集过程不读取 `offline_truth`。
+
+2026-10-31 的 `blank-01` 单场景实际通过：六组输入、CameraInfo 和精确时刻 TF 有效，全部检测结果为空；36 个图像/深度产物的长度和 SHA-256 独立复核一致，六个自有进程组均确认退出。该结果只验证空场景采集链路，不证明物品不存在或有效搜索范围。运行使用迁入版本管理前冻结的草稿，原样源码及哈希随采集保存；受版本管理的入口见上面的工具说明。
+
 ## 验证状态与下一步
 
-24 项纯测试覆盖正常场景及破坏几何的反例。12 个场景已用现有 Xacro 生成并通过解析检查；**尚未完成 12 场景的真实渲染和检测实验**。manifest 因此保留 `status=designed_not_run`、`effective_detection_range=null`，不发布有效视觉覆盖声明。
+24 项纯测试覆盖正常场景及破坏几何的反例。12 个场景已用现有 Xacro 生成并通过解析检查。实际批次 `batch-12-01` 在第二场景停止：空场景 6/6 有效；0.4 m 场景 5 个有效样本各检出一个候选，第 2 帧缺双方同戳 CameraInfo，检测未运行。后十场景未运行。**尚未完成 12 场景的真实渲染和检测实验**，不发布有效视觉覆盖声明。生成时的 manifest 保持原样，运行结果另存于 [闭合实验证据](../experiments/red-calibration-20261031/README.md)。
 
-后续每场景用全新服务器与输出目录，先检查模型唯一性和传感器，再保存同步 RGB、深度、CameraInfo、图像时刻 TF、检测及处理帧记录。按预先固定的采样窗统计误报/漏报和定位误差，同时保留失败样例；完成后才能选择有效检测范围与观察站位间距。解析可见面积不等于实际检测率，也不授权完整搜索成功。
+下一步先修复采集循环中的同步处理/写盘阻塞路径，再继续独立的新尝试；保留上述失败批次。后续仍用全新服务器与输出目录，先检查模型唯一性和传感器，再保存同步 RGB、深度、CameraInfo、图像时刻 TF、检测及处理帧记录。按预先固定的采样窗统计误报/漏报，同时保留失败样例；几何误差还需真实 settled pose 支持。完成后才能选择有效检测范围与观察站位间距。解析可见面积不等于实际检测率，也不授权完整搜索成功。

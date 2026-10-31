@@ -1,0 +1,84 @@
+{
+  "capture_barrier_stamp_ns": 6801000000,
+  "capture_session": "8e685964-4280-49b1-9e99-d8ea055e3a48",
+  "case_id": "02_center_0400mm",
+  "clock_receipt_age_wall_s": 0.0019785079999792288,
+  "detections": null,
+  "detector_config": {
+    "hue_tolerance_degrees": 15.0,
+    "inner_fraction": 0.6,
+    "max_depth_m": 6.0,
+    "min_area_pixels": 30,
+    "min_depth_m": 0.15,
+    "min_depth_pixels": 8,
+    "min_saturation": 0.55,
+    "min_valid_depth_fraction": 0.5,
+    "min_value": 0.3
+  },
+  "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+  "evaluation_clock_stamp_ns": 8784000000,
+  "extra_reasons": [],
+  "files": {
+    "depth.data": {
+      "bytes": 1228800,
+      "sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07"
+    },
+    "rgb.data": {
+      "bytes": 921600,
+      "sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286"
+    }
+  },
+  "frame_valid": false,
+  "input_metadata": {
+    "depth": {
+      "data_bytes": 1228800,
+      "data_sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07",
+      "encoding": "32FC1",
+      "frame_id": "camera_optical_frame",
+      "height": 480,
+      "is_bigendian": 0,
+      "stamp_ns": 7000000000,
+      "step": 2560,
+      "width": 640
+    },
+    "depth_info": null,
+    "rgb": {
+      "data_bytes": 921600,
+      "data_sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286",
+      "encoding": "rgb8",
+      "frame_id": "camera_optical_frame",
+      "height": 480,
+      "is_bigendian": 0,
+      "stamp_ns": 7000000000,
+      "step": 1920,
+      "width": 640
+    },
+    "rgb_info": null
+  },
+  "input_reasons": [
+    "rgb_info:missing_camera_info",
+    "depth_info:missing_camera_info"
+  ],
+  "interpretation": "Current color/depth algorithm output only. No target identity, absence, range, coverage or ground-truth assessment.",
+  "optical_frame": "camera_optical_frame",
+  "processing": null,
+  "processing_status": "not_run",
+  "reasons": [
+    "rgb_info:missing_camera_info",
+    "depth_info:missing_camera_info",
+    "missing_exact_tf:reference_to_base",
+    "missing_exact_tf:base_to_camera",
+    "missing_exact_tf:reference_to_camera"
+  ],
+  "schema_version": 1,
+  "sequence": 2,
+  "stamp_ns": 7000000000,
+  "tf_lookup_errors": {},
+  "tf_reasons": [
+    "missing_exact_tf:reference_to_base",
+    "missing_exact_tf:base_to_camera",
+    "missing_exact_tf:reference_to_camera"
+  ],
+  "transforms": {},
+  "wall_offset_s": 5.2529741640000225
+}
