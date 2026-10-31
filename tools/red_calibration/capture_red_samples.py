@@ -17,7 +17,7 @@ import signal
 import time
 import uuid
 
-from capture_core import (CaptureWriter, FixedWindow, TOPICS, detector, evidence,
+from capture_core import (CaptureWriter, FixedWindow, TOPICS, MAX_MEMORY_BYTES, detector, evidence,
                           evaluate, input_reasons, json_bytes, metadata, provenance)
 
 
@@ -86,7 +86,8 @@ def checkpoint_then_cleanup(writer, sampling, cleanup_steps, stop, monotonic=tim
         raw_checkpoint={'artifact': 'raw-checkpoint.json', **raw_ref},
         errors=list(dict.fromkeys(errors)))
     summary['passed'] = bool(summary['sampling_passed'] and cleanup_complete and not summary['errors'])
-    summary['partial'] = not (summary['sampling_complete'] and cleanup_complete and not summary['interrupted'])
+    summary['partial'] = not (summary['sampling_complete'] and
+        summary.get('persistence_complete', True) and cleanup_complete and not summary['interrupted'])
     writer.write_report('summary.json', summary)
     return summary
 
@@ -123,6 +124,148 @@ def read_exact_transforms(buffer, stamp, optical, reference, base, time_type, du
     return transforms, errors
 
 
+def freeze_ready(window, *, now, clock_wall, started, deadline, registered,
+                 lookup, stop_signal=None, force=False):
+    """Acquisition only: freeze fixed slots without detector, PNG, writer or fsync.
+
+    Selected message objects have already been detached by FixedWindow.receive.
+    A frozen slot never adopts late calibration or a replacement image. Duplicate
+    conflicts remain observed until window.closed, including for frozen slots.
+    """
+    if window.closed:
+        return
+    for sample in window.pending:
+        if 'snapshot' in sample:
+            continue
+        messages = window.messages(sample)
+        meta = metadata(messages)
+        invalid = input_reasons(meta, registered)
+        complete_info = all(messages[k] is not None for k in ('rgb_info', 'depth_info'))
+        clock_ready = window.clock_ns is not None and window.clock_ns >= sample['stamp_ns']
+        transforms, tf_errors = {}, {}
+        optical = meta['rgb'].get('frame_id')
+        query_status = 'not_attempted:no_clock_coverage'
+        # CameraInfo is not needed to ask TF about a known image optical frame.
+        if clock_ready and isinstance(optical, str) and optical and lookup is not None:
+            transforms, tf_errors = lookup(sample['stamp_ns'], optical)
+            query_status = 'attempted'
+        elif not isinstance(optical, str) or not optical:
+            query_status = 'not_attempted:invalid_optical_frame'
+        elif lookup is None:
+            query_status = 'not_attempted:lookup_unavailable'
+        ready = complete_info and clock_ready and (bool(invalid) or len(transforms) == 3)
+        if not force and not ready and now < sample['deadline_wall']:
+            continue
+        extra = []
+        if stop_signal is not None:
+            extra.append('stop_requested:'+stop_signal)
+        if force and now >= deadline:
+            extra.append('capture_wall_deadline')
+        if not clock_ready:
+            extra.append('clock_does_not_cover_sample')
+        if window.clock_reset:
+            extra.append('clock_reset_during_capture')
+        if clock_wall is None or now-clock_wall > 2.:
+            extra.append('clock_not_fresh')
+        if window.clock_ns is not None and window.clock_ns-sample['stamp_ns'] > 2_000_000_000:
+            extra.append('sample_older_than_two_sim_seconds')
+        if sample['stamp_ns'] in window.conflict_stamps:
+            extra.append('conflicting_duplicate_payload')
+        sample['snapshot'] = {'messages': dict(messages), 'observation': {
+            'capture_barrier_stamp_ns': window.barrier_ns,
+            'acquisition_clock_stamp_ns': window.clock_ns,
+            'clock_receipt_age_wall_s': None if clock_wall is None else now-clock_wall,
+            'selected_wall_offset_s': sample['selected_wall']-started,
+            'frozen_wall_offset_s': now-started,
+            'per_pair_deadline_wall_offset_s': sample['deadline_wall']-started,
+            'tf_query_status': query_status, 'tf_lookup_errors': tf_errors,
+            'transforms': transforms, 'extra_reasons': extra,
+            'freeze_reason': 'ready' if ready and not force else
+                             ('forced_close' if force else 'pair_wait_elapsed')}}
+
+
+def persist_frozen(writer, window, manifest, *, registered, reference, base,
+                   stop, save_timeout, monotonic=time.monotonic):
+    """Offline phase. Durable raw checkpoint precedes detector or PNG work."""
+    if not window.closed:
+        raise ValueError('collection_must_close_before_any_persistence')
+    started = monotonic()
+    deadline = started+save_timeout
+    raw_files, errors = {}, []
+    samples = sorted(window.pending, key=lambda s: s['sequence'])
+    raw_started = monotonic()
+    for sample in samples:
+        if monotonic() >= deadline:
+            errors.append('raw_persistence_wall_deadline')
+            break
+        try:
+            snap = sample['snapshot']
+            raw_files[sample['sequence']] = writer.save_raw(sample['sequence'],
+                snap['messages'], snap['observation'])
+        except (OSError, ValueError) as exc:
+            errors.append('raw_persistence:'+type(exc).__name__+': '+str(exc))
+            break
+    raw_elapsed = monotonic()-raw_started
+    checkpoint = {'schema_version': 1, 'capture_session': manifest['capture_session'],
+        'report_phase': 'raw_saved_before_offline_processing', 'passed': False,
+        'processing_complete': False, 'cleanup_complete': False,
+        'collection_boundary': dict(window.collection_boundary),
+        'raw_saved_sequences': sorted(raw_files), 'selected_sequences': [s['sequence'] for s in samples],
+        'not_raw_committed_sequences': [s['sequence'] for s in samples if s['sequence'] not in raw_files],
+        'selected_sample_conflicts': window.selected_conflicts(), 'errors': list(errors),
+        'stop_signal': stop.signal, 'artifacts': dict(writer.artifacts)}
+    writer.write_report('collection-checkpoint.json', checkpoint)
+    evaluation_s = derived_save_s = 0.
+    for sample in samples:
+        if sample['sequence'] not in raw_files:
+            continue
+        if monotonic() >= deadline:
+            errors.append('offline_processing_wall_deadline')
+            break
+        snap = sample['snapshot']
+        observation = snap['observation']
+        extra = list(observation['extra_reasons'])
+        if stop.signal is not None:
+            extra.append('stop_requested:'+stop.signal)
+        before = monotonic()
+        result, arrays = evaluate(snap['messages'], observation['transforms'], registered=registered,
+            reference_frame=reference, base_frame=base,
+            extra_reasons=extra, run_detection=stop.signal is None)
+        evaluation_s += monotonic()-before
+        if monotonic() >= deadline:
+            errors.append('offline_processing_wall_deadline')
+            break  # Raw checkpoint exists; do not begin PNG/fsync after known expiry.
+        if observation['tf_query_status'].startswith('not_attempted:'):
+            result['tf_reasons'] = ['tf_not_queried:'+observation['tf_query_status'].split(':', 1)[1]]
+            result['reasons'] = result['input_reasons']+result['tf_reasons']+result['extra_reasons']
+            result['frame_valid'] = False
+        result.update(capture_session=manifest['capture_session'], case_id=manifest['case_id'],
+                      **{k: v for k, v in observation.items() if k not in ('transforms', 'extra_reasons')},
+                      acquisition_extra_reasons=list(observation['extra_reasons']),
+                      processing_phase='after_collection_closed',
+                      collection_boundary=dict(window.collection_boundary))
+        before = monotonic()
+        try:
+            path = writer.save_sample(sample['sequence'], snap['messages'], result, arrays,
+                                     raw_files=raw_files[sample['sequence']])
+        except (OSError, ValueError) as exc:
+            errors.append('derived_persistence:'+type(exc).__name__+': '+str(exc))
+            break
+        derived_save_s += monotonic()-before
+        window.completed.append({'sequence': sample['sequence'], 'stamp_ns': sample['stamp_ns'],
+            'artifact': path, 'frame_valid': result['frame_valid'], 'reasons': result['reasons'],
+            'processing_status': result['processing_status'],
+            'detection_count': None if result['detections'] is None else len(result['detections'])})
+        window.pending.remove(sample)
+    elapsed = monotonic()-started
+    if elapsed > save_timeout:
+        errors.append('persistence_wall_deadline_exceeded')
+    return {'errors': errors, 'raw_saved_pairs': len(raw_files),
+            'raw_save_elapsed_wall_s': raw_elapsed, 'evaluation_elapsed_wall_s': evaluation_s,
+            'derived_save_elapsed_wall_s': derived_save_s, 'persistence_elapsed_wall_s': elapsed,
+            'persistence_complete': len(window.completed) == len(samples) and not errors}
+
+
 def validate_args(args):
     if not args.execute:
         raise ValueError('--execute is required; no ROS connection was made')
@@ -136,6 +279,10 @@ def validate_args(args):
         raise ValueError('--pair-wait must be .01..10 wall seconds')
     if not 1_048_576 <= args.max_bytes <= 1024**3:
         raise ValueError('--max-bytes must be 1 MiB..1 GiB')
+    if not math.isfinite(args.save_timeout) or not 1 <= args.save_timeout <= 120:
+        raise ValueError('--save-timeout must be 1..120 wall seconds')
+    if type(args.max_memory_bytes) is not int or not 1024**2 <= args.max_memory_bytes <= 1024**3:
+        raise ValueError('--max-memory-bytes must be 1 MiB..1 GiB')
     if not re.fullmatch(r'[A-Za-z0-9_-]{1,80}', args.case_id):
         raise ValueError('--case-id is a plain opaque label, not a truth-file path')
     for value in (args.reference_frame, args.base_frame):
@@ -160,7 +307,7 @@ def run_with_stop(args, stop):
     started = time.monotonic()
     deadline = started+args.timeout
     writer = CaptureWriter(args.output, args.max_bytes)
-    window = FixedWindow(args.pairs, args.pair_wait)
+    window = FixedWindow(args.pairs, args.pair_wait, max_memory_bytes=args.max_memory_bytes)
     sources = provenance([__file__])
     config = detector.DetectorConfig()
     manifest = {'schema_version': 1, 'capture_session': str(uuid.uuid4()),
@@ -168,6 +315,9 @@ def run_with_stop(args, stop):
                 'input_topics': TOPICS | {'clock': '/clock', 'tf': '/tf', 'tf_static': '/tf_static'},
                 'requested_pairs': args.pairs, 'selection_policy': SELECTION_POLICY,
                 'wall_timeout_s': args.timeout, 'per_pair_wait_wall_s': args.pair_wait,
+                'save_wall_timeout_s': args.save_timeout,
+                'raw_memory_max_bytes': args.max_memory_bytes,
+                'phases': 'collect fixed slots and TF; close acquisition; save raw checkpoint; offline detect/PNG; cleanup',
                 'output_max_bytes': args.max_bytes, 'detector_config': asdict(config),
                 'reference_frame': args.reference_frame, 'base_frame': args.base_frame,
                 'registration': 'explicit caller assertion; both runtime CameraInfo must match',
@@ -181,6 +331,8 @@ def run_with_stop(args, stop):
     node = listener = None
     initialized = False
     errors, clock_wall = [], None
+    acquisition_started = None
+    lookup = None
     fatal = []
     try:
         if stop.signal is not None:
@@ -225,69 +377,55 @@ def run_with_stop(args, stop):
             subscriptions.append(node.create_subscription(Image if kind in ('rgb','depth') else CameraInfo,
                 topic, lambda msg, key=kind: receive(key, msg), qos_profile_sensor_data))
 
-        def finish_ready(force=False):
-            for sample in list(window.pending):
-                now = time.monotonic()
-                messages = window.messages(sample)
-                meta = metadata(messages)
-                invalid = input_reasons(meta, args.registered_depth)
-                # Missing calibration may arrive within this sample's bounded wait.
-                complete_info = messages['rgb_info'] is not None and messages['depth_info'] is not None
-                clock_ready = window.clock_ns is not None and window.clock_ns >= sample['stamp_ns']
-                transforms, tf_errors = {}, {}
-                if complete_info and not invalid and clock_ready and stop.signal is None:
-                    transforms, tf_errors = read_exact_transforms(buffer, sample['stamp_ns'],
-                        messages['rgb'].header.frame_id, args.reference_frame, args.base_frame, Time, Duration)
-                ready = (complete_info and clock_ready and (bool(invalid) or len(transforms) == 3))
-                if not force and not ready and now < sample['deadline_wall']:
-                    continue
-                extra = []
-                if stop.signal is not None:
-                    extra.append('stop_requested:'+stop.signal)
-                if force and now >= deadline:
-                    extra.append('capture_wall_deadline')
-                if not clock_ready:
-                    extra.append('clock_does_not_cover_sample')
-                if window.clock_reset:
-                    extra.append('clock_reset_during_capture')
-                if clock_wall is None or now-clock_wall > 2.:
-                    extra.append('clock_not_fresh')
-                if window.clock_ns is not None and window.clock_ns-sample['stamp_ns'] > 2_000_000_000:
-                    extra.append('sample_older_than_two_sim_seconds')
-                if sample['stamp_ns'] in window.conflict_stamps:
-                    extra.append('conflicting_duplicate_payload')
-                result, arrays = evaluate(messages, transforms, registered=args.registered_depth,
-                    reference_frame=args.reference_frame, base_frame=args.base_frame,
-                    config=config, extra_reasons=extra)
-                result.update(capture_session=manifest['capture_session'], case_id=args.case_id,
-                              capture_barrier_stamp_ns=window.barrier_ns,
-                              evaluation_clock_stamp_ns=window.clock_ns,
-                              clock_receipt_age_wall_s=None if clock_wall is None else now-clock_wall,
-                              tf_lookup_errors=tf_errors,
-                              wall_offset_s=now-started)
-                path = writer.save_sample(sample['sequence'], messages, result, arrays)
-                window.completed.append({'sequence': sample['sequence'], 'stamp_ns': sample['stamp_ns'],
-                    'artifact': path, 'frame_valid': result['frame_valid'], 'reasons': result['reasons'],
-                    'processing_status': result['processing_status'],
-                    'detection_count': None if result['detections'] is None else len(result['detections'])})
-                window.pending.remove(sample)
-
-        while stop.signal is None and time.monotonic() < deadline and len(window.completed) < args.pairs:
+        lookup = lambda stamp, optical: read_exact_transforms(buffer, stamp, optical,
+            args.reference_frame, args.base_frame, Time, Duration)
+        acquisition_started = time.monotonic()
+        while (stop.signal is None and time.monotonic() < deadline and
+               sum('snapshot' in s for s in window.pending) < args.pairs):
             rclpy.spin_once(node, timeout_sec=min(.05, max(0, deadline-time.monotonic())))
             if stop.signal is not None or fatal or window.clock_reset:
                 break
-            finish_ready()
+            freeze_ready(window, now=time.monotonic(), clock_wall=clock_wall, started=started,
+                deadline=deadline, registered=args.registered_depth, lookup=lookup)
         if fatal:
             errors += fatal
         if window.clock_reset:
             errors.append('clock_reset_during_capture')
-        finish_ready(force=True)
     except (Exception, KeyboardInterrupt) as exc:
         errors.append(type(exc).__name__+': '+str(exc))
     finally:
-        # Freeze sampling before native cleanup. The immutable checkpoint records
-        # only writes that returned after flush/fsync; pending files are not
-        # promoted to complete samples if a save failed part-way through.
+        # End acquisition before all detector, image encoding and fsync work.
+        closed_wall = time.monotonic()
+        try:
+            freeze_ready(window, now=closed_wall, clock_wall=clock_wall, started=started,
+                deadline=deadline, registered=args.registered_depth, lookup=lookup,
+                force=True, stop_signal=stop.signal)
+        except (Exception, KeyboardInterrupt) as exc:
+            errors.append('freeze_at_close:'+type(exc).__name__+': '+str(exc))
+        window.closed = True
+        acquisition_elapsed = None if acquisition_started is None else closed_wall-acquisition_started
+        window.collection_boundary = {
+            'closed_wall_offset_s': closed_wall-started,
+            'last_callback_clock_stamp_ns': window.clock_ns,
+            'acquisition_elapsed_wall_s': acquisition_elapsed,
+            'sampling_elapsed_wall_s': closed_wall-started,
+            'selected_sequences': list(window.selected_sequences.values()),
+            'conflicts_observed_through': 'last executed callback before collection closed; not publisher history',
+            'post_close_callbacks_or_queued_messages_included': False}
+        complete = (len(window.pending) == args.pairs and
+                    all('snapshot' in s for s in window.pending) and closed_wall <= deadline)
+        persistence = {'errors': [], 'persistence_complete': False, 'raw_saved_pairs': 0}
+        try:
+            persistence = persist_frozen(writer, window, manifest,
+                registered=args.registered_depth, reference=args.reference_frame,
+                base=args.base_frame, stop=stop, save_timeout=args.save_timeout)
+        except (Exception, KeyboardInterrupt) as exc:
+            errors.append('persistence:'+type(exc).__name__+': '+str(exc))
+            persistence['raw_saved_pairs'] = sum(name.endswith('/raw.json') for name in writer.artifacts)
+        errors.extend(persistence.pop('errors'))
+        if not persistence['persistence_complete']:
+            errors.append('selected_sample_persistence_incomplete')
+        # Native cleanup follows durable partial raw and final sample checkpoints.
         unchanged = True
         for path, original in sources['sources'].items():
             try:
@@ -296,17 +434,18 @@ def run_with_stop(args, stop):
                 unchanged = False
         if not unchanged:
             errors.append('source_changed_during_capture')
-        elapsed = time.monotonic()-started
-        complete = len(window.completed) == args.pairs and elapsed <= args.timeout
+        elapsed = closed_wall-started
         if stop.signal is not None:
             errors.append('stop_requested:'+stop.signal)
         if not complete:
             errors.append('requested_pair_window_incomplete_or_wall_deadline')
         integrity = end_of_window_integrity(window)
         errors.extend(integrity.pop('errors'))
-        sampling = {'schema_version': 2, 'capture_session': manifest['capture_session'],
+        sampling = {'schema_version': 3, 'capture_session': manifest['capture_session'],
             'case_id': args.case_id, 'read_only': True,
             'sampling_complete': complete, 'collection_complete': complete,
+            'collection_boundary': dict(window.collection_boundary), **persistence,
+            'acquisition_elapsed_wall_s': acquisition_elapsed,
             'source_unchanged': unchanged, 'source_check_phase': 'before_native_cleanup',
             **integrity,
             'errors': list(dict.fromkeys(errors)), 'samples': list(window.completed),
@@ -318,6 +457,8 @@ def run_with_stop(args, stop):
                                              for s in window.pending],
             'capture_barrier_stamp_ns': window.barrier_ns, 'last_clock_stamp_ns': window.clock_ns,
             'sampling_elapsed_wall_s': elapsed, 'bytes_written_before_checkpoint': writer.written,
+            'max_observed_raw_image_bytes': window.max_observed_image_bytes,
+            'raw_memory_max_bytes': window.max_memory_bytes,
             'received_counts': dict(window.counts), 'diagnostic_events': window.events,
             'limits': ['First bounded received sample window only; no lossless-delivery or whole-scene claim.',
                        'No motion was commanded by this tool; physical stationarity is not established.',
@@ -325,10 +466,13 @@ def run_with_stop(args, stop):
                        'Input, per-candidate depth and exact-TF rejections remain separate.',
                        'Committed files are flush/fsync complete; pending samples may have only partial artifact files.',
                        'Late duplicate conflicts invalidate the end-of-window verdict and are linked separately; saved samples are never rewritten.',
+                       'Conflict observation ends at collection close; queued or later DDS messages are outside this finite window.',
+                       'Input/clock/TF validity is frozen at acquisition; saving time does not re-age the source frames.',
                        'A missing summary means cleanup completion is unknown, even if sampling completed.',
                        'An outer owner must enforce a hard deadline if file I/O or native code blocks.'],
             'effective_range_claimed': False, 'coverage_claimed': False}
-        sampling['sampling_passed'] = complete and unchanged and sampling['all_samples_valid'] and not errors
+        sampling['sampling_passed'] = (complete and unchanged and sampling['all_samples_valid']
+            and len(window.completed) == args.pairs and persistence['persistence_complete'] and not errors)
         cleanup_steps = []
         if listener is not None:
             cleanup_steps.append(('listener_unregister', listener.unregister))
@@ -349,6 +493,8 @@ def main():
     parser.add_argument('--timeout', type=float, default=60.)
     parser.add_argument('--pair-wait', type=float, default=2.)
     parser.add_argument('--max-bytes', type=int, default=256*1024**2)
+    parser.add_argument('--max-memory-bytes', type=int, default=MAX_MEMORY_BYTES)
+    parser.add_argument('--save-timeout', type=float, default=10.)
     parser.add_argument('--reference-frame', default='odom')
     parser.add_argument('--base-frame', default='base_footprint')
     parser.add_argument('--registered-depth', action='store_true')

@@ -8,7 +8,7 @@
 
 最新 run20 已完成五个探索点、两个红色替身标注及返航，原生相对起点误差约 3.79 cm / 7.52°。在线停车观察五次通过，但独立末帧审计发现原始 RGB-D 缺图，完整视觉搜索仍未验证。详见 [run20 记录](docs/autonomous-run20.md)；打开实时窗口见 [Gazebo / RViz](docs/visualization.md)。该轮已关闭，查看客户端不会自动重启实验。
 
-后续 [固定帧标定](docs/red-surrogate-calibration.md) 已跑通单空场景采集；12 场景批次在第二场景因一帧相机参数缺失停止，原始失败已归档，不能视为完整标定通过。采集工具和 47 项相关测试已纳入版本管理。
+后续 [固定帧标定](docs/red-surrogate-calibration.md) 已完成新的 12 场景、72 组 RGB-D 采集及离线哈希审计；90 项采集/审计测试通过。大红色平板仍产生候选，相邻双目标的实际观测回放还暴露了地图融合合并问题，不能据此宣称识别或完整视觉搜索通过。原先在第二场景停止的失败批次保持不变；[新实验记录](experiments/red-calibration-deferred-20261031/README.md)保留完整输入和限制。
 
 当前已完成 WSL 环境与 ROS 集成。run14 首次在 Gazebo 物理仿真中完成四次自主探索、两个红色替身的地图标注和返航；独立实际返航误差约 6.4 cm，两目标平面标注误差约 4.6/1.8 cm。视觉搜索覆盖和正式物品类别尚未验证，因此完整 `mission_success` 仍为 false，实车实验尚未通过。通过本轮的 RPP 与小迷宫 SLAM 配置作为可选实验配置保存，详见 [run14 记录](docs/autonomous-run14.md)和[复现步骤](docs/rpp-smoke-reproduction.md)。
 

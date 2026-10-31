@@ -26,11 +26,32 @@ bash tools/red_calibration/env.sh \
 
 `capture/summary.json` 区分采样完成、输入/TF 有效、源码未变和 native 清理完成。样本包含原始消息 bytes、步长/字节序/编码、相机标定、PNG、原深度和米制深度 NPY、红色 mask、检测/拒绝理由及 SHA-256。`raw-checkpoint.json` 在 native 清理前 flush/fsync，清理异常时仍保留已经保存的证据。缺少最终 summary 不能视作清理成功。
 
+采样期间只接收、配对并冻结消息和精确时刻 TF。固定窗口关闭后，先保存原始 bytes 与 `collection-checkpoint.json`，再离线运行检测、PNG 编码及派生文件写盘，最后写清理前后的报告。慢磁盘不占用接收循环；输入新鲜度在冻结时判断，保存耗时单列，不用保存结束的时间重新计算图像年龄。CameraInfo 缺失仍保留拒绝结果，但已知图像 frame 时会独立查询 TF；未发起查询有独立状态，不能误解释为 TF 丢失。
+
 选择规则是回调中首先可用、时间戳递增且晚于开始屏障的六组精确配对；不是全局最早六个传感器时间戳。拒绝帧和空检测也占用名额。RGB、depth 和双方 CameraInfo 要求同一整数时间戳；动态 TF 在该时刻查询，禁止 latest 查询。已选时间戳的重复冲突使最终判定失败，已保存原帧不被覆盖。
 
-每次 capture 默认最多 256 MiB（CLI 硬上限 1 GiB），最多 32 对；runner 固定每场景 6 对。该容量只覆盖 capture 产物，不覆盖 runner 的全部日志。单场景活动时间默认 300 wall seconds，batch 默认 7200 seconds 并为最多六个子进程组保留清理时间；进程使用既有 PID 身份校验和 pidfd 发送信号。阻塞系统 I/O 或调度仍可能超出协作式截止时间，不能声称严格 OS 强制时限。
+每次 capture 默认最多 256 MiB（CLI 硬上限 1 GiB），最多 32 对；runner 固定每场景 6 对。采样缓存默认限制为 128 MiB 原始图像 payload，超限记录失败，不替换已选帧；这不是包括 DDS、TF 和派生数组在内的进程 RSS 上限。容量只覆盖 capture 产物，不覆盖 runner 的全部日志。runner 给采样 60 wall seconds、独立保存阶段 10 seconds，并设整个 capture 子进程 90 seconds 上限以留出 native 清理余量；三个阶段仍受场景和 batch 剩余时间限制。单场景活动时间默认 300 wall seconds，batch 默认 7200 seconds 并为最多六个子进程组保留清理时间；进程使用既有 PID 身份校验和 pidfd 发送信号。阻塞系统 I/O 或调度仍可能超出协作式截止时间，不能声称严格 OS 强制时限。
+
+重复冲突的观察范围截至收集窗口关闭前最后执行的回调。窗口关闭后排队或新到达的 DDS 消息不进入本次证据；因此没有声称发布端整个历史无冲突。中断时尽量保留已选原始帧，停止后不运行检测，所有未完成阶段都显式报告。
 
 `capture_passed` 仅表示这组输入证据有效，不等同于类别识别正确、检出率、有效检测距离、覆盖完整或不存在目标。绝对世界坐标误差需要另行测量 settled native pose；不能直接比较 odom/map 的相机高度和世界坐标真值。
+
+## 闭合后的离线审计
+
+待 batch 的 `batch.json` 写入终态且自有进程清理完成后，再运行：
+
+```bash
+/usr/bin/python3 -B tools/red_calibration/score.py \
+  --batch-dir outputs/red-calibration/new-blank \
+  --manifest outputs/red-calibration/new-fixtures/manifest.json \
+  --output outputs/red-calibration/new-blank-score.json
+```
+
+审计器校验 checkpoint、固定序号样本、原始/派生文件与源码副本的哈希，并列出保存的 TF、检测数、拒绝理由和 mask 像素数。只有离线审计器读取 fixture 真值；不会重新运行检测器，也不会把真值反馈给在线策略。按原计划保留每个 case 和固定六个帧位；未运行或未处理为 `null`，不是零检测。输出必须是新文件并在输入目录之外。
+
+若子进程在离线处理期间退出，仅留下 `collection-checkpoint.json`，审计仍保留原始六个帧位和整批计划分母。只核对该检查点引用的原始数据，不读取未提交的 PNG 或检测文件；处理结果全部为 `null`，该场景计为已运行但不具备计数对照条件。自有进程已退出不代表 capture 的 native 清理成功；缺少最终 summary 时清理状态仍未知。已经存在但损坏的后期报告会明确报错，不回退成较早的成功记录。
+
+退出码 0 表示所选采集证据可用于描述性计数对照，仍不认证识别成功；1 表示已保存报告但存在无效/缺失/未运行项；2 表示输入仍运行、身份冲突或结构无法读取。没有实例关联、像素真值或实测相机世界位姿，不输出 precision/recall、IoU、绝对位置精度或有效范围。六个相邻帧也不当作六个独立场景。
 
 纯测试不启动 ROS/Gazebo：
 

@@ -17,6 +17,9 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 CAPTURE = HERE / 'capture_red_samples.py'
+CAPTURE_COLLECT_SECONDS = 60
+CAPTURE_SAVE_SECONDS = 10
+CAPTURE_PROCESS_SECONDS = 90  # Collection + saving + native cleanup margin.
 MAX_JOBS = 6  # isolation, sim, probe, native-before, capture, native-after
 GRACES = (20., 5., 3.)
 CLEANUP_RESERVE = MAX_JOBS * sum(GRACES)
@@ -53,7 +56,8 @@ def commands(case, directory, egl=False):
                   '--output', str(directory / 'sim-runtime.json')],
         'native-before': native + ['--output', str(directory / 'native-before.json')],
         'capture': ['/usr/bin/python3', str(CAPTURE), '--execute', '--registered-depth',
-                    '--case-id', case['id'], '--pairs', '6', '--timeout', '60',
+                    '--case-id', case['id'], '--pairs', '6', '--timeout', str(CAPTURE_COLLECT_SECONDS),
+                    '--save-timeout', str(CAPTURE_SAVE_SECONDS),
                     '--pair-wait', '2', '--max-bytes', str(256*1024**2),
                     '--reference-frame', 'odom', '--base-frame', 'base_footprint',
                     '--output', str(directory / 'capture')],
@@ -110,6 +114,8 @@ def build_plan(manifest, selected, all_cases, output, case_wall=300., batch_wall
             'cleanup_reserve_per_case_seconds': CLEANUP_RESERVE,
             'deadline_scope': 'Case deadline begins cleanup. Batch deadline includes reserved cleanup; OS scheduling or blocked OS I/O can overrun it. No hard OS-level lifetime guarantee.',
             'ros_domain': domain, 'headless_rendering': egl, 'pairs_per_case': 6,
+            'capture_phase_budgets_wall_s': {'collection': CAPTURE_COLLECT_SECONDS,
+                'persistence': CAPTURE_SAVE_SECONDS, 'process_total': CAPTURE_PROCESS_SECONDS},
             'truth_scoring': 'not_run; separate offline work only', 'effective_range_claimed': False,
             'stationarity_verified': False,
             'geometry_limit': 'Scene snapshots contain native IDs, not actual poses. Nominal camera world z is not a measured settled height; map/odom TF heights use different origins and are not world-truth heights.',
@@ -248,7 +254,7 @@ def run_case(case, plan, batch_deadline):
         first = read('native-before.json')
         if not first.get('passed') or not first.get('unique_instance_verified_in_snapshot'):
             raise RuntimeError('Native model uniqueness not verified')
-        capture_code = execute('capture', 75, require_zero=False)
+        capture_code = execute('capture', CAPTURE_PROCESS_SECONDS, require_zero=False)
         capture = read('capture/summary.json')
         report['capture_passed'] = (capture_code == 0 and capture.get('passed') is True
                                     and capture.get('saved_pairs') == 6)

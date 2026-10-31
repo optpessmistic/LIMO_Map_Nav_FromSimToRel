@@ -42,6 +42,9 @@ class RunnerTests(unittest.TestCase):
         for case in batch['cases']:
             args = case['commands']['capture']
             self.assertEqual(args[args.index('--pairs')+1], '6')
+            collection = float(args[args.index('--timeout')+1])
+            persistence = float(args[args.index('--save-timeout')+1])
+            self.assertGreater(runner.CAPTURE_PROCESS_SECONDS, collection+persistence)
             self.assertNotIn('MUST_NOT_READ_THIS_TRUTH_FILE.json', ' '.join(args))
             self.assertNotIn(case['world'], args)
             self.assertNotIn('--world', args)

@@ -10,6 +10,7 @@ from pathlib import Path
 import struct
 import sys
 import zlib
+from types import SimpleNamespace as NS
 
 import numpy as np
 
@@ -34,6 +35,29 @@ TOPICS = {'rgb': '/camera/color/image_raw', 'depth': '/camera/depth/image_raw',
           'rgb_info': '/camera/color/camera_info', 'depth_info': '/camera/depth/camera_info'}
 MAX_PIXELS = 1_048_576
 MAX_IMAGE_BYTES = 8*1024**2
+MAX_MEMORY_BYTES = 128*1024**2
+
+
+def freeze_message(kind, message):
+    """Detach bounded received content from ROS-owned mutable message objects."""
+    header = NS(stamp=NS(sec=message.header.stamp.sec, nanosec=message.header.stamp.nanosec),
+                frame_id=message.header.frame_id)
+    if len(header.frame_id) > 256:
+        raise ValueError('frame_id_length_limit')
+    if kind in ('rgb', 'depth'):
+        if len(message.encoding) > 32 or len(message.data) > MAX_IMAGE_BYTES:
+            raise ValueError('image_storage_limit')
+        return NS(header=header, data=bytes(message.data), **{key: getattr(message, key)
+                  for key in ('encoding', 'width', 'height', 'step', 'is_bigendian')})
+    if any(len(getattr(message, key)) > 64 for key in ('k', 'd', 'r', 'p')):
+        raise ValueError('camera_calibration_length_limit')
+    if len(message.distortion_model) > 128:
+        raise ValueError('distortion_model_length_limit')
+    return NS(header=header, **{key: getattr(message, key) for key in
+              ('width', 'height', 'distortion_model', 'binning_x', 'binning_y')},
+              **{key: tuple(getattr(message, key)) for key in ('k', 'd', 'r', 'p')},
+              roi=NS(**{key: getattr(message.roi, key) for key in
+                       ('x_offset', 'y_offset', 'height', 'width', 'do_rectify')}))
 
 
 def json_bytes(value):
@@ -121,7 +145,7 @@ def validate_transforms(transforms, stamp, optical_frame, reference_frame, base_
 
 
 def evaluate(messages, transforms, *, registered, reference_frame='odom', base_frame='base_footprint',
-             config=None, extra_reasons=()):
+             config=None, extra_reasons=(), run_detection=True):
     """Call the unchanged production detector once for eligible image inputs.
 
     A missing TF does not hide the independent image result. Input rejections,
@@ -142,7 +166,9 @@ def evaluate(messages, transforms, *, registered, reference_frame='odom', base_f
     optical = meta.get('rgb', {}).get('frame_id') if meta.get('rgb') else None
     report['stamp_ns'], report['optical_frame'] = stamp, optical
     report['tf_reasons'] = validate_transforms(transforms, stamp, optical, reference_frame, base_frame)
-    if not reasons:
+    if not run_detection:
+        report['extra_reasons'].append('offline_processing_skipped')
+    if not reasons and run_detection:
         try:
             color, depth = decode_image(messages['rgb']), decode_image(messages['depth'])
             arrays['rgb'] = color if messages['rgb'].encoding == 'rgb8' else color[..., ::-1].copy()
@@ -174,12 +200,17 @@ class FixedWindow:
     Sort only pairs available together in one callback; do not wait for an older
     unmatched sensor stamp. A late pair at/below the watermark is rejected.
     """
-    def __init__(self, count, pair_wait=2., cache_size=16):
+    def __init__(self, count, pair_wait=2., cache_size=16, max_memory_bytes=MAX_MEMORY_BYTES):
         if type(count) is not int or not 1 <= count <= 32:
             raise ValueError('sample count must be 1..32')
         if not math.isfinite(pair_wait) or not .01 <= pair_wait <= 10:
             raise ValueError('pair_wait must be .01..10 wall seconds')
         self.count, self.pair_wait, self.cache_size = count, pair_wait, cache_size
+        if type(max_memory_bytes) is not int or max_memory_bytes < 1:
+            raise ValueError('max_memory_bytes must be positive')
+        self.max_memory_bytes = max_memory_bytes
+        self.max_observed_image_bytes = 0
+        self.closed = False
         self.cache = {key: OrderedDict() for key in TOPICS}
         self.signatures = {key: OrderedDict() for key in TOPICS}
         # Ordinary signature history is bounded independently of selected pairs.
@@ -193,6 +224,17 @@ class FixedWindow:
         self.counts = Counter()
         self.conflict_stamps = set()
         self.conflict_details = {}
+
+    def image_bytes_held(self):
+        # Count unique detached image payloads, including selected frozen slots.
+        payloads = {}
+        for kind in ('rgb', 'depth'):
+            for message in self.cache[kind].values():
+                payloads[id(message.data)] = len(message.data)
+            for sample in self.pending:
+                message = sample[kind]
+                payloads[id(message.data)] = len(message.data)
+        return sum(payloads.values())
 
     def trim_unselected_conflicts(self):
         retained = set(self.selected_sequences)
@@ -225,6 +267,8 @@ class FixedWindow:
             self.events.append({'reason': reason, **details})
 
     def on_clock(self, ns):
+        if self.closed:
+            return
         if type(ns) is not int or ns < 0:
             self.event('invalid_clock')
             return
@@ -236,6 +280,8 @@ class FixedWindow:
             self.barrier_ns = ns
 
     def receive(self, kind, message, wall):
+        if self.closed:
+            return  # The sampling/conflict boundary is explicit and immutable.
         self.counts['received_'+kind] += 1
         ns = evidence.source_stamp_ns(message)
         if ns is None:
@@ -249,6 +295,9 @@ class FixedWindow:
                 message.width*message.height > MAX_PIXELS):
             self.event('oversized_input_dropped', topic=kind, stamp_ns=ns)
             return
+        # Limit metadata before its hashing path copies any variable-sized lists.
+        if kind not in ('rgb', 'depth'):
+            message = freeze_message(kind, message)
         meta = evidence.image_metadata(message) if kind in ('rgb', 'depth') else evidence.camera_metadata(message)
         signature = evidence.digest(meta)
         old = self.pinned_signatures[kind].get(ns, self.signatures[kind].get(ns))
@@ -265,6 +314,11 @@ class FixedWindow:
             else:
                 self.event('identical_duplicate', topic=kind, stamp_ns=ns)
             return
+        if kind in ('rgb', 'depth'):
+            if self.image_bytes_held()+len(message.data) > self.max_memory_bytes:
+                self.event('memory_budget_exceeded', topic=kind, stamp_ns=ns)
+                raise MemoryError('capture_raw_memory_budget_exceeded')
+            message = freeze_message(kind, message)
         self.signatures[kind][ns] = signature
         if ns in self.selected_sequences:
             self.pinned_signatures[kind][ns] = signature
@@ -275,6 +329,7 @@ class FixedWindow:
         while len(self.cache[kind]) > self.cache_size:
             dropped, _ = self.cache[kind].popitem(last=False)
             self.event('cache_evicted', topic=kind, stamp_ns=dropped)
+        self.max_observed_image_bytes = max(self.max_observed_image_bytes, self.image_bytes_held())
         while len(self.pending)+len(self.completed) < self.count:
             shared = sorted(self.cache['rgb'].keys() & self.cache['depth'].keys())
             if not shared:
@@ -288,7 +343,7 @@ class FixedWindow:
             sequence = len(self.pending)+len(self.completed)+1
             self.pin_selected(stamp, sequence)
             self.pending.append({'sequence': sequence,
-                                 'stamp_ns': stamp, 'deadline_wall': wall+self.pair_wait,
+                                 'stamp_ns': stamp, 'selected_wall': wall, 'deadline_wall': wall+self.pair_wait,
                                  'rgb': rgb, 'depth': depth})
 
     def messages(self, sample):
@@ -303,7 +358,7 @@ class FixedWindow:
 class CaptureWriter:
     """Exclusive writes and a fixed byte budget; no artifact is overwritten."""
     REPORT_SLOT_BYTES = 128*1024
-    REPORT_RESERVE_BYTES = 2*REPORT_SLOT_BYTES
+    REPORT_RESERVE_BYTES = 3*REPORT_SLOT_BYTES
 
     def __init__(self, output, max_bytes=256*1024**2):
         self.root = Path(output)
@@ -332,14 +387,27 @@ class CaptureWriter:
             raise OSError('capture_report_slot_exceeded')
         return self.write(name, payload, final=True)
 
-    def save_sample(self, sequence, messages, report, arrays):
-        import io
+    def save_raw(self, sequence, messages, observation):
         prefix = f'sample_{sequence:03d}/'
         files = {}
         for key in ('rgb', 'depth'):
             message = messages.get(key)
             if message is not None and len(message.data) <= MAX_IMAGE_BYTES:
                 files[key+'.data'] = self.write(prefix+key+'.data', bytes(message.data))
+        self.write(prefix+'raw.json', json_bytes({'sequence': sequence,
+            'input_metadata': metadata(messages), 'observation': observation, 'files': files,
+            'processing_status': 'not_run_yet'}))
+        return files
+
+    def save_sample(self, sequence, messages, report, arrays, *, raw_files=None):
+        import io
+        prefix = f'sample_{sequence:03d}/'
+        files = dict(raw_files or {})
+        if raw_files is None:
+            for key in ('rgb', 'depth'):
+                message = messages.get(key)
+                if message is not None and len(message.data) <= MAX_IMAGE_BYTES:
+                    files[key+'.data'] = self.write(prefix+key+'.data', bytes(message.data))
         for key, array in arrays.items():
             if key in ('rgb', 'red_mask'):
                 name, data = key+'.png', png_bytes(array)

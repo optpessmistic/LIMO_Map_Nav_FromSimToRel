@@ -1,0 +1,80 @@
+"""Archive the new closed attempts without changing the earlier failure archive."""
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import shutil
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / 'experiments/red-calibration-deferred-20261031'
+spec = importlib.util.spec_from_file_location('previous_archive_helper', ROOT/'outputs/setup/archive-red-calibration.py')
+helper = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(helper)
+helper.OUT = OUT
+
+
+def main():
+    labels = ('deferred-center-01', 'deferred-batch-12-01')
+    results, pairs, valid = {}, 0, 0
+    for label in labels:
+        path = ROOT/'outputs/red-calibration'/label
+        data = json.loads((path/'batch.json').read_text())
+        assert data['status'] != 'running'
+        assert data['cases'] and all(case['all_owned_groups_empty'] for case in data['cases'])
+        assert all(case['source_unchanged'] for case in data['cases'])
+        results[label] = {key: data[key] for key in ('status', 'completed_all_cases', 'errors', 'elapsed_wall_s')}
+        for case in data['cases']:
+            summary = json.loads((path/case['case_id']/'capture/summary.json').read_text())
+            pairs += summary['saved_pairs']
+            valid += sum(sample['frame_valid'] for sample in summary['samples'])
+        # Verify the frozen online script hashes before archiving current tools.
+        plan = json.loads((path/'plan.json').read_text())
+        for filename, sha in plan['source_sha256'].items():
+            source = Path(filename)
+            assert helper.digest(source) == sha, filename
+    OUT.mkdir(exist_ok=False)
+    packages = [helper.archive(ROOT/'outputs/red-calibration'/label, label) for label in labels]
+    packages.append(helper.archive(ROOT/'outputs/setup/red-calibration-draft/integrated-example-v1', 'fixtures'))
+    snapshot = ROOT/'outputs/setup/red-calibration-deferred-source-snapshot'
+    snapshot.mkdir(exist_ok=False)
+    for source in sorted((ROOT/'tools/red_calibration').iterdir()):
+        if source.is_file() and source.suffix in ('.py', '.sh', '.md'):
+            shutil.copyfile(source, snapshot/source.name)
+    packages.append(helper.archive(snapshot, 'tool-source-snapshot'))
+    packages.append(helper.archive(ROOT/'outputs/setup/target-association-draft', 'association-offline-draft'))
+    copies = [
+        (ROOT/'outputs/red-calibration/deferred-batch-12-01-score.json', 'batch-score.json'),
+        (ROOT/'outputs/red-calibration/deferred-center-01-score.json', 'center-score-initial.json'),
+        (ROOT/'outputs/red-calibration/deferred-center-01-score-v2.json', 'center-score.json'),
+        (ROOT/'outputs/setup/red-calibration-deferred-tests.log', 'pure-tests.log'),
+        (ROOT/'outputs/setup/red-capture-deferred-independent-review.md', 'capture-review.md'),
+        (ROOT/'outputs/setup/red-calibration-score-promotion-review.md', 'score-review.md'),
+        (ROOT/'outputs/setup/red-calibration-score-schema3-repro.json', 'score-compatibility-reproduction.json'),
+        (Path(__file__), 'archive.py.txt'),
+        (ROOT/'outputs/setup/archive-red-calibration.py', 'archive-helper.py.txt'),
+        (ROOT/'outputs/setup/red-calibration-deferred-tests.json', 'pure-tests.json'),
+        (ROOT/'outputs/red-calibration/deferred-batch-12-01/10_red_panel_negative/capture/sample_001/rgb.png', 'red-panel.png'),
+        (ROOT/'outputs/red-calibration/deferred-batch-12-01/11_close_pair_180mm/capture/sample_001/rgb.png', 'close-pair.png'),
+        (ROOT/'outputs/red-calibration/deferred-batch-12-01/12_partial_occlusion/capture/sample_001/rgb.png', 'partial-occlusion.png'),
+        (ROOT/'outputs/setup/target-association-draft/captured-case11-v1.json', 'association-case11.json'),
+        (ROOT/'outputs/setup/target-association-draft/captured-case11-v1.md', 'association-case11.md'),
+    ]
+    for label in labels:
+        copies.append((ROOT/'outputs/red-calibration'/label/'batch.json', label+'-batch.json'))
+    for source, name in copies:
+        shutil.copyfile(source, OUT/name)
+        assert helper.digest(source) == helper.digest(OUT/name)
+    report = {'schema_version': 1, 'batches': results, 'packages': packages,
+              'runtime_capture_count': pairs, 'valid_frame_count': valid,
+              'effective_detection_range_claimed': False,
+              'previous_failure_archive_unchanged': True,
+              'source_note': 'Per-case capture/source contains the online capture source. Tool snapshot also includes the later offline scorer. No original attempts were overwritten.'}
+    (OUT/'archive-manifest.json').write_text(json.dumps(report, indent=2)+'\n')
+    files = sorted(path for path in OUT.iterdir() if path.is_file())
+    (OUT/'SHA256SUMS').write_text(''.join(helper.digest(path)+'  '+path.name+'\n' for path in files))
+    print(json.dumps({'output': str(OUT), 'capture_count': pairs, 'valid_count': valid,
+                     'packages': [{key: item[key] for key in ('archive', 'file_count', 'bytes', 'all_members_verified')} for item in packages]}))
+
+
+if __name__ == '__main__':
+    main()

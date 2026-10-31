@@ -1,0 +1,2483 @@
+{
+  "schema_version": 1,
+  "status": "capture_batch_complete",
+  "cases": [
+    {
+      "case_id": "01_blank",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.001976693000017349,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.001196223999954782,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0010106860000291817,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.000943612000014582,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 1268,
+              "start_ticks": 25156,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1285,
+              "start_ticks": 25506,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1286,
+              "start_ticks": 25506,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1287,
+              "start_ticks": 25507,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 1.0128582549999692,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.000664536999977372,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/01_blank/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/01_blank.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/01_blank/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/01_blank/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_01_blank",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/01_blank/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "01_blank",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/01_blank/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_01_blank",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/01_blank/native-after.json"
+        ]
+      },
+      "world_sha256": "1d7dd881888f05056bef4334786ca34942afd8c4c5f0d5ad8325f7b584580a75",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_9ca37f3406e44b87a373714bf707760f",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 299.99999999999994,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 57.72828122999999,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "02_center_0400mm",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0013204869999867697,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006590739999978723,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006722710000417464,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005672849999882601,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 1510,
+              "start_ticks": 30679,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1527,
+              "start_ticks": 31005,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1528,
+              "start_ticks": 31005,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1529,
+              "start_ticks": 31005,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8070035150000194,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005590689999621645,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/02_center_0400mm/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/02_center_0400mm.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/02_center_0400mm/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/02_center_0400mm/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_02_center_0400mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/02_center_0400mm/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "02_center_0400mm",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/02_center_0400mm/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_02_center_0400mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/02_center_0400mm/native-after.json"
+        ]
+      },
+      "world_sha256": "65d4e6e78864c288ec5833a7b40e3f5ab522af9f511cd8e79b339a556416f223",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_66cc85b3c6334b2d959d5629fd896bb6",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 59.046083192000026,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "03_center_0800mm",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0011615610000035304,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0007759530000157611,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006219910000027085,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0007188020000512552,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 1759,
+              "start_ticks": 36686,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1776,
+              "start_ticks": 37083,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1777,
+              "start_ticks": 37083,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 1778,
+              "start_ticks": 37083,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8087180780000267,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006519570000023123,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/03_center_0800mm/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/03_center_0800mm.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/03_center_0800mm/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/03_center_0800mm/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_03_center_0800mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/03_center_0800mm/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "03_center_0800mm",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/03_center_0800mm/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_03_center_0800mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/03_center_0800mm/native-after.json"
+        ]
+      },
+      "world_sha256": "a69019800b2047c66a8548d7b4019379beab8cd3f40b743d122956de8178c9ec",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_3da3a873151b4879aa81fa0a16deea27",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 59.305194911,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "04_center_1600mm",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0008986229999550233,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005652330000316397,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0007210750000012922,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0007865050000077645,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 2011,
+              "start_ticks": 42691,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2028,
+              "start_ticks": 43081,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2029,
+              "start_ticks": 43081,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2030,
+              "start_ticks": 43081,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8060312990000398,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.00046147599999812883,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/04_center_1600mm/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/04_center_1600mm.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/04_center_1600mm/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/04_center_1600mm/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_04_center_1600mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/04_center_1600mm/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "04_center_1600mm",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/04_center_1600mm/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_04_center_1600mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/04_center_1600mm/native-after.json"
+        ]
+      },
+      "world_sha256": "14558b0c0d50863596406b124d443eb2cc29fa842fe37a209df9b81e4a269970",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_4e582265fae543c9bb9eea5d3f7ce8b8",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 59.420799775000035,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "05_center_3200mm",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0019051780000154395,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.001031058999956258,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.001082177000057527,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0009920090000150594,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 2251,
+              "start_ticks": 48685,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2299,
+              "start_ticks": 49040,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2300,
+              "start_ticks": 49040,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2301,
+              "start_ticks": 49040,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 1.2127762199999097,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006516280000141705,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/05_center_3200mm/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/05_center_3200mm.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/05_center_3200mm/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/05_center_3200mm/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_05_center_3200mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/05_center_3200mm/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "05_center_3200mm",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/05_center_3200mm/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_05_center_3200mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/05_center_3200mm/native-after.json"
+        ]
+      },
+      "world_sha256": "d0b48871a8e06ec92d529306894062b342023fbd67d491f28882f5d870420410",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_01766d3d5a324b39a8881771256ec13b",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 60.07840550200001,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "06_left_35deg",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0013348049999422074,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0007669990000067628,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.000610848999940572,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.000698480999972162,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 2525,
+              "start_ticks": 54636,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2550,
+              "start_ticks": 54977,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2551,
+              "start_ticks": 54977,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2552,
+              "start_ticks": 54977,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8073571559999664,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0007386880000694873,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/06_left_35deg/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/06_left_35deg.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/06_left_35deg/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/06_left_35deg/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_06_left_35deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/06_left_35deg/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "06_left_35deg",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/06_left_35deg/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_06_left_35deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/06_left_35deg/native-after.json"
+        ]
+      },
+      "world_sha256": "965a056ce1ce898640ac1fbb7751467e4876f61dbc91a825397ffef95c56b64a",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_d7f4647ac6b242f6b8b863aac2b05203",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 60.945264167999994,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "07_right_35deg",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.001261344999988978,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006271070000138934,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005158359999768436,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005223299999670417,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 2794,
+              "start_ticks": 60681,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2811,
+              "start_ticks": 61038,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2812,
+              "start_ticks": 61038,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 2813,
+              "start_ticks": 61038,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 1.0149849959999528,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0004904099999976097,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/07_right_35deg/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/07_right_35deg.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/07_right_35deg/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/07_right_35deg/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_07_right_35deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/07_right_35deg/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "07_right_35deg",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/07_right_35deg/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_07_right_35deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/07_right_35deg/native-after.json"
+        ]
+      },
+      "world_sha256": "c5c5cf4b1d04954515bdc19e892918ddc5870311152d438e1cfdc58c66143213",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_b98ede796e8f469cb268962aa1e95883",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 59.982039605999944,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "08_side_45deg",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0010725939999929324,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005819489999794314,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005076080000208094,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.00047815499999614985,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 3055,
+              "start_ticks": 66760,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3072,
+              "start_ticks": 67110,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3073,
+              "start_ticks": 67110,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3074,
+              "start_ticks": 67110,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8097473089999312,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0005534169999918959,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/08_side_45deg/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/08_side_45deg.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/08_side_45deg/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/08_side_45deg/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_08_side_45deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/08_side_45deg/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "08_side_45deg",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/08_side_45deg/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_08_side_45deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/08_side_45deg/native-after.json"
+        ]
+      },
+      "world_sha256": "d38dcdd9d7c2fb754820ccb0fc0299b9cd1b2de67843226900e3a6e30bf9ec17",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_1e8f5194a8e0427986516fceb095e931",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 60.364757521,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "09_side_75deg",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.001311474999965867,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0008422600000130842,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006580379999832076,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006329120000145849,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 3331,
+              "start_ticks": 72799,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3348,
+              "start_ticks": 73180,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3349,
+              "start_ticks": 73180,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3350,
+              "start_ticks": 73180,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8106733380000151,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006142109999700551,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/09_side_75deg/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/09_side_75deg.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/09_side_75deg/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/09_side_75deg/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_09_side_75deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/09_side_75deg/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "09_side_75deg",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/09_side_75deg/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_09_side_75deg",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/09_side_75deg/native-after.json"
+        ]
+      },
+      "world_sha256": "5370610807b2700020e46e4736fb47efea1f235a76bcc4d1e71aebb5f658bce8",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_8418a198ea4045eea62d57d6ba4f4ec0",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 56.048649090000026,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "10_red_panel_negative",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0013847159999613723,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0009146879999661905,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0007614649999823087,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006788160000041898,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 3571,
+              "start_ticks": 78336,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3588,
+              "start_ticks": 78635,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3589,
+              "start_ticks": 78635,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3590,
+              "start_ticks": 78635,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 1.0115680559999873,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006662069999947562,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/10_red_panel_negative/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/10_red_panel_negative.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/10_red_panel_negative/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/10_red_panel_negative/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_10_red_panel_negative",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/10_red_panel_negative/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "10_red_panel_negative",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/10_red_panel_negative/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_10_red_panel_negative",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/10_red_panel_negative/native-after.json"
+        ]
+      },
+      "world_sha256": "4bb1b48f7d359c4033513c3e0312cea225cfab394cd45bb50448867040be3a02",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_57061f64057a4d8da7aeaf71030ec7f5",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 59.666689911999924,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "11_close_pair_180mm",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0016349429999991116,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0012987090000251555,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0011036790000389374,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.001294196000003467,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 3859,
+              "start_ticks": 84309,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3876,
+              "start_ticks": 84850,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3877,
+              "start_ticks": 84850,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 3878,
+              "start_ticks": 84850,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8076778550000654,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006716609999557477,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/11_close_pair_180mm/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/11_close_pair_180mm.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/11_close_pair_180mm/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/11_close_pair_180mm/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_11_close_pair_180mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/11_close_pair_180mm/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "11_close_pair_180mm",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/11_close_pair_180mm/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_11_close_pair_180mm",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/11_close_pair_180mm/native-after.json"
+        ]
+      },
+      "world_sha256": "548d80a9a1794b25ae7dc49ca3fbe7107db86bd209986e7e3bdb8c37e36e50e9",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_e401c346c3874a169daad4fbbb711a52",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 299.9999999999999,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 59.72494826700006,
+      "source_unchanged": true,
+      "status": "captured"
+    },
+    {
+      "case_id": "12_partial_occlusion",
+      "errors": [],
+      "stops": {
+        "native-after": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0012467679999872416,
+          "exit_code": 0
+        },
+        "capture": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006959090000009382,
+          "exit_code": 0
+        },
+        "native-before": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0006264410000085263,
+          "exit_code": 0
+        },
+        "probe": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.000542540000083136,
+          "exit_code": 0
+        },
+        "sim": {
+          "signals": [
+            {
+              "pid": 4112,
+              "start_ticks": 90253,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 4132,
+              "start_ticks": 90589,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 4133,
+              "start_ticks": 90590,
+              "signal": "SIGINT"
+            },
+            {
+              "pid": 4134,
+              "start_ticks": 90590,
+              "signal": "SIGINT"
+            }
+          ],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.8062242529999821,
+          "exit_code": 0
+        },
+        "isolation": {
+          "signals": [],
+          "ownership_errors": [],
+          "remaining": [],
+          "remaining_check_complete": true,
+          "forced_kill": false,
+          "terminate_used": false,
+          "cleanup_budget_seconds": 28.0,
+          "elapsed_wall_seconds": 0.0004561840000860684,
+          "exit_code": 0
+        }
+      },
+      "exit_codes": {
+        "isolation": 0,
+        "probe": 0,
+        "native-before": 0,
+        "capture": 0,
+        "native-after": 0
+      },
+      "commands": {
+        "isolation": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/isolation_probe.py",
+          "--execute",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/12_partial_occlusion/isolation.json"
+        ],
+        "sim": [
+          "ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/12_partial_occlusion.sdf",
+          "headless:=true",
+          "headless_rendering:=false",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/12_partial_occlusion/spawn"
+        ],
+        "probe": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+          "--timeout",
+          "120",
+          "--max-initial-sim-time",
+          "30",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/12_partial_occlusion/sim-runtime.json"
+        ],
+        "native-before": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_12_partial_occlusion",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/12_partial_occlusion/native-before.json"
+        ],
+        "capture": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tools/red_calibration/capture_red_samples.py",
+          "--execute",
+          "--registered-depth",
+          "--case-id",
+          "12_partial_occlusion",
+          "--pairs",
+          "6",
+          "--timeout",
+          "60",
+          "--save-timeout",
+          "10",
+          "--pair-wait",
+          "2",
+          "--max-bytes",
+          "268435456",
+          "--reference-frame",
+          "odom",
+          "--base-frame",
+          "base_footprint",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/12_partial_occlusion/capture"
+        ],
+        "native-after": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+          "--execute",
+          "--world",
+          "limo_red_cal_12_partial_occlusion",
+          "--name",
+          "limo",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-batch-12-01/12_partial_occlusion/native-after.json"
+        ]
+      },
+      "world_sha256": "7b9f14ca1c02d9354b6656e5ec9e717e537749dd47e22fc641b8d0eeed9ef882",
+      "environment": {
+        "ROS_DOMAIN_ID": 77,
+        "GZ_PARTITION": "limo_red_cal_e54d17a396f840609ca5a4fb5ec019c4",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+      },
+      "capture_passed": true,
+      "truth_scoring_performed": false,
+      "stationarity_verified": false,
+      "motion_started": false,
+      "active_budget_wall_s": 300.0000000000001,
+      "cleanup_reserve_wall_s": 168.0,
+      "sensor_passed": true,
+      "spawn_acknowledged_once": true,
+      "capture_summary": {
+        "passed": true,
+        "collection_complete": true,
+        "all_samples_valid": true,
+        "source_unchanged": true,
+        "errors": [],
+        "requested_pairs": 6,
+        "saved_pairs": 6,
+        "selected_pairs": 6
+      },
+      "same_native_model_in_two_snapshots": true,
+      "native_snapshot_scope": "Model ID/count only; neither physical stationarity nor camera world pose is verified.",
+      "all_owned_groups_empty": true,
+      "forced_kill_used": false,
+      "elapsed_wall_s": 66.67096076099995,
+      "source_unchanged": true,
+      "status": "captured"
+    }
+  ],
+  "errors": [],
+  "truth_scoring_performed": false,
+  "motion_authorized": false,
+  "elapsed_wall_s": 720.512762122,
+  "completed_all_cases": true
+}
