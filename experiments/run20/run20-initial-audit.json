@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "run": "run20-arrival-margin",
+  "audited_utc": "2026-10-31T09:58:36.2668569Z",
+  "read_only": true,
+  "scope": "Initial survey and motion diagnostic only. No ROS nodes, process queries/signals, or changes to live inputs.",
+  "poll_window_utc": {
+    "final_reports_observed": "2026-10-31T09:56:44Z",
+    "started": "2026-10-31T09:53:34Z"
+  },
+  "status": "initial_survey_and_motion_evidence_consistent",
+  "mission_success_assessed": false,
+  "source_sha256": {
+    "initial-survey.json": "00796ddbcbf055aaa364f11706b3159d7633487bfc5c2366368e2107279fd951",
+    "initial-motion.json": "c226db9ed211af52f1c9aa3a415c66d6ab11a656cbbafc868d1a707dd4b1dde4",
+    "orchestration.json": "cac30512e51f09d13b94ca053349d7a700ff78991d783d37b79009055917845e",
+    "motion.log": "11ac07b1c54da28123ea5509fcd59e837954ee1f72e9788faa4d0822a5ae8152",
+    "survey.log": "e99739727e5acde61ec598bdcca2c3a9186c6c11e2075036059f5f947d5aa968",
+    "epoch.txt": "dd0d8069afc2c90c489fc99882d88ece7da23c11f3045254e50839b338683157"
+  },
+  "survey": {
+    "success": true,
+    "reason": "spin_and_odometry_rotation_heading_stop_verified",
+    "phase": "done",
+    "epoch_matches_run": true,
+    "motion_started": true,
+    "spin_goals": [
+      {
+        "uuid": "c194358ba2fd4488a46dedbd5780d3c2",
+        "target_yaw_rad": 6.383185307179586,
+        "accepted": true,
+        "cancel_requested": false,
+        "cancel_ack": false,
+        "terminal_status": 4,
+        "result_error_code": 0,
+        "errors": []
+      },
+      {
+        "uuid": "620479a81911448daabf47f6a221c6bb",
+        "target_yaw_rad": -0.12319884781523147,
+        "accepted": true,
+        "cancel_requested": false,
+        "cancel_ack": false,
+        "terminal_status": 4,
+        "result_error_code": 0,
+        "errors": []
+      }
+    ],
+    "stop_verified": true,
+    "stop_verification_source": "wheel_odometry",
+    "stop_stage_stamp": 68.7,
+    "stop_new_odom_samples": 24,
+    "fallback_zero_messages": 0,
+    "cleanup_errors": [],
+    "final_heading_error_rad": -0.02302125610672448,
+    "counts": {
+      "scan": 160,
+      "odom": 1999,
+      "clock": 19793
+    }
+  },
+  "motion": {
+    "partial": false,
+    "collection_complete": true,
+    "reason": "duration_complete",
+    "requested_signal": null,
+    "cleanup": {
+      "status": "complete",
+      "native_unsubscribed": true,
+      "native_release_attempted": true,
+      "ros_shutdown_called": true
+    },
+    "error": null,
+    "errors": [],
+    "wall_seconds": 90.31362876200001,
+    "requested_seconds_after_motion": 70.0,
+    "world_recomputed": {
+      "count": 1302,
+      "first_sim_s": 41.229,
+      "last_sim_s": 81.836,
+      "span_sim_s": 40.607,
+      "yaw_accumulated_rad": 6.2601569582255765,
+      "yaw_accumulated_max_rad": 6.406376893710686,
+      "max_displacement_m": 6.540843999649168E-05,
+      "max_pairwise_angular_rate_rad_s": 0.39999954664543397
+    },
+    "odom_recomputed": {
+      "count": 1980,
+      "first_sim_s": 42.26,
+      "last_sim_s": 81.84,
+      "span_sim_s": 39.580000000000005,
+      "yaw_accumulated_rad": 6.260164051072861,
+      "yaw_accumulated_max_rad": 6.406384154994817,
+      "max_displacement_m": 3.2394986815378296E-15,
+      "max_pairwise_angular_rate_rad_s": 0.39999999991331603
+    },
+    "cumulative_yaw_world_minus_odom_rad": -7.092847284617676E-06,
+    "peak_yaw_world_minus_odom_rad": -7.2612841313102194E-06,
+    "native_observed_full_sweep": true,
+    "note": "Final accumulated yaw is below 2*pi after the corrective second Spin; peak exceeds one full turn.",
+    "native_ids": [
+      114
+    ],
+    "aligned_count": 1269,
+    "reported_summaries_match_recomputed": true
+  },
+  "after_survey_stop": {
+    "thirty_sim_second_tail_proven": false,
+    "boundary_sim_s": 68.7,
+    "native_tail": {
+      "count": 421,
+      "first_sim_s": 68.701,
+      "last_sim_s": 81.836,
+      "span_sim_s": 13.135000000000005,
+      "yaw_accumulated_rad": 0.0,
+      "yaw_accumulated_max_rad": 0.0,
+      "max_displacement_m": 0.0,
+      "max_pairwise_angular_rate_rad_s": 0.0
+    },
+    "note": "Independent sampled native drift and angular rate after the stop boundary. No new acceptance threshold or final-mission stopping certificate is inferred."
+  },
+  "exit_evidence": {
+    "inference_basis": "run20-process.py: run(survey) and wait_job(motion,100) reject nonzero return codes before the saved read_only_planning_and_processed_image_preflight stage.",
+    "survey_and_motion_zero_exit_inferred": true,
+    "direct_numeric_exit_record_pending": "orchestration.stops is populated at final cleanup; no live process queried.",
+    "saved_orchestrator_stage": "autonomous_mission",
+    "direct_saved_exit_codes": null
+  },
+  "run18_comparison": {
+    "survey_motion_started": false,
+    "motion_exit_code": -6,
+    "initial_motion_report_exists": false,
+    "motion_log": "KeyboardInterrupt followed by terminate called without an active exception",
+    "duplicate_odom_failure_observed_in_run20": false,
+    "interruption_path_retested_in_run20": false,
+    "survey_error": "Pose changed at duplicate odometry timestamp",
+    "missing_motion_report_or_abort_observed_in_run20": false
+  },
+  "limitations": [
+    "Initial evidence does not prove navigation, target recognition, exploration completion, return, or mission success.",
+    "The native/odom capture downsamples; the independent survey guard consumed 1999 odometry messages without its run18 duplicate-pose failure, but this does not certify all future source messages.",
+    "The native stop tail is shorter than 30 simulation seconds and concerns the initial survey, not final mission stopping.",
+    "Normal diagnostic exit does not exercise real SIGINT handling; offline signal/abrupt-cleanup tests remain separate evidence.",
+    "Numeric exit codes are inferred from saved orchestration progress until final cleanup records them directly."
+  ]
+}

@@ -6,6 +6,7 @@ import message_filters
 import rclpy
 from rclpy.clock import JumpThreshold
 from rclpy.duration import Duration
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data, QoSProfile, DurabilityPolicy, ReliabilityPolicy
 from sensor_msgs.msg import CameraInfo, Image
@@ -129,11 +130,20 @@ class RedRGBDBaseline(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = RedRGBDBaseline()
+    node = None
     try:
+        node = RedRGBDBaseline()
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
+    except ExternalShutdownException:
+        # Jazzy's signal handler may stop the context before spin returns.
+        # Do not hide an unrelated exception raised while it is still active.
+        if rclpy.ok():
+            raise
     finally:
-        node.destroy_node()
-        rclpy.shutdown()
+        try:
+            if node is not None:
+                node.destroy_node()
+        finally:
+            rclpy.try_shutdown()

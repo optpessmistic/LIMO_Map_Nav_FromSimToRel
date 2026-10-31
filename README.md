@@ -6,6 +6,8 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
+最新 run20 已完成五个探索点、两个红色替身标注及返航，原生相对起点误差约 3.79 cm / 7.52°。在线停车观察五次通过，但独立末帧审计发现原始 RGB-D 缺图，完整视觉搜索仍未验证。详见 [run20 记录](docs/autonomous-run20.md)；打开实时窗口见 [Gazebo / RViz](docs/visualization.md)。该轮已关闭，查看客户端不会自动重启实验。
+
 当前已完成 WSL 环境与 ROS 集成。run14 首次在 Gazebo 物理仿真中完成四次自主探索、两个红色替身的地图标注和返航；独立实际返航误差约 6.4 cm，两目标平面标注误差约 4.6/1.8 cm。视觉搜索覆盖和正式物品类别尚未验证，因此完整 `mission_success` 仍为 false，实车实验尚未通过。通过本轮的 RPP 与小迷宫 SLAM 配置作为可选实验配置保存，详见 [run14 记录](docs/autonomous-run14.md)和[复现步骤](docs/rpp-smoke-reproduction.md)。
 
 ![run14 原始地图、实际轨迹与替身标注](docs/assets/run14-overview.png)
@@ -35,6 +37,7 @@
 | 预测路径、近目标停滞与净空保护 | [run13 自主实验](docs/autonomous-run13.md) |
 | 首次探索、替身标注和返航 | [run14 自主实验](docs/autonomous-run14.md) |
 | 新图像观察验证与到位超差诊断 | [run15 实验及保留的失败证据](docs/autonomous-run15.md) |
+| 更严格到位阈值、返航与缺图审计 | [run20 实验记录](docs/autonomous-run20.md) |
 | 可选 RPP 小迷宫配置与运行顺序 | [复现步骤](docs/rpp-smoke-reproduction.md) |
 | 车体真实运动与接触近似 | [物理验证](docs/physics-validation.md) |
 | 激光输入与时间对照 | [只读扫描诊断](docs/scan-alignment.md) |

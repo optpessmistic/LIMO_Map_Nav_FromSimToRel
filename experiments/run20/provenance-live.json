@@ -1,0 +1,2421 @@
+{
+  "schema_version": 1,
+  "read_only": true,
+  "run_token_expected": "run20-arrival-margin-b80aa8d",
+  "started_utc": "2026-10-31T09:57:00.506491+00:00",
+  "started_unix": 1793440620.2425237,
+  "repo": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel",
+  "git": {
+    "root": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel",
+    "read_only": true,
+    "head": "b80aa8de6799520b16fb7f70dcb1ac43d21d5f2a",
+    "branch": "codex/limo-settled-inspection",
+    "status_porcelain": "",
+    "dirty": false
+  },
+  "runtime_repo_git": {
+    "root": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel",
+    "read_only": true,
+    "head": "b068c6e1ee86252f1b2e8736fa4e94da5e3b1aaf",
+    "branch": "codex/limo-maze-baseline",
+    "status_porcelain": "",
+    "dirty": false
+  },
+  "collector": {
+    "python_executable": "/usr/bin/python3",
+    "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "pid": 1739,
+    "environment": {
+      "ROS_DISTRO": "jazzy",
+      "ROS_DOMAIN_ID": "73",
+      "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+      "GZ_PARTITION": "limo_maze_jazzy",
+      "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d",
+      "ROS_LOG_DIR": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/ros_logs/python",
+      "AMENT_PREFIX_PATH": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup:/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception:/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_harmonic_description:/opt/ros/jazzy",
+      "CMAKE_PREFIX_PATH": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_harmonic_description:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor",
+      "COLCON_PREFIX_PATH": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install",
+      "LD_LIBRARY_PATH": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib",
+      "PYTHONPATH": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages:/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission:/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/lib/python3.12/site-packages:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/python3.12/site-packages:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission:/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/lib/python3.12/site-packages:/opt/ros/jazzy/opt/gz_sim_vendor/lib/python:/opt/ros/jazzy/opt/sdformat_vendor/lib/python:/opt/ros/jazzy/opt/gz_transport_vendor/lib/python:/opt/ros/jazzy/opt/gz_msgs_vendor/lib/python:/opt/ros/jazzy/opt/gz_math_vendor/lib/python:/opt/ros/jazzy/lib/python3.12/site-packages"
+    },
+    "expected_run_token_matches": true,
+    "expected_domain_matches": true,
+    "file": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-provenance.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-provenance.py",
+      "sha256": "0cc0b22f959ecfebff7cbfc5c63c94b1e40b1816f3659bbc225ec12ebb0a8fc5",
+      "bytes": 18762,
+      "mtime_ns": 1793440316272776400,
+      "inode": 142989288169989574,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    }
+  },
+  "declared_launch_environment": {
+    "file": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-env.sh",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-env.sh",
+      "sha256": "1d658dd3b6e094e137f020b9f15770a19d323f16f5218e8d4b53f584a13d90de",
+      "bytes": 3540,
+      "mtime_ns": 1793440316252853300,
+      "inode": 12384898976181649,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "parsing": "Read text only; this function does not execute the shell script.",
+    "declared_roots": {
+      "LIMO_RUN_ROOT": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel",
+      "LIMO_RUNTIME_ROOT": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel"
+    },
+    "source_order": [
+      {
+        "expression": "source /opt/ros/jazzy/setup.bash",
+        "expanded_path": "/opt/ros/jazzy/setup.bash",
+        "setup_file": {
+          "requested_path": "/opt/ros/jazzy/setup.bash",
+          "resolved_path": "/opt/ros/jazzy/setup.bash",
+          "sha256": "12556a2725a823c3841f8fbab50892c8b8c69df9654d2a74761407226ecca4df",
+          "bytes": 349,
+          "mtime_ns": 1769016181000000000,
+          "inode": 374047,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        }
+      },
+      {
+        "expression": "source \"$LIMO_RUNTIME_ROOT/install/local_setup.bash\"",
+        "expanded_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/local_setup.bash",
+        "setup_file": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/local_setup.bash",
+          "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/local_setup.bash",
+          "sha256": "0e10d666bbf43cf559467b11b75cf6d26cf8d210e7f94e79dfe5a7dddb2fe91c",
+          "bytes": 3760,
+          "mtime_ns": 1793225591494353600,
+          "inode": 562949953706110,
+          "device_major": 0,
+          "device_minor": 73,
+          "stable_during_hash": true
+        }
+      },
+      {
+        "expression": "source \"$LIMO_RUNTIME_ROOT/outputs/slam-boundary-ws/install/local_setup.bash\"",
+        "expanded_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/local_setup.bash",
+        "setup_file": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/local_setup.bash",
+          "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/local_setup.bash",
+          "sha256": "0e10d666bbf43cf559467b11b75cf6d26cf8d210e7f94e79dfe5a7dddb2fe91c",
+          "bytes": 3760,
+          "mtime_ns": 1793214268759387300,
+          "inode": 562949953709459,
+          "device_major": 0,
+          "device_minor": 73,
+          "stable_during_hash": true
+        }
+      },
+      {
+        "expression": "source \"$LIMO_RUN_ROOT/install/local_setup.bash\"",
+        "expanded_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/local_setup.bash",
+        "setup_file": {
+          "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/local_setup.bash",
+          "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/local_setup.bash",
+          "sha256": "0e10d666bbf43cf559467b11b75cf6d26cf8d210e7f94e79dfe5a7dddb2fe91c",
+          "bytes": 3760,
+          "mtime_ns": 1793439413421468500,
+          "inode": 562949954432760,
+          "device_major": 0,
+          "device_minor": 70,
+          "stable_during_hash": true
+        }
+      }
+    ],
+    "export_lines": [
+      "export ROS_DOMAIN_ID=73 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST GZ_PARTITION=limo_maze_jazzy",
+      "export LIMO_RUN20_ID=run20-arrival-margin-b80aa8d",
+      "export ROS_LOG_DIR=\"$run_dir/ros_logs/$mode\""
+    ],
+    "known_launch_lines": [
+      "sim) exec ros2 launch limo_sim_bringup sim.launch.py world:=\"$PWD/worlds/smoke_maze.world\" headless:=true spawn_artifacts:=\"$run_dir/spawn\" ;;",
+      "navigation) exec ros2 launch limo_maze_bringup mapping_navigation.launch.py map_epoch:=\"$(cat \"$run_dir/epoch.txt\")\" nav_params:=\"$run_dir/nav2-rpp-03m.yaml\" slam_params:=\"$PWD/src/limo_maze_bringup/config/slam_smoke_experimental.yaml\" ;;",
+      "recorder) exec /usr/bin/python3 scripts/record_bounded.py --output \"$run_dir/recording\" --mission-dir \"$run_dir/mission\" --map-epoch \"$(cat \"$run_dir/epoch.txt\")\" --max-wall-seconds 1650 --post-terminal-wall-seconds 120 --max-bytes 8589934592 --min-free-bytes 4294967296 --qos-profile-overrides-path config/recording_qos.yaml --topics /scan /tf /tf_static /odom /clock /pose /map /plan /received_global_plan /lookahead_point /lookahead_collision_arc /is_rotating_to_heading /global_costmap/costmap_raw /local_costmap/costmap_raw /cmd_vel_nav /cmd_vel_smoothed /cmd_vel /rosout /mission/status /mission/map_epoch /mission/targets /mission/target_observations /mission/frame_processing /camera/color/image_raw /camera/depth/image_raw /camera/color/camera_info /camera/depth/camera_info ;;",
+      "perception) exec ros2 run limo_maze_perception red_rgbd_detector --ros-args -p use_sim_time:=true -p enabled:=true -p depth_registered_to_color:=true -p publish_frame_processing:=true ;;",
+      "mission) exec ros2 run limo_maze_mission mission --ros-args -p use_sim_time:=true -p autonomous:=true -p require_processed_inspection:=true -p initial_clearance_radius_m:=0.30 -p initial_clearance_source:=smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811 -p mission_timeout_s:=900.0 -p return_timeout_s:=240.0 -p goal_timeout_s:=120.0 -p output_dir:=\"$run_dir/mission\" ;;"
+    ]
+  },
+  "static_input_files_at_capture": {
+    "worlds/smoke_maze.world": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/worlds/smoke_maze.world",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/worlds/smoke_maze.world",
+      "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+      "bytes": 11269,
+      "mtime_ns": 1793341486961652200,
+      "inode": 562949954432357,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "scripts/odom_integrity.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/odom_integrity.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/odom_integrity.py",
+      "sha256": "3fc14dd8aab56f4024d2b356031483db867dc6762c9f37648128f568c6e9a78d",
+      "bytes": 9904,
+      "mtime_ns": 1793439146728775300,
+      "inode": 3377699721436424,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "src/limo_sim_bringup/scripts/spawn_once.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/spawn_once.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/spawn_once.py",
+      "sha256": "cb2fba4cea4249aec8aa09aa379537b5cb3e87e90b17a9d218f620bbe8539222",
+      "bytes": 12602,
+      "mtime_ns": 1793439266136374800,
+      "inode": 3659174698147194,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "src/limo_sim_bringup/scripts/inspect_scene_once.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/scripts/inspect_scene_once.py",
+      "sha256": "a86a3313a706b8e9d73689b605ad38a10c85ed0cd8508eaa142cdb49943b23d3",
+      "bytes": 7127,
+      "mtime_ns": 1793439266142624400,
+      "inode": 3659174698147197,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "src/limo_maze_bringup/config/nav2_rpp.yaml": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/config/nav2_rpp.yaml",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/config/nav2_rpp.yaml",
+      "sha256": "4b95abe06cd5c63052fdb5972daddc3f97831c24ace609e3da5f6c94df47c918",
+      "bytes": 10730,
+      "mtime_ns": 1793341486904018700,
+      "inode": 562949954432283,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "src/limo_maze_bringup/config/slam_smoke_experimental.yaml": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/config/slam_smoke_experimental.yaml",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/config/slam_smoke_experimental.yaml",
+      "sha256": "74aaacf87fce525a2097d6d60af80e0a240f67224336cd5ae3f2db83b1c5943e",
+      "bytes": 2796,
+      "mtime_ns": 1793341486906020400,
+      "inode": 562949954432285,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "src/limo_maze_bringup/launch/mapping_navigation.launch.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/launch/mapping_navigation.launch.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/launch/mapping_navigation.launch.py",
+      "sha256": "7f59a397fa08040d395384f77223992b0e79bac13f2cb5ee22a7d9d37c298a12",
+      "bytes": 2261,
+      "mtime_ns": 1793341486907519400,
+      "inode": 562949954432287,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "src/limo_maze_bringup/launch/navigation.launch.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/launch/navigation.launch.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/launch/navigation.launch.py",
+      "sha256": "a559bdf015d9514df3b039e23229911002d7d134fdbb3a99c6208c82f412a08a",
+      "bytes": 2094,
+      "mtime_ns": 1793341486907519400,
+      "inode": 562949954432288,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "src/limo_sim_bringup/launch/sim.launch.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/launch/sim.launch.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_sim_bringup/launch/sim.launch.py",
+      "sha256": "b23d77849e80021061b35359fb60e5a2c1cbb9a65318c67f72b1cbef61880312",
+      "bytes": 6948,
+      "mtime_ns": 1793439367140137000,
+      "inode": 562949954432321,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "scripts/env.sh": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/env.sh",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/env.sh",
+      "sha256": "dacbddc6e2507a1511e1c910aa0f055edd21cc2729c2e66a611b63eb5145b7d9",
+      "bytes": 432,
+      "mtime_ns": 1793341486831956600,
+      "inode": 562949954432265,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "scripts/capture_motion_evidence.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/capture_motion_evidence.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/capture_motion_evidence.py",
+      "sha256": "38f270fcc33a420dd86724a58f4a11e927f44235f302f91d68bbe1f85661a83c",
+      "bytes": 14511,
+      "mtime_ns": 1793440174065319100,
+      "inode": 562949954432259,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "scripts/initial_survey.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/initial_survey.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/initial_survey.py",
+      "sha256": "2fd88c03be813c974665f9c1c465ec3fa993cb4e694117db6b88e932bdd9de6c",
+      "bytes": 28701,
+      "mtime_ns": 1793341486834956800,
+      "inode": 562949954432268,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "scripts/observe_sim_mission.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/observe_sim_mission.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/observe_sim_mission.py",
+      "sha256": "2f8decc9ae6d7747f14723081cef36e7c825f3e079af2accd0810a7a53368fcd",
+      "bytes": 40350,
+      "mtime_ns": 1793341486835957200,
+      "inode": 562949954432269,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "scripts/check_sim_runtime.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+      "sha256": "b27e3b7bb7dae24288357db5461ae19e5931f164245903053bac84461c6cbf66",
+      "bytes": 14966,
+      "mtime_ns": 1793439147279868200,
+      "inode": 562949954432264,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "scripts/check_navigation_runtime.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_navigation_runtime.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_navigation_runtime.py",
+      "sha256": "26544218c9b29ce7c6d16d4860cd72b068290b545c64c4e36f5b3fcba48e660b",
+      "bytes": 6445,
+      "mtime_ns": 1793341486827963000,
+      "inode": 562949954432261,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "outputs/setup/run20-env.sh": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-env.sh",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-env.sh",
+      "sha256": "1d658dd3b6e094e137f020b9f15770a19d323f16f5218e8d4b53f584a13d90de",
+      "bytes": 3540,
+      "mtime_ns": 1793440316252853300,
+      "inode": 12384898976181649,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "outputs/setup/run20-process.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-process.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-process.py",
+      "sha256": "37cdf65ee09429f3052244f6276b1d895dda22e93b972132c8ed217019cc2374",
+      "bytes": 14466,
+      "mtime_ns": 1793440316256626200,
+      "inode": 15481123720034381,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "config/recording_qos.yaml": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/config/recording_qos.yaml",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/config/recording_qos.yaml",
+      "sha256": "b20be4739b1c11e4b6c36e1cfd3fc9bc9ec5853a273817c69220754bf88c6b87",
+      "bytes": 178,
+      "mtime_ns": 1793435559268950600,
+      "inode": 4785074604988155,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "outputs/setup/audit-run15-inspection.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/audit-run15-inspection.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/audit-run15-inspection.py",
+      "sha256": "f0a0bf861d100df0cff401c4c246dbcc757d5d3effacb40c44b337dd402e0116",
+      "bytes": 32693,
+      "mtime_ns": 1793434456495735500,
+      "inode": 3377699721102415,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "outputs/setup/run20-provenance.py": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-provenance.py",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/run20-provenance.py",
+      "sha256": "0cc0b22f959ecfebff7cbfc5c63c94b1e40b1816f3659bbc225ec12ebb0a8fc5",
+      "bytes": 18762,
+      "mtime_ns": 1793440316272776400,
+      "inode": 142989288169989574,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    },
+    "patches/0002-slam-toolbox-inclusive-grid.patch": {
+      "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/patches/0002-slam-toolbox-inclusive-grid.patch",
+      "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/patches/0002-slam-toolbox-inclusive-grid.patch",
+      "sha256": "d5b84271971957f3675fe3a0b3263b48a829e32cb02bf74073a1c8f387794c70",
+      "bytes": 775,
+      "mtime_ns": 1793341486820395400,
+      "inode": 562949954432253,
+      "device_major": 0,
+      "device_minor": 70,
+      "stable_during_hash": true
+    }
+  },
+  "python_source_and_current_environment_imports": [
+    {
+      "module": "limo_maze_mission",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/__init__.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/__init__.py",
+        "sha256": "57371c772a7ba657242df866865d2f51a1bd39c15d1762b12d9679a2f36827bc",
+        "bytes": 83,
+        "mtime_ns": 1793341486915528000,
+        "inode": 562949954432297,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/__init__.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/__init__.py",
+        "sha256": "57371c772a7ba657242df866865d2f51a1bd39c15d1762b12d9679a2f36827bc",
+        "bytes": 83,
+        "mtime_ns": 1793341486915528000,
+        "inode": 562949954432297,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/__init__.py",
+      "source_matches_import": true
+    },
+    {
+      "module": "limo_maze_mission.core",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/core.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/core.py",
+        "sha256": "4815a0d5725101c3f952c84ab540778e7341baf827678890a0bb66129401e113",
+        "bytes": 17770,
+        "mtime_ns": 1793341486917040400,
+        "inode": 562949954432298,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/core.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/core.py",
+        "sha256": "4815a0d5725101c3f952c84ab540778e7341baf827678890a0bb66129401e113",
+        "bytes": 17770,
+        "mtime_ns": 1793341486917040400,
+        "inode": 562949954432298,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/core.py",
+      "source_matches_import": true
+    },
+    {
+      "module": "limo_maze_mission.inspection",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/inspection.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/inspection.py",
+        "sha256": "b308b43c27d9f2528f9de94631d1402f336213548d816287900e04e889ca6a20",
+        "bytes": 22217,
+        "mtime_ns": 1793342114010014900,
+        "inode": 1970324837985683,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/inspection.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/inspection.py",
+        "sha256": "b308b43c27d9f2528f9de94631d1402f336213548d816287900e04e889ca6a20",
+        "bytes": 22217,
+        "mtime_ns": 1793342114010014900,
+        "inode": 1970324837985683,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/inspection.py",
+      "source_matches_import": true
+    },
+    {
+      "module": "limo_maze_mission.node",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/node.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/node.py",
+        "sha256": "ab2ba10c5f5e70ba691f51a1ebcafca08fca6e56c30a5dd6f1839d5408aeca87",
+        "bytes": 58743,
+        "mtime_ns": 1793434267400094600,
+        "inode": 562949954432299,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/node.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/node.py",
+        "sha256": "ab2ba10c5f5e70ba691f51a1ebcafca08fca6e56c30a5dd6f1839d5408aeca87",
+        "bytes": 58743,
+        "mtime_ns": 1793434267400094600,
+        "inode": 562949954432299,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/node.py",
+      "source_matches_import": true
+    },
+    {
+      "module": "limo_maze_perception",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/__init__.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/__init__.py",
+        "sha256": "8b74d88316bf6a791ae50da978b9a997413e84632aca823b0ec201c23d19e47f",
+        "bytes": 81,
+        "mtime_ns": 1793341486923580100,
+        "inode": 562949954432307,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/__init__.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/__init__.py",
+        "sha256": "8b74d88316bf6a791ae50da978b9a997413e84632aca823b0ec201c23d19e47f",
+        "bytes": 81,
+        "mtime_ns": 1793341486000000000,
+        "inode": 562949954432692,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/__init__.py",
+      "source_matches_import": true
+    },
+    {
+      "module": "limo_maze_perception.core",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/core.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/core.py",
+        "sha256": "01ca5d189b6a9df1a424046066e7e4f3e5e1b2b0d2ca75c8d4c7bffebb29693a",
+        "bytes": 10951,
+        "mtime_ns": 1793341486924578600,
+        "inode": 562949954432308,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/core.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/core.py",
+        "sha256": "01ca5d189b6a9df1a424046066e7e4f3e5e1b2b0d2ca75c8d4c7bffebb29693a",
+        "bytes": 10951,
+        "mtime_ns": 1793341486000000000,
+        "inode": 562949954432685,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/core.py",
+      "source_matches_import": true
+    },
+    {
+      "module": "limo_maze_perception.evidence",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/evidence.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/evidence.py",
+        "sha256": "328d28a71205a2a7417e7e05ed3d620e9d36a93180fffc010b726a62970cb562",
+        "bytes": 10174,
+        "mtime_ns": 1793341486925580000,
+        "inode": 562949954432309,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/evidence.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/evidence.py",
+        "sha256": "328d28a71205a2a7417e7e05ed3d620e9d36a93180fffc010b726a62970cb562",
+        "bytes": 10174,
+        "mtime_ns": 1793341486000000000,
+        "inode": 562949954432688,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/evidence.py",
+      "source_matches_import": true
+    },
+    {
+      "module": "limo_maze_perception.node",
+      "source": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/node.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_perception/limo_maze_perception/node.py",
+        "sha256": "dd2799b7382cdf6f49e15718f6c7ce9676df569a27678f6c48cca9d24a304603",
+        "bytes": 8548,
+        "mtime_ns": 1793341486927083900,
+        "inode": 562949954432310,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "scope": "Imported in this collector using its inherited overlay environment; not live-process Python introspection.",
+      "imported_file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/node.py",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/node.py",
+        "sha256": "dd2799b7382cdf6f49e15718f6c7ce9676df569a27678f6c48cca9d24a304603",
+        "bytes": 8548,
+        "mtime_ns": 1793341486000000000,
+        "inode": 562949954432690,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "imported_spec_origin": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/node.py",
+      "source_matches_import": true
+    }
+  ],
+  "resolved_package_prefixes": {
+    "limo_sim_bringup": {
+      "prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup",
+      "share": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup/share/limo_sim_bringup",
+      "package_xml": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup/share/limo_sim_bringup/package.xml",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup/share/limo_sim_bringup/package.xml",
+        "sha256": "19e44c72fe9677bca2a51e6605d13f9b22d7ebd5944b5b6208b9fe7d099a7499",
+        "bytes": 1152,
+        "mtime_ns": 1793439185000000000,
+        "inode": 3096224744726354,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {
+        "launch/sim.launch.py": {
+          "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup/share/limo_sim_bringup/launch/sim.launch.py",
+          "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup/share/limo_sim_bringup/launch/sim.launch.py",
+          "sha256": "b23d77849e80021061b35359fb60e5a2c1cbb9a65318c67f72b1cbef61880312",
+          "bytes": 6948,
+          "mtime_ns": 1793439367000000000,
+          "inode": 3096224744726247,
+          "device_major": 0,
+          "device_minor": 70,
+          "stable_during_hash": true
+        },
+        "config/bridge.yaml": {
+          "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup/share/limo_sim_bringup/config/bridge.yaml",
+          "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_sim_bringup/share/limo_sim_bringup/config/bridge.yaml",
+          "sha256": "6ec80d0e2972b407149cef20dc12d510a58bfffa6068f9e1601e6e0f2330c76e",
+          "bytes": 2320,
+          "mtime_ns": 1793341486000000000,
+          "inode": 3096224744726259,
+          "device_major": 0,
+          "device_minor": 70,
+          "stable_during_hash": true
+        }
+      }
+    },
+    "limo_harmonic_description": {
+      "prefix": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_harmonic_description",
+      "share": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_harmonic_description/share/limo_harmonic_description",
+      "package_xml": {
+        "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_harmonic_description/share/limo_harmonic_description/package.xml",
+        "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/vendor/hunter_gazebo/src/limo_base/package.xml",
+        "sha256": "ba02b16a93fc49e15e08f0b379e57aa1bb81a32bf6574068bae53ae3c472c516",
+        "bytes": 628,
+        "mtime_ns": 1793201620731859400,
+        "inode": 562949953684396,
+        "device_major": 0,
+        "device_minor": 73,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {
+        "urdf/limo_gazebo.xacro": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_harmonic_description/share/limo_harmonic_description/urdf/limo_gazebo.xacro",
+          "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/vendor/hunter_gazebo/src/gazebo_harmonic/urdf/limo_gazebo.xacro",
+          "sha256": "fea0ae1fc4916781eed005f4bb9bb4b598ca0fb635d8b4c024cf0d142da925a2",
+          "bytes": 5610,
+          "mtime_ns": 1793210326895844700,
+          "inode": 562949953684356,
+          "device_major": 0,
+          "device_minor": 73,
+          "stable_during_hash": true
+        }
+      }
+    },
+    "limo_maze_bringup": {
+      "prefix": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup",
+      "share": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup/share/limo_maze_bringup",
+      "package_xml": {
+        "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup/share/limo_maze_bringup/package.xml",
+        "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/package.xml",
+        "sha256": "cc2d55102c948f0736413cfe56f3b0de479327b346969008b141760891a91bfb",
+        "bytes": 1252,
+        "mtime_ns": 1793207975657754600,
+        "inode": 562949953684543,
+        "device_major": 0,
+        "device_minor": 73,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {
+        "launch/mapping_navigation.launch.py": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup/share/limo_maze_bringup/launch/mapping_navigation.launch.py",
+          "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/launch/mapping_navigation.launch.py",
+          "sha256": "7f59a397fa08040d395384f77223992b0e79bac13f2cb5ee22a7d9d37c298a12",
+          "bytes": 2261,
+          "mtime_ns": 1793207946851655400,
+          "inode": 562949953686098,
+          "device_major": 0,
+          "device_minor": 73,
+          "stable_during_hash": true
+        },
+        "launch/navigation.launch.py": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup/share/limo_maze_bringup/launch/navigation.launch.py",
+          "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/launch/navigation.launch.py",
+          "sha256": "a559bdf015d9514df3b039e23229911002d7d134fdbb3a99c6208c82f412a08a",
+          "bytes": 2094,
+          "mtime_ns": 1793207946343904700,
+          "inode": 1688849860549274,
+          "device_major": 0,
+          "device_minor": 73,
+          "stable_during_hash": true
+        },
+        "config/nav2_rpp.yaml": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup/share/limo_maze_bringup/config/nav2_rpp.yaml",
+          "error": "FileNotFoundError"
+        },
+        "config/slam_smoke_experimental.yaml": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup/share/limo_maze_bringup/config/slam_smoke_experimental.yaml",
+          "error": "FileNotFoundError"
+        }
+      }
+    },
+    "limo_maze_mission": {
+      "prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission",
+      "share": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/share/limo_maze_mission",
+      "package_xml": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/share/limo_maze_mission/package.xml",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/package.xml",
+        "sha256": "fc6ec9d487b9a1f2dd38ac5e29010da238116e4d6d14e4cf35d41a9f69792904",
+        "bytes": 817,
+        "mtime_ns": 1793341486919055200,
+        "inode": 562949954432300,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {}
+    },
+    "limo_maze_perception": {
+      "prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception",
+      "share": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/share/limo_maze_perception",
+      "package_xml": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/share/limo_maze_perception/package.xml",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/share/limo_maze_perception/package.xml",
+        "sha256": "ba09c861865528d9eb9db818ef9480fd49465b9d5f5faebeda348df5a92e0ae7",
+        "bytes": 730,
+        "mtime_ns": 1793341486000000000,
+        "inode": 562949954432709,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {}
+    },
+    "nav2_bringup": {
+      "prefix": "/opt/ros/jazzy",
+      "share": "/opt/ros/jazzy/share/nav2_bringup",
+      "package_xml": {
+        "requested_path": "/opt/ros/jazzy/share/nav2_bringup/package.xml",
+        "resolved_path": "/opt/ros/jazzy/share/nav2_bringup/package.xml",
+        "sha256": "4ba633e9e8f921dff4ee02b8b094f65e41bb48bea652ef8fba6c84052a59debb",
+        "bytes": 1575,
+        "mtime_ns": 1787350919000000000,
+        "inode": 422895,
+        "device_major": 8,
+        "device_minor": 64,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {}
+    },
+    "nav2_controller": {
+      "prefix": "/opt/ros/jazzy",
+      "share": "/opt/ros/jazzy/share/nav2_controller",
+      "package_xml": {
+        "requested_path": "/opt/ros/jazzy/share/nav2_controller/package.xml",
+        "resolved_path": "/opt/ros/jazzy/share/nav2_controller/package.xml",
+        "sha256": "f694212b53ecfcd9c90408fa1cc899882c3f3031dc3b9c3d96083ab73168b19d",
+        "bytes": 1117,
+        "mtime_ns": 1787350981000000000,
+        "inode": 420593,
+        "device_major": 8,
+        "device_minor": 64,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {}
+    },
+    "nav2_regulated_pure_pursuit_controller": {
+      "prefix": "/opt/ros/jazzy",
+      "share": "/opt/ros/jazzy/share/nav2_regulated_pure_pursuit_controller",
+      "package_xml": {
+        "requested_path": "/opt/ros/jazzy/share/nav2_regulated_pure_pursuit_controller/package.xml",
+        "resolved_path": "/opt/ros/jazzy/share/nav2_regulated_pure_pursuit_controller/package.xml",
+        "sha256": "4633e1fc3cc4d4df7143be1392fc26eff6f2fbb832fdc670948e1496eb9e2429",
+        "bytes": 1166,
+        "mtime_ns": 1787350946000000000,
+        "inode": 420965,
+        "device_major": 8,
+        "device_minor": 64,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {}
+    },
+    "slam_toolbox": {
+      "prefix": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox",
+      "share": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/share/slam_toolbox",
+      "package_xml": {
+        "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/share/slam_toolbox/package.xml",
+        "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/share/slam_toolbox/package.xml",
+        "sha256": "34cbdcee76b26a7709cc41f40ae6466e0edfb1a9fa97f35a173a8184075c6cb2",
+        "bytes": 3837,
+        "mtime_ns": 1793213280000000000,
+        "inode": 844424930420081,
+        "device_major": 0,
+        "device_minor": 73,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {
+        "launch/online_async_launch.py": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/share/slam_toolbox/launch/online_async_launch.py",
+          "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/share/slam_toolbox/launch/online_async_launch.py",
+          "sha256": "a6c7a598ff687fa1d8a11cc056b5dda805ee89c96488ae0f27dde03f47e4591b",
+          "bytes": 3550,
+          "mtime_ns": 1793213280000000000,
+          "inode": 844424930420019,
+          "device_major": 0,
+          "device_minor": 73,
+          "stable_during_hash": true
+        }
+      }
+    },
+    "ros_gz_bridge": {
+      "prefix": "/opt/ros/jazzy",
+      "share": "/opt/ros/jazzy/share/ros_gz_bridge",
+      "package_xml": {
+        "requested_path": "/opt/ros/jazzy/share/ros_gz_bridge/package.xml",
+        "resolved_path": "/opt/ros/jazzy/share/ros_gz_bridge/package.xml",
+        "sha256": "4f6dbcb2edb0cf992fd92ff5523411fe8099a978532dfba11b4d717cd611fbe8",
+        "bytes": 1810,
+        "mtime_ns": 1788187792000000000,
+        "inode": 419145,
+        "device_major": 8,
+        "device_minor": 64,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {}
+    },
+    "robot_state_publisher": {
+      "prefix": "/opt/ros/jazzy",
+      "share": "/opt/ros/jazzy/share/robot_state_publisher",
+      "package_xml": {
+        "requested_path": "/opt/ros/jazzy/share/robot_state_publisher/package.xml",
+        "resolved_path": "/opt/ros/jazzy/share/robot_state_publisher/package.xml",
+        "sha256": "2a56b3b21ff70fbc0aa3252b57e7b782774ae41d875d02ddd66818d24f149153",
+        "bytes": 1368,
+        "mtime_ns": 1780373324000000000,
+        "inode": 395342,
+        "device_major": 8,
+        "device_minor": 64,
+        "stable_during_hash": true
+      },
+      "selected_installed_inputs": {}
+    }
+  },
+  "existing_process_records": [
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-mission.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-mission.json",
+        "sha256": "cc1261f83266632b6b18c5aa8519a319c3ac764dfa4be5e4d64611e256e7c8c5",
+        "bytes": 172,
+        "mtime_ns": 1793440594923652900,
+        "inode": 3096224744797732,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1671,
+        "pgid": 1671,
+        "start_ticks": 37512,
+        "name": "mission"
+      },
+      "recorded_leader_now": {
+        "pid": 1671,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1671,
+        "start_ticks": 37512
+      },
+      "leader_identity_matches": true
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-motion.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-motion.json",
+        "sha256": "00fff91ed448978057eec1377f59cbe1fc7c63e7ab802a1c0519174d823a401d",
+        "bytes": 170,
+        "mtime_ns": 1793440468383284500,
+        "inode": 1688849861244413,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1518,
+        "pgid": 1518,
+        "start_ticks": 24854,
+        "name": "motion"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-native-before-motion.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-native-before-motion.json",
+        "sha256": "879a4bf7fd74d42f356885c6c3c2090adbd7cf8ecc8f13f1c9292ea5d9bb4dc3",
+        "bytes": 213,
+        "mtime_ns": 1793440440481015800,
+        "inode": 3659174698218986,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1406,
+        "pgid": 1406,
+        "start_ticks": 22017,
+        "name": "native-before-motion"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-native-early.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-native-early.json",
+        "sha256": "94995a7bccc6076ae0ace5a5cc491bd1ca91d123296df2a2b3bd36d3f0309d8a",
+        "bytes": 197,
+        "mtime_ns": 1793440397707109100,
+        "inode": 3659174698218957,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1117,
+        "pgid": 1117,
+        "start_ticks": 17787,
+        "name": "native-early"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-nav-check.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-nav-check.json",
+        "sha256": "ede27e31118062c60ede9287b1aaff6da2483f2d1cb6a003cc2de25c34273cd6",
+        "bytes": 176,
+        "mtime_ns": 1793440411056546200,
+        "inode": 3659174698218962,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1141,
+        "pgid": 1141,
+        "start_ticks": 19112,
+        "name": "nav-check"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-navigation.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-navigation.json",
+        "sha256": "90df59e7fee62b3f17b512ee49bb483b88244f1c36ce7c302e84048897938b8c",
+        "bytes": 178,
+        "mtime_ns": 1793440411044178500,
+        "inode": 3940649674929616,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1140,
+        "pgid": 1140,
+        "start_ticks": 19111,
+        "name": "navigation"
+      },
+      "recorded_leader_now": {
+        "pid": 1140,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1140,
+        "start_ticks": 19111
+      },
+      "leader_identity_matches": true
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-observer.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-observer.json",
+        "sha256": "0d9e89bdae42a470a9a961ec29b9d74ba9f4095e89a57c274f795a246ff9463e",
+        "bytes": 174,
+        "mtime_ns": 1793440583510028900,
+        "inode": 5629499535193611,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1635,
+        "pgid": 1635,
+        "start_ticks": 36361,
+        "name": "observer"
+      },
+      "recorded_leader_now": {
+        "pid": 1635,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1635,
+        "start_ticks": 36361
+      },
+      "leader_identity_matches": true
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-parameter-gate.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-parameter-gate.json",
+        "sha256": "ec7145d1ce890bdf75bedb6a28e6b60ca406e31b0e7ae71f6d922883b8ffbd17",
+        "bytes": 221,
+        "mtime_ns": 1793440430560924000,
+        "inode": 2814749768087013,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1376,
+        "pgid": 1376,
+        "start_ticks": 21075,
+        "name": "parameter-gate"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-perception.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-perception.json",
+        "sha256": "1aab7664df156cbfb88a8cde9925687ac034e2a95241acd010f487b27d1a7b63",
+        "bytes": 178,
+        "mtime_ns": 1793440449809061000,
+        "inode": 2251799814665712,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1430,
+        "pgid": 1430,
+        "start_ticks": 22993,
+        "name": "perception"
+      },
+      "recorded_leader_now": {
+        "pid": 1430,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1430,
+        "start_ticks": 22993
+      },
+      "leader_identity_matches": true
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-preflight.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-preflight.json",
+        "sha256": "7eaaf450cecc3ca0d70481173d151bbe356f25532940d48b7d370b11cc740ab2",
+        "bytes": 373,
+        "mtime_ns": 1793440569484793000,
+        "inode": 10414574139274759,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1605,
+        "pgid": 1605,
+        "start_ticks": 34957,
+        "name": "preflight"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-provenance.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-provenance.json",
+        "sha256": "76464943b6c745144de6656af380f152bb2c7513603a14cf01372310055b2010",
+        "bytes": 381,
+        "mtime_ns": 1793440611235927600,
+        "inode": 2251799814665794,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1739,
+        "pgid": 1739,
+        "start_ticks": 39156,
+        "name": "provenance"
+      },
+      "recorded_leader_now": {
+        "pid": 1739,
+        "state": "R",
+        "ppid": 385,
+        "pgid": 1739,
+        "start_ticks": 39156
+      },
+      "leader_identity_matches": true
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-recorder.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-recorder.json",
+        "sha256": "5e85a8f33fb51a018ba08660c928dd2d928853dfcd951dcb798c9e3a38ce1ece",
+        "bytes": 174,
+        "mtime_ns": 1793440449796321800,
+        "inode": 3377699721508334,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1429,
+        "pgid": 1429,
+        "start_ticks": 22991,
+        "name": "recorder"
+      },
+      "recorded_leader_now": {
+        "pid": 1429,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1429,
+        "start_ticks": 22991
+      },
+      "leader_identity_matches": true
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-save-early.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-save-early.json",
+        "sha256": "ec72787bf968b57c6feb1c198d823fe66448a1ae5f5147cfff342a4d4707ba32",
+        "bytes": 236,
+        "mtime_ns": 1793440594937915200,
+        "inode": 3096224744797735,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1672,
+        "pgid": 1672,
+        "start_ticks": 37513,
+        "name": "save-early"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-sim-check.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-sim-check.json",
+        "sha256": "838e48e7adef5f525ffdb3bb64ff147e820cf42530a4050a359ff9c8682ebfd4",
+        "bytes": 173,
+        "mtime_ns": 1793440339563424400,
+        "inode": 2533274791375847,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 873,
+        "pgid": 873,
+        "start_ticks": 11965,
+        "name": "sim-check"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-sim.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-sim.json",
+        "sha256": "cb347d35cb27678bd71796428a36dda70b43503475080222fc9fa9ffbb68337e",
+        "bytes": 161,
+        "mtime_ns": 1793440339550651200,
+        "inode": 2814749768086383,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 872,
+        "pgid": 872,
+        "start_ticks": 11963,
+        "name": "sim"
+      },
+      "recorded_leader_now": {
+        "pid": 872,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 872,
+        "start_ticks": 11963
+      },
+      "leader_identity_matches": true
+    },
+    {
+      "file": {
+        "requested_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-survey.json",
+        "resolved_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/process-survey.json",
+        "sha256": "fae75aaa45435ffdecdf234bf446192e48779c5cfc804d872a2492e5e0419023",
+        "bytes": 170,
+        "mtime_ns": 1793440480994682900,
+        "inode": 1970324837955074,
+        "device_major": 0,
+        "device_minor": 70,
+        "stable_during_hash": true
+      },
+      "record": {
+        "pid": 1554,
+        "pgid": 1554,
+        "start_ticks": 26108,
+        "name": "survey"
+      },
+      "recorded_leader_now": null,
+      "live_read_error": "FileNotFoundError"
+    }
+  ],
+  "process_inventory": {
+    "selected_processes": [
+      {
+        "pid": 385,
+        "state": "S",
+        "ppid": 384,
+        "pgid": 385,
+        "start_ticks": 8508,
+        "argv": [
+          "/usr/bin/python3",
+          "outputs/setup/run20-process.py"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 872,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 872,
+        "start_ticks": 11963,
+        "argv": [
+          "/usr/bin/python3",
+          "/opt/ros/jazzy/bin/ros2",
+          "launch",
+          "limo_sim_bringup",
+          "sim.launch.py",
+          "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/worlds/smoke_maze.world",
+          "headless:=true",
+          "spawn_artifacts:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/spawn"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": true,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 921,
+        "state": "S",
+        "ppid": 872,
+        "pgid": 872,
+        "start_ticks": 13411,
+        "argv": [
+          "gz sim -r -v 3 -s /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/worlds/smoke_maze.world"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/ruby3.2",
+          "resolved_path": "/usr/bin/ruby3.2",
+          "sha256": "ead53704d7da35c85a28db19070d34e7ecef9461ecf8ae5e9d51ae79125bb731",
+          "bytes": 14488,
+          "mtime_ns": 1781695760000000000,
+          "inode": 352625,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 922,
+        "state": "S",
+        "ppid": 872,
+        "pgid": 872,
+        "start_ticks": 13413,
+        "argv": [
+          "/opt/ros/jazzy/lib/robot_state_publisher/robot_state_publisher",
+          "--ros-args",
+          "-r",
+          "__node:=limo_sim_state_publisher",
+          "--params-file",
+          "/tmp/launch_params_wjkno6xs"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/robot_state_publisher/robot_state_publisher",
+          "resolved_path": "/opt/ros/jazzy/lib/robot_state_publisher/robot_state_publisher",
+          "sha256": "daf9f82551ff24c840619777ddb402ac9397649acfb0be67d86bf6dae59cb5e6",
+          "bytes": 39400,
+          "mtime_ns": 1789497959000000000,
+          "inode": 395309,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 923,
+        "state": "S",
+        "ppid": 872,
+        "pgid": 872,
+        "start_ticks": 13414,
+        "argv": [
+          "/opt/ros/jazzy/lib/ros_gz_bridge/parameter_bridge",
+          "--ros-args",
+          "-r",
+          "__node:=limo_sim_bridge",
+          "--params-file",
+          "/tmp/launch_params_qkpm0tdm"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/ros_gz_bridge/parameter_bridge",
+          "resolved_path": "/opt/ros/jazzy/lib/ros_gz_bridge/parameter_bridge",
+          "sha256": "c913a164072ee795bad4f7598d2a8b945e24723e20461cc2941fbbb091980c80",
+          "bytes": 39256,
+          "mtime_ns": 1789948004000000000,
+          "inode": 419111,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1140,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1140,
+        "start_ticks": 19111,
+        "argv": [
+          "/usr/bin/python3",
+          "/opt/ros/jazzy/bin/ros2",
+          "launch",
+          "limo_maze_bringup",
+          "mapping_navigation.launch.py",
+          "map_epoch:=76f2f4d2-461c-469f-b8b4-40405854f92d",
+          "nav_params:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/nav2-rpp-03m.yaml",
+          "slam_params:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/config/slam_smoke_experimental.yaml"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": true,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1202,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20276,
+        "argv": [
+          "python3",
+          "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_bringup/lib/limo_maze_bringup/map_session.py",
+          "--ros-args",
+          "--params-file",
+          "/tmp/launch_params_bczj7up1"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1203,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20276,
+        "argv": [
+          "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/slam_toolbox/async_slam_toolbox_node",
+          "--ros-args",
+          "-r",
+          "__node:=slam_toolbox",
+          "-r",
+          "__ns:=/",
+          "--params-file",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_bringup/config/slam_smoke_experimental.yaml",
+          "--params-file",
+          "/tmp/launch_params_qg7lx7pj"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/slam_toolbox/async_slam_toolbox_node",
+          "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/slam_toolbox/async_slam_toolbox_node",
+          "sha256": "ca10408cef88dd4d697db801c3dcadca4cbff1386a72244461a0c4d5db2488fc",
+          "bytes": 713464,
+          "mtime_ns": 1793214068000000000,
+          "inode": 844424930419982,
+          "device_major": 0,
+          "device_minor": 73,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [
+          {
+            "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libceres_solver_plugin.so",
+            "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libceres_solver_plugin.so",
+            "sha256": "158b91df9a55da65efca20d6527e8b82bef9b8e284f2721ff9b844f8b4e3fd28",
+            "bytes": 847952,
+            "mtime_ns": 1793213841000000000,
+            "inode": 844424930419990,
+            "device_major": 0,
+            "device_minor": 73,
+            "stable_during_hash": true,
+            "map_device": "00:49",
+            "map_inode": 844424930419990,
+            "mapping_marked_deleted": false,
+            "matches_mapped_inode_and_device": true,
+            "category": "slam"
+          },
+          {
+            "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libkartoSlamToolbox.so",
+            "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libkartoSlamToolbox.so",
+            "sha256": "3078c8ea6bfd2f979c38a8de4079a726028304bb7632409d6a96b3b2bb44f515",
+            "bytes": 3764136,
+            "mtime_ns": 1793213723000000000,
+            "inode": 844424930419996,
+            "device_major": 0,
+            "device_minor": 73,
+            "stable_during_hash": true,
+            "map_device": "00:49",
+            "map_inode": 844424930419996,
+            "mapping_marked_deleted": false,
+            "matches_mapped_inode_and_device": true,
+            "category": "slam"
+          },
+          {
+            "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libtoolbox_common.so",
+            "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libtoolbox_common.so",
+            "sha256": "beb1c4f416324a39a50a6b729aa9e83f8cbec772f08f34c34cab71b5a0c95047",
+            "bytes": 4193984,
+            "mtime_ns": 1793213946000000000,
+            "inode": 844424930419988,
+            "device_major": 0,
+            "device_minor": 73,
+            "stable_during_hash": true,
+            "map_device": "00:49",
+            "map_inode": 844424930419988,
+            "mapping_marked_deleted": false,
+            "matches_mapped_inode_and_device": true,
+            "category": "slam"
+          },
+          {
+            "requested_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libasync_slam_toolbox.so",
+            "resolved_path": "/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/install/slam_toolbox/lib/libasync_slam_toolbox.so",
+            "sha256": "adc71a90dce1ad68b66f4e05a1dc591f8da050dd2d72b6b21f5e963474c550fc",
+            "bytes": 780680,
+            "mtime_ns": 1793213976000000000,
+            "inode": 844424930419991,
+            "device_major": 0,
+            "device_minor": 73,
+            "stable_during_hash": true,
+            "map_device": "00:49",
+            "map_inode": 844424930419991,
+            "mapping_marked_deleted": false,
+            "matches_mapped_inode_and_device": true,
+            "category": "slam"
+          }
+        ],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1204,
+        "state": "R",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20277,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_controller/controller_server",
+          "--ros-args",
+          "-r",
+          "__node:=controller_server",
+          "--params-file",
+          "/tmp/launch_params_b_arl5f8",
+          "-r",
+          "/tf:=tf",
+          "-r",
+          "/tf_static:=tf_static",
+          "-r",
+          "cmd_vel:=cmd_vel_nav"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_controller/controller_server",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_controller/controller_server",
+          "sha256": "a3728b0add30d1e87b5318705957a888a75615a232675d146505353fe7161985",
+          "bytes": 18760,
+          "mtime_ns": 1789960674000000000,
+          "inode": 420568,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [
+          {
+            "requested_path": "/opt/ros/jazzy/lib/libnav2_regulated_pure_pursuit_controller.so",
+            "resolved_path": "/opt/ros/jazzy/lib/libnav2_regulated_pure_pursuit_controller.so",
+            "sha256": "d090ed742e76e98e11ec1d739890621567f42b482f8a5450b211f3c347a7ba00",
+            "bytes": 336448,
+            "mtime_ns": 1789960688000000000,
+            "inode": 420940,
+            "device_major": 8,
+            "device_minor": 64,
+            "stable_during_hash": true,
+            "map_device": "08:40",
+            "map_inode": 420940,
+            "mapping_marked_deleted": false,
+            "matches_mapped_inode_and_device": true,
+            "category": "rpp"
+          }
+        ],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1205,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20277,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_smoother/smoother_server",
+          "--ros-args",
+          "-r",
+          "__node:=smoother_server",
+          "--params-file",
+          "/tmp/launch_params_b_arl5f8",
+          "-r",
+          "/tf:=tf",
+          "-r",
+          "/tf_static:=tf_static"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_smoother/smoother_server",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_smoother/smoother_server",
+          "sha256": "73bf51b7a3f50d938bb8049af495012973d8219a12af0c8c185baeb7e4017519",
+          "bytes": 18760,
+          "mtime_ns": 1789960746000000000,
+          "inode": 421837,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1206,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20279,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_planner/planner_server",
+          "--ros-args",
+          "-r",
+          "__node:=planner_server",
+          "--params-file",
+          "/tmp/launch_params_b_arl5f8",
+          "-r",
+          "/tf:=tf",
+          "-r",
+          "/tf_static:=tf_static"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_planner/planner_server",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_planner/planner_server",
+          "sha256": "f884d9aae7b1697c7b776dfa021ecf9f080993111a8e60e4a4ed5aba4cc87b74",
+          "bytes": 18760,
+          "mtime_ns": 1789960681000000000,
+          "inode": 420901,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1207,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20280,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_behaviors/behavior_server",
+          "--ros-args",
+          "-r",
+          "__node:=behavior_server",
+          "--params-file",
+          "/tmp/launch_params_b_arl5f8",
+          "-r",
+          "/tf:=tf",
+          "-r",
+          "/tf_static:=tf_static",
+          "-r",
+          "cmd_vel:=cmd_vel_nav"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_behaviors/behavior_server",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_behaviors/behavior_server",
+          "sha256": "7a9c52a96d10fb89f9d0434916b9d680313350983bef9617d332e6eb5afc38f6",
+          "bytes": 18760,
+          "mtime_ns": 1789960667000000000,
+          "inode": 417859,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1208,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20282,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_bt_navigator/bt_navigator",
+          "--ros-args",
+          "-r",
+          "__node:=bt_navigator",
+          "--params-file",
+          "/tmp/launch_params_b_arl5f8",
+          "-r",
+          "/tf:=tf",
+          "-r",
+          "/tf_static:=tf_static"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_bt_navigator/bt_navigator",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_bt_navigator/bt_navigator",
+          "sha256": "2f30aee9868744960a9b237eede146256b36c78af0ce2f60f1931a2a90a4c97d",
+          "bytes": 55632,
+          "mtime_ns": 1789960676000000000,
+          "inode": 420409,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1209,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20283,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_velocity_smoother/velocity_smoother",
+          "--ros-args",
+          "-r",
+          "__node:=velocity_smoother",
+          "--params-file",
+          "/tmp/launch_params_b_arl5f8",
+          "-r",
+          "/tf:=tf",
+          "-r",
+          "/tf_static:=tf_static",
+          "-r",
+          "cmd_vel:=cmd_vel_nav"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_velocity_smoother/velocity_smoother",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_velocity_smoother/velocity_smoother",
+          "sha256": "c622873877741fbcc0a2aa342548b931aa6457d7e66942a65c1fa379d5bd4af7",
+          "bytes": 18760,
+          "mtime_ns": 1789958994000000000,
+          "inode": 421913,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1210,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20283,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_collision_monitor/collision_monitor",
+          "--ros-args",
+          "-r",
+          "__node:=collision_monitor",
+          "--params-file",
+          "/tmp/launch_params_b_arl5f8",
+          "-r",
+          "/tf:=tf",
+          "-r",
+          "/tf_static:=tf_static"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_collision_monitor/collision_monitor",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_collision_monitor/collision_monitor",
+          "sha256": "ecfd2e41cb47fd0ccc9c836d17afe37e97e7fb90300e6cddd54f2f6c94b252c1",
+          "bytes": 18760,
+          "mtime_ns": 1789959804000000000,
+          "inode": 420474,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1211,
+        "state": "S",
+        "ppid": 1140,
+        "pgid": 1140,
+        "start_ticks": 20303,
+        "argv": [
+          "/opt/ros/jazzy/lib/nav2_lifecycle_manager/lifecycle_manager",
+          "--ros-args",
+          "-r",
+          "__node:=lifecycle_manager_navigation",
+          "--params-file",
+          "/tmp/launch_params_h2vkk2hi"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/opt/ros/jazzy/lib/nav2_lifecycle_manager/lifecycle_manager",
+          "resolved_path": "/opt/ros/jazzy/lib/nav2_lifecycle_manager/lifecycle_manager",
+          "sha256": "7404521006daf0a28235ed17e257541b70d2f5e4d64f0a94cf990bf1f46b0fe2",
+          "bytes": 18760,
+          "mtime_ns": 1789959008000000000,
+          "inode": 420676,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1429,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1429,
+        "start_ticks": 22991,
+        "argv": [
+          "/usr/bin/python3",
+          "scripts/record_bounded.py",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/recording",
+          "--mission-dir",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/mission",
+          "--map-epoch",
+          "76f2f4d2-461c-469f-b8b4-40405854f92d",
+          "--max-wall-seconds",
+          "1650",
+          "--post-terminal-wall-seconds",
+          "120",
+          "--max-bytes",
+          "8589934592",
+          "--min-free-bytes",
+          "4294967296",
+          "--qos-profile-overrides-path",
+          "config/recording_qos.yaml",
+          "--topics",
+          "/scan",
+          "/tf",
+          "/tf_static",
+          "/odom",
+          "/clock",
+          "/pose",
+          "/map",
+          "/plan",
+          "/received_global_plan",
+          "/lookahead_point",
+          "/lookahead_collision_arc",
+          "/is_rotating_to_heading",
+          "/global_costmap/costmap_raw",
+          "/local_costmap/costmap_raw",
+          "/cmd_vel_nav",
+          "/cmd_vel_smoothed",
+          "/cmd_vel",
+          "/rosout",
+          "/mission/status",
+          "/mission/map_epoch",
+          "/mission/targets",
+          "/mission/target_observations",
+          "/mission/frame_processing",
+          "/camera/color/image_raw",
+          "/camera/depth/image_raw",
+          "/camera/color/camera_info",
+          "/camera/depth/camera_info"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": true,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1430,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1430,
+        "start_ticks": 22993,
+        "argv": [
+          "/usr/bin/python3",
+          "/opt/ros/jazzy/bin/ros2",
+          "run",
+          "limo_maze_perception",
+          "red_rgbd_detector",
+          "--ros-args",
+          "-p",
+          "use_sim_time:=true",
+          "-p",
+          "enabled:=true",
+          "-p",
+          "depth_registered_to_color:=true",
+          "-p",
+          "publish_frame_processing:=true"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": true,
+          "exact_project_path_argument": false
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1464,
+        "state": "S",
+        "ppid": 1429,
+        "pgid": 1464,
+        "start_ticks": 23677,
+        "argv": [
+          "/usr/bin/python3",
+          "/opt/ros/jazzy/bin/ros2",
+          "bag",
+          "record",
+          "--storage",
+          "mcap",
+          "--storage-preset-profile",
+          "zstd_fast",
+          "--use-sim-time",
+          "--disable-keyboard-controls",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/recording/bag",
+          "--max-bag-size",
+          "268435456",
+          "--qos-profile-overrides-path",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/config/recording_qos.yaml",
+          "--topics",
+          "/scan",
+          "/tf",
+          "/tf_static",
+          "/odom",
+          "/clock",
+          "/pose",
+          "/map",
+          "/plan",
+          "/received_global_plan",
+          "/lookahead_point",
+          "/lookahead_collision_arc",
+          "/is_rotating_to_heading",
+          "/global_costmap/costmap_raw",
+          "/local_costmap/costmap_raw",
+          "/cmd_vel_nav",
+          "/cmd_vel_smoothed",
+          "/cmd_vel",
+          "/rosout",
+          "/mission/status",
+          "/mission/map_epoch",
+          "/mission/targets",
+          "/mission/target_observations",
+          "/mission/frame_processing",
+          "/camera/color/image_raw",
+          "/camera/depth/image_raw",
+          "/camera/color/camera_info",
+          "/camera/depth/camera_info"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1467,
+        "state": "S",
+        "ppid": 1430,
+        "pgid": 1430,
+        "start_ticks": 23731,
+        "argv": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/limo_maze_perception/red_rgbd_detector",
+          "--ros-args",
+          "-p",
+          "use_sim_time:=true",
+          "-p",
+          "enabled:=true",
+          "-p",
+          "depth_registered_to_color:=true",
+          "-p",
+          "publish_frame_processing:=true"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1635,
+        "state": "R",
+        "ppid": 385,
+        "pgid": 1635,
+        "start_ticks": 36361,
+        "argv": [
+          "/usr/bin/python3",
+          "scripts/observe_sim_mission.py",
+          "--costmaps",
+          "--seconds",
+          "1500",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/observer.json"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": true,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1671,
+        "state": "S",
+        "ppid": 385,
+        "pgid": 1671,
+        "start_ticks": 37512,
+        "argv": [
+          "/usr/bin/python3",
+          "/opt/ros/jazzy/bin/ros2",
+          "run",
+          "limo_maze_mission",
+          "mission",
+          "--ros-args",
+          "-p",
+          "use_sim_time:=true",
+          "-p",
+          "autonomous:=true",
+          "-p",
+          "require_processed_inspection:=true",
+          "-p",
+          "initial_clearance_radius_m:=0.30",
+          "-p",
+          "initial_clearance_source:=smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+          "-p",
+          "mission_timeout_s:=900.0",
+          "-p",
+          "return_timeout_s:=240.0",
+          "-p",
+          "goal_timeout_s:=120.0",
+          "-p",
+          "output_dir:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/mission"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": true,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      },
+      {
+        "pid": 1711,
+        "state": "S",
+        "ppid": 1671,
+        "pgid": 1671,
+        "start_ticks": 38649,
+        "argv": [
+          "/usr/bin/python3",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/lib/limo_maze_mission/mission",
+          "--ros-args",
+          "-p",
+          "use_sim_time:=true",
+          "-p",
+          "autonomous:=true",
+          "-p",
+          "require_processed_inspection:=true",
+          "-p",
+          "initial_clearance_radius_m:=0.30",
+          "-p",
+          "initial_clearance_source:=smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+          "-p",
+          "mission_timeout_s:=900.0",
+          "-p",
+          "return_timeout_s:=240.0",
+          "-p",
+          "goal_timeout_s:=120.0",
+          "-p",
+          "output_dir:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/mission"
+        ],
+        "scope_evidence": {
+          "exact_run_token": true,
+          "verified_recorded_leader": false,
+          "exact_project_path_argument": true
+        },
+        "run20_ownership_verified": true,
+        "environment": {
+          "ROS_DOMAIN_ID": "73",
+          "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+          "GZ_PARTITION": "limo_maze_jazzy",
+          "LIMO_RUN20_ID": "run20-arrival-margin-b80aa8d"
+        },
+        "executable": {
+          "requested_path": "/usr/bin/python3.12",
+          "resolved_path": "/usr/bin/python3.12",
+          "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+          "bytes": 8020928,
+          "mtime_ns": 1788171506000000000,
+          "inode": 10144,
+          "device_major": 8,
+          "device_minor": 64,
+          "stable_during_hash": true
+        },
+        "loaded_rpp_slam_libraries": [],
+        "same_process_after_capture": true
+      }
+    ],
+    "unavailable_process_entries_count": 26,
+    "selection": "Exact LIMO_RUN20_ID token, verified recorded leader PID/start_ticks, or exact known project path in an argument. No unrelated argv/environment is retained.",
+    "only_project_path_scope_is_not_run20_ownership_proof": true
+  },
+  "actual_ros_parameter_dump_included": false,
+  "ros_nodes_created": false,
+  "limitations": [
+    "Static configuration hashes do not establish effective ROS parameters; collect parameter dumps separately.",
+    "Collector module imports identify resolution under its current environment, not Python module files introspected inside an already running process.",
+    "File hashes describe files at capture time, not independently attested startup bytes.",
+    "Library records require /proc maps membership; on-disk file identity and stability are reported separately.",
+    "Processes can start or exit during this non-atomic snapshot; missing live libraries are not proof that a component never ran.",
+    "Project-path matches without the run token or validated PID/start_ticks remain explicitly unverified for run20 ownership.",
+    "No detector quality, visual coverage or whole-mission success is inferred."
+  ],
+  "finished_unix": 1793440633.0496309,
+  "elapsed_wall_seconds": 12.807107210159302
+}

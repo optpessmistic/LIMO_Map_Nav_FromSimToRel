@@ -2,6 +2,14 @@
 
 最近验证日期：2026-10-31。以下记录区分逻辑测试、ROS 接口、物理仿真和实车；某一层通过不代表其他层通过。完整课程任务仍未验收。
 
+## 2026-10-31：run20 返航与原始图像记录缺口
+
+运行代码 b80aa8d 使用单次创建与 Nav2 .03 m 候选，保留 mission .05 m 判据。初始环视、5 个 frontier、5 段新帧窗口及 home 导航完成；原生相对起点返航 37.93 mm / 7.52°，末段 29.993 sim 秒静止。地图几何终止、2 个替身确认，视觉覆盖与完整成功仍 false。
+
+闭合录包扫描 335008 条存储记录，五个窗口的末帧 TF 均精确重建，但四段缺 depth、一段缺 RGB，独立 RGB-D 完整一致为 **0/5**。累计 transport lost=2355，不能称采集无损或原始图像验收通过。完整限制和原始失败见 [run20](autonomous-run20.md)。
+
+全部自有进程组清空，perception 原始关闭 exit1 保留。后续 main 使用幂等 try_shutdown，8 项纯 lifecycle 回归及隔离 domain79 的真实 SIGINT/SIGTERM 退出验证通过；两种信号均退出0、无 Traceback/RCLError、无遗留子进程。单包构建及安装文件 cmp/导入通过；[原始验证存档](../experiments/perception-shutdown-20261031/README.md)不含图像处理或 Gazebo，也不追改历史 exit1。
+
 ## 2026-10-31：单次模型生成与替身标定场景
 
 run18 在运动前发现重复同戳 odom，环视与 mission 均未开始；新完整性检查离线重放 690 条数据，345 组同戳冲突全部拒绝。保留[原始失败及清理复查](../experiments/run18/README.md)，不放宽 survey 判据。

@@ -1,0 +1,49 @@
+"""Plot recorded map and mission annotations; no simulator truth or smoothing."""
+import json
+from pathlib import Path
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap, BoundaryNorm
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT/'outputs/ros_smoke/run20-arrival-margin'
+grid = json.loads((RUN/'final-save.json').read_text())['snapshot']['map']
+mission = json.loads((RUN/'mission/mission_20261031_030130.json').read_text())
+assert grid['origin']['quaternion_xyzw'] == [0., 0., 0., 1.]
+data = np.asarray(grid['data']).reshape(grid['height'], grid['width'])
+display = np.where(data < 0, 1, np.where(data >= 65, 2, 0))
+x, y, _ = grid['origin']['xyz']
+r = grid['resolution']
+fig, ax = plt.subplots(figsize=(10, 6.5), layout='constrained')
+fig.set_facecolor('#fafaf8')
+ax.imshow(display, origin='lower', interpolation='nearest',
+          extent=(x, x+grid['width']*r, y, y+grid['height']*r),
+          cmap=ListedColormap(['#ffffff','#c7c9cc','#252c38']),
+          norm=BoundaryNorm([-.5,.5,1.5,2.5],3))
+for i, target in enumerate(mission['targets']):
+    ax.scatter(target['x'], target['y'], s=150, c='#db562e', marker='*',
+               edgecolors='#8c2614', zorder=4, label='Confirmed surrogate' if i == 0 else None)
+    offset = (-12, 14) if target['x'] > 2 else (12, 14)
+    ax.annotate(f"Target #{target['uid']}", (target['x'], target['y']),
+                xytext=offset, textcoords='offset points', fontsize=10,
+                ha='right' if offset[0] < 0 else 'left', color='#8c2614',
+                bbox=dict(boxstyle='round,pad=.25', fc='white', ec='none', alpha=.9))
+home, final = mission['home'], mission['final_pose']
+ax.scatter(*home[:2], marker='o', s=90, facecolors='none', edgecolors='#2269b5', linewidths=2,
+           zorder=5, label='Recorded home')
+ax.scatter(*final[:2], marker='x', s=70, c='#158468', linewidths=2, zorder=6, label='Final map pose')
+ax.annotate('Home / return', home[:2], xytext=(38, 24), textcoords='offset points',
+            arrowprops=dict(arrowstyle='-',color='#2269b5'), color='#2269b5', fontsize=10)
+ax.set(xlabel='map X (m)', ylabel='map Y (m)', aspect='equal',
+       title='run20 | Recorded SLAM map and target annotations')
+ax.legend(loc='upper center', bbox_to_anchor=(.5,-.15), ncol=3, frameon=False)
+fig.suptitle('Geometry exploration and return reported; full visual search remains unverified',
+             fontsize=11, color='#454e5c')
+fig.text(.5,-.045,'White: observed free   Dark: occupied   Grey: unknown | Raw RGB-D archive incomplete',
+         ha='center', fontsize=9, color='#454e5c')
+output=RUN/'map-and-targets-v2.png'
+if output.exists(): raise RuntimeError('Refusing existing plot')
+fig.savefig(output,dpi=170,bbox_inches='tight')
+print(output)

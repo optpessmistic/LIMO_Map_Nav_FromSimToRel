@@ -1,0 +1,339 @@
+{
+  "passed": true,
+  "errors": [],
+  "checked_at_utc": "2026-10-31T09:53:17.388775+00:00",
+  "environment": {
+    "ROS_DISTRO": "jazzy",
+    "ROS_DOMAIN_ID": "73",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+    "GZ_PARTITION": "limo_maze_jazzy"
+  },
+  "wall_seconds": 46.37,
+  "counts": {
+    "/imu": 101,
+    "/clock": 996,
+    "/camera/color/camera_info": 11,
+    "/camera/depth/camera_info": 11,
+    "/scan": 8,
+    "/odom": 101,
+    "/joint_states": 49,
+    "/camera/depth/image_raw": 5,
+    "/camera/color/image_raw": 9
+  },
+  "shared_rgb_depth_stamps": 5,
+  "odom_integrity": {
+    "passed": true,
+    "errors": [],
+    "counts": {
+      "messages": 101,
+      "duplicate_messages": 0,
+      "identical_duplicate_messages": 0,
+      "conflicting_duplicate_messages": 0,
+      "pose_conflict_messages": 0,
+      "twist_conflict_messages": 0,
+      "backward_messages": 0,
+      "nonfinite_messages": 0,
+      "nonfinite_components": 0,
+      "invalid_stamp_messages": 0,
+      "invalid_payload_messages": 0
+    },
+    "unique_stamps": 101,
+    "valid_unique_stamps": 101,
+    "repeated_stamps": 0,
+    "conflicting_stamps": 0,
+    "first_received_stamp_ns": 10000000,
+    "last_received_stamp_ns": 1010000000,
+    "minimum_valid_stamp_ns": 10000000,
+    "maximum_valid_stamp_ns": 1010000000,
+    "valid_span_ns": 1000000000,
+    "valid_span_seconds": 1.0,
+    "minimum_unique_stamps": 50,
+    "minimum_span_ns": 1000000000,
+    "observation_sufficient": true,
+    "same_stamp_comparison": "exact numeric equality of all 7 pose and 6 twist components; first value retained",
+    "maximum_same_stamp_deltas": {
+      "position_delta_m": 0.0,
+      "quaternion_component_delta": 0.0,
+      "linear_twist_delta_m_s": 0.0,
+      "angular_twist_delta_rad_s": 0.0
+    },
+    "delta_overflow": false,
+    "diagnostic_examples": [],
+    "limits": "Received prefix only; identical duplicates do not advance observation. No whole-run, lossless-delivery, physical-motion or publisher-provenance claim."
+  },
+  "observed_clock_span_ns": 1008000000,
+  "ros_publisher_counts": {
+    "/clock": 1,
+    "/odom": 1,
+    "/scan": 1,
+    "/imu": 1,
+    "/joint_states": 1,
+    "/camera/color/image_raw": 1,
+    "/camera/depth/image_raw": 1,
+    "/camera/color/camera_info": 1,
+    "/camera/depth/camera_info": 1
+  },
+  "first_clock_seconds": 0.002,
+  "max_initial_sim_time": 30.0,
+  "frames": {
+    "/odom": "odom",
+    "/scan": "laser_link",
+    "/imu": "imu_link",
+    "/camera/color/image_raw": "camera_optical_frame",
+    "/camera/depth/image_raw": "camera_optical_frame",
+    "/camera/color/camera_info": "camera_optical_frame",
+    "/camera/depth/camera_info": "camera_optical_frame"
+  },
+  "images": {
+    "/camera/color/image_raw": {
+      "encoding": "rgb8",
+      "width": 640,
+      "height": 480
+    },
+    "/camera/depth/image_raw": {
+      "encoding": "32FC1",
+      "width": 640,
+      "height": 480
+    }
+  },
+  "depth_values_m": {
+    "finite_positive_count": 230210,
+    "minimum": 0.3279504179954529,
+    "maximum": 3.516000509262085
+  },
+  "rgb_byte_range": [
+    25,
+    218
+  ],
+  "timestamps": {
+    "/odom": {
+      "sec": 1,
+      "nanosec": 10000000
+    },
+    "/scan": {
+      "sec": 0,
+      "nanosec": 875000000
+    },
+    "/imu": {
+      "sec": 1,
+      "nanosec": 0
+    },
+    "/camera/color/image_raw": {
+      "sec": 0,
+      "nanosec": 900000000
+    },
+    "/camera/depth/image_raw": {
+      "sec": 0,
+      "nanosec": 600000000
+    },
+    "/camera/color/camera_info": {
+      "sec": 1,
+      "nanosec": 0
+    },
+    "/camera/depth/camera_info": {
+      "sec": 1,
+      "nanosec": 0
+    }
+  },
+  "camera_info": {
+    "/camera/color/camera_info": {
+      "width": 640,
+      "height": 480,
+      "k": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "p": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distortion_model": "plumb_bob"
+    },
+    "/camera/depth/camera_info": {
+      "width": 640,
+      "height": 480,
+      "k": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "p": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distortion_model": "plumb_bob"
+    }
+  },
+  "tf_chain": {
+    "odom->base_footprint": {
+      "xyz": [
+        4.31996811409983e-21,
+        -1.1011079709139688e-40,
+        0.0
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        1.385836749231036e-20,
+        1.0
+      ]
+    },
+    "base_footprint->base_link": {
+      "xyz": [
+        0.0,
+        0.0,
+        0.15
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "base_link->laser_link": {
+      "xyz": [
+        0.103,
+        0.0,
+        -0.034
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "base_link->camera_optical_frame": {
+      "xyz": [
+        0.084,
+        0.0,
+        0.03
+      ],
+      "quaternion_xyzw": [
+        -0.5,
+        0.4999999999999999,
+        -0.5,
+        0.5000000000000001
+      ]
+    }
+  },
+  "odom_to_camera_at_rgb_stamp": {
+    "stamp": {
+      "sec": 0,
+      "nanosec": 900000000
+    },
+    "xyz": [
+      0.084,
+      1.1871443487194573e-21,
+      0.18
+    ],
+    "quaternion_xyzw": [
+      -0.5,
+      0.4999999999999999,
+      -0.5,
+      0.5000000000000001
+    ]
+  },
+  "scan": {
+    "beams": 720,
+    "finite": 720,
+    "minimum_m": 0.3753231465816498,
+    "angle_min": -2.094395160675049,
+    "angle_max": 2.094395160675049,
+    "angle_increment": 0.005825855769217014,
+    "range_min": 0.05000000074505806,
+    "range_max": 8.0,
+    "fov_deg": 240.00000667860846,
+    "expected_fov_deg": 240.0,
+    "rear_abs_angle_over_120_deg": {
+      "beams": 0,
+      "finite": 0,
+      "negative_infinity": 0,
+      "positive_infinity": 0,
+      "nan": 0,
+      "minimum_m": null,
+      "finite_at_min_range": 0,
+      "finite_within_0_12_m": 0
+    },
+    "selected_beams": [
+      {
+        "index": 0,
+        "angle_deg": -120.00000333930423,
+        "range_m": 0.462556391954422,
+        "nonfinite": null
+      },
+      {
+        "index": 90,
+        "angle_deg": -89.95827805277732,
+        "range_m": 0.4055211842060089,
+        "nonfinite": null
+      },
+      {
+        "index": 360,
+        "angle_deg": 0.1668978068033772,
+        "range_m": 3.4637513160705566,
+        "nonfinite": null
+      },
+      {
+        "index": 629,
+        "angle_deg": 89.958276718756,
+        "range_m": 0.4098336696624756,
+        "nonfinite": null
+      },
+      {
+        "index": 719,
+        "angle_deg": 120.0000020052829,
+        "range_m": 0.45670297741889954,
+        "nonfinite": null
+      }
+    ]
+  }
+}

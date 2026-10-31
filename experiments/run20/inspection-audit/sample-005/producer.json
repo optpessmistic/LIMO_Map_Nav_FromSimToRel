@@ -1,0 +1,123 @@
+{
+  "callback_stamp_ns": 177875000000,
+  "camera_info": {
+    "calibration": {
+      "binning_x": 0,
+      "binning_y": 0,
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distortion_model": "plumb_bob",
+      "height": 480,
+      "k": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "p": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "r": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "roi": {
+        "do_rectify": false,
+        "height": 0,
+        "width": 0,
+        "x_offset": 0,
+        "y_offset": 0
+      },
+      "width": 640
+    },
+    "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+    "frame_id": "camera_optical_frame",
+    "stamp_ns": 177800000000
+  },
+  "depth": {
+    "data_bytes": 1228800,
+    "data_sha256": "eba558ca8c32ef5a4f8625a3af93cb2ab8879db5d9fbc11c6b9e082d56255541",
+    "encoding": "32FC1",
+    "frame_id": "camera_optical_frame",
+    "height": 480,
+    "is_bigendian": 0,
+    "stamp_ns": 177800000000,
+    "step": 2560,
+    "width": 640
+  },
+  "detector_config": {
+    "hue_tolerance_degrees": 15.0,
+    "inner_fraction": 0.6,
+    "max_depth_m": 6.0,
+    "min_area_pixels": 30,
+    "min_depth_m": 0.15,
+    "min_depth_pixels": 8,
+    "min_saturation": 0.55,
+    "min_valid_depth_fraction": 0.5,
+    "min_value": 0.3
+  },
+  "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+  "detector_session_id": "57f42add-434b-4143-847b-98374ea07230",
+  "hash_scope": "Original Image.data bytes, including padding; hashes do not prove source images were saved.",
+  "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+  "processed_stamp_ns": 177875000000,
+  "processing": {
+    "candidate_count": 0,
+    "detection_count": 0,
+    "empty_reason": "no_red_candidates",
+    "rejection_counts": {
+      "insufficient_depth_inliers": 0,
+      "insufficient_valid_depth": 0,
+      "mixed_depth": 0,
+      "nonfinite_projection": 0,
+      "too_few_inner_pixels": 0
+    },
+    "total_pixels": 307200,
+    "unlocalized_candidate_count": 0,
+    "valid_depth_pixels": 275003
+  },
+  "reason": null,
+  "rgb": {
+    "data_bytes": 921600,
+    "data_sha256": "7dad925e76880abc33d422ffa645615228b21d4e382c35e6327673943c93e273",
+    "encoding": "rgb8",
+    "frame_id": "camera_optical_frame",
+    "height": 480,
+    "is_bigendian": 0,
+    "stamp_ns": 177800000000,
+    "step": 1920,
+    "width": 640
+  },
+  "schema_version": 1,
+  "sequence": 961,
+  "source": "red_rgbd_sim_baseline",
+  "status": "processed"
+}

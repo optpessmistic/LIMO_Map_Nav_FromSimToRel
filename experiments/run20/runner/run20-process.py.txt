@@ -1,0 +1,277 @@
+"""One bounded, owned run20; always shut down this run's processes on exit."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT/'outputs/ros_smoke/run20-arrival-margin'
+ENV = ROOT/'outputs/setup/run20-env.sh'
+sys.path.insert(0,str(ROOT/'scripts'))
+from record_bounded import TOKEN_KEY, proc_stat, stop_owned, scan_owned_group, terminal_result
+
+TOKEN = 'run20-arrival-margin-b80aa8d'
+EPOCH = (OUT/'epoch.txt').read_text().strip()
+jobs = {}
+began = time.monotonic()
+deadline = began+1800
+report = {'run':'run20-arrival-margin','epoch':EPOCH,'status':'starting',
+          'stages':[],'errors':[],'stops':{},'active_wall_budget_seconds':1800,
+          'native_terminal_tail_verified':False,
+          'cleanup_budget_note':'Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.'}
+
+def write(path,value):
+    temporary = path.with_name(path.name+'.tmp')
+    temporary.write_text(json.dumps(value,indent=2)+'\n')
+    temporary.replace(path)
+
+def stage(name):
+    report['stage']=name
+    report['stages'].append({'name':name,'elapsed_wall_s':time.monotonic()-began})
+    write(OUT/'orchestration.json',report)
+    print('STAGE '+name,flush=True)
+
+def start(name,mode,*args):
+    if name in jobs or (OUT/('process-'+name+'.json')).exists():
+        raise RuntimeError('Refuse duplicate component '+name)
+    environment = dict(os.environ, **{TOKEN_KEY:TOKEN})
+    gate_read, gate_write = os.pipe()
+    bootstrap = ('import os,sys; fd=int(sys.argv[1]); ready=os.read(fd,1); '
+                 'os.close(fd); '
+                 'os.execvpe(sys.argv[2],sys.argv[2:],os.environ) if ready==b"1" else sys.exit(125)')
+    try:
+        with (OUT/(name+'.log')).open('xb') as logfile:
+            command=['/bin/bash',str(ENV),mode,*map(str,args)]
+            process=subprocess.Popen(['/usr/bin/python3','-c',bootstrap,str(gate_read),*command],
+                stdin=subprocess.DEVNULL,stdout=logfile,stderr=subprocess.STDOUT,
+                start_new_session=True,pass_fds=(gate_read,),env=environment,cwd=ROOT)
+        jobs[name]=(process,None)
+        row=proc_stat(process.pid)
+        if row['pgid']!=process.pid or row['sid']!=process.pid:
+            raise RuntimeError('Child did not create a new session')
+        owner={**{key:row[key] for key in ('pid','pgid','sid','start_ticks')},'token':TOKEN}
+        jobs[name]=(process,owner)
+        write(OUT/('process-'+name+'.json'),dict(owner,name=name,mode=mode,args=list(map(str,args))))
+        os.write(gate_write,b'1')
+    finally:
+        os.close(gate_read)
+        os.close(gate_write)
+    return process
+
+def wait_job(name, seconds):
+    end=min(deadline,time.monotonic()+seconds)
+    process=jobs[name][0]
+    while process.poll() is None and time.monotonic()<end:
+        time.sleep(.2)
+    if process.poll() is None: raise TimeoutError(name+' exceeded wall budget')
+    if process.returncode != 0: raise RuntimeError(name+' exited '+str(process.returncode))
+
+def run(name,seconds,mode,*args):
+    start(name,mode,*args)
+    wait_job(name,seconds)
+
+def wait_ready(name, token, seconds=25):
+    until=min(deadline,time.monotonic()+seconds)
+    while time.monotonic()<until:
+        if token in (OUT/(name+'.log')).read_text(errors='replace'): return
+        if jobs[name][0].poll() is not None: raise RuntimeError(name+' exited before readiness')
+        time.sleep(.2)
+    raise TimeoutError(name+' readiness not observed')
+
+def latest_tail():
+    lines=(OUT/'observer.log').read_text(errors='replace').splitlines()
+    for line in reversed(lines):
+        if line.startswith('NATIVE_TAIL '):
+            try:return json.loads(line[len('NATIVE_TAIL '):])
+            except ValueError:pass
+    return None
+
+def wait_bag_ready():
+    until=min(deadline,time.monotonic()+60)
+    required=('/scan','/tf','/tf_static','/odom','/map','/camera/color/image_raw','/camera/depth/image_raw')
+    path=OUT/'recording/recorder.log'
+    while time.monotonic()<until:
+        if jobs['recorder'][0].poll() is not None:raise RuntimeError('Recorder exited before the survey')
+        text=path.read_text(errors='replace') if path.exists() else ''
+        if ('Sim time /clock found, starting recording.' in text and
+                all("Subscribed to topic '"+topic+"'" in text for topic in required)):
+            write(OUT/'recorder-ready.json',{'required_topics':required,'clock_started':True,
+                'scope':'Subscription/start log receipt only; not a losslessness guarantee.'})
+            return
+        time.sleep(.2)
+    raise TimeoutError('Recorder did not confirm clock and required subscriptions before motion')
+
+def check_isolation():
+    import rclpy
+    rclpy.init()
+    node=rclpy.create_node('run20_isolation_probe',enable_rosout=False,start_parameter_services=False)
+    try:
+        until=time.monotonic()+3
+        while time.monotonic()<until:rclpy.spin_once(node,timeout_sec=.1)
+        found=[name for name in node.get_node_names() if name!=node.get_name()]
+        write(OUT/'isolation.json',{'observed_nodes':found,'domain':os.environ['ROS_DOMAIN_ID']})
+        if found: raise RuntimeError('ROS domain occupied; preserving other work: '+repr(found))
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+def interrupt(signum,frame):
+    raise KeyboardInterrupt('Supervisor received '+signal.Signals(signum).name)
+
+def persist_shutdown():
+    try:write(OUT/'orchestration.json',report)
+    except OSError as exc:
+        report['errors'].append('Shutdown report write failed: '+str(exc))
+
+class AlreadyReparented:
+    # A nested recorder is not our direct child; never reap unrelated children.
+    def poll(self):return None
+
+def check_inner_recorder():
+    if 'recorder' not in jobs:return
+    try:
+        value=json.loads((OUT/'recording/supervisor.json').read_text())
+        owner=value['owner']
+        if not owner or owner['pgid']!=owner['pid'] or owner['sid']!=owner['pid']:
+            raise RuntimeError('Invalid nested recorder identity')
+        members,errors=scan_owned_group(owner)
+        result={'owner':owner,'remaining':members,'ownership_errors':errors,
+                'remaining_check_complete':not errors,
+                'reported_cleanup':value.get('cleanup')}
+        if members and not errors:
+            result['recovery_stop']=stop_owned(owner,AlreadyReparented(),graces=(20.,5.,3.))
+            result['remaining'],result['ownership_errors']=scan_owned_group(owner)
+            result['remaining_check_complete']=not result['ownership_errors']
+        report['recorder_inner_recheck']=result
+    except Exception as exc:
+        report['recorder_inner_recheck']={'remaining_check_complete':False,'error':str(exc)}
+
+if (OUT/'orchestration.json').exists(): raise SystemExit('Refuse restarting an existing experiment')
+signal.signal(signal.SIGINT,interrupt)
+signal.signal(signal.SIGTERM,interrupt)
+try:
+    check_isolation()
+    # Capture the exact local runner/helper inputs before launching.
+    paths=[ENV,Path(__file__),ROOT/'outputs/setup/run20-param-gate.py',
+           ROOT/'outputs/setup/run20-preflight.py',ROOT/'outputs/setup/run20-save.py',
+           ROOT/'scripts/record_bounded.py',ROOT/'scripts/capture_motion_evidence.py',
+           ROOT/'scripts/check_sim_runtime.py',ROOT/'scripts/odom_integrity.py',
+           ROOT/'src/limo_sim_bringup/launch/sim.launch.py',
+           ROOT/'src/limo_sim_bringup/scripts/spawn_once.py',
+           ROOT/'src/limo_sim_bringup/scripts/inspect_scene_once.py',OUT/'nav2-rpp-03m.yaml']
+    write(OUT/'runner-inputs.json',{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths})
+    stage('sim_start_and_sensor_check')
+    start('sim','sim')
+    run('sim-check',180,'sim-check')
+    spawn_report=json.loads((OUT/'spawn/result/report.json').read_text())
+    if not spawn_report.get('success') or spawn_report.get('request_attempts') != 1:
+        raise RuntimeError('Expected exactly one acknowledged spawn request')
+    run('native-early',50,'native-check','early')
+    native_early=json.loads((OUT/'native-scene-early.json').read_text())
+    if not native_early.get('passed') or not native_early.get('unique_instance_verified_in_snapshot'):
+        raise RuntimeError('Native instance precheck failed')
+    stage('navigation_start_and_parameter_check')
+    start('navigation','navigation')
+    run('nav-check',90,'nav-check')
+    run('parameter-gate',45,'python','outputs/setup/run20-param-gate.py')
+    run('native-before-motion',50,'native-check','before-motion')
+    native_before=json.loads((OUT/'native-scene-before-motion.json').read_text())
+    if not native_before.get('passed') or native_before.get('target_models') != native_early['target_models']:
+        raise RuntimeError('Native identity changed before motion')
+    stage('recording_perception_and_initial_survey')
+    start('recorder','recorder')
+    start('perception','perception')
+    wait_bag_ready()
+    start('motion','motion')
+    wait_ready('motion','READY:',30)
+    run('survey',150,'survey')
+    survey=json.loads((OUT/'initial-survey.json').read_text())
+    if not survey.get('success') or survey.get('map_epoch')!=EPOCH:raise RuntimeError('Initial survey was not verified')
+    wait_job('motion',100)
+    stage('read_only_planning_and_processed_image_preflight')
+    run('preflight',65,'python','outputs/setup/run20-preflight.py','--output',OUT/'preflight.json')
+    preflight=json.loads((OUT/'preflight.json').read_text())
+    if not preflight.get('passed') or preflight.get('map_epoch')!=EPOCH:raise RuntimeError('Preflight failed')
+    stage('autonomous_mission')
+    start('observer','observer')
+    wait_ready('observer','READY:',25)
+    start('mission','mission')
+    run('save-early',60,'python','outputs/setup/run20-save.py','--parameters-only')
+    parameters=json.loads((OUT/'parameters-early.json').read_text())['parameters']
+    actual=parameters['limo_maze_mission']['values']
+    expected={'goal_arrival_margin_m':.05,'require_processed_inspection':True,
+              'inspection_timeout_s':12.,'inspection_settle_s':.5,'home_position_tolerance_m':.15}
+    if any(actual[name]['value']!=value for name,value in expected.items()):
+        raise RuntimeError('Live mission parameters differ from approved profile')
+    run('provenance',90,'python','outputs/setup/run20-provenance.py','--output',OUT/'provenance-live.json')
+    while time.monotonic()<deadline:
+        terminal=terminal_result(OUT/'mission',EPOCH)
+        if terminal:
+            report['terminal']=terminal
+            break
+        for name in ('sim','navigation','mission','perception','recorder','observer'):
+            if jobs[name][0].poll() is not None: raise RuntimeError('Required process exited: '+name)
+        time.sleep(.5)
+    else:raise TimeoutError('Overall autonomous experiment budget expired')
+    terminal_wall=time.monotonic()
+    run('native-terminal',50,'native-check','terminal')
+    native_terminal=json.loads((OUT/'native-scene-terminal.json').read_text())
+    report['same_native_instance_at_terminal']=bool(native_terminal.get('passed') and
+        native_terminal.get('target_models') == native_early['target_models'])
+    if not report['same_native_instance_at_terminal']:
+        raise RuntimeError('Native instance changed before terminal evidence')
+    stage('terminal_map_export_and_independent_stationary_tail')
+    run('save-final',60,'python','outputs/setup/run20-save.py','--final')
+    while time.monotonic()<min(deadline,terminal_wall+110):
+        value=latest_tail()
+        if value and value['tail'].get('ready_for_operator_to_end_observer'):
+            report['observed_terminal_native_tail']=value
+            report['native_terminal_tail_verified']=True
+            break
+        time.sleep(1)
+    report['status']='terminal_observed'
+    if not report['native_terminal_tail_verified']:
+        report['errors'].append('Native terminal tail not verified within bounded collection window')
+except BaseException as exc:
+    report['status']='orchestration_failed'
+    report['errors'].append(type(exc).__name__+': '+str(exc))
+    print('ERROR '+report['errors'][-1],flush=True)
+finally:
+    signal.signal(signal.SIGINT,signal.SIG_IGN)
+    signal.signal(signal.SIGTERM,signal.SIG_IGN)
+    report['stage']='owned_shutdown'
+    report['stages'].append({'name':'owned_shutdown','elapsed_wall_s':time.monotonic()-began})
+    persist_shutdown()
+    # Mission cancels with navigation still available; recorder flushes before
+    # the remaining simulation services are stopped. Never signal by name.
+    order=['mission','recorder','observer','perception','motion','survey','navigation','sim']
+    order += [name for name in jobs if name not in order]
+    report['shutdown_signal_poll_budget_seconds']=28*(len(jobs)+(1 if 'recorder' in jobs else 0))
+    for name in order:
+        if name not in jobs:continue
+        process,owner=jobs[name]
+        try:
+            if owner is None:
+                process.wait(timeout=3)
+                raise RuntimeError('Launch gate never released; child exited without verified identity')
+            stopped=stop_owned(owner,process,graces=(20.,5.,3.))
+            stopped['exit_code']=process.poll()
+        except Exception as exc:
+            stopped={'error':type(exc).__name__+': '+str(exc),'remaining_check_complete':False}
+        report['stops'][name]=stopped
+        if name=='recorder':check_inner_recorder()
+        persist_shutdown()
+    report['elapsed_wall_s']=time.monotonic()-began
+    report['all_owned_groups_empty']=bool(jobs) and all(s.get('remaining_check_complete') and not s.get('remaining') and not s.get('ownership_errors') for s in report['stops'].values())
+    if 'recorder' in jobs:
+        nested=report.get('recorder_inner_recheck',{})
+        report['all_owned_groups_empty'] &= bool(nested.get('remaining_check_complete') and not nested.get('remaining') and not nested.get('ownership_errors'))
+    report['evidence_collection_complete']=bool(report['status']=='terminal_observed' and
+        report['all_owned_groups_empty'] and report['native_terminal_tail_verified'] and not report['errors'])
+    persist_shutdown()
+    print('FINISHED '+json.dumps({k:report.get(k) for k in ('status','errors','elapsed_wall_s','terminal','all_owned_groups_empty')}),flush=True)
+raise SystemExit(0 if report['evidence_collection_complete'] else 1)

@@ -1,0 +1,353 @@
+#!/usr/bin/env python3
+"""Bounded read-only run20 sensor/TF/planning preflight, never motion authority.
+
+Run only after the independent initial survey and after enabling perception.
+The fixed map-frame prior is declared setup knowledge, not a sensor result.
+No world pose, target count or target truth is subscribed or used for planning.
+"""
+import argparse
+from collections import Counter, deque
+from dataclasses import asdict
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import time
+
+
+def ns(stamp):
+    if stamp.sec < 0 or not 0 <= stamp.nanosec < 1_000_000_000:
+        raise ValueError('invalid_stamp')
+    return stamp.sec * 1_000_000_000 + stamp.nanosec
+
+
+def geometry(position, rotation):
+    values = [position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, rotation.w]
+    if (not all(math.isfinite(v) for v in values) or
+            abs(sum(v*v for v in values[3:])-1) > 1e-3):
+        raise ValueError('invalid_pose_geometry')
+    qx, qy, qz, qw = values[3:]
+    return values, math.atan2(2*(qw*qz+qx*qy), 1-2*(qy*qy+qz*qz))
+
+
+def disk_conflicts(grid, pose, radius=.25):
+    """Exact pose disk intersects cell rectangles; unknown/outside stay blocked."""
+    c, s = math.cos(grid.origin_yaw), math.sin(grid.origin_yaw)
+    dx, dy = pose[0]-grid.origin_x, pose[1]-grid.origin_y
+    x, y = c*dx+s*dy, -s*dx+c*dy
+    r = grid.resolution
+    counts = dict(unknown=0, occupied_or_intermediate=0, outside=0)
+    cells = []
+    for row in range(math.floor((y-radius)/r)-1, math.floor((y+radius)/r)+2):
+        for col in range(math.floor((x-radius)/r)-1, math.floor((x+radius)/r)+2):
+            distance = math.hypot(max(col*r-x, 0., x-(col+1)*r),
+                                  max(row*r-y, 0., y-(row+1)*r))
+            if distance > radius:
+                continue
+            value = grid.value((col, row))
+            kind = ('outside' if not grid.inside((col, row)) else
+                    'unknown' if value == -1 else 'occupied_or_intermediate' if value != 0 else None)
+            if kind:
+                counts[kind] += 1
+                cells.append(dict(cell=[col, row], value=value, kind=kind))
+    return dict(radius_m=radius, clear=not any(counts.values()), conflict_counts=counts, conflicts=cells)
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--timeout', type=float, default=45.)
+    ap.add_argument('--output', type=Path, required=True)
+    args = ap.parse_args()
+    if not math.isfinite(args.timeout) or not 1 <= args.timeout <= 120:
+        ap.error('timeout must be within [1,120] wall seconds')
+    if args.output.exists():
+        ap.error('Refuse existing preflight evidence')
+    if os.environ.get('ROS_DOMAIN_ID') != '73' or os.environ.get('ROS_AUTOMATIC_DISCOVERY_RANGE') != 'LOCALHOST':
+        ap.error('Run20 requires domain 73 and LOCALHOST discovery')
+
+    import rclpy
+    from rclpy.parameter import Parameter
+    from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy, qos_profile_sensor_data
+    from rclpy.time import Time
+    from nav_msgs.msg import OccupancyGrid, Odometry
+    from rosgraph_msgs.msg import Clock
+    from std_msgs.msg import String
+    from tf2_ros import Buffer, TransformListener, TransformException
+    import limo_maze_mission.core as core
+    import limo_maze_mission.inspection as inspection
+
+    rclpy.init()
+    node = rclpy.create_node('run20_read_only_preflight',
+                            parameter_overrides=[Parameter('use_sim_time', value=True)],
+                            enable_rosout=False, start_parameter_services=False)
+    buffer = Buffer(node=node)
+    listener = TransformListener(buffer, node)
+    latched = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                         reliability=ReliabilityPolicy.RELIABLE)
+    policy = inspection.InspectionPolicy(xy_tolerance=.05, yaw_tolerance=.26)
+    started = time.monotonic()
+    state = dict(epoch=None, epoch_barrier_ns=None, map=None, grid=None, map_wall=None,
+                 clock_ns=None, clock_wall=None, clock_advances=0, odom=None,
+                 stationary_since=None, stationary_first_ns=None, stationary_count=0, settled_barrier_ns=None,
+                 identity=None, last_sequence=None, last_rgb=None, last_depth=None)
+    counts, rejected, fatal = Counter(), Counter(), []
+    frames = deque(maxlen=128)
+    last_assessment = None
+    selected_frames = []
+    gate_errors = ['waiting_for_data']
+    passed = False
+
+    def reject(reason):
+        # Local codes only; source payloads and exception strings are not accumulated.
+        rejected[reason] += 1
+
+    def on_clock(msg):
+        counts['clock'] += 1
+        stamp = ns(msg.clock)
+        if state['clock_ns'] is not None and stamp < state['clock_ns']:
+            fatal.append('clock_regressed')
+        if state['clock_ns'] is None or stamp > state['clock_ns']:
+            state['clock_advances'] += 1
+            state['clock_wall'] = time.monotonic()
+        state['clock_ns'] = stamp
+
+    def on_epoch(msg):
+        counts['epoch'] += 1
+        epoch = msg.data
+        if not epoch or len(epoch) > 256 or epoch.strip() != epoch:
+            fatal.append('invalid_epoch')
+            return
+        if state['epoch'] is not None and epoch != state['epoch']:
+            fatal.append('epoch_changed_during_preflight')
+            return
+        if state['epoch'] is None:
+            state['epoch'] = epoch
+            state['epoch_barrier_ns'] = node.get_clock().now().nanoseconds
+
+    def on_map(msg):
+        counts['map'] += 1
+        try:
+            if (msg.header.frame_id != 'map' or msg.info.width * msg.info.height > 20_000 or
+                    not .02 <= msg.info.resolution <= .1 or
+                    any(value < -1 or value > 100 for value in msg.data)):
+                raise ValueError('invalid_or_unbounded_smoke_map')
+            _, angle = geometry(msg.info.origin.position, msg.info.origin.orientation)
+            grid = core.Grid(msg.info.width, msg.info.height, msg.info.resolution,
+                             msg.info.origin.position.x, msg.info.origin.position.y, angle, tuple(msg.data))
+            ns(msg.header.stamp)
+        except (TypeError, ValueError):
+            reject('invalid_map')
+            state['grid'] = None
+            return
+        state.update(map=msg, grid=grid, map_wall=time.monotonic())
+
+    def on_odom(msg):
+        counts['odom'] += 1
+        wall, now_ns = time.monotonic(), node.get_clock().now().nanoseconds
+        previous = state['odom']
+        try:
+            stamp = ns(msg.header.stamp)
+            values, angle = geometry(msg.pose.pose.position, msg.pose.pose.orientation)
+            twist = msg.twist.twist
+            velocities = [twist.linear.x, twist.linear.y, twist.linear.z,
+                          twist.angular.x, twist.angular.y, twist.angular.z]
+            good = (msg.header.frame_id == 'odom' and msg.child_frame_id in ('base_link', 'base_footprint') and
+                    all(math.isfinite(v) for v in velocities) and 0 <= now_ns-stamp <= 300_000_000 and
+                    (previous is None or (stamp > previous['stamp_ns'] and wall-previous['received_wall'] <= .3)) and
+                    math.hypot(*velocities[:2]) <= .005 and abs(velocities[2]) <= .005 and
+                    max(abs(v) for v in velocities[3:]) <= .02)
+        except (TypeError, ValueError):
+            reject('invalid_odometry')
+            state.update(stationary_since=None, stationary_first_ns=None, stationary_count=0, settled_barrier_ns=None)
+            frames.clear()
+            return
+        state['odom'] = dict(stamp_ns=stamp, received_wall=wall, xyz_quaternion=values,
+                             yaw=angle, velocities=velocities, stationary_and_fresh_at_receipt=good)
+        if not good:
+            reject('odometry_not_fresh_advancing_stationary')
+            state.update(stationary_since=None, stationary_first_ns=None, stationary_count=0, settled_barrier_ns=None)
+            frames.clear()
+        else:
+            if state['stationary_since'] is None:
+                state.update(stationary_since=wall, stationary_first_ns=stamp)
+            state['stationary_count'] += 1
+
+    def stationary(wall, now_ns):
+        odom = state['odom']
+        return (odom is not None and state['stationary_since'] is not None and
+                state['stationary_count'] >= 3 and wall-state['stationary_since'] >= .5 and
+                wall-odom['received_wall'] <= .3 and 0 <= now_ns-odom['stamp_ns'] <= 300_000_000 and
+                odom['stamp_ns']-state['stationary_first_ns'] >= 200_000_000)
+
+    def transform(frame, stamp):
+        tf = buffer.lookup_transform('map', frame, Time(nanoseconds=stamp))
+        values, angle = geometry(tf.transform.translation, tf.transform.rotation)
+        if tf.header.frame_id != 'map' or tf.child_frame_id != frame or ns(tf.header.stamp) != stamp:
+            raise ValueError('tf_stamp_or_frame_mismatch')
+        return dict(frame=frame, stamp_ns=stamp, xyz_quaternion=values, yaw=angle)
+
+    def on_frame(msg):
+        counts['frame_processing'] += 1
+        wall, now_ns = time.monotonic(), node.get_clock().now().nanoseconds
+        try:
+            if len(msg.data) > 65536:
+                raise ValueError('oversize_payload')
+            record = json.loads(msg.data)
+            sample = inspection.validate_record(record, now_ns, policy)
+            if state['epoch'] is None or sample.epoch != state['epoch']:
+                reject('epoch_mismatch_or_unavailable')
+                return
+            if min(sample.rgb_stamp_ns, sample.depth_stamp_ns) <= state['epoch_barrier_ns']:
+                reject('sample_before_preflight_epoch_barrier')
+                return
+            identity = (sample.session_id, sample.config_id, sample.calibration_id, sample.frame_id)
+            if state['identity'] != identity:
+                frames.clear()
+                state.update(identity=identity, last_sequence=None, last_rgb=None, last_depth=None)
+            if (state['last_sequence'] is not None and
+                    (sample.sequence <= state['last_sequence'] or sample.rgb_stamp_ns <= state['last_rgb'] or
+                     sample.depth_stamp_ns <= state['last_depth'])):
+                reject('nonadvancing_sample')
+                return
+            state.update(last_sequence=sample.sequence, last_rgb=sample.rgb_stamp_ns, last_depth=sample.depth_stamp_ns)
+            if not stationary(wall, now_ns):
+                reject('stationarity_not_yet_verified')
+                return
+            if state['settled_barrier_ns'] is None:
+                state['settled_barrier_ns'] = now_ns
+                frames.clear()
+            if min(sample.rgb_stamp_ns, sample.depth_stamp_ns) <= state['settled_barrier_ns']:
+                reject('sample_before_settled_barrier')
+                return
+            if state['odom']['stamp_ns'] < max(sample.rgb_stamp_ns, sample.depth_stamp_ns):
+                reject('odometry_does_not_cover_sample_time')
+                return
+            base, camera = transform('base_link', sample.rgb_stamp_ns), transform(sample.frame_id, sample.rgb_stamp_ns)
+            frames.append(dict(record=record, received_ros_ns=now_ns, received_wall_s=wall-started,
+                               base=base, camera=camera, odom_stamp_ns=state['odom']['stamp_ns']))
+            counts['accepted_frames'] += 1
+        except inspection.EvidenceError as exc:
+            reject(str(exc))
+        except TransformException:
+            reject('sample_tf_unavailable')
+        except (ValueError, TypeError, KeyError, RecursionError):
+            reject('invalid_evidence_or_transform')
+
+    subs = [node.create_subscription(typ, topic, callback, qos)
+            for typ, topic, callback, qos in (
+                (Clock, '/clock', on_clock, qos_profile_sensor_data),
+                (String, '/mission/map_epoch', on_epoch, latched),
+                (String, '/mission/frame_processing', on_frame, 10),
+                (OccupancyGrid, '/map', on_map, latched),
+                (Odometry, '/odom', on_odom, qos_profile_sensor_data))]
+    next_assessment = started
+    try:
+        while rclpy.ok() and time.monotonic()-started < args.timeout:
+            rclpy.spin_once(node, timeout_sec=.05)
+            if fatal:
+                break
+            wall, now_ns = time.monotonic(), node.get_clock().now().nanoseconds
+            if wall < next_assessment:
+                continue
+            next_assessment = wall+.2
+            gate_errors = []
+            if not node.get_parameter('use_sim_time').value:
+                gate_errors.append('use_sim_time_disabled')
+            if state['clock_advances'] < 3 or state['clock_wall'] is None or wall-state['clock_wall'] > .5:
+                gate_errors.append('clock_not_advancing_or_stale')
+            if state['epoch'] is None:
+                gate_errors.append('epoch_missing')
+            if not stationary(wall, now_ns):
+                gate_errors.append('stationarity_not_verified')
+            while frames and (now_ns-min(frames[0]['record']['rgb']['stamp_ns'], frames[0]['record']['depth']['stamp_ns']) > 1_500_000_000 or
+                              now_ns-frames[0]['record']['processed_stamp_ns'] > 1_500_000_000):
+                frames.popleft()
+            if (len(frames) < 3 or min(frames[-1]['record'][stream]['stamp_ns']-frames[0]['record'][stream]['stamp_ns']
+                                       for stream in ('rgb', 'depth')) < 200_000_000):
+                gate_errors.append('three_fresh_processed_frames_with_span_missing')
+            grid, msg = state['grid'], state['map']
+            if grid is None or msg is None:
+                gate_errors.append('valid_map_missing')
+            else:
+                map_age = (now_ns-ns(msg.header.stamp))*1e-9
+                if not 0 <= map_age <= 5 or wall-state['map_wall'] > 5:
+                    gate_errors.append('map_stale_or_future')
+                try:
+                    latest = buffer.lookup_transform('map', 'base_link', Time())
+                    values, angle = geometry(latest.transform.translation, latest.transform.rotation)
+                    tf_age = (now_ns-ns(latest.header.stamp))*1e-9
+                    if not 0 <= tf_age <= 1:
+                        raise ValueError('current_tf_stale_or_future')
+                    pose = values[0], values[1], angle
+                    planning, filled = grid.with_free_prior((0., 0.), .30-.05)
+                    raw_disk, plan_disk = disk_conflicts(grid, pose), disk_conflicts(planning, pose)
+                    selection = core.Planner().select(planning, pose, core.Coverage(), core.FailureBook(),
+                                                      wall, False, observed_grid=grid)
+                    last_assessment = dict(map_stamp_ns=ns(msg.header.stamp), map_age_ros_s=map_age,
+                        map_received_age_wall_s=wall-state['map_wall'], current_pose=list(pose),
+                        current_tf_stamp_ns=ns(latest.header.stamp), current_tf_age_ros_s=tf_age,
+                        raw_footprint=raw_disk, planning_footprint=plan_disk, prior_filled_unknown_cells=filled,
+                        planner=asdict(selection), raw_map=dict(width=grid.width, height=grid.height,
+                        resolution=grid.resolution, origin=[grid.origin_x, grid.origin_y, grid.origin_yaw], data=list(grid.data)))
+                    if raw_disk['conflict_counts']['occupied_or_intermediate'] or raw_disk['conflict_counts']['outside']:
+                        gate_errors.append('raw_footprint_contains_measured_obstacle_or_outside')
+                    if not plan_disk['clear']:
+                        gate_errors.append('planning_footprint_not_clear_with_declared_prior')
+                    if selection.state != 'goal' or selection.goal is None or selection.goal.kind != 'frontier':
+                        gate_errors.append('planner_has_no_safe_frontier_goal')
+                except (TransformException, ValueError):
+                    gate_errors.append('current_tf_or_planning_invalid')
+            if not gate_errors:
+                # Retain three fresh, independently stamped records with the measured span.
+                selected_frames = [frames[0], frames[-2], frames[-1]]
+                passed = True
+                break
+    except (Exception, KeyboardInterrupt) as exc:
+        fatal.append(type(exc).__name__)
+    finally:
+        ended = time.monotonic()
+        report = dict(schema_version=1, created_utc=datetime.now(timezone.utc).isoformat(),
+            passed=passed and not fatal, passed_scope='processed-frame, stationarity, TF and frontier-planning readiness under declared startup prior',
+            read_only=True, motion_or_navigation_commands_published=False,
+            use_sim_time=node.get_parameter('use_sim_time').value,
+            environment={k: os.environ.get(k) for k in ('ROS_DISTRO', 'ROS_DOMAIN_ID', 'ROS_AUTOMATIC_DISCOVERY_RANGE', 'GZ_PARTITION')},
+            timeout_wall_s=args.timeout, elapsed_wall_s=ended-started,
+            map_epoch=state['epoch'], epoch_receipt_barrier_ns=state['epoch_barrier_ns'],
+            settled_acquisition_barrier_ns=state['settled_barrier_ns'],
+            counts=dict(counts), rejection_counts=dict(rejected), errors=fatal or gate_errors,
+            policy=asdict(policy), accepted_window_count=len(frames), verified_frames=selected_frames,
+            last_odometry=state['odom'], stationary_sample_count=state['stationary_count'],
+            stationary_span_ns=(state['odom']['stamp_ns']-state['stationary_first_ns']
+                                if state['odom'] and state['stationary_first_ns'] is not None else None),
+            assessment=last_assessment,
+            startup_prior=dict(frame_id='map', fixed_center_xy=[0., 0.], verified_radius_m=.30, margin_m=.05,
+                effective_radius_m=.25, sensor_observation=False, raw_map_modified=False,
+                source='Root operator verified unchanged smoke world and start; this script does not independently establish clearance'),
+            modules={m.__name__:dict(path=m.__file__, sha256=hashlib.sha256(Path(m.__file__).read_bytes()).hexdigest())
+                     for m in (core, inspection)},
+            limitations=[
+                'No Gazebo world truth or target count is read; this does not independently prove physical stopping.',
+                'Raw unknown cells can remain; passing with a planning prior does not mean the raw footprint was fully observed.',
+                'Fixed prior center map(0,0) is not the actual home pose that mission will record; check that separate anchor before motion.',
+                'Readiness is a bounded snapshot, not a navigation action, continuous safety guarantee, completed inspection or visual coverage.',
+                'No expected goal yaw or position is imposed; this checks current startup readiness, not arrival at an action goal.',
+                'Exact RGB-stamp TF is required without latest fallback; missing evidence may time out rather than be retried.',
+                'Hashes describe producer claims; raw image retention is verified separately against the recording.',
+                'Planner runs with default radius .25/standoff .55/min translation .20/arrival margin .05 and perception_ready false.',
+                'Snapshot map, TF and evidence are asynchronously received; report preserves their source times.'])
+        listener.unregister()
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        with args.output.open('x', encoding='utf-8') as stream:
+            json.dump(report, stream, indent=2, allow_nan=False)
+            stream.write('\n')
+        print(json.dumps({k: report[k] for k in ('passed', 'elapsed_wall_s', 'map_epoch', 'counts', 'rejection_counts', 'errors')}))
+    return 0 if report['passed'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

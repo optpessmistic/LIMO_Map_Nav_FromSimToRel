@@ -1,0 +1,285 @@
+"""Offline run20 summary, no ROS imports and no bag decoding. Writes new reports."""
+from collections import Counter
+from dataclasses import asdict
+import hashlib
+import importlib.util
+import json
+import math
+from pathlib import Path
+import re
+import sys
+import xml.etree.ElementTree as ET
+import yaml
+
+REPO = Path(__file__).resolve().parents[2]
+RUN = REPO/'outputs/ros_smoke/run20-arrival-margin'
+SOURCES = {}
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def source(path):
+    path = Path(path)
+    SOURCES[str(path.relative_to(REPO))] = {'bytes': path.stat().st_size, 'sha256': sha(path)}
+    return path
+
+
+def load(name):
+    return json.loads(source(RUN/name).read_text())
+
+
+def delta(a, b):
+    return math.atan2(math.sin(a-b), math.cos(a-b))
+
+
+def native_delta(a, b):
+    return {'dx_m': b['x']-a['x'], 'dy_m': b['y']-a['y'],
+            'xy_distance_m': math.hypot(b['x']-a['x'], b['y']-a['y']),
+            'yaw_delta_rad': delta(b['yaw'], a['yaw'])}
+
+
+def span(samples):
+    return {'count': len(samples), 'first_sim_s': samples[0]['sim_s'],
+            'last_sim_s': samples[-1]['sim_s'],
+            'max_gap_s': max((b['sim_s']-a['sim_s'] for a,b in zip(samples,samples[1:])), default=0),
+            'x_span_m': max(s['x'] for s in samples)-min(s['x'] for s in samples),
+            'y_span_m': max(s['y'] for s in samples)-min(s['y'] for s in samples),
+            'yaw_span_rad': max(delta(s['yaw'],samples[0]['yaw']) for s in samples)-
+                            min(delta(s['yaw'],samples[0]['yaw']) for s in samples)}
+
+
+mission_path = next(RUN.glob('mission/mission_*.json'))
+mission = load(str(mission_path.relative_to(RUN)))
+observer = load('observer.json')
+orchestration = load('orchestration.json')
+audit = load('inspection-audit/audit.json')
+initial = load('initial-motion.json')
+final = load('final-save.json')
+parameters = load('parameters-early.json')
+parameter_gate = load('parameter-gate.json')
+preparation = load('preparation.json')
+recorder = load('recording/supervisor.json')
+metadata = yaml.safe_load(source(RUN/'recording/bag/metadata.yaml').read_text())['rosbag2_bagfile_information']
+record_log = source(RUN/'recording/recorder.log').read_text()
+perception_log = source(RUN/'perception.log').read_text()
+scene = {key: load('native-scene-'+key+'.json') for key in ('early','before-motion','terminal')}
+events = mission['events']
+goals = [e for e in events if e['event']=='goal_sent']
+terminals = [e for e in events if e['event']=='goal_terminal']
+inspections = [e for e in events if e['event']=='inspection_complete']
+home = next(e for e in events if e['event']=='home_recorded')
+world = observer['world_samples']
+prehome = [p for p in world if p['sim_s'] <= home['stamp']]
+native_first, native_last = prehome[0], world[-1]
+prehome_span = span(prehome)
+home_tf = max((p for p in observer['continuous_tf_samples']
+               if p.get('same_stamp_chain_complete') and p.get('reference_stamp_ns',0)<=round(home['stamp']*1e9)),
+              key=lambda p: p['reference_stamp_ns'])
+anchor_stamp = home_tf['reference_stamp_ns']/1e9
+left = max((p for p in prehome if p['sim_s']<=anchor_stamp), key=lambda p:p['sim_s'])
+right = min((p for p in world if p['sim_s']>=anchor_stamp), key=lambda p:p['sim_s'])
+anchor_native = left
+map_pose = home_tf['transforms']['map_to_base_link']
+robot = ET.parse(source(RUN/'spawn/robot.urdf')).getroot()
+base_joint = robot.find("joint[@name='base_footprint_joint']")
+origin = base_joint.find('origin').attrib
+native_planar_frame_supported = origin.get('xyz')=='0 0 0.15' and origin.get('rpy','0 0 0')=='0 0 0'
+checks = {
+    'stationary_native_window_at_home': prehome_span['x_span_m']<=1e-9 and prehome_span['y_span_m']<=1e-9 and prehome_span['yaw_span_rad']<=1e-9,
+    'one_observed_native_id': {p['id'] for p in world} == {114},
+    'tf_chain_same_stamp': home_tf['same_stamp_chain_complete'],
+    'tf_at_or_before_home_and_recent': 0 <= home['stamp']-anchor_stamp <= .1,
+    'native_bracket_gap_le_50ms': right['sim_s']-left['sim_s']<=.05,
+    'native_bracket_stationary': native_delta(left,right)['xy_distance_m']<=1e-9 and abs(native_delta(left,right)['yaw_delta_rad'])<=1e-9,
+    'home_matches_synchronous_tf': math.hypot(map_pose['xyz'][0]-home['pose'][0],map_pose['xyz'][1]-home['pose'][1])<=1e-12 and abs(delta(map_pose['yaw'],home['pose'][2]))<=1e-12,
+    'same_map_epoch': home_tf['map_epoch']==home['map_epoch']==mission['map_epoch'],
+    'base_joint_has_zero_planar_offset_and_rotation': native_planar_frame_supported,
+}
+alignment_report = {'method': 'Single stationary pre-goal robot pose anchor; no target positions used in alignment.',
+    'checks': checks, 'usable_as_start_anchor': all(checks.values()),
+    'tf_sample': home_tf, 'native_bracket': [left,right], 'prehome_native_window': prehome_span,
+    'uncertainty': ['Stationary sampled bracket has no observed motion; no numerical confidence interval is established.',
+                    'Planar coincidence of model origin and base_footprint/base_link uses the expanded URDF zero-XY fixed joint.',
+                    'This anchors the starting map session only; SLAM correction and stored target averaging can change later consistency.',
+                    'No target fitting, target-derived yaw, final-return refitting or hidden surface-to-centre correction.']}
+target_evaluation = None
+if all(checks.values()):
+    yaw = delta(anchor_native['yaw'],map_pose['yaw'])
+    c,s = math.cos(yaw), math.sin(yaw)
+    tx = anchor_native['x']-(c*map_pose['xyz'][0]-s*map_pose['xyz'][1])
+    ty = anchor_native['y']-(s*map_pose['xyz'][0]+c*map_pose['xyz'][1])
+    tool_path = source(REPO/'tools/evaluate_targets.py')
+    spec = importlib.util.spec_from_file_location('run20_target_evaluator',tool_path)
+    evaluator = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = evaluator
+    spec.loader.exec_module(evaluator)
+    alignment = evaluator.SE2(tx,ty,yaw)
+    alignment_report['map_to_world_se2'] = asdict(alignment)
+    truth = evaluator.load_json(source(REPO/'worlds/smoke_maze.metadata.json'))
+    source(REPO/'worlds/smoke_maze.world')
+    target_evaluation = evaluator.evaluate(mission,truth,alignment=alignment,
+        alignment_source=f"run20 observer native stationary bracket {left['sim_s']}..{right['sim_s']} s and same-stamp TF at {anchor_stamp} s, matching home_recorded; epoch {mission['map_epoch']}",
+        appearance_to_class={'red_box_surrogate':'red_object'},max_distance_m=.20)
+    target_evaluation['threshold_status'] = 'Post-run descriptive association threshold 0.20 m; not a preregistered acceptance criterion.'
+    target_evaluation['reference_point_note'] = 'Predictions are aggregated visible-surface points; metadata truth is box centre (0.03 m thickness along x, 0.06 m y). Report planar raw residuals without surface correction; z excluded.'
+    target_evaluation['formal_detection_acceptance'] = False
+    current_tf = next(p for p in reversed(observer['continuous_tf_samples'])
+                      if p.get('same_stamp_chain_complete') and p['reference_stamp_ns']/1e9<=native_last['sim_s'])
+    late_native_left = max((p for p in world if p['sim_s']<=current_tf['reference_stamp_ns']/1e9),key=lambda p:p['sim_s'])
+    late_native_right = min((p for p in world if p['sim_s']>=current_tf['reference_stamp_ns']/1e9),key=lambda p:p['sim_s'])
+    last_map_pose = current_tf['transforms']['map_to_base_link']
+    final_xy = alignment.transform(*last_map_pose['xyz'][:2])
+    initial_mo = home_tf['transforms']['map_to_odom']
+    final_mo = current_tf['transforms']['map_to_odom']
+    alignment_report['late_map_consistency_diagnostic'] = {
+        'last_tf_stamp_ns':current_tf['reference_stamp_ns'],
+        'native_bracket_sim_s':[late_native_left['sim_s'],late_native_right['sim_s']],
+        'native_bracket_xy_movement_m':native_delta(late_native_left,late_native_right)['xy_distance_m'],
+        'native_bracket_yaw_movement_rad':native_delta(late_native_left,late_native_right)['yaw_delta_rad'],
+        'start_anchor_transformed_last_map_xy': final_xy,
+        'last_native_xy':[native_last['x'],native_last['y']],
+        'xy_residual_m':math.hypot(final_xy[0]-native_last['x'],final_xy[1]-native_last['y']),
+        'yaw_residual_rad':delta(last_map_pose['yaw']+yaw,native_last['yaw']),
+        'map_to_odom_start':initial_mo,
+        'map_to_odom_end':final_mo,
+        'map_to_odom_xy_change_m':math.hypot(final_mo['xyz'][0]-initial_mo['xyz'][0],final_mo['xyz'][1]-initial_mo['xyz'][1]),
+        'map_to_odom_yaw_change_rad':delta(final_mo['yaw'],initial_mo['yaw']),
+        'used_to_refit_alignment':False}
+
+sample_audits = []
+for sample in audit['samples']:
+    sample_audits.append({'request_id': sample['snapshot']['request_id'],
+        'last_stamp_ns':sample['snapshot']['last_rgb_stamp_ns'],
+        'source_record_counts':{k:v['record_count'] for k,v in sample['source_matches'].items()},
+        'base_tf_consistent':sample['sample_time_tf_reconstruction']['base']['within_1e_8'],
+        'camera_tf_consistent':sample['sample_time_tf_reconstruction']['camera']['within_1e_8'],
+        'final_frame_evidence_consistent':sample['final_frame_evidence_consistent'],
+        'errors':sample['errors']})
+inspection_summary = []
+for event in inspections:
+    e = event['evidence']
+    inspection_summary.append({'request_id':e['request_id'],'token':e['goal_token'],'accepted_frames':e['accepted_frames'],
+        'first_rgb_stamp_ns':e['first_rgb_stamp_ns'],'last_rgb_stamp_ns':e['last_rgb_stamp_ns'],
+        'rgb_span_s':(e['last_rgb_stamp_ns']-e['first_rgb_stamp_ns'])/1e9,
+        'position_error_m':e['conditions']['distance_m'],'yaw_error_rad':e['conditions']['yaw_error_rad'],
+        'stop_confirmed':e['conditions']['stop_confirmed'],'status':e['status'],'reset_count':e['reset_count']})
+bag_files = list((RUN/'recording/bag').glob('*'))
+map_files = []
+for entry in final['exported_files_at_capture']:
+    path = RUN/Path(entry['path']).name
+    actual_hash=sha(path)
+    map_files.append({'name':path.name,'bytes':path.stat().st_size,'sha256':actual_hash,'hash_matches_saved':actual_hash==entry['sha256']})
+rawmap=final['snapshot']['map']
+param_names = ('goal_arrival_margin_m','home_position_tolerance_m','home_yaw_tolerance_rad',
+               'require_processed_inspection','inspection_required_frames','inspection_min_span_s',
+               'inspection_timeout_s','inspection_settle_s','target_definition_verified','autonomous','use_sim_time')
+mission_params={k:parameters['parameters']['limo_maze_mission']['values'][k]['value'] for k in param_names}
+report = {'schema_version':1,'role':'independent_offline_run20_outcome_review',
+    'run':'run20-arrival-margin','runtime_head':preparation['code_head'],'map_epoch':mission['map_epoch'],
+    'no_ros_nodes_started':True,'bag_redecoded_by_this_review':False,'truth_used_only_for_this_offline_evaluation':True,
+    'mission':{k:mission[k] for k in ('status','reason','mission_success','returned_pose_verified','map_complete','visual_coverage_complete','mission_timed_out','target_definition_verified','coordinates_valid')},
+    'goals':{'sent':goals,'terminal':terminals,'kinds':dict(Counter(e['goal']['kind'] for e in goals)),
+             'terminal_success_count':sum(e['success'] is True for e in terminals)},
+    'inspection_online_claims':inspection_summary,
+    'independent_last_frame_audit':{'selected_count':audit['selected_sample_count'],
+        'consistent_count':audit['consistent_final_frame_count'],'samples':sample_audits,
+        'static_tf_conflicts':audit['static_tf_conflicts'],'dynamic_tf_conflicts':audit['tf_conflicts_at_selected_brackets'],
+        'scope':'Only last retained frame per online completed window; not all 15 claimed accepted frames.',
+        'all_window_sampling_independently_verified':False,
+        'bag_time_scope':audit['bag_time_scope'],'full_bag_integrity_verified':audit['full_bag_integrity_verified']},
+    'return':{'home_map_pose':mission['home'],'terminal_map_pose':mission['final_pose'],
+        'map_xy_error_m':math.hypot(mission['final_pose'][0]-mission['home'][0],mission['final_pose'][1]-mission['home'][1]),
+        'map_yaw_error_rad':abs(delta(mission['final_pose'][2],mission['home'][2])),
+        'native_before_survey':initial['world_samples'][0], 'native_at_stationary_mission_home':native_first,
+        'native_terminal_tail_last':native_last,
+        'native_before_survey_to_final':native_delta(initial['world_samples'][0],native_last),
+        'native_home_to_final':native_delta(native_first,native_last),
+        'observer_final_native_tail_30sim':observer['final_native_tail_30sim']},
+    'geometry_and_targets':{'final_planner_selection':observer['final_status']['selection'],
+        'target_count':len(mission['targets']),'targets':mission['targets'],
+        'geometry_map_complete_scope':'Runtime planner reachable-frontier/unknown criterion, not independent whole-maze map accuracy or visual coverage.',
+        'initial_clearance_prior':mission['initial_clearance_prior'],
+        'target_count_prior':mission['target_count_prior']},
+    'independent_start_alignment':alignment_report,
+    'descriptive_target_evaluation':target_evaluation,
+    'native_identity':{'snapshots':{k:{'passed':v['passed'],'target_count':v['target_count'],'target_models':v['target_models']} for k,v in scene.items()},
+        'observed_ids':sorted({p['id'] for p in world}), 'observed_samples':len(world),
+        'scope':'Three scene responses plus sampled native poses; no proof of permanent uniqueness between all observations.'},
+    'parameters':{'gate':parameter_gate,'mission_actual':mission_params,
+        'note':'Nav2 0.03 m also changes RPP end-heading switch behavior; mission frontier margin stays 0.05 m; home verification uses 0.15 m.'},
+    'map_export':{'passed':final['passed'],'errors':final['errors'],'services':final['exports'],'files':map_files,
+        'raw_occupancy_grid':{k:rawmap[k] for k in ('frame_id','stamp_ns','width','height','resolution','origin')},
+        'raw_data_length':len(rawmap['data']),'raw_cell_counts':dict(Counter(rawmap['data'])),
+        'raw_data_length_correct':len(rawmap['data'])==rawmap['width']*rawmap['height']},
+    'recording':{'metadata_message_count':metadata['message_count'],'metadata_duration_s':metadata['duration']['nanoseconds']/1e9,
+        'bag_files':[{'name':p.name,'bytes':p.stat().st_size} for p in bag_files],
+        'bag_directory_total_bytes':sum(p.stat().st_size for p in bag_files),
+        'transport_lost_counts':list(map(int,re.findall(r'Number of messages lost on the transport layer: (\d+)',record_log))),
+        'transport_loss_scope':'Recorder whole recording cumulative count; not per inspection, per image stream, or proof of precise cause of missing selected frames.',
+        'supervisor':recorder,'topic_record_counts_from_existing_audit':audit['scoped_topic_record_counts']},
+    'cleanup':{'runner_evidence_collection_complete':orchestration['evidence_collection_complete'],
+        'all_owned_groups_empty':orchestration['all_owned_groups_empty'],'runner_errors':orchestration['errors'],
+        'elapsed_wall_s':orchestration['elapsed_wall_s'],
+        'groups':{k:{'exit_code':v['exit_code'],'remaining':v['remaining'],'ownership_errors':v['ownership_errors'],
+                      'forced_kill':v['forced_kill'],'terminate_used':v['terminate_used']} for k,v in orchestration['stops'].items()},
+        'recorder_inner_recheck':orchestration['recorder_inner_recheck'],
+        'perception_shutdown_repeated_context_error':'rcl_shutdown already called' in perception_log,
+        'all_components_clean_exit':all(v['exit_code']==0 for v in orchestration['stops'].values())},
+    'limitations':['Online 5x3 accepted frames are runtime claims; this independent source-byte audit covers only five retained last frames and none has complete recorded RGB+depth.',
+                   'Target XY error is descriptive under an independent start anchor, not final object recognition or a preregistered accuracy pass.',
+                   'World target coordinates were read only after run shutdown for evaluation. The existing disclosed start-clearance prior remains a separate non-sensor assumption.',
+                   'SLAM map-frame target observations are averaged coordinates, not pose-graph landmarks; later map corrections are not automatically retroactive.',
+                   'No physical LIMO hardware was evaluated.'],
+    'source_files':SOURCES}
+
+out = REPO/'outputs/setup/run20-outcome-review.json'
+with out.open('x',encoding='utf-8') as stream:
+    json.dump(report,stream,ensure_ascii=False,indent=2,allow_nan=False)
+    stream.write('\n')
+
+error_values = [] if target_evaluation is None else [m['distance_m'] for m in target_evaluation['matches']]
+lines = [
+ '# run20 独立离线结果核对', '',
+ f"运行代码 `{preparation['code_head']}`；epoch `{mission['map_epoch']}`。本核对仅读取已闭合证据，未启动 ROS/Gazebo，也未重新解码录包。", '',
+ '本轮完成 5 个 frontier 和 1 个 home 导航终态，6 个均报告成功；5 段观察窗在线 ledger 各接受 3 帧。任务 `done`、`returned_pose_verified=true`、`map_complete=true`，但 `visual_coverage_complete=false`、`target_definition_verified=false`、`mission_success=false`。`done` 只表示流程结束，不是完整项目验收成功。', '',
+ '## 在线观察窗与独立证据', '',
+ '| 窗口 | 在线接受帧数 | 跨度/s | 位置误差/mm | 航向误差/rad | 末帧缺失原始数据 |',
+ '|---|---:|---:|---:|---:|---|']
+for row, audited in zip(inspection_summary,sample_audits):
+    missing=', '.join(k for k,v in audited['source_record_counts'].items() if not v)
+    lines.append(f"| {row['request_id']} | {row['accepted_frames']} | {row['rgb_span_s']:.3f} | {1000*row['position_error_m']:.3f} | {row['yaw_error_rad']:.6f} | {missing} |")
+lines += ['', '闭合录包末帧审计为 **0/5 完整一致**：目标戳仅找到 4 张 RGB 与 1 张 depth；4 段缺 depth，第 3 段缺 RGB。5 组 base/camera TF 都能按原戳重建一致，无所选动态 TF 或静态 TF 冲突。这不能替代缺失的 RGB-D 原始证据，也不能把在线 15 帧计数当作独立验收。保留这些失败样本，不改抽样时间点。', '',
+ '## 返航与静止', '',
+ f"地图内 home 到 terminal：XY {report['return']['map_xy_error_m']*1000:.3f} mm，yaw {report['return']['map_yaw_error_rad']:.6f} rad。frontier 观察到位阈值仍 0.05 m，home 验证阈值实际为 0.15 m / 0.26 rad，二者应区分。", '',
+ f"原生模型在初始 survey 后、mission home 附近的位姿为 ({native_first['x']:.9f}, {native_first['y']:.9f}, yaw={native_first['yaw']:.9f})；最后为 ({native_last['x']:.9f}, {native_last['y']:.9f}, yaw={native_last['yaw']:.9f})。相对该 home 原生 XY 位移 {report['return']['native_home_to_final']['xy_distance_m']*1000:.3f} mm，yaw 变化 {report['return']['native_home_to_final']['yaw_delta_rad']:.6f} rad。若相对 survey 前近零原始朝向，yaw 变化为 {report['return']['native_before_survey_to_final']['yaw_delta_rad']:.6f} rad；不混用两种起点。", '',
+ f"终态后最终原生静止尾窗有 {observer['final_native_tail_30sim']['sample_count']} 样本，跨度 {observer['final_native_tail_30sim']['span_s']:.3f} sim s，XY/yaw 跨度均为零，最大采样间隔 {observer['final_native_tail_30sim']['max_gap_s']:.3f} s。", '',
+ '## 地图与目标的结论边界', '',
+ '最终规划器 frontier=0、reachable=2575、unobserved=0；这是运行中的可达区域几何终止判据，没有独立证明整个迷宫的地图精度。视觉 uncovered=2575、visual coverage=false；识别到 2 个 confirmed 红色替身不代表完成正式目标识别。target_count_prior=null。起点已披露 0.30 m 半径、减 0.05 m 裕量的 clearance prior；它不是传感器观测，raw SLAM map 未由该 prior 修改。', '',
+ '## 不用目标拟合的坐标锚点与描述性目标误差', '']
+if target_evaluation is None:
+    lines += ['独立起点锚点检查不足，因此跳过目标误差计算，不假定 map/world 同坐标。']
+else:
+    diagnostic=alignment_report['late_map_consistency_diagnostic']
+    lines += [f"起点原生静止窗 {prehome_span['first_sim_s']:.3f}–{prehome_span['last_sim_s']:.3f} sim s 共 {prehome_span['count']} 个样本；采用 {anchor_stamp:.3f} s 同戳 map→base_link / map→odom / odom→base_link 链，与 home_recorded 位姿完全相等。原生前后括点 {left['sim_s']:.3f}/{right['sim_s']:.3f} s 无位姿变化。展开 URDF 的 base_footprint→base_link 固定关节只有 0.15 m Z 偏移，XY/yaw 为零。", '',
+        f"据此固定 world_xy = R({yaw:.12f}) map_xy + ({tx:.12f}, {ty:.12f})。未使用任何目标位置拟合，也未用最终返航点重新拟合。调用 `tools/evaluate_targets.py`，显式 red_box_surrogate→red_object、0.20 m 描述性配对阈值，2 个预测匹配 2 个 world 目标，原始 XY 残差为 {', '.join(f'{e*1000:.3f} mm' for e in error_values)}。该阈值是在审计时用于关联，不是预注册的验收通过标准。", '',
+        f"锚点仅在静止采样窗内没有观测到变化；未建立置信区间。末段对照采用 {diagnostic['last_tf_stamp_ns']/1e9:.3f} s TF 与静止原生括点 {diagnostic['native_bracket_sim_s'][0]:.3f}/{diagnostic['native_bracket_sim_s'][1]:.3f} s。起点到末段 map→odom XY 改变量 {diagnostic['map_to_odom_xy_change_m']*1000:.3f} mm、yaw 改变量 {diagnostic['map_to_odom_yaw_change_rad']:.6f} rad；固定起点锚点映射末段 map 位姿与原生位姿残差 {diagnostic['xy_residual_m']*1000:.3f} mm。目标是跨时刻累积的 map 坐标，不是随位姿图回溯优化的地标，必须保留 SLAM 校正影响。", '',
+        '当前 RGB-D 输出可见表面点，metadata 是 0.03×0.06×0.20 m 盒子的中心；没有做隐藏的表面到中心修正。误差只比较平面 XY，不验证 z/高度、物体身份、识别召回或视觉覆盖。所有 world target 坐标只用于本次运行结束后的离线评价，没有送入控制。']
+lines += ['', '## 唯一实例、参数、导出与收尾', '',
+    'early、before-motion、terminal 三个原生 scene 查询均仅有一个 LIMO，ID=114；observer 采样中也只有该 ID。结论是这些快照和采样一致，不推导任意未观测时刻的永久唯一性。', '',
+    '实际参数查询确认 Nav2 XY=0.03 m、yaw=0.26 rad、general_goal_checker.stateful=false、RPP.stateful=false；mission margin=0.05 m、require_processed_inspection=true、3 帧且最小跨度 0.2 s。Nav2 XY 参数也影响 RPP 末端朝向切换，不把本轮结果解释为只改变一个数学验收判据。', '',
+    f"save_map/serialize_map 均 result=0；原始 OccupancyGrid 保存 {len(rawmap['data'])} 个单元，宽高 {rawmap['width']}×{rawmap['height']}，数据长度正确；PGM/YAML/posegraph/data 文件哈希与 final-save 记录一致。", '',
+    f"录包目录含 {len(bag_files)} 个文件（{sum(p.suffix=='.mcap' for p in bag_files)} 个 MCAP），共 {report['recording']['bag_directory_total_bytes']:,} B；metadata 为 {metadata['message_count']:,} 条、{report['recording']['metadata_duration_s']:.3f} sim s。record supervisor 持续 {recorder['elapsed_wall_seconds']:.3f} wall s，外层 SIGINT 后 recorder exit0；限制为 1650 wall s / 8 GiB，terminal fallback tail=120 wall s。", '',
+    '录包日志累计 transport lost=2355；它是全录制累计值，不能分配给某观察窗、某图像通道，也不能单凭该值确定缺图的具体原因。闭合包扫描达到存储流末端不等于无丢失或全部数据完整。', '',
+    f"编排器总 wall {orchestration['elapsed_wall_s']:.3f} s，errors=[]、all_owned_groups_empty=true，内层 recorder 进程组复核为空，无 TERM/KILL 升级。**perception exit1**：其日志为 SIGINT 后重复 `rclpy.shutdown()` 导致 `rcl_shutdown already called`；因此不能写‘所有组件均优雅退出’。已无遗留自有进程组与组件退出码全零是不同结论。", '',
+    '下一轮应先改善原始 RGB-D 留证完整性，并保留本轮缺图失败；不能以换抽样点来抹去失败。正式物品、视觉范围标定和未知场景视觉搜索验收仍未完成，本报告也不声称实车通过。', '',
+    '机器可读数据及来源哈希见同目录 `run20-outcome-review.json`；完整末帧审计来源为 `outputs/ros_smoke/run20-arrival-margin/inspection-audit/audit.json`。', '']
+with (REPO/'outputs/setup/run20-outcome-review.md').open('x',encoding='utf-8') as stream:
+    stream.write('\n'.join(lines))
+print(json.dumps({'reports_written':[str(out),str(out.with_suffix('.md'))],
+    'anchor_checks':checks,'alignment':alignment_report.get('map_to_world_se2'),
+    'target_errors_m':error_values,'return':report['return']['native_home_to_final'],
+    'map_xy_error_m':report['return']['map_xy_error_m'],
+    'bag_total_bytes':report['recording']['bag_directory_total_bytes'],
+    'cleanup_all_zero':report['cleanup']['all_components_clean_exit']},indent=2))

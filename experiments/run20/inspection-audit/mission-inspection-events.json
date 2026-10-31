@@ -1,0 +1,642 @@
+[
+  {
+    "stamp": 116.645,
+    "event": "inspection_settling",
+    "token": 1,
+    "timeout_s": 12.0,
+    "evidence": {
+      "request_id": "goal-1",
+      "status": "waiting",
+      "reason": null,
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 116625000000,
+      "deadline_wall": 442.170746741,
+      "expected_pose": [
+        1.4387531090960144,
+        -0.05286523410186539,
+        -1.9295669970654687
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 0,
+      "first_rgb_stamp_ns": null,
+      "last_rgb_stamp_ns": null,
+      "first_depth_stamp_ns": null,
+      "last_depth_stamp_ns": null,
+      "producer_identity": null,
+      "reset_count": 0,
+      "rejection_counts": {},
+      "last_evidence": null,
+      "visual_coverage_claimed": false,
+      "goal_token": 1,
+      "sampling_after_stamp_ns": null,
+      "conditions": null
+    }
+  },
+  {
+    "stamp": 117.352,
+    "event": "inspection_started",
+    "token": 1
+  },
+  {
+    "stamp": 117.352,
+    "event": "inspection_window_reset",
+    "reason": "stationary_odometry_unavailable"
+  },
+  {
+    "stamp": 118.266,
+    "event": "inspection_started",
+    "token": 1
+  },
+  {
+    "stamp": 118.6,
+    "event": "inspection_complete",
+    "evidence": {
+      "request_id": "goal-1",
+      "status": "satisfied",
+      "reason": "processed_frame_window",
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 118266000000,
+      "deadline_wall": 442.170746741,
+      "expected_pose": [
+        1.4387531090960144,
+        -0.05286523410186539,
+        -1.9295669970654687
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 118300000000,
+      "last_rgb_stamp_ns": 118500000000,
+      "first_depth_stamp_ns": 118300000000,
+      "last_depth_stamp_ns": 118500000000,
+      "producer_identity": [
+        "57f42add-434b-4143-847b-98374ea07230",
+        "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+        "camera_optical_frame"
+      ],
+      "reset_count": 3,
+      "rejection_counts": {
+        "sample_before_barrier": 1
+      },
+      "last_evidence": {
+        "rgb_stamp_ns": 118500000000,
+        "depth_stamp_ns": 118500000000,
+        "processed_stamp_ns": 118600000000,
+        "sequence": 560,
+        "rgb_sha256": "cfb13b37b4e26f2868e331ffb44f7f00d7691c8cf09986e2ec73f43af23f8c84",
+        "depth_sha256": "b279c0f0000fe88af3cfadd8b8eee5f768e8dc9ffd5a4f34cc554e5114566f6e",
+        "base_pose": [
+          1.4107414184990066,
+          -0.05197869083388347,
+          -1.787835503751044
+        ],
+        "camera_pose": [
+          1.3926529247670418,
+          -0.13400799288204593,
+          0.029999999999999943,
+          -0.07658441405212259,
+          -0.7029472437703225,
+          0.7029472437703225,
+          0.07658441405212266
+        ],
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0
+      },
+      "visual_coverage_claimed": false,
+      "goal_token": 1,
+      "sampling_after_stamp_ns": 118266000000,
+      "conditions": {
+        "stamp_ns": 118600000000,
+        "phase": "inspecting",
+        "blocking_condition": null,
+        "current_pose": [
+          1.4107414184990066,
+          -0.05197869083388347,
+          -1.787835503751044
+        ],
+        "distance_m": 0.028025716209733157,
+        "yaw_error_rad": 0.14173149331442492,
+        "position_tolerance_m": 0.05,
+        "yaw_tolerance_rad": 0.26,
+        "pose_within_tolerance": true,
+        "pose_stable_wall_s": 1.1710323939999512,
+        "odom_stamp_ns": 118600000000,
+        "odom_wall_age_s": 0.0667178289999697,
+        "odom_ros_age_s": 0.0,
+        "odom_fresh": true,
+        "odom_sample_stationary": true,
+        "odom_stationary_count": 62,
+        "stop_confirmed": true
+      }
+    }
+  },
+  {
+    "stamp": 130.2,
+    "event": "inspection_settling",
+    "token": 2,
+    "timeout_s": 12.0,
+    "evidence": {
+      "request_id": "goal-2",
+      "status": "waiting",
+      "reason": null,
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 130200000000,
+      "deadline_wall": 472.998468273,
+      "expected_pose": [
+        1.5887531113311886,
+        -0.9063882246598776,
+        -2.4227626539681686
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 0,
+      "first_rgb_stamp_ns": null,
+      "last_rgb_stamp_ns": null,
+      "first_depth_stamp_ns": null,
+      "last_depth_stamp_ns": null,
+      "producer_identity": null,
+      "reset_count": 0,
+      "rejection_counts": {},
+      "last_evidence": null,
+      "visual_coverage_claimed": false,
+      "goal_token": 2,
+      "sampling_after_stamp_ns": null,
+      "conditions": null
+    }
+  },
+  {
+    "stamp": 130.9,
+    "event": "inspection_started",
+    "token": 2
+  },
+  {
+    "stamp": 131.7,
+    "event": "inspection_complete",
+    "evidence": {
+      "request_id": "goal-2",
+      "status": "satisfied",
+      "reason": "processed_frame_window",
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 130900000000,
+      "deadline_wall": 472.998468273,
+      "expected_pose": [
+        1.5887531113311886,
+        -0.9063882246598776,
+        -2.4227626539681686
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 131000000000,
+      "last_rgb_stamp_ns": 131600000000,
+      "first_depth_stamp_ns": 131000000000,
+      "last_depth_stamp_ns": 131600000000,
+      "producer_identity": [
+        "57f42add-434b-4143-847b-98374ea07230",
+        "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+        "camera_optical_frame"
+      ],
+      "reset_count": 1,
+      "rejection_counts": {
+        "sample_before_barrier": 1
+      },
+      "last_evidence": {
+        "rgb_stamp_ns": 131600000000,
+        "depth_stamp_ns": 131600000000,
+        "processed_stamp_ns": 131625000000,
+        "sequence": 644,
+        "rgb_sha256": "2c7b9077c28cb8d29eb2b9f73a2ba9106abde90070c538aa8e94306c8762de8e",
+        "depth_sha256": "bad8b0e8b44d4c304fbcfa176ea3ca636a54270f28d99b6a20a1d3a0964f87de",
+        "base_pose": [
+          1.5884901724053897,
+          -0.8777983176034349,
+          -2.2856511613450823
+        ],
+        "camera_pose": [
+          1.5334275175128635,
+          -0.9412341437286345,
+          0.02999999999999997,
+          -0.2473921955860893,
+          -0.6624176186991815,
+          0.6624176186991816,
+          0.24739219558608938
+        ],
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0
+      },
+      "visual_coverage_claimed": false,
+      "goal_token": 2,
+      "sampling_after_stamp_ns": 130900000000,
+      "conditions": {
+        "stamp_ns": 131700000000,
+        "phase": "inspecting",
+        "blocking_condition": null,
+        "current_pose": [
+          1.5884901724053897,
+          -0.8777983176034349,
+          -2.2856511613450823
+        ],
+        "distance_m": 0.028591116144262938,
+        "yaw_error_rad": 0.1371114926230863,
+        "position_tolerance_m": 0.05,
+        "yaw_tolerance_rad": 0.26,
+        "pose_within_tolerance": true,
+        "pose_stable_wall_s": 2.299949500000025,
+        "odom_stamp_ns": 131700000000,
+        "odom_wall_age_s": 0.015607299000009789,
+        "odom_ros_age_s": 0.0,
+        "odom_fresh": true,
+        "odom_sample_stationary": true,
+        "odom_stationary_count": 102,
+        "stop_confirmed": true
+      }
+    }
+  },
+  {
+    "stamp": 141.86,
+    "event": "inspection_settling",
+    "token": 3,
+    "timeout_s": 12.0,
+    "evidence": {
+      "request_id": "goal-3",
+      "status": "waiting",
+      "reason": null,
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 141800000000,
+      "deadline_wall": 499.570014897,
+      "expected_pose": [
+        1.5887531113311886,
+        -1.1624811880175439,
+        -2.922923707715851
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 0,
+      "first_rgb_stamp_ns": null,
+      "last_rgb_stamp_ns": null,
+      "first_depth_stamp_ns": null,
+      "last_depth_stamp_ns": null,
+      "producer_identity": null,
+      "reset_count": 0,
+      "rejection_counts": {},
+      "last_evidence": null,
+      "visual_coverage_claimed": false,
+      "goal_token": 3,
+      "sampling_after_stamp_ns": null,
+      "conditions": null
+    }
+  },
+  {
+    "stamp": 142.527,
+    "event": "inspection_started",
+    "token": 3
+  },
+  {
+    "stamp": 143.1,
+    "event": "inspection_complete",
+    "evidence": {
+      "request_id": "goal-3",
+      "status": "satisfied",
+      "reason": "processed_frame_window",
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 142527000000,
+      "deadline_wall": 499.570014897,
+      "expected_pose": [
+        1.5887531113311886,
+        -1.1624811880175439,
+        -2.922923707715851
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 142800000000,
+      "last_rgb_stamp_ns": 143000000000,
+      "first_depth_stamp_ns": 142800000000,
+      "last_depth_stamp_ns": 143000000000,
+      "producer_identity": [
+        "57f42add-434b-4143-847b-98374ea07230",
+        "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+        "camera_optical_frame"
+      ],
+      "reset_count": 1,
+      "rejection_counts": {
+        "sample_before_barrier": 2
+      },
+      "last_evidence": {
+        "rgb_stamp_ns": 143000000000,
+        "depth_stamp_ns": 143000000000,
+        "processed_stamp_ns": 143092000000,
+        "sequence": 715,
+        "rgb_sha256": "401b6dd84992b59a8bea56ced0371313ac48b4331e2d907d22844bda5f3e59f4",
+        "depth_sha256": "537345aa2c532e1c494fee83fcddd3790225ff30ab10ebefdff5255ade453568",
+        "base_pose": [
+          1.5833676137729564,
+          -1.1340094189180283,
+          -2.7809255850842565
+        ],
+        "camera_pose": [
+          1.504772037321578,
+          -1.1636528897383542,
+          0.030000000000000027,
+          -0.40221310826888257,
+          -0.5815708173014565,
+          0.5815708173014565,
+          0.40221310826888274
+        ],
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0
+      },
+      "visual_coverage_claimed": false,
+      "goal_token": 3,
+      "sampling_after_stamp_ns": 142527000000,
+      "conditions": {
+        "stamp_ns": 143100000000,
+        "phase": "inspecting",
+        "blocking_condition": null,
+        "current_pose": [
+          1.5833676137729564,
+          -1.1340094189180283,
+          -2.7809255850842565
+        ],
+        "distance_m": 0.028976632302699576,
+        "yaw_error_rad": 0.14199812263159473,
+        "position_tolerance_m": 0.05,
+        "yaw_tolerance_rad": 0.26,
+        "pose_within_tolerance": true,
+        "pose_stable_wall_s": 1.8000899979999758,
+        "odom_stamp_ns": 143100000000,
+        "odom_wall_age_s": 0.07762521099999731,
+        "odom_ros_age_s": 0.0,
+        "odom_fresh": true,
+        "odom_sample_stationary": true,
+        "odom_stationary_count": 78,
+        "stop_confirmed": true
+      }
+    }
+  },
+  {
+    "stamp": 157.082,
+    "event": "inspection_settling",
+    "token": 4,
+    "timeout_s": 12.0,
+    "evidence": {
+      "request_id": "goal-4",
+      "status": "waiting",
+      "reason": null,
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 157082000000,
+      "deadline_wall": 535.420983203,
+      "expected_pose": [
+        1.2243923704898567,
+        -1.6381383116061539,
+        1.7894652726688385
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 0,
+      "first_rgb_stamp_ns": null,
+      "last_rgb_stamp_ns": null,
+      "first_depth_stamp_ns": null,
+      "last_depth_stamp_ns": null,
+      "producer_identity": null,
+      "reset_count": 0,
+      "rejection_counts": {},
+      "last_evidence": null,
+      "visual_coverage_claimed": false,
+      "goal_token": 4,
+      "sampling_after_stamp_ns": null,
+      "conditions": null
+    }
+  },
+  {
+    "stamp": 157.8,
+    "event": "inspection_started",
+    "token": 4
+  },
+  {
+    "stamp": 158.6,
+    "event": "inspection_complete",
+    "evidence": {
+      "request_id": "goal-4",
+      "status": "satisfied",
+      "reason": "processed_frame_window",
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 157800000000,
+      "deadline_wall": 535.420983203,
+      "expected_pose": [
+        1.2243923704898567,
+        -1.6381383116061539,
+        1.7894652726688385
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 157900000000,
+      "last_rgb_stamp_ns": 158400000000,
+      "first_depth_stamp_ns": 157900000000,
+      "last_depth_stamp_ns": 158400000000,
+      "producer_identity": [
+        "57f42add-434b-4143-847b-98374ea07230",
+        "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+        "camera_optical_frame"
+      ],
+      "reset_count": 1,
+      "rejection_counts": {
+        "sample_before_barrier": 1
+      },
+      "last_evidence": {
+        "rgb_stamp_ns": 158400000000,
+        "depth_stamp_ns": 158400000000,
+        "processed_stamp_ns": 158500000000,
+        "sequence": 822,
+        "rgb_sha256": "b7f86bba6447f7c8392d8035859c846a39f2b2aca5044cf7340a26f0014abafa",
+        "depth_sha256": "09508d22d13fad59af2b890e14280532d00277e350f5ee6d89c19e954e11f65b",
+        "base_pose": [
+          1.2391088817069844,
+          -1.6241802752212733,
+          1.8986579908202734
+        ],
+        "camera_pose": [
+          1.2120592577585154,
+          -1.5446546954104574,
+          0.03,
+          -0.6976268868431571,
+          -0.11539812283362642,
+          0.11539812283362647,
+          0.6976268868431572
+        ],
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0
+      },
+      "visual_coverage_claimed": false,
+      "goal_token": 4,
+      "sampling_after_stamp_ns": 157800000000,
+      "conditions": {
+        "stamp_ns": 158600000000,
+        "phase": "inspecting",
+        "blocking_condition": null,
+        "current_pose": [
+          1.2391088817069844,
+          -1.6241802752212733,
+          1.8986579908202734
+        ],
+        "distance_m": 0.020283058993295248,
+        "yaw_error_rad": 0.10919271815143494,
+        "position_tolerance_m": 0.05,
+        "yaw_tolerance_rad": 0.26,
+        "pose_within_tolerance": true,
+        "pose_stable_wall_s": 2.399198990000059,
+        "odom_stamp_ns": 158600000000,
+        "odom_wall_age_s": 0.001724394999996548,
+        "odom_ros_age_s": 0.0,
+        "odom_fresh": true,
+        "odom_sample_stationary": true,
+        "odom_stationary_count": 102,
+        "stop_confirmed": true
+      }
+    }
+  },
+  {
+    "stamp": 176.3,
+    "event": "inspection_settling",
+    "token": 5,
+    "timeout_s": 12.0,
+    "evidence": {
+      "request_id": "goal-5",
+      "status": "waiting",
+      "reason": null,
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 176300000000,
+      "deadline_wall": 579.588754347,
+      "expected_pose": [
+        2.524392389861366,
+        -1.688138312351212,
+        0.8519663271732721
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 0,
+      "first_rgb_stamp_ns": null,
+      "last_rgb_stamp_ns": null,
+      "first_depth_stamp_ns": null,
+      "last_depth_stamp_ns": null,
+      "producer_identity": null,
+      "reset_count": 0,
+      "rejection_counts": {},
+      "last_evidence": null,
+      "visual_coverage_claimed": false,
+      "goal_token": 5,
+      "sampling_after_stamp_ns": null,
+      "conditions": null
+    }
+  },
+  {
+    "stamp": 177.514,
+    "event": "inspection_started",
+    "token": 5
+  },
+  {
+    "stamp": 177.9,
+    "event": "inspection_complete",
+    "evidence": {
+      "request_id": "goal-5",
+      "status": "satisfied",
+      "reason": "processed_frame_window",
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "ready": true,
+      "after_stamp_ns": 177514000000,
+      "deadline_wall": 579.588754347,
+      "expected_pose": [
+        2.524392389861366,
+        -1.688138312351212,
+        0.8519663271732721
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 177600000000,
+      "last_rgb_stamp_ns": 177800000000,
+      "first_depth_stamp_ns": 177600000000,
+      "last_depth_stamp_ns": 177800000000,
+      "producer_identity": [
+        "57f42add-434b-4143-847b-98374ea07230",
+        "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+        "camera_optical_frame"
+      ],
+      "reset_count": 1,
+      "rejection_counts": {
+        "sample_before_barrier": 1
+      },
+      "last_evidence": {
+        "rgb_stamp_ns": 177800000000,
+        "depth_stamp_ns": 177800000000,
+        "processed_stamp_ns": 177875000000,
+        "sequence": 961,
+        "rgb_sha256": "7dad925e76880abc33d422ffa645615228b21d4e382c35e6327673943c93e273",
+        "depth_sha256": "eba558ca8c32ef5a4f8625a3af93cb2ab8879db5d9fbc11c6b9e082d56255541",
+        "base_pose": [
+          2.4972276010506027,
+          -1.68869666481088,
+          0.7043476638236332
+        ],
+        "camera_pose": [
+          2.5612384676004623,
+          -1.6343035681575724,
+          0.029999999999999916,
+          -0.6417820628765524,
+          0.29684302883833563,
+          -0.2968430288383358,
+          0.6417820628765524
+        ],
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0
+      },
+      "visual_coverage_claimed": false,
+      "goal_token": 5,
+      "sampling_after_stamp_ns": 177514000000,
+      "conditions": {
+        "stamp_ns": 177900000000,
+        "phase": "inspecting",
+        "blocking_condition": null,
+        "current_pose": [
+          2.4972276010506027,
+          -1.68869666481088,
+          0.7043476638236332
+        ],
+        "distance_m": 0.027170526468999284,
+        "yaw_error_rad": 0.1476186633496388,
+        "position_tolerance_m": 0.05,
+        "yaw_tolerance_rad": 0.26,
+        "pose_within_tolerance": true,
+        "pose_stable_wall_s": 1.5219239369999968,
+        "odom_stamp_ns": 177900000000,
+        "odom_wall_age_s": 0.011608894999994845,
+        "odom_ros_age_s": 0.0,
+        "odom_fresh": true,
+        "odom_sample_stationary": true,
+        "odom_stationary_count": 63,
+        "stop_confirmed": true
+      }
+    }
+  }
+]

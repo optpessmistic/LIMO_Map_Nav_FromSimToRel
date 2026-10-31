@@ -1,0 +1,35 @@
+{
+  "expected": {
+    "controller_server": {
+      "general_goal_checker.xy_goal_tolerance": 0.03,
+      "general_goal_checker.yaw_goal_tolerance": 0.26,
+      "general_goal_checker.stateful": false,
+      "FollowPath.plugin": "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController",
+      "FollowPath.stateful": false,
+      "FollowPath.desired_linear_vel": 0.15,
+      "FollowPath.rotate_to_heading_angular_vel": 0.4,
+      "FollowPath.max_angular_accel": 0.6
+    },
+    "slam_toolbox": {
+      "loop_search_space_dimension": 1.0,
+      "distance_variance_penalty": 0.05
+    }
+  },
+  "actual": {
+    "controller_server": {
+      "general_goal_checker.xy_goal_tolerance": 0.03,
+      "general_goal_checker.yaw_goal_tolerance": 0.26,
+      "general_goal_checker.stateful": false,
+      "FollowPath.plugin": "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController",
+      "FollowPath.stateful": false,
+      "FollowPath.desired_linear_vel": 0.15,
+      "FollowPath.rotate_to_heading_angular_vel": 0.4,
+      "FollowPath.max_angular_accel": 0.6
+    },
+    "slam_toolbox": {
+      "loop_search_space_dimension": 1.0,
+      "distance_variance_penalty": 0.05
+    }
+  },
+  "passed": true
+}
