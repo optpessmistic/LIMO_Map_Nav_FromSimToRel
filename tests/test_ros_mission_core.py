@@ -183,7 +183,8 @@ class PlanningTests(unittest.TestCase):
         pose = (*g.to_world((1, 2)), 0.)
         # A standoff below one grid step leaves only the anchor itself as a
         # candidate. It is far from the robot but has no defined look direction.
-        result = Planner(.04, .04).select(g, pose, Coverage(), FailureBook(), 0, False)
+        result = Planner(.04, .04, frontier_fallback_standoff_m=.04).select(
+            g, pose, Coverage(), FailureBook(), 0, False)
         self.assertGreater(result.frontier_count, 0)
         self.assertEqual(result.state, 'unreachable_frontiers_or_coverage')
         self.assertIsNone(result.goal)
@@ -248,6 +249,126 @@ class PlanningTests(unittest.TestCase):
         self.assertEqual(len(book.entries), 1)
         result = Planner(.04, .4).select(g, (*g.to_world((2, 2)), 0), cover_all(g), book, 100, True)
         self.assertNotEqual(result.state, 'complete')
+
+
+class FrontierFallbackTests(unittest.TestCase):
+    def room(self, other_frontier=False):
+        # A short narrow branch is observable from the roomy chamber, but its
+        # closest arrival-safe endpoint is farther than the primary radius.
+        rows = [['.' if 1 <= x <= 30 and 1 <= y <= 29 else '#'
+                 for x in range(41)] for y in range(31)]
+        for x in range(31, 34):
+            rows[15][x] = '.'
+        rows[15][34] = '?'
+        if other_frontier:
+            rows[29][15] = '?'
+        return grid([''.join(row) for row in rows])
+
+    def select(self, g, fallback=.8, *, book=None, now=0., radius=.25, start=(22, 15)):
+        return Planner(radius=radius, frontier_fallback_standoff_m=fallback).select(
+            g, (*g.to_world(start), 0.), Coverage(), book or FailureBook(), now, False)
+
+    def test_fallback_is_finite_bounded_and_can_be_disabled_at_primary_radius(self):
+        for primary, fallback in ((.55, 0), (.55, .54), (.55, 1.00001), (.55, math.inf),
+                                  (.55, math.nan), (.55, True), (.55, '0.8'),
+                                  (0., .8), (math.nan, .8), (True, .8)):
+            with self.subTest(primary=primary, fallback=fallback), self.assertRaises(ValueError):
+                Planner(standoff=primary, frontier_fallback_standoff_m=fallback)
+        g = self.room()
+        for fallback in (.55, .59):
+            selected = self.select(g, fallback)
+            self.assertEqual(selected.state, 'unreachable_frontiers_or_coverage')
+            self.assertEqual(selected.frontier_count, 1)
+        selected = self.select(g)
+        self.assertEqual(selected.state, 'goal')
+        self.assertEqual(g.to_cell(*selected.goal.anchor), (33, 15))
+        distance = math.dist((selected.goal.x, selected.goal.y), selected.goal.anchor)
+        self.assertGreater(distance, .55)
+        self.assertLessEqual(distance, .8)
+        end = g.to_cell(selected.goal.x, selected.goal.y)
+        self.assertIn(end, g.component((22, 15), g.safe_cells(.25)))
+        self.assertIn(end, g.safe_cells(.25+.05+math.hypot(g.resolution, g.resolution)/2))
+        self.assertTrue(g.line_free(end, (33, 15)))
+
+    def test_all_primary_anchors_precede_nearer_anchor_fallback(self):
+        g = self.room(other_frontier=True)
+        primary = self.select(g, .55)
+        enabled = self.select(g, .8)
+        self.assertEqual(primary.state, 'goal')
+        self.assertEqual(enabled, primary)
+        self.assertNotEqual(g.to_cell(*enabled.goal.anchor), (33, 15))
+        self.assertEqual(self.select(self.room()).goal.anchor, g.to_world((33, 15)))
+
+    def test_fallback_preserves_blacklist_cooldown_and_attempt_limit(self):
+        g, book = self.room(), FailureBook(max_attempts=2, cooldown=8.)
+        first = self.select(g, book=book)
+        book.fail(first.goal, 0., 'navigation_failed')
+        self.assertEqual(self.select(g, book=book, now=1.).state, 'retry_wait')
+        retried = self.select(g, book=book, now=8.)
+        self.assertEqual(retried.state, 'goal')
+        book.fail(retried.goal, 8., 'navigation_failed')
+        self.assertEqual(self.select(g, book=book, now=100.).state, 'blocked_frontiers_or_coverage')
+        self.assertEqual(len(book.entries), 1)
+
+    def test_fallback_cannot_relax_footprint_or_known_safe_connectivity(self):
+        g = self.room()
+        self.assertEqual(self.select(g, radius=.5).state, 'unreachable_frontiers_or_coverage')
+        values = list(g.data)
+        for y in range(1, 30):
+            if y != 15:
+                values[y*g.width+18] = 100
+        narrow = Grid(g.width, g.height, g.resolution, 0., 0., 0., tuple(values))
+        self.assertIn((33, 15), narrow.component((10, 15)))
+        selected = self.select(narrow, start=(10, 15))
+        self.assertEqual(selected.state, 'unreachable_frontiers_or_coverage')
+        self.assertGreater(selected.frontier_count, 0)
+
+    def test_coverage_does_not_use_frontier_fallback(self):
+        g = self.room()
+        values = list(g.data)
+        values[15*g.width+34] = 100
+        g = Grid(g.width, g.height, g.resolution, 0., 0., 0., tuple(values))
+        coverage = cover_all(g)
+        coverage.points.remove(coverage.key(g.to_world((33, 15))))
+        selected = Planner().select(g, (*g.to_world((22, 15)), 0.), coverage, FailureBook(), 0, True)
+        self.assertEqual(selected.state, 'unreachable_frontiers_or_coverage')
+        self.assertEqual((selected.frontier_count, selected.uncovered_count), (0, 1))
+
+    def test_frozen_run22_final_grid_recovers_view_but_departure_remains_incomplete(self):
+        archive = Path(__file__).resolve().parents[1]/'experiments/run22'
+        departure = json.loads((archive/'observer-snapshots/0033-phase-canceling.json').read_text())
+        final = json.loads((archive/'final-save.json').read_text())['snapshot']
+        mission = json.loads(next((archive/'mission').glob('mission_*.json')).read_text())
+        for name in ('departure', 'final'):
+            with self.subTest(grid=name):
+                raw = departure['map'] if name == 'departure' else final['map']
+                origin = raw['origin'] if name == 'departure' else [*raw['origin']['xyz'][:2], 0.]
+                observed = Grid(raw['width'], raw['height'], raw['resolution'], *origin,
+                                tuple(departure['map_data'] if name == 'departure' else raw['data']))
+                planning, filled = observed.with_free_prior(mission['home'][:2], .30-.05)
+                self.assertEqual(filled, 0)
+                tf = departure['pose'] if name == 'departure' else final['transforms']['map->base_link']
+                q = tf.get('quaternion_xyzw', (0., 0., 0., 1.))
+                yaw = tf.get('yaw', math.atan2(2*(q[3]*q[2]+q[0]*q[1]), 1-2*(q[1]**2+q[2]**2)))
+                pose = (*tf['xyz'][:2], yaw)
+                primary = Planner(frontier_fallback_standoff_m=.55).select(
+                    planning, pose, Coverage(), FailureBook(), 0, False, observed_grid=observed)
+                selected = Planner().select(planning, pose, Coverage(), FailureBook(), 0, False,
+                                            observed_grid=observed)
+                self.assertEqual(primary.state, 'unreachable_frontiers_or_coverage')
+                self.assertEqual(selected.frontier_count, 3)
+                if name == 'departure':
+                    self.assertEqual(selected, primary)
+                    continue
+                self.assertEqual(selected.state, 'goal')
+                self.assertEqual(observed.to_cell(*selected.goal.anchor), (80, 31))
+                distance = math.dist((selected.goal.x, selected.goal.y), selected.goal.anchor)
+                self.assertGreaterEqual(distance, .5830951981733254-1e-9)
+                self.assertLessEqual(distance, .8)
+                end = planning.to_cell(selected.goal.x, selected.goal.y)
+                self.assertIn(end, planning.component(planning.to_cell(*pose[:2]), planning.safe_cells(.25)))
+                self.assertIn(end, planning.safe_cells(.25+.05+math.hypot(planning.resolution, planning.resolution)/2))
+                self.assertTrue(planning.line_free(end, (80, 31)))
 
 
 class ArrivalMarginTests(unittest.TestCase):
@@ -884,6 +1005,8 @@ class RosStartupTests(unittest.TestCase):
                 assert node.planner.frontier_min_translation_m == node.cfg['frontier_min_translation_m']
                 assert node.cfg['goal_arrival_margin_m'] == .05
                 assert node.planner.goal_arrival_margin_m == .05
+                assert node.cfg['frontier_fallback_standoff_m'] == .8
+                assert node.planner.frontier_fallback_standoff_m == .8
                 rclpy.spin_once(node, timeout_sec=0.6)
                 assert node.phase == 'waiting'
                 assert node.goal_handle is None and not node.send_pending
@@ -909,12 +1032,15 @@ class RosStartupTests(unittest.TestCase):
             with tempfile.TemporaryDirectory(prefix='limo-adapter-regression-') as directory:
                 with mission(('initial_clearance_radius_m:=0.3',
                               'frontier_min_translation_m:=0.32',
+                              'frontier_fallback_standoff_m:=0.9',
                               'goal_arrival_margin_m:=0.08',
                               'initial_clearance_source:=independently_verified_test_fixture',
                               'output_dir:='+directory)) as node:
                     assert node.cfg['initial_clearance_radius_m'] == .3
                     assert node.cfg['frontier_min_translation_m'] == .32
                     assert node.planner.frontier_min_translation_m == .32
+                    assert node.get_parameter('frontier_fallback_standoff_m').value == .9
+                    assert node.planner.frontier_fallback_standoff_m == .9
                     assert node.cfg['goal_arrival_margin_m'] == .08
                     assert node.planner.goal_arrival_margin_m == .08
                     assert node.cfg['initial_clearance_margin_m'] == .05

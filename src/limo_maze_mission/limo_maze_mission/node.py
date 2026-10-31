@@ -59,6 +59,7 @@ class MissionNode(Node):
             'initial_clearance_radius_m': 0.0, 'initial_clearance_margin_m': .05,
             'initial_clearance_source': '',
             'frontier_standoff_m': .55, 'frontier_min_translation_m': .20,
+            'frontier_fallback_standoff_m': .8,
             'goal_arrival_margin_m': .05,
             'goal_timeout_s': 90.0,
             'mission_timeout_s': 900.0, 'return_timeout_s': 180.0,
@@ -148,7 +149,8 @@ class MissionNode(Node):
         self.status_pub = self.create_publisher(String, '/mission/status', latched)
         self.marker_pub = self.create_publisher(MarkerArray, '/mission/targets', latched)
         self.planner = Planner(self.cfg['robot_radius_m'], self.cfg['frontier_standoff_m'],
-                               self.cfg['frontier_min_translation_m'], self.cfg['goal_arrival_margin_m'])
+                               self.cfg['frontier_min_translation_m'], self.cfg['goal_arrival_margin_m'],
+                               self.cfg['frontier_fallback_standoff_m'])
         self.failures = FailureBook(max_attempts=self.cfg['max_goal_attempts'])
         self.coverage = Coverage()
         self.targets = TargetStore(self.cfg['target_min_hits'], self.cfg['target_merge_radius_m'],
@@ -1004,6 +1006,13 @@ class MissionNode(Node):
             return False
         self.home_frontier_resumes += 1
         self.home_frontier_resume_active = True
+        if (self.observation_queue is None and self.observation_started_wall is None and
+                self.observation_deadline_wall is None and not self.observation_attempt_records):
+            # An early mapping return closed selection before any stage existed.
+            # Only this verified/budgeted resumption can permit its first start;
+            # an existing completed, expired or invalid queue stays closed.
+            self.event('unstarted_observation_stage_reenabled', previous_reason=self.observation_close_reason)
+            self.observation_closed, self.observation_close_reason = False, None
         self.phase, self.home_stable_since, self.last_home_pose = 'exploring', None, None
         self.map_complete = self.visual_complete = False
         return True
@@ -1099,6 +1108,9 @@ class MissionNode(Node):
             self.observation_started_wall = now
             self.observation_deadline_wall = min(now+self.cfg['observation_stage_timeout_s'],
                                                  self.started+self.cfg['mission_timeout_s'])
+            if self.home_frontier_resume_active:
+                self.observation_deadline_wall = min(self.observation_deadline_wall,
+                    self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s'])
             try:
                 # No initial-clearance prior and no simulator/target truth.
                 self.observation_queue = ObservationQueue(self.grid, pose, self.map_epoch, self.observation_policy)

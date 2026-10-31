@@ -86,6 +86,57 @@ class ContinuationTests(unittest.TestCase):
         self.assertEqual(m.goal.kind, 'frontier')
         self.assertTrue(m.send_pending)
 
+    def test_early_mapping_return_then_home_resume_allows_first_observation_stage(self):
+        m = self.f.mission(home_stable_s=.2)
+        complete = m.grid
+        values = list(m.grid.data)
+        for x in range(20, 29):
+            for y in range(1, 29):
+                values[y*30+x] = 0 if y == 15 else 100
+        values[15*30+28] = -1
+        m.grid = t.Grid(30, 30, .1, 0., 0., 0., tuple(values))
+        self.f.tick(m)
+        self.assertEqual(m.reason, 'unreachable_frontiers_or_coverage_incomplete')
+        self.assertTrue(m.observation_closed)
+        self.assertIsNone(m.observation_queue)
+        self.f.tick(m); self.f.tick(m); self.f.terminal(m)
+        self.assertEqual(m.phase, 'home_verification')
+        deadline, started, return_started = m.return_deadline_wall, m.started, m.return_started
+        self.frontier_map(m)
+        self.verify_home(m)
+        self.assertEqual(m.phase, 'exploring')
+        self.assertFalse(m.observation_closed)
+        self.assertIsNone(m.observation_queue)
+        self.f.tick(m)
+        self.assertEqual(m.goal.kind, 'frontier')
+        self.f.terminal(m); self.f.settle(m)
+        # New observed map resolves the anchor before its successful frame
+        # window is consumed; no unknown region is erased by production code.
+        m.grid = complete
+        self.f.processed_window(m)
+        self.assertEqual(m.phase, 'observation_select')
+        self.assertIsNotNone(m.observation_queue)
+        self.assertEqual(m.observation_queue.dispatches, 0)
+        self.assertEqual(m.started, started)
+        self.assertEqual(m.return_started, return_started)
+        self.assertEqual(m.return_deadline_wall, deadline)
+        self.assertEqual(m.return_attempts, 1)
+        self.assertEqual(m.home_frontier_resumes, 1)
+        self.assertLessEqual(m.observation_deadline_wall, deadline-m.cfg['home_frontier_return_reserve_s'])
+        self.assertLessEqual(m.observation_deadline_wall, started+m.cfg['mission_timeout_s'])
+        self.assertFalse(m.visual_complete)
+        self.f.tick(m)
+        self.assertEqual(m.goal.kind, 'observation_queue')
+        self.assertEqual(m.observation_queue.dispatches, 1)
+
+    def test_fallback_parameter_reaches_planner_and_invalid_bounds_fail_closed(self):
+        m = self.f.mission(frontier_fallback_standoff_m=.9)
+        self.assertEqual(m.cfg['frontier_fallback_standoff_m'], .9)
+        self.assertEqual(m.planner.frontier_fallback_standoff_m, .9)
+        for value in (.54, 1.01, float('nan'), float('inf'), True):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self.f.mission(frontier_fallback_standoff_m=value)
+
     def test_second_mapping_completion_returns_without_new_views_or_time_reset(self):
         m = self.close_views_and_arrive()
         original_map = m.grid

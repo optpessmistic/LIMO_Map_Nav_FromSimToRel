@@ -265,10 +265,18 @@ class Selection:
 
 class Planner:
     def __init__(self, radius=.25, standoff=.55, frontier_min_translation_m=.20,
-                 goal_arrival_margin_m=.05):
+                 goal_arrival_margin_m=.05, frontier_fallback_standoff_m=.8):
         if not isfinite(frontier_min_translation_m) or frontier_min_translation_m <= 0:
             raise ValueError('frontier_min_translation_m must be finite and positive')
+        if (any(isinstance(v, bool) or not isinstance(v, (int, float)) or not isfinite(v)
+                for v in (standoff, frontier_fallback_standoff_m)) or
+                not 0 < standoff <= frontier_fallback_standoff_m <= 1.0):
+            raise ValueError('frontier_fallback_standoff_m must satisfy 0 < standoff <= fallback <= 1.0 m')
         self.radius, self.standoff = radius, standoff
+        # One bounded wider search, not an expanding/unbounded retry. Equal
+        # radii disable it. Only the observation position changes, never the
+        # footprint, arrival allowance, known-free route or supercover ray.
+        self.frontier_fallback_standoff_m = frontier_fallback_standoff_m
         if (isinstance(goal_arrival_margin_m, bool) or not isfinite(goal_arrival_margin_m)
                 or goal_arrival_margin_m <= 0):
             raise ValueError('goal_arrival_margin_m must be finite and positive')
@@ -305,7 +313,6 @@ class Planner:
             return Selection('perception_unverified', **stats)
         kind = 'frontier' if frontiers else 'coverage'
         anchors = frontiers if frontiers else uncovered
-        reach = ceil(self.standoff/grid.resolution)
         # Greedy nearby anchor, then shortest known-grid travel within its local
         # candidate set. Do not enumerate all free cells × all standoff offsets.
         # We still inspect every anchor if earlier ones have no feasible goal,
@@ -317,32 +324,42 @@ class Planner:
         # This is not a bound on SLAM changes, localization error or the path.
         endpoint_radius = self.radius + self.goal_arrival_margin_m + hypot(grid.resolution, grid.resolution)/2
         endpoints = grid.safe_cells(endpoint_radius)
-        for anchor_cell in ordered:
-            anchor = grid.to_world(anchor_cell)
-            if not failures.allowed(anchor, kind, now):
-                continue
-            local = []
-            for dy in range(-reach, reach+1):
-                for dx in range(-reach, reach+1):
-                    p = anchor_cell[0]+dx, anchor_cell[1]+dy
-                    if p not in reachable or p not in endpoints or not grid.line_free(p, anchor_cell):
-                        continue
+        search_radii = [self.standoff]
+        if kind == 'frontier' and self.frontier_fallback_standoff_m > self.standoff:
+            search_radii.append(self.frontier_fallback_standoff_m)
+        # Exhaust every anchor at the primary radius before considering the
+        # wider ring. Coverage goals retain their original search behavior.
+        for search_radius in search_radii:
+            reach = ceil(search_radius/grid.resolution)
+            for anchor_cell in ordered:
+                anchor = grid.to_world(anchor_cell)
+                if not failures.allowed(anchor, kind, now):
+                    continue
+                local = []
+                for dy in range(-reach, reach+1):
+                    for dx in range(-reach, reach+1):
+                        p = anchor_cell[0]+dx, anchor_cell[1]+dy
+                        if p not in reachable or p not in endpoints:
+                            continue
+                        xy = grid.to_world(p)
+                        distance = hypot(xy[0]-anchor[0], xy[1]-anchor[1])
+                        if (distance > search_radius or
+                                (search_radius > self.standoff and distance <= self.standoff) or
+                                (kind == 'coverage' and distance < .20)):
+                            continue
+                        if kind == 'frontier' and (p == anchor_cell or
+                                hypot(xy[0]-pose[0], xy[1]-pose[1]) <= self.frontier_min_translation_m):
+                            # Use the actual pose, not its cell center; coverage
+                            # may still turn in place. No zero-vector heading.
+                            continue
+                        if not grid.line_free(p, anchor_cell):
+                            continue
+                        local.append((reachable[p]*grid.resolution + .2*distance, p))
+                if local:
+                    cost, p = min(local)
                     xy = grid.to_world(p)
-                    distance = hypot(xy[0]-anchor[0], xy[1]-anchor[1])
-                    if distance > self.standoff or (kind == 'coverage' and distance < .20):
-                        continue
-                    if kind == 'frontier' and (p == anchor_cell or
-                            hypot(xy[0]-pose[0], xy[1]-pose[1]) <= self.frontier_min_translation_m):
-                        # No zero-vector heading or goal already inside the
-                        # configured translation margin. Use the actual pose,
-                        # not its cell center; coverage may still turn in place.
-                        continue
-                    local.append((reachable[p]*grid.resolution + .2*distance, p))
-            if local:
-                cost, p = min(local)
-                xy = grid.to_world(p)
-                yaw = atan2(anchor[1]-xy[1], anchor[0]-xy[0])
-                return Selection('goal', Goal(*xy, yaw, kind, anchor), **stats)
+                    yaw = atan2(anchor[1]-xy[1], anchor[0]-xy[0])
+                    return Selection('goal', Goal(*xy, yaw, kind, anchor), **stats)
         if failures.entries:
             return Selection('retry_wait' if failures.has_retry() else 'blocked_frontiers_or_coverage', **stats)
         return Selection('unreachable_frontiers_or_coverage', **stats)
