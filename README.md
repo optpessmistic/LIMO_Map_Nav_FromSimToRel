@@ -32,6 +32,7 @@
 | 距离、角度、遮挡及相邻目标测试 | [红色替身标定场景](docs/red-surrogate-calibration.md) |
 | 有效空检测、拒收与采样帧证据 | [图像处理证据](docs/frame-processing-evidence.md) |
 | 到达后停稳并等待新处理帧 | [可选自主观察等待](docs/settled-inspection.md) |
+| 固定实际接受的 RGB-D 原帧并离线核对 | [源端原图留存](docs/frame-retention.md) |
 | 有限站位/朝向与到家后前沿复查 | [有界主动观察](docs/bounded-observation.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
 | 首次真实平移、扩图与目标标注 | [run10 自主实验](docs/first-autonomous-run.md) |

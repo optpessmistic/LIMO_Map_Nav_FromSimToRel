@@ -17,6 +17,7 @@ from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src/limo_evidence_protocol"))
 sys.path.insert(0, str(ROOT / "src/limo_maze_mission"))
 sys.path.insert(0, str(ROOT / "src/limo_maze_perception"))
 sys.path.insert(0, str(ROOT / "tests"))

@@ -825,8 +825,10 @@ class RosStartupTests(unittest.TestCase):
         # A child process isolates the ROS context and domain from other tests
         # and any experiment on domain 73. No navigation server is required.
         source = Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission'
+        protocol_source = source.parent / 'limo_evidence_protocol'
         environment = dict(os.environ, ROS_DOMAIN_ID='74', ROS_AUTOMATIC_DISCOVERY_RANGE='LOCALHOST')
-        environment['PYTHONPATH'] = str(source)+os.pathsep+environment.get('PYTHONPATH', '')
+        environment['PYTHONPATH'] = os.pathsep.join(
+            (str(source), str(protocol_source), environment.get('PYTHONPATH', '')))
         script = textwrap.dedent('''
             import ast
             from contextlib import contextmanager

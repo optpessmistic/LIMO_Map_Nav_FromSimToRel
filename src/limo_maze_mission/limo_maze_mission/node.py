@@ -9,6 +9,7 @@ from math import atan2, cos, hypot, isfinite, sin
 from pathlib import Path
 import signal
 import time
+import uuid
 
 import rclpy
 from rclpy.action import ActionClient
@@ -30,6 +31,7 @@ from visualization_msgs.msg import Marker, MarkerArray
 from .core import Coverage, FailureBook, Goal, Grid, Planner, TargetStore, angle_delta
 from .inspection import EvidenceError, InspectionLedger, InspectionPolicy, validate_record
 from .observation import ObservationQueue, Policy as ObservationPolicy
+from .retention import Consumer as RetentionConsumer, Policy as RetentionPolicy
 
 
 def yaw_of(q):
@@ -71,6 +73,11 @@ class MissionNode(Node):
             'target_definition_verified': False, 'camera_heading_offset_rad': 0.0,
             'coverage_max_range_m': 3.0,
             'require_processed_inspection': False,
+            'require_retained_inspection': False,
+            'frame_retention_request_topic': '/mission/frame_retention/request',
+            'frame_retention_result_topic': '/mission/frame_retention/result',
+            'retention_max_samples_per_window': 32, 'retention_max_total_samples': 32,
+            'retention_max_windows': 64, 'retention_max_metadata_bytes': 2097152,
             'frame_processing_topic': '/mission/frame_processing',
             'frame_processing_source': 'red_rgbd_sim_baseline',
             'inspection_timeout_s': 12.0, 'inspection_settle_s': .5,
@@ -100,6 +107,10 @@ class MissionNode(Node):
             raise ValueError('An initial clearance prior requires an independent source and radius greater than its margin')
         if self.cfg['require_processed_inspection'] and self.cfg['inspection_timeout_s'] > 300:
             raise ValueError('inspection_timeout_s must be at most 300 seconds')
+        if type(self.cfg['require_retained_inspection']) is not bool:
+            raise ValueError('require_retained_inspection must be bool')
+        if self.cfg['require_retained_inspection'] and not self.cfg['require_processed_inspection']:
+            raise ValueError('retained inspection requires processed inspection')
         if self.cfg['post_mapping_observation_mode'] not in ('off', 'bounded_processed_frames'):
             raise ValueError('Unknown post_mapping_observation_mode')
         if self.bounded_observation_enabled() and not self.cfg['require_processed_inspection']:
@@ -178,6 +189,7 @@ class MissionNode(Node):
         self.mission_timed_out = False
         self.events = []
         self.inspection = None
+        self.frame_retention = None
         self.inspection_clock_jump = None
         self.inspection_clock_invalid = False
         self.inspection_deadline = None
@@ -205,6 +217,19 @@ class MissionNode(Node):
             self.inspection_clock_jump = self.get_clock().create_jump_callback(
                 JumpThreshold(min_forward=None, min_backward=Duration(nanoseconds=-1), on_clock_change=True),
                 pre_callback=self.on_inspection_clock_jump)
+        if self.cfg['require_retained_inspection']:
+            retention_qos = QoSProfile(depth=32, reliability=ReliabilityPolicy.RELIABLE)
+            self.retention_pub = self.create_publisher(String, self.cfg['frame_retention_request_topic'], retention_qos)
+            self.frame_retention = RetentionConsumer(
+                str(uuid.uuid4()), self.cfg['inspection_required_frames'],
+                lambda raw: self.retention_pub.publish(String(data=raw)),
+                RetentionPolicy(enabled=True,
+                    max_samples_per_window=self.cfg['retention_max_samples_per_window'],
+                    max_total_samples=self.cfg['retention_max_total_samples'],
+                    max_windows=self.cfg['retention_max_windows'],
+                    max_metadata_bytes=self.cfg['retention_max_metadata_bytes']))
+            self.create_subscription(String, self.cfg['frame_retention_result_topic'],
+                                     self.on_frame_retention_result, retention_qos)
         # ROS time still timestamps measurements; wall deadlines must run while /clock is paused.
         timer_options = {'clock': Clock(clock_type=ClockType.STEADY_TIME)} if self.inspection else {}
         self._mission_timer = self.create_timer(.1 if self.inspection else .5, self.tick, **timer_options)
@@ -238,6 +263,9 @@ class MissionNode(Node):
 
     def on_epoch(self, msg):
         epoch = msg.data.strip()
+        retention = getattr(self, 'frame_retention', None)
+        if retention is not None and (not epoch or self.map_epoch not in (None, epoch)):
+            retention.invalidate('map_epoch_changed')
         if (self.bounded_observation_enabled() and self.home is not None and
                 epoch != self.map_epoch):
             # Preserve this attempt's original epoch and partial frame evidence
@@ -429,6 +457,9 @@ class MissionNode(Node):
     def restart_inspection_window(self, reason):
         self.reset_inspection_stop()
         if self.phase == 'inspecting':
+            retention = getattr(self, 'frame_retention', None)
+            if retention is not None:
+                retention.retire('inspection_window_reset', time.monotonic())
             self.inspection.reset_window(self.get_clock().now().nanoseconds, reason)
             self.inspection_sampling_after_ns = None
             self.phase = 'settling'
@@ -476,6 +507,9 @@ class MissionNode(Node):
         result.update(goal_token=getattr(self, 'inspection_goal_token', None),
                       sampling_after_stamp_ns=getattr(self, 'inspection_sampling_after_ns', None),
                       conditions=getattr(self, 'inspection_conditions', None))
+        retention = getattr(self, 'frame_retention', None)
+        if retention is not None:
+            result['frame_retention'] = retention.summary()
         return result
 
     def inspection_wait_conditions(self, now, pose):
@@ -530,6 +564,9 @@ class MissionNode(Node):
             if continue_view and self.inspection.ready and self.inspection.status == 'timed_out':
                 # Freeze the failed window before moving phase. A timed-out
                 # Ledger stays ready for a NEW request, never for late samples.
+                retention = getattr(self, 'frame_retention', None)
+                if retention is not None:
+                    retention.retire('processed_frames_timeout_while_stationary', now)
                 self.finish_observation('inspection_failed', 'processed_frames_timeout_while_stationary')
                 if self.observation_active is None and not self.canceling:
                     self.inspection_deadline = self.inspection_sampling_after_ns = None
@@ -554,10 +591,21 @@ class MissionNode(Node):
         if self.phase == 'settling':
             self.inspection_sampling_after_ns = self.get_clock().now().nanoseconds
             self.inspection.reset_window(self.inspection_sampling_after_ns, 'stationarity_established')
+            retention = getattr(self, 'frame_retention', None)
+            if retention is not None and not retention.begin_window(
+                    self.inspection, self.inspection_goal_token, time.monotonic()):
+                self.block('frame_retention_window_failed')
+                return False
             self.phase = 'inspecting'
             self.event('inspection_started', token=self.token)
         self.inspection.tick(self.get_clock().now().nanoseconds, now)
         if self.inspection.snapshot()['status'] == 'satisfied':
+            retention = getattr(self, 'frame_retention', None)
+            if retention is not None and not retention.current_satisfied(
+                    self.inspection, self.inspection_goal_token, time.monotonic()):
+                if retention.fault:
+                    self.block('frame_retention_failed')
+                return False
             self.event('inspection_complete', evidence=self.inspection_snapshot())
             self.phase, self.dwell_until = 'observing', now
             self.inspection_deadline = None
@@ -623,8 +671,18 @@ class MissionNode(Node):
             base = self.inspection_sample_transform(self.cfg['base_frame'], stamp_ns)
             qx, qy, qz, qw = base[3:]
             pose = (base[0], base[1], atan2(2*(qw*qz+qx*qy), 1-2*(qy*qy+qz*qz)))
-            decision = self.inspection.observe(record, now_ns=now_ns, wall_now=now, base_pose=pose,
-                                               camera_pose=camera, tf_stamp_ns=stamp_ns)
+            retention = getattr(self, 'frame_retention', None)
+            if retention is None:
+                decision = self.inspection.observe(record, now_ns=now_ns, wall_now=now, base_pose=pose,
+                                                   camera_pose=camera, tf_stamp_ns=stamp_ns)
+            else:
+                decision = retention.observe(self.inspection, record, now_ns=now_ns, wall_now=now,
+                    base_pose=pose, camera_pose=camera, tf_stamp_ns=stamp_ns, goal_token=self.inspection_goal_token)
+                if retention.fault:
+                    self.block('frame_retention_failed')
+                    return
+                if decision['reason'] == 'producer_identity_changed':
+                    self.restart_inspection_window('producer_identity_changed')
             if decision['reason'] == 'sample_pose_outside_tolerance':
                 self.restart_inspection_window('sample_pose_outside_tolerance')
         except TransformException:
@@ -635,6 +693,25 @@ class MissionNode(Node):
             reason = str(exc) if str(exc) in ('evidence_payload_too_large', 'invalid_sample_transform',
                                               'odometry_does_not_cover_sample_time') else 'invalid_json'
             self.inspection.reject(reason)
+
+    def on_frame_retention_result(self, msg):
+        retention = getattr(self, 'frame_retention', None)
+        if retention is None:
+            return
+        try:
+            if len(msg.data.encode('utf-8')) > 16384:
+                raise ValueError('retention_result_too_large')
+            value = json.loads(msg.data)
+        except (ValueError, TypeError, RecursionError):
+            value = None
+        try:
+            retention.on_result(value, time.monotonic())
+        except ValueError:
+            retention.invalidate('invalid_retention_result_time')
+        # A terminal result is never rewritten or used to restart navigation.
+        # Its later validity must be checked against the final producer checkpoint.
+        if retention.fault and self.phase not in ('done', 'blocked'):
+            self.block('frame_retention_failed')
 
     def destroy_node(self):
         try:
@@ -814,6 +891,14 @@ class MissionNode(Node):
             self.event('cancel_error', error=str(exc))
 
     def cancel_to(self, next_phase, reason):
+        retention = getattr(self, 'frame_retention', None)
+        if retention is not None:
+            if next_phase == 'returning' and not retention.fault:
+                # Closing selection cannot re-authorize Ledger/epoch. Preserve
+                # the existing mission-budget return behavior and its deadline.
+                retention.retire('mission_request_canceled_for_return', time.monotonic())
+            else:
+                retention.invalidate('mission_request_invalidated')
         if getattr(self, 'inspection', None) is not None and self.phase in ('settling', 'inspecting'):
             previous_failure = getattr(self, 'last_inspection_failure', None)
             if previous_failure is None or previous_failure['evidence']['request_id'] != self.inspection.request_id:
@@ -845,6 +930,9 @@ class MissionNode(Node):
         self.event('cancel_requested', next_phase=next_phase, reason=reason)
 
     def block(self, reason):
+        retention = getattr(self, 'frame_retention', None)
+        if retention is not None:
+            retention.invalidate('mission_blocked')
         coordinate_fault = (reason == 'target_map_epoch_changed_requires_new_mission' or
                             any(word in reason for word in ('reset', 'reanchor', 'geometry_changed', 'frame_mismatch')))
         if coordinate_fault and self.coordinates_valid:
@@ -1051,6 +1139,16 @@ class MissionNode(Node):
     def tick(self):
         now = time.monotonic()
         ros_now = self.seconds()
+        retention = getattr(self, 'frame_retention', None)
+        if retention is not None:
+            if getattr(self, 'inspection_clock_invalid', False):
+                retention.invalidate('ros_clock_reset')
+            try:
+                retention.tick(now)
+            except ValueError:
+                retention.invalidate('invalid_monotonic_wall')
+            if retention.fault and self.phase not in ('done', 'blocked'):
+                self.block('frame_retention_failed')
         if getattr(self, 'inspection_clock_invalid', False):
             if self.home is None:
                 self.inspection.invalidate('clock_reset_requires_new_epoch')
@@ -1308,6 +1406,8 @@ class MissionNode(Node):
                   'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
                   'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
                   'observation_actions': self.observation_snapshot(),
+                  'frame_retention': (self.frame_retention.snapshot()
+                      if getattr(self, 'frame_retention', None) is not None else None),
                   'initial_clearance_prior': {
                       'enabled': self.cfg['initial_clearance_radius_m'] > 0,
                       'coordinates_valid': self.coordinates_valid and self.home is not None,

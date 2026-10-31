@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "frozen": true,
+  "modified_files": [
+    "tests/test_frame_retention_adapter.py"
+  ],
+  "sha256": "b6a18f4c9c418f1f42dbe29e9b70117c2705aff82795c8e5bff817bffc0bda2e",
+  "production_changed": false,
+  "tests": [
+    {
+      "log": "signal-cleanup-tests-02.log",
+      "run": 4,
+      "passed": 4,
+      "seconds": 6.697,
+      "scope": "production-8s success and explicit short-shutdown failure"
+    },
+    {
+      "log": "signal-cleanup-tests-03.log",
+      "run": 2,
+      "passed": 2,
+      "seconds": 5.037,
+      "scope": "final writer-construction identity hook; SIGINT/SIGTERM and missing-READY cleanup"
+    }
+  ],
+  "retained_failed_log": "signal-cleanup-tests-01.log",
+  "process_audit": "../frame-retention-fixture-process-audit-01.json",
+  "residual_matches": 0,
+  "signals_sent_during_audit": 0,
+  "semantics": "Success tests use existing production shutdown8s; fixture finalization SIGINT/communicate10s, bounded owned Popen fallback, recorded exact PID/start/token/argv with pidfd fallback, all PIPEs closed. Final checkpoint writer identity recorded too."
+}
