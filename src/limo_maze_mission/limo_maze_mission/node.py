@@ -29,6 +29,7 @@ from visualization_msgs.msg import Marker, MarkerArray
 
 from .core import Coverage, FailureBook, Goal, Grid, Planner, TargetStore, angle_delta
 from .inspection import EvidenceError, InspectionLedger, InspectionPolicy, validate_record
+from .observation import ObservationQueue, Policy as ObservationPolicy
 
 
 def yaw_of(q):
@@ -77,6 +78,11 @@ class MissionNode(Node):
             'inspection_required_frames': 3, 'inspection_min_span_s': .2,
             'inspection_odom_topic': '/odom', 'inspection_odom_max_age_s': .3,
             'inspection_linear_stop_m_s': .005, 'inspection_angular_stop_rad_s': .02,
+            'post_mapping_observation_mode': 'off',
+            'observation_station_spacing_m': 1.0, 'observation_max_stations': 3,
+            'observation_headings_per_station': 4, 'observation_max_dispatches': 12,
+            'observation_stage_timeout_s': 180.0, 'observation_max_grid_cells': 250000,
+            'home_frontier_resume_limit': 1, 'home_frontier_return_reserve_s': 15.0,
         }
         for key, value in defaults.items():
             self.declare_parameter(key, value)
@@ -94,6 +100,26 @@ class MissionNode(Node):
             raise ValueError('An initial clearance prior requires an independent source and radius greater than its margin')
         if self.cfg['require_processed_inspection'] and self.cfg['inspection_timeout_s'] > 300:
             raise ValueError('inspection_timeout_s must be at most 300 seconds')
+        if self.cfg['post_mapping_observation_mode'] not in ('off', 'bounded_processed_frames'):
+            raise ValueError('Unknown post_mapping_observation_mode')
+        if self.bounded_observation_enabled() and not self.cfg['require_processed_inspection']:
+            raise ValueError('bounded_processed_frames requires processed inspection; dwell fallback forbidden')
+        if (type(self.cfg['home_frontier_resume_limit']) is not int or
+                not 0 <= self.cfg['home_frontier_resume_limit'] <= 8):
+            raise ValueError('home_frontier_resume_limit must be an integer from 0 to 8')
+        self.observation_policy = ObservationPolicy(
+            self.cfg['robot_radius_m'], self.cfg['goal_arrival_margin_m'],
+            self.cfg['observation_station_spacing_m'], self.cfg['observation_max_stations'],
+            self.cfg['observation_headings_per_station'], self.cfg['observation_max_dispatches'],
+            max_attempts_per_view=1, max_grid_cells=self.cfg['observation_max_grid_cells'])
+        self.observation_queue = None
+        self.observation_closed = False
+        self.observation_close_reason = None
+        self.observation_deadline_wall = None
+        self.observation_started_wall = None
+        self.observation_active = None
+        self.observation_attempt_records = []
+        self.observation_cancel_outcome = None
         self.prior_filled_cells = 0
         self.grid = None
         self.map_received = None
@@ -139,6 +165,10 @@ class MissionNode(Node):
         self.dwell_until = None
         self.return_started = None
         self.return_attempts = 0
+        self.return_deadline_wall = None
+        self.home_frontier_resumes = 0
+        self.home_frontier_resume_active = False
+        self.home_frontier_decisions = []
         self.home_stable_since = None
         self.last_home_pose = None
         self.result_written = False
@@ -208,6 +238,15 @@ class MissionNode(Node):
 
     def on_epoch(self, msg):
         epoch = msg.data.strip()
+        if (self.bounded_observation_enabled() and self.home is not None and
+                epoch != self.map_epoch):
+            # Preserve this attempt's original epoch and partial frame evidence
+            # before set_epoch invalidates/clears the live Ledger. Navigation
+            # ownership is still retained until block/cancel verifies terminal.
+            reason = 'map_reset_requires_new_mission' if epoch else 'map_epoch_missing_requires_reanchor'
+            if self.phase in ('settling', 'inspecting'):
+                self.record_inspection_failure(reason)
+            self.close_observation('blocked:'+reason, invalid=True)
         if getattr(self, 'inspection', None) is not None:
             if self.inspection_clock_invalid and self.home is None:
                 self.inspection.invalidate('clock_reset_requires_new_epoch')
@@ -223,6 +262,10 @@ class MissionNode(Node):
         if self.home is not None and epoch != self.map_epoch:
             self.map_epoch_ready = False
             self.block('map_reset_requires_new_mission')
+            return
+        if getattr(getattr(self, 'targets', None), 'frame_epoch', None) not in (None, epoch):
+            self.map_epoch_ready = False
+            self.block('target_map_epoch_changed_requires_new_mission')
             return
         self.map_epoch, self.map_epoch_ready = epoch, True
 
@@ -265,35 +308,57 @@ class MissionNode(Node):
         return grid
 
     def on_observations(self, msg):
-        if self.grid is None or self.phase in ('blocked', 'done') or self.cancel_next == 'blocked':
+        if (self.grid is None or not self.map_epoch_ready or not self.coordinates_valid or
+                self.phase in ('blocked', 'done') or self.cancel_next == 'blocked'):
             return
         try:
             data = json.loads(msg.data)
             if data.get('schema_version') != 1:
                 raise ValueError('schema_version must be 1')
-            stamp = data['stamp']
-            if isinstance(stamp, dict):
-                stamp = float(stamp['sec']) + float(stamp['nanosec'])/1e9
-            stamp = float(stamp)
+            raw_stamp = data['stamp']
+            if isinstance(raw_stamp, dict):
+                sec, nanosec = raw_stamp['sec'], raw_stamp['nanosec']
+                if type(sec) is not int or type(nanosec) is not int or sec < 0 or not 0 <= nanosec < 1_000_000_000:
+                    raise ValueError('invalid integer acquisition stamp')
+                stamp_ns = sec*1_000_000_000+nanosec
+            else:
+                if (type(raw_stamp) not in (int, float) or not isfinite(raw_stamp) or
+                        not 0 <= raw_stamp <= (2**63-1)/1e9):
+                    raise ValueError('invalid acquisition stamp')
+                stamp_ns = round(raw_stamp*1e9)
+            if not 0 <= stamp_ns <= 2**63-1:
+                raise ValueError('acquisition stamp out of bounds')
+            stamp = stamp_ns/1e9
             if not isfinite(stamp) or not -.1 <= self.seconds()-stamp <= self.cfg['observation_max_age_s']:
                 raise ValueError('observation timestamp stale or in future')
+            if data.get('map_epoch', self.map_epoch) != self.map_epoch:
+                raise ValueError('observation map_epoch mismatch')
             frame, source = str(data['frame_id']), str(data['source'])
             if not frame or not source:
                 raise ValueError('source/frame_id required')
             transform = self.tf_buffer.lookup_transform(self.cfg['map_frame'], frame,
-                                                       Time(nanoseconds=int(stamp*1e9)))
+                                                       Time(nanoseconds=stamp_ns))
             t, q = transform.transform.translation, transform.transform.rotation
             detections = data.get('detections', [])
             if not isinstance(detections, list) or len(detections) > 100:
                 raise ValueError('detections must be a bounded array')
+            transformed = []
             for item in detections:
-                point = tuple(float(v) for v in item['position'])
-                if len(point) != 3:
+                raw_point = item['position']
+                if not isinstance(raw_point, (list, tuple)) or len(raw_point) != 3:
                     raise ValueError('position must contain x,y,z')
+                if any(type(value) not in (int, float) or not isfinite(value) for value in raw_point):
+                    raise ValueError('position must be finite XYZ numbers')
+                point = tuple(float(v) for v in raw_point)
                 rotated = rotate(q, point)
                 xyz = rotated[0]+t.x, rotated[1]+t.y, rotated[2]+t.z
-                self.targets.add(str(item['class_id']), xyz, stamp, float(item['confidence']),
-                                 str(item.get('instance_id', '')))
+                transformed.append({'class_id': item['class_id'], 'position': xyz,
+                                    'confidence': item['confidence'],
+                                    'instance_id': item.get('instance_id', '')})
+            association = self.targets.add_frame(transformed, stamp_ns, source=source,
+                                                  sensor_frame=frame, epoch=self.map_epoch)
+            if not association['accepted']:
+                raise ValueError('target frame association: '+association['reason'])
             coverage = data.get('coverage')
             if coverage and coverage.get('valid') is True:
                 # Camera optical +Z is its viewing axis; transform to the map XY plane.
@@ -374,6 +439,9 @@ class MissionNode(Node):
                 abs(angle_delta(pose[2], self.goal.yaw)) <= self.cfg['inspection_yaw_tolerance_rad'])
 
     def begin_inspection(self, now):
+        if self.goal.kind == 'observation_queue' and not self.observation_binding_valid():
+            self.block('observation_binding_invalid')
+            return
         terminal_wall, terminal_ns = self.inspection_terminal_received
         previous = self.inspection
         # Never turn a new request into authority to recover an invalid epoch.
@@ -454,8 +522,22 @@ class MissionNode(Node):
         # goal's actual pose/odometry guard, even if it never reached inspecting.
         self.inspection_conditions = self.inspection_wait_conditions(now, pose)
         if now >= self.inspection_deadline:
+            continue_view = self.observation_timeout_can_continue(now, pose)
+            if continue_view:
+                self.inspection.tick(self.get_clock().now().nanoseconds, now)
             failure = self.record_inspection_failure('inspection_wall_timeout')
             self.event('inspection_failed', **failure)
+            if continue_view and self.inspection.ready and self.inspection.status == 'timed_out':
+                # Freeze the failed window before moving phase. A timed-out
+                # Ledger stays ready for a NEW request, never for late samples.
+                self.finish_observation('inspection_failed', 'processed_frames_timeout_while_stationary')
+                if self.observation_active is None and not self.canceling:
+                    self.inspection_deadline = self.inspection_sampling_after_ns = None
+                    self.inspection_goal_token = None
+                    self.phase = 'observation_select'
+                    return False  # A separate steady tick owns the next dispatch.
+                self.block('observation_timeout_retirement_binding_invalid')
+                return False
             self.block('inspection_wall_timeout_incomplete')
             return False
         if not self.inspection_pose_matches(pose):
@@ -481,6 +563,32 @@ class MissionNode(Node):
             self.inspection_deadline = None
             return True
         return False
+
+    def observation_timeout_can_continue(self, now, pose):
+        """Only image insufficiency at a currently verified stopped queue view.
+
+        tick has just checked map freshness and obtained a valid current TF pose.
+        Recheck the binding and odometry here; a stale 'inspecting' phase alone
+        is not evidence of stationarity. No success condition is weakened.
+        """
+        if (not self.bounded_observation_enabled() or self.phase != 'inspecting' or
+                self.canceling or self.send_pending or self.goal_handle is not None or
+                not self.observation_binding_valid()):
+            return False
+        active, ledger, conditions = self.observation_active, self.inspection, self.inspection_conditions
+        return bool(ledger and ledger.ready and ledger.status == 'waiting' and
+                    self.inspection_goal_token == active['nav_token'] and
+                    ledger.epoch == active['epoch'] and
+                    ledger.request_id == active['inspection_request_id'] and
+                    ledger.expected_pose == (self.goal.x, self.goal.y, self.goal.yaw) and
+                    self.inspection_sampling_after_ns is not None and
+                    ledger.after_stamp_ns == self.inspection_sampling_after_ns and
+                    active['nav_terminal_status'] == GoalStatus.STATUS_SUCCEEDED and
+                    active['nav_goal_uuid'] is not None and
+                    self.inspection_pose_matches(pose) and self.inspection_stopped(now) and
+                    conditions['pose_stable_wall_s'] >= self.cfg['inspection_settle_s'] and
+                    conditions['odom_fresh'] and conditions['odom_sample_stationary'] and
+                    conditions['blocking_condition'] == 'processed_frames_pending')
 
     def inspection_sample_transform(self, frame, stamp_ns):
         # Exact acquisition-time lookup; missing TF is rejected, never replaced by latest TF.
@@ -570,14 +678,46 @@ class MissionNode(Node):
                 array.markers.append(marker)
         self.marker_pub.publish(array)
 
+    def dispatch_budget_allows(self, kind):
+        # Planning may have crossed a wall deadline since tick's initial check.
+        # Run before consuming a Nav token/home send or creating new ownership.
+        if not self.bounded_observation_enabled():
+            return True
+        now = time.monotonic()
+        if self.return_budget_expired(now):
+            self.block('return_total_timeout')
+        elif kind != 'home' and now-self.started >= self.cfg['mission_timeout_s']:
+            self.mission_timed_out = True
+            self.start_return('mission_timeout_incomplete')
+        elif (kind != 'home' and self.home_frontier_resume_active and
+                now >= self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s']):
+            self.start_return('home_frontier_return_reserve_reached')
+        elif (kind != 'home' and self.observation_queue is not None and not self.observation_closed and
+                now >= self.observation_deadline_wall):
+            self.start_return('bounded_observation_wall_timeout')
+        else:
+            return True
+        return False
+
     def send_goal(self, goal):
         if self.goal_handle is not None or self.send_pending or self.canceling:
             raise RuntimeError('Attempt to overlap owned navigation goals')
         if not self.cfg['autonomous']:
-            return
+            return False
+        if not self.dispatch_budget_allows(goal.kind):
+            return False
         self.token += 1
         token = self.token
         self.goal, self.goal_started, self.goal_result = goal, time.monotonic(), None
+        if goal.kind == 'home':
+            self.return_attempts += 1
+        if goal.kind == 'observation_queue':
+            active = self.observation_active
+            if active is None or active['nav_token'] is not None or active['goal'] != asdict(goal):
+                raise RuntimeError('Observation dispatch must be bound before sending navigation')
+            active['nav_token'] = token
+            active['inspection_request_id'] = 'goal-'+str(token)
+            active['dispatched_wall'] = self.goal_started
         request = NavigateToPose.Goal()
         request.pose = PoseStamped()
         request.pose.header.frame_id = self.cfg['map_frame']
@@ -588,6 +728,7 @@ class MissionNode(Node):
         future = self.nav.send_goal_async(request)
         future.add_done_callback(lambda f: self.on_goal_response(f, token))
         self.event('goal_sent', token=token, goal=asdict(goal))
+        return True
 
     def on_goal_response(self, future, token):
         try:
@@ -610,6 +751,10 @@ class MissionNode(Node):
                 self.cancel_response = self.cancel_terminal = True
             return
         self.goal_handle = handle
+        if self.observation_active is not None and self.observation_active['nav_token'] == token:
+            # ROS sequence elements may be numpy.uint8; keep the audit JSON
+            # composed of built-in scalars while preserving every UUID byte.
+            self.observation_active['nav_goal_uuid'] = [int(value) for value in handle.goal_id.uuid]
         if self.canceling or self.phase in ('blocked', 'done'):
             # A timed-out pending send can be accepted after we entered blocked.
             # Blocking the scheduler must not erase the intent to cancel it.
@@ -642,6 +787,8 @@ class MissionNode(Node):
             return
         self.goal_handle = None
         self.goal_result = success, detail
+        if self.observation_active is not None and self.observation_active['nav_token'] == token:
+            self.observation_active['nav_terminal_status'] = result.status
         if success and getattr(self, 'inspection', None) is not None:
             self.inspection_terminal_received = time.monotonic(), self.get_clock().now().nanoseconds
         if self.canceling:
@@ -672,7 +819,17 @@ class MissionNode(Node):
             if previous_failure is None or previous_failure['evidence']['request_id'] != self.inspection.request_id:
                 self.record_inspection_failure(reason)
             self.event('inspection_interrupted', reason=reason, evidence=self.inspection_snapshot())
-            self.inspection.invalidate(reason)
+            if (self.bounded_observation_enabled() and next_phase == 'returning' and
+                    reason == 'bounded_observation_wall_timeout' and
+                    self.goal.kind == 'observation_queue' and
+                    self.goal_handle is None and not self.send_pending and not self.canceling and
+                    self.coordinates_valid and self.map_epoch_ready and not self.inspection_clock_invalid and
+                    self.inspection.ready and self.inspection.epoch == self.map_epoch):
+                # A scheduled phase boundary retires the request, not a still
+                # valid epoch. Fault-driven cancellation remains invalidating.
+                self.inspection.retire_request(reason)
+            else:
+                self.inspection.invalidate(reason)
             self.inspection_deadline = None
         self.reason = reason
         if self.canceling:
@@ -688,19 +845,208 @@ class MissionNode(Node):
         self.event('cancel_requested', next_phase=next_phase, reason=reason)
 
     def block(self, reason):
-        if self.phase in ('blocked', 'done'):
-            return
-        self.map_complete = self.visual_complete = False
-        if any(word in reason for word in ('reset', 'reanchor', 'geometry_changed', 'frame_mismatch')):
+        coordinate_fault = (reason == 'target_map_epoch_changed_requires_new_mission' or
+                            any(word in reason for word in ('reset', 'reanchor', 'geometry_changed', 'frame_mismatch')))
+        if coordinate_fault and self.coordinates_valid:
+            # Old target coordinates remain only for audit. Clear their display
+            # even after an unrelated fault has already stopped the scheduler.
             self.coordinates_valid = False
             clear = Marker()
             clear.action = Marker.DELETEALL
             self.marker_pub.publish(MarkerArray(markers=[clear]))
+        if self.phase in ('blocked', 'done'):
+            return
+        if self.bounded_observation_enabled():
+            self.close_observation('blocked:'+reason, invalid=True)
+        self.map_complete = self.visual_complete = False
         self.cancel_to('blocked', reason)
 
     def start_return(self, reason):
-        self.return_attempts = 0
+        if self.bounded_observation_enabled():
+            self.close_observation(reason)
+            self.home_frontier_resume_active = False
+        else:
+            self.return_attempts = 0
         self.cancel_to('returning', reason)
+
+    def return_attempt_limit(self):
+        # Bounded mode counts all home sends across resumptions, not only errors.
+        multiplier = self.cfg['home_frontier_resume_limit']+1 if self.bounded_observation_enabled() else 1
+        return self.cfg['max_goal_attempts'] * multiplier
+
+    def return_budget_expired(self, now):
+        if self.bounded_observation_enabled():
+            return self.return_deadline_wall is not None and now >= self.return_deadline_wall
+        return self.return_started is not None and now-self.return_started > self.cfg['return_timeout_s']
+
+    def resume_home_frontier(self, final, now):
+        """Called only after successful home Nav AND current stable home pose.
+
+        The planner's frontier goal is reachable through known safe cells. No
+        simulator truth or coverage-only change can authorize another outing.
+        A new map will be planned again on the next tick before dispatch.
+        """
+        if (not self.bounded_observation_enabled() or final.state != 'goal' or
+                final.goal is None or final.goal.kind != 'frontier'):
+            return False
+        reason = None
+        if (self.phase != 'home_verification' or self.canceling or self.send_pending or
+                self.goal_handle is not None or self.observation_active is not None or
+                not self.observation_closed or not self.coordinates_valid or not self.map_epoch_ready or
+                self.inspection_clock_invalid or not self.inspection.ready or self.inspection.epoch != self.map_epoch):
+            reason = 'home_frontier_resume_state_invalid'
+        elif self.home_frontier_resumes >= self.cfg['home_frontier_resume_limit']:
+            reason = 'home_frontier_resume_limit'
+        elif self.mission_timed_out or now >= self.started+self.cfg['mission_timeout_s']:
+            self.mission_timed_out = True
+            reason = 'home_frontier_mission_budget_exhausted'
+        elif (self.return_deadline_wall is None or
+                now >= self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s']):
+            reason = 'home_frontier_return_reserve_reached'
+        elif self.return_attempts >= self.return_attempt_limit():
+            reason = 'home_frontier_return_attempts_exhausted'
+        decision = {'wall': now, 'resumed': reason is None, 'reason': reason,
+                    'selection': asdict(final), 'resume_count_before': self.home_frontier_resumes,
+                    'return_deadline_wall': self.return_deadline_wall,
+                    'return_attempts': self.return_attempts}
+        self.home_frontier_decisions.append(decision)
+        self.event('home_frontier_decision', **decision)
+        if reason is not None:
+            self.reason += ';'+reason
+            return False
+        self.home_frontier_resumes += 1
+        self.home_frontier_resume_active = True
+        self.phase, self.home_stable_since, self.last_home_pose = 'exploring', None, None
+        self.map_complete = self.visual_complete = False
+        return True
+
+    def bounded_observation_enabled(self):
+        return self.cfg.get('post_mapping_observation_mode', 'off') == 'bounded_processed_frames'
+
+    def observation_binding_valid(self):
+        active, queue = self.observation_active, self.observation_queue
+        return bool(active and queue and not self.observation_closed and not queue.invalid_reason and
+                    self.coordinates_valid and self.map_epoch_ready and not self.inspection_clock_invalid and
+                    active['epoch'] == self.map_epoch == queue.epoch and
+                    active['action_id'] == queue.active_id and active['dispatch_id'] == queue.active_dispatch_id and
+                    active['nav_token'] == self.token and active['goal'] == asdict(self.goal))
+
+    def finish_observation(self, outcome, reason):
+        active = self.observation_active
+        if active is None:
+            return
+        if self.goal_handle is not None or self.send_pending:
+            raise RuntimeError('Cannot retire an observation with unknown navigation ownership')
+        ledger = (self.inspection_snapshot() if active['nav_token'] is not None and
+                  self.inspection_goal_token == active['nav_token'] else None)
+        if ledger and (ledger['map_epoch'] != active['epoch'] or
+                       ledger['request_id'] != active['inspection_request_id']):
+            # A token match alone cannot attach another epoch/request's data.
+            ledger = None
+        if outcome == 'inspection_satisfied' and not (
+                self.observation_binding_valid() and not self.canceling and ledger and
+                active['nav_terminal_status'] == GoalStatus.STATUS_SUCCEEDED and
+                active['nav_goal_uuid'] is not None and
+                ledger['status'] == 'satisfied' and ledger['ready'] and
+                ledger['map_epoch'] == active['epoch'] and
+                ledger['request_id'] == active['inspection_request_id'] and
+                ledger['expected_pose'] == [self.goal.x, self.goal.y, self.goal.yaw]):
+            self.block('observation_completion_binding_invalid')
+            return
+        queue = self.observation_queue
+        if (active['epoch'] != queue.epoch or active['action_id'] != queue.active_id or
+                active['dispatch_id'] != queue.active_dispatch_id):
+            # Failure cleanup must not invent a corrected identity either. Keep
+            # the unresolved active record for the blocked result; never dispatch.
+            active['retirement_error'] = 'queue_binding_mismatch'
+            return
+        self.observation_queue.finish(active['action_id'], active['epoch'], outcome, active['dispatch_id'])
+        record = {**active, 'outcome': outcome, 'reason': reason,
+                  'finished_wall': time.monotonic(), 'inspection': ledger}
+        self.observation_attempt_records.append(record)
+        self.observation_active = None
+        self.observation_cancel_outcome = None
+        self.event('observation_action_finished', record=record)
+
+    def close_observation(self, reason, invalid=False):
+        if not self.observation_closed:
+            self.observation_closed, self.observation_close_reason = True, reason
+        if self.observation_queue is not None and invalid:
+            self.observation_queue.invalidate(reason)
+        if self.observation_active is not None:
+            self.observation_cancel_outcome = (
+                'inspection_failed' if self.phase in ('settling', 'inspecting') else 'canceled', reason)
+            if self.goal_handle is None and not self.send_pending:
+                self.finish_observation(*self.observation_cancel_outcome)
+
+    def observation_snapshot(self):
+        if not self.bounded_observation_enabled():
+            return None
+        return {'mode': self.cfg['post_mapping_observation_mode'],
+                'closed': self.observation_closed, 'close_reason': self.observation_close_reason,
+                'started_wall': self.observation_started_wall, 'deadline_wall': self.observation_deadline_wall,
+                'queue': self.observation_queue.snapshot() if self.observation_queue else None,
+                'active': dict(self.observation_active) if self.observation_active else None,
+                'attempts': list(self.observation_attempt_records),
+                'continuation': {'home_frontier_resumes': self.home_frontier_resumes,
+                    'resume_limit': self.cfg['home_frontier_resume_limit'],
+                    'resume_active': self.home_frontier_resume_active,
+                    'return_started_wall': self.return_started,
+                    'return_deadline_wall': self.return_deadline_wall,
+                    'return_reserve_s': self.cfg['home_frontier_return_reserve_s'],
+                    'return_attempts': self.return_attempts, 'return_attempt_limit': self.return_attempt_limit(),
+                    'decisions': list(self.home_frontier_decisions)},
+                'visual_coverage_claimed': False, 'validation_scope': 'processed_frame_windows_only'}
+
+    def begin_observation_stage(self, now, pose):
+        if self.observation_closed:
+            self.start_return('observation_stage_already_closed')
+            return
+        if self.observation_queue is None:
+            if (self.goal_handle is not None or self.send_pending or self.canceling or
+                    not self.map_epoch_ready or not self.inspection.ready or
+                    self.inspection.epoch != self.map_epoch or self.inspection_clock_invalid):
+                self.block('observation_entry_not_ready')
+                return
+            self.observation_started_wall = now
+            self.observation_deadline_wall = min(now+self.cfg['observation_stage_timeout_s'],
+                                                 self.started+self.cfg['mission_timeout_s'])
+            try:
+                # No initial-clearance prior and no simulator/target truth.
+                self.observation_queue = ObservationQueue(self.grid, pose, self.map_epoch, self.observation_policy)
+            except ValueError:
+                self.block('observation_planning_invalid_or_over_budget')
+                return
+            self.event('observation_queue_frozen', queue=self.observation_queue.snapshot())
+        self.phase = 'observation_select'
+
+    def step_observation(self, now, pose):
+        if self.observation_closed:
+            self.start_return('observation_stage_already_closed')
+            return
+        try:
+            decision = self.observation_queue.take_next(self.grid, pose, self.map_epoch)
+        except ValueError:
+            # A valid SLAM map can expand beyond the fixed work budget after
+            # queue creation. Reject it without unwinding the executor, making
+            # a new queue, or changing the original deadline/dispatch budget.
+            self.block('observation_planning_invalid_or_over_budget')
+            return
+        if decision.state == 'dispatch':
+            view = decision.view
+            self.observation_active = {
+                'epoch': view.epoch, 'action_id': view.action_id, 'dispatch_id': decision.dispatch_id,
+                'station_id': view.station_id, 'heading_index': view.heading_index,
+                'goal': asdict(view.goal), 'nav_token': None, 'nav_goal_uuid': None,
+                'inspection_request_id': None, 'nav_terminal_status': None,
+                'selected_wall': now, 'dispatched_wall': None}
+            self.phase = 'observation_navigating'
+            # Queue yaw is already BASE yaw. Do not apply camera_heading_offset.
+            self.send_goal(view.goal)
+        elif decision.state in ('empty', 'exhausted', 'budget_exhausted'):
+            self.start_return('bounded_observation_'+decision.state)
+        elif decision.state != 'active':
+            self.block('observation_'+decision.state)
 
     def tick(self):
         now = time.monotonic()
@@ -714,6 +1060,9 @@ class MissionNode(Node):
         if self.last_clock is not None and ros_now < self.last_clock - .1 and self.home is not None:
             self.block('ros_clock_reset_requires_new_mission')
         self.last_clock = ros_now
+        if (self.bounded_observation_enabled() and self.phase not in ('done', 'blocked') and
+                self.return_budget_expired(now)):
+            self.block('return_total_timeout')
         if self.canceling:
             if self.cancel_terminal and (self.cancel_response or self.goal_handle is None):
                 # A terminal action is stronger evidence than a cancel response.
@@ -721,11 +1070,18 @@ class MissionNode(Node):
                 self.phase = self.cancel_next
                 self.goal_result = None
                 self.dwell_until = None
+                if self.observation_active is not None and self.observation_cancel_outcome is not None:
+                    self.finish_observation(*self.observation_cancel_outcome)
                 if self.phase == 'returning':
-                    self.return_started = now
+                    if not self.bounded_observation_enabled() or self.return_started is None:
+                        self.return_started = now
+                    if self.bounded_observation_enabled() and self.return_deadline_wall is None:
+                        self.return_deadline_wall = now+self.cfg['return_timeout_s']
             elif now-self.cancel_started > self.cfg['cancel_timeout_s']:
                 self.phase, self.reason = 'blocked', 'cancel_timeout_stop_not_confirmed'
                 self.canceling = False
+                if self.bounded_observation_enabled():
+                    self.close_observation('blocked:cancel_timeout_stop_not_confirmed', invalid=True)
             self.publish_status()
             if self.phase == 'blocked':
                 self.save_result(False)
@@ -767,12 +1123,22 @@ class MissionNode(Node):
         if self.phase == 'dry_run':
             self.publish_status()
             return
-        if self.phase in ('exploring', 'observing', 'settling', 'inspecting') and now-self.started >= self.cfg['mission_timeout_s']:
+        if self.phase in ('exploring', 'observing', 'settling', 'inspecting', 'observation_select', 'observation_navigating') and now-self.started >= self.cfg['mission_timeout_s']:
             self.mission_timed_out = True
             self.start_return('mission_timeout_incomplete')
             self.publish_status()
             return
-        if self.phase in ('returning', 'home_verification') and now-self.return_started > self.cfg['return_timeout_s']:
+        if (self.bounded_observation_enabled() and self.home_frontier_resume_active and
+                now >= self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s']):
+            self.start_return('home_frontier_return_reserve_reached')
+            self.publish_status()
+            return
+        if (self.bounded_observation_enabled() and self.observation_queue is not None and
+                not self.observation_closed and now >= self.observation_deadline_wall):
+            self.start_return('bounded_observation_wall_timeout')
+            self.publish_status()
+            return
+        if self.phase in ('returning', 'home_verification') and self.return_budget_expired(now):
             self.block('return_total_timeout')
             self.publish_status()
             return
@@ -781,6 +1147,9 @@ class MissionNode(Node):
             if now-self.goal_started > timeout:
                 if self.phase == 'returning':
                     self.block('return_navigation_timeout')
+                elif self.goal.kind == 'observation_queue':
+                    self.observation_cancel_outcome = ('navigation_failed', 'navigation_timeout')
+                    self.cancel_to('observation_select', 'observation_navigation_timeout')
                 else:
                     self.failures.fail(self.goal, now, 'navigation_timeout')
                     self.cancel_to('exploring', 'goal_timeout')
@@ -795,7 +1164,7 @@ class MissionNode(Node):
                     self.home_stable_since = None
                     if getattr(self, 'inspection', None) is not None:
                         self.reset_inspection_stop()
-                elif self.return_attempts < self.cfg['max_goal_attempts']:
+                elif self.return_attempts < self.return_attempt_limit():
                     self.event('return_retry', detail=detail)
                 else:
                     self.block('return_navigation_failed')
@@ -805,8 +1174,12 @@ class MissionNode(Node):
                 else:
                     self.phase, self.dwell_until = 'observing', now+self.cfg['observation_dwell_s']
             else:
-                self.failures.fail(self.goal, now, detail)
-                self.phase = 'exploring'
+                if self.goal.kind == 'observation_queue':
+                    self.finish_observation('navigation_failed', detail)
+                    self.phase = 'observation_select'
+                else:
+                    self.failures.fail(self.goal, now, detail)
+                    self.phase = 'exploring'
         if self.phase in ('settling', 'inspecting'):
             if not self.update_inspection(now, pose):
                 self.publish_status()
@@ -815,12 +1188,21 @@ class MissionNode(Node):
             if now < self.dwell_until:
                 self.publish_status()
                 return
-            anchor = self.grid.to_cell(*self.goal.anchor)
-            observed = (not self.grid.frontier(anchor) if self.goal.kind == 'frontier' else
-                        self.coverage.contains(self.grid.to_world(anchor), self.grid.resolution))
-            if not observed:
-                self.failures.fail(self.goal, now, 'arrived_without_new_observation')
-            self.phase = 'exploring'
+            if self.goal.kind == 'observation_queue':
+                self.finish_observation('inspection_satisfied', 'processed_frame_window')
+                if self.canceling:
+                    self.publish_status()
+                    return
+                self.phase = 'observation_select'
+            else:
+                anchor = self.grid.to_cell(*self.goal.anchor)
+                observed = (not self.grid.frontier(anchor) if self.goal.kind == 'frontier' else
+                            self.coverage.contains(self.grid.to_world(anchor), self.grid.resolution))
+                if not observed:
+                    self.failures.fail(self.goal, now, 'arrived_without_new_observation')
+                self.phase = 'exploring'
+        if self.phase == 'observation_select':
+            self.step_observation(now, pose)
         if self.phase == 'exploring':
             ready = (self.detector_received is not None and now-self.detector_received <= self.cfg['detector_timeout_s']
                      and self.coverage.frames > 0)
@@ -830,8 +1212,10 @@ class MissionNode(Node):
             self.map_complete = (self.selection.frontier_count == 0 and self.selection.unobserved_count == 0 and
                                  state != 'unsafe_or_unlocalized' and
                                  not any(f.kind == 'frontier' for f in self.failures.entries))
-            self.visual_complete = ready and self.selection.uncovered_count == 0
-            if state == 'goal':
+            self.visual_complete = (not self.bounded_observation_enabled() and ready and self.selection.uncovered_count == 0)
+            if self.bounded_observation_enabled() and self.map_complete:
+                self.begin_observation_stage(now, pose)
+            elif state == 'goal':
                 g = self.selection.goal
                 self.send_goal(Goal(g.x, g.y, g.yaw-self.cfg['camera_heading_offset_rad'], g.kind, g.anchor))
             elif state == 'retry_wait':
@@ -843,10 +1227,11 @@ class MissionNode(Node):
             else:
                 self.start_return(state + '_incomplete')
         elif self.phase == 'returning':
-            if now-self.return_started > self.cfg['return_timeout_s']:
+            if self.return_budget_expired(now):
                 self.block('return_total_timeout')
+            elif self.bounded_observation_enabled() and self.return_attempts >= self.return_attempt_limit():
+                self.block('return_navigation_attempt_budget_exhausted')
             else:
-                self.return_attempts += 1
                 self.send_goal(Goal(*self.home, 'home', self.home[:2]))
         elif self.phase == 'home_verification':
             distance = hypot(pose[0]-self.home[0], pose[1]-self.home[1])
@@ -864,11 +1249,21 @@ class MissionNode(Node):
                              now-self.detector_received <= self.cfg['detector_timeout_s'] and self.coverage.frames > 0)
                     final = self.planner.select(self.planning_grid(), pose, self.coverage, self.failures,
                                                 now, ready, observed_grid=self.grid)
+                    # Final planning also consumes the same return budget. Do
+                    # not certify return or resume using the pre-planning time.
+                    now = time.monotonic()
+                    if self.bounded_observation_enabled() and self.return_budget_expired(now):
+                        self.block('return_total_timeout')
+                        self.publish_status()
+                        return
                     self.map_complete = (final.frontier_count == 0 and final.unobserved_count == 0 and
                                          final.state != 'unsafe_or_unlocalized' and
                                          not any(f.kind == 'frontier' for f in self.failures.entries))
-                    self.visual_complete = ready and final.uncovered_count == 0
-                    if final.state == 'goal' and now-self.started < self.cfg['mission_timeout_s']:
+                    self.visual_complete = (not self.bounded_observation_enabled() and ready and final.uncovered_count == 0)
+                    if self.resume_home_frontier(final, now):
+                        pass
+                    elif (not self.bounded_observation_enabled() and final.state == 'goal'
+                            and now-self.started < self.cfg['mission_timeout_s']):
                         self.event('completion_changed_during_return', selection=asdict(final))
                         self.phase, self.home_stable_since = 'exploring', None
                     else:
@@ -878,7 +1273,7 @@ class MissionNode(Node):
                         self.save_result(True, pose)
             else:
                 self.home_stable_since = None
-            if self.phase != 'done' and now-self.return_started > self.cfg['return_timeout_s']:
+            if self.phase != 'done' and self.return_budget_expired(now):
                 self.block('home_pose_verification_failed')
         self.publish_status()
 
@@ -889,12 +1284,15 @@ class MissionNode(Node):
                  'unresolved_failures': len(self.failures.entries),
                  'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
                  'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
+                 'observation_actions': self.observation_snapshot(),
                  'selection': asdict(self.selection) if self.selection else None}
         self.status_pub.publish(String(data=json.dumps(value)))
 
     def save_result(self, returned, final_pose=None):
         if self.result_written:
             return
+        if self.bounded_observation_enabled():
+            self.visual_complete = False
         mission_success = (returned and self.map_complete and self.visual_complete and
                            not self.mission_timed_out and not self.failures.entries and
                            self.cfg['target_definition_verified'])
@@ -909,6 +1307,7 @@ class MissionNode(Node):
                   'coordinates_valid': self.coordinates_valid,
                   'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
                   'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
+                  'observation_actions': self.observation_snapshot(),
                   'initial_clearance_prior': {
                       'enabled': self.cfg['initial_clearance_radius_m'] > 0,
                       'coordinates_valid': self.coordinates_valid and self.home is not None,
@@ -984,6 +1383,13 @@ def shutdown_mission(node, reason):
     except Exception as exc:
         evidence['errors'].append('subscribe_odometry: ' + str(exc))
     try:
+        if getattr(node, 'bounded_observation_enabled', lambda: False)():
+            # Snapshot a terminal attempt's partial Ledger before cancel_to
+            # invalidates it. Pending/accepted Nav remains active and owned.
+            node.close_observation('shutdown:'+reason, invalid=True)
+    except Exception as exc:
+        evidence['errors'].append('close_observation: ' + str(exc))
+    try:
         # This also preserves cancel intent for a send still awaiting acceptance.
         node.cancel_to('blocked', reason + '_stop_unverified')
     except Exception as exc:
@@ -1015,6 +1421,14 @@ def shutdown_mission(node, reason):
                     late_acceptance_after_client_destroy_possible=node.send_pending)
     node.reason = reason + ('_stop_verified' if evidence['stop_verified'] else '_stop_unverified')
     node.phase = 'blocked'
+    if (getattr(node, 'observation_active', None) is not None and node.cancel_terminal and
+            not node.send_pending and node.goal_handle is None):
+        try:
+            # The timer is stopped, so its ordinary cancellation retirement
+            # branch cannot run. An ACK alone never reaches this branch.
+            node.finish_observation(*node.observation_cancel_outcome)
+        except Exception as exc:
+            evidence['errors'].append('retire_observation: ' + str(exc))
     # Existing completed mission files remain immutable; always create a separate
     # shutdown audit so a later process exit cannot replace the mission outcome.
     try:

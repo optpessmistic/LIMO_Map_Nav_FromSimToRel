@@ -307,6 +307,20 @@ class InspectionLedger:
         self.status, self.reason = "invalidated", reason
         self._clear_window()
 
+    def retire_request(self, reason="request_retired"):
+        """End only this request; never grant or restore epoch/clock authority.
+
+        The caller must preserve its audit snapshot first. Late samples remain
+        rejected, and the next request needs a new terminal/settling barrier.
+        An invalidated Ledger stays invalidated, including its original reason.
+        """
+        if not _text(reason):
+            raise ValueError("Request retirement requires a bounded reason")
+        if self.ready and self.status in ("waiting", "satisfied", "timed_out"):
+            self.status, self.reason = "retired", reason
+            self._clear_window()
+        return self.snapshot()
+
     def begin(self, after_stamp_ns, expected_pose, wall_now, timeout_seconds=8.0, request_id="inspection"):
         if (not self.ready or not _integer(after_stamp_ns) or after_stamp_ns < self.epoch_barrier_ns or
                 not _pose(expected_pose, 3) or not _number(wall_now, 1e15) or wall_now < 0 or

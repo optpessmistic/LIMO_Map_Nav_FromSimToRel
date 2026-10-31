@@ -8,6 +8,8 @@ copy; they are not sensor observations or coverage evidence.
 from collections import deque
 from dataclasses import dataclass, field, replace
 from math import atan2, ceil, cos, hypot, isfinite, pi, sin
+import hashlib
+import json
 
 
 def angle_delta(a, b):
@@ -361,10 +363,138 @@ class Target:
 
 
 class TargetStore:
-    def __init__(self, min_hits=3, merge_radius=.30, window=3.0, min_confidence=.7):
+    def __init__(self, min_hits=3, merge_radius=.30, window=3.0, min_confidence=.7,
+                 *, max_detections=100, max_tracks=256, max_streams=16):
+        if (type(min_hits) is not int or min_hits < 1 or
+                not all(isfinite(v) and v > 0 for v in (merge_radius, window)) or
+                not isfinite(min_confidence) or not 0 <= min_confidence <= 1 or
+                any(type(v) is not int or not 1 <= v <= limit for v, limit in
+                    ((max_detections, 100), (max_tracks, 256), (max_streams, 16)))):
+            raise ValueError('invalid_target_store_limits')
         self.min_hits, self.merge_radius, self.window, self.min_confidence = min_hits, merge_radius, window, min_confidence
         self.targets = []
         self.next_uid = 1
+        self.max_detections, self.max_tracks, self.max_streams = max_detections, max_tracks, max_streams
+        self.frame_epoch = None
+        self.frame_watermarks = {}
+
+    def add_frame(self, observations, stamp_ns, *, source, sensor_frame, epoch):
+        """Atomically associate a single complete detector message, once per frame.
+
+        Each prior track can receive at most one independent observation. The
+        bounded minimum-cost assignment first maximizes compatible old-track
+        matches, then minimizes normalized squared XY displacement. Source
+        instance IDs are compatibility constraints, never a license to jump.
+        This is geometric association, not proof of physical object identity.
+        """
+        def reject(reason):
+            return {'accepted': False, 'reason': reason, 'assignments': [], 'ignored': []}
+        if (type(stamp_ns) is not int or not 0 <= stamp_ns <= 2**63-1 or
+                not all(isinstance(v, str) and 0 < len(v) <= 256 for v in (source, sensor_frame, epoch))):
+            return reject('invalid_frame_identity')
+        if self.frame_epoch is not None and epoch != self.frame_epoch:
+            return reject('map_epoch_changed_requires_new_store')
+        if not isinstance(observations, (list, tuple)) or len(observations) > self.max_detections:
+            return reject('detection_count_limit')
+        stream = source, sensor_frame
+        if stream not in self.frame_watermarks and len(self.frame_watermarks) >= self.max_streams:
+            return reject('stream_count_limit')
+        normalized, ignored = [], []
+        try:
+            for index, item in enumerate(observations):
+                class_id, xyz = item['class_id'], item['position']
+                confidence, instance = item['confidence'], item.get('instance_id', '')
+                if (not isinstance(class_id, str) or not 0 < len(class_id) <= 128 or
+                        not isinstance(instance, str) or len(instance) > 128 or
+                        not isinstance(xyz, (list, tuple)) or len(xyz) != 3 or
+                        any(type(v) not in (int, float) or not isfinite(v) or abs(v) > 1e6 for v in xyz) or
+                        type(confidence) not in (int, float) or not isfinite(confidence) or not 0 <= confidence <= 1):
+                    return reject('invalid_observation')
+                values = (class_id, instance, *map(float, xyz), float(confidence))
+                normalized.append((values, index))
+                if confidence < self.min_confidence:
+                    ignored.append({'index': index, 'reason': 'below_min_confidence'})
+        except (KeyError, TypeError, ValueError, OverflowError):
+            return reject('invalid_observation')
+        normalized.sort(key=lambda pair: pair[0])
+        digest = hashlib.sha256(json.dumps([v for v, _ in normalized],
+            separators=(',', ':'), ensure_ascii=False, allow_nan=False).encode()).hexdigest()
+        previous = self.frame_watermarks.get(stream)
+        if previous is not None and stamp_ns <= previous[0]:
+            return reject('duplicate_frame' if stamp_ns == previous[0] and digest == previous[1] else
+                          ('conflicting_duplicate_frame' if stamp_ns == previous[0] else 'nonadvancing_frame'))
+        selected = [(v, index) for v, index in normalized if v[-1] >= self.min_confidence]
+        seen_geometry, seen_ids = set(), set()
+        for values, _ in selected:
+            geometry = values[:-1]  # Different confidence does not make an independent observation.
+            if geometry in seen_geometry:
+                return reject('indistinguishable_observations_in_frame')
+            seen_geometry.add(geometry)
+            if values[1]:
+                identity = values[:2]
+                if identity in seen_ids:
+                    return reject('duplicate_instance_id_in_frame')
+                seen_ids.add(identity)
+        tracks = sorted(self.targets, key=lambda t: t.uid)
+        if len(tracks) > self.max_tracks:
+            return reject('track_count_limit')
+        count = len(selected)
+        # Every real match costs <=1. One dummy costs n+1: cardinality first.
+        unmatched_cost = float(count+1)
+        impossible_cost = unmatched_cost*(count+1)+1.
+        costs, distances = [], []
+        for values, _ in selected:
+            class_id, instance, x, y, _z, _confidence = values
+            row, ds = [], []
+            for target in tracks:
+                distance = hypot(target.x-x, target.y-y)
+                eligible = (target.class_id == class_id and distance <= self.merge_radius and
+                            (not instance or not target.source_id or instance == target.source_id))
+                row.append((distance/self.merge_radius)**2 if eligible else impossible_cost)
+                ds.append(distance if eligible else None)
+            costs.append(row+[unmatched_cost]*count)
+            distances.append(ds)
+        assignment = _minimum_cost_columns(costs)
+        new_count = sum(column >= len(tracks) for column in assignment)
+        if len(tracks)+new_count > self.max_tracks:
+            return reject('track_count_limit')
+        # No mutation until input, epoch, replay, matching and capacity checks pass.
+        updated = {target.uid: replace(target) for target in tracks}
+        next_uid, stamp = self.next_uid, stamp_ns/1e9
+        output = []
+        for (values, original_index), column, ds in zip(selected, assignment, distances):
+            class_id, instance, x, y, z, _confidence = values
+            created = column >= len(tracks)
+            incremented = True
+            if created:
+                target = Target(next_uid, class_id, x, y, z, 1, stamp, stamp,
+                                confirmed=self.min_hits <= 1, source_id=instance)
+                next_uid += 1
+                updated[target.uid] = target
+                distance = None
+            else:
+                original = tracks[column]
+                target, distance = updated[original.uid], ds[column]
+                if stamp <= target.last_stamp:
+                    incremented = False  # Preserve per-track cross-stream replay protection.
+                else:
+                    if not target.confirmed and stamp-target.first_stamp > self.window:
+                        target.hits, target.first_stamp = 0, stamp
+                    weight = min(target.hits, 10)
+                    target.x, target.y, target.z = tuple((old*weight+new)/(weight+1)
+                        for old, new in zip((target.x, target.y, target.z), (x, y, z)))
+                    target.hits += 1
+                    target.last_stamp = stamp
+                    target.confirmed = target.confirmed or target.hits >= self.min_hits
+            output.append({'index': original_index, 'uid': target.uid, 'created': created,
+                           'distance_m': distance, 'hit_incremented': incremented})
+        self.targets = sorted(updated.values(), key=lambda target: target.uid)
+        self.next_uid, self.frame_epoch = next_uid, epoch
+        self.frame_watermarks[stream] = stamp_ns, digest
+        return {'accepted': True, 'reason': 'associated', 'assignments': sorted(output, key=lambda a: a['index']),
+                'ignored': ignored, 'matched_tracks': count-new_count, 'new_tracks': new_count,
+                'algorithm': 'maximum-compatible-cardinality_then_minimum-squared-XY_cost',
+                'physical_identity_proven': False}
 
     def add(self, class_id, xyz, stamp, confidence, source_id=''):
         if (not class_id or not all(isfinite(v) for v in (*xyz, stamp, confidence)) or
@@ -393,3 +523,49 @@ class TargetStore:
 
     def confirmed(self):
         return [t for t in self.targets if t.confirmed]
+
+
+def _minimum_cost_columns(costs):
+    """Deterministic rectangular Hungarian assignment, O(n^2*m), n<=100/m<=356.
+
+    Rows are canonical observation order; real columns are track UID order,
+    followed by dummies. Equal comparisons keep the first (lowest) column.
+    """
+    if not costs:
+        return []
+    n, m = len(costs), len(costs[0])
+    if m < n or n > 100 or m > 356 or any(len(row) != m for row in costs):
+        raise ValueError('assignment_matrix_out_of_bounds')
+    u, v, owner, way = [0.]*(n+1), [0.]*(m+1), [0]*(m+1), [0]*(m+1)
+    for row in range(1, n+1):
+        owner[0], column = row, 0
+        minimum, used = [float('inf')]*(m+1), [False]*(m+1)
+        while True:
+            used[column] = True
+            current_row, delta, next_column = owner[column], float('inf'), 0
+            for candidate in range(1, m+1):
+                if used[candidate]:
+                    continue
+                reduced = costs[current_row-1][candidate-1]-u[current_row]-v[candidate]
+                if reduced < minimum[candidate]:
+                    minimum[candidate], way[candidate] = reduced, column
+                if minimum[candidate] < delta:
+                    delta, next_column = minimum[candidate], candidate
+            for candidate in range(m+1):
+                if used[candidate]:
+                    u[owner[candidate]] += delta
+                    v[candidate] -= delta
+                else:
+                    minimum[candidate] -= delta
+            column = next_column
+            if owner[column] == 0:
+                break
+        while column:
+            previous = way[column]
+            owner[column] = owner[previous]
+            column = previous
+    result = [-1]*n
+    for column in range(1, m+1):
+        if owner[column]:
+            result[owner[column]-1] = column-1
+    return result

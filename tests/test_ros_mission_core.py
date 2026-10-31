@@ -461,7 +461,8 @@ class AdapterCallbackTests(unittest.TestCase):
         node_path = Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission' / 'limo_maze_mission' / 'node.py'
         tree = ast.parse(node_path.read_text(encoding='utf-8'))
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
-        methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in ('tick', 'save_result')]
+        methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in
+                   ('tick', 'save_result', 'bounded_observation_enabled', 'observation_snapshot')]
         namespace = {'time': SimpleNamespace(monotonic=lambda: 1000., strftime=lambda _: 'test'),
                      'Path': Path, 'json': json}
         exec(compile(ast.Module(body=methods, type_ignores=[]), str(node_path), 'exec'), namespace)
@@ -483,6 +484,8 @@ class AdapterCallbackTests(unittest.TestCase):
             def start_return(reason):
                 node.reason, node.phase = reason, 'returning'
             node.start_return = start_return
+            node.bounded_observation_enabled = lambda: namespace['bounded_observation_enabled'](node)
+            node.observation_snapshot = lambda: namespace['observation_snapshot'](node)
             namespace['tick'](node)
             self.assertTrue(node.mission_timed_out)
             self.assertEqual(node.reason, 'mission_timeout_incomplete')
@@ -520,6 +523,7 @@ class AdapterCallbackTests(unittest.TestCase):
 
         class Adapter:
             token, send_pending, canceling, phase = 1, True, False, 'blocked'
+            observation_active = None
             def issue_cancel(self, token):
                 self.canceled_token = token
             def on_goal_result(self, future, token):
@@ -538,7 +542,7 @@ class MapEpochAdapterTests(unittest.TestCase):
         node_path = Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission' / 'limo_maze_mission' / 'node.py'
         tree = ast.parse(node_path.read_text(encoding='utf-8'))
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
-        names = ('on_epoch', 'tick', 'block', 'cancel_to')
+        names = ('on_epoch', 'tick', 'block', 'cancel_to', 'bounded_observation_enabled')
         methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in names]
         marker = type('Marker', (), {'DELETEALL': 3})
         namespace = {'time': SimpleNamespace(monotonic=lambda: 1000.),
@@ -551,6 +555,7 @@ class MapEpochAdapterTests(unittest.TestCase):
             grid=object(), map_received=1000., started=None, canceling=False,
             goal_handle=None, send_pending=False, token=12, map_complete=False,
             visual_complete=False, coordinates_valid=True,
+            observation_active=None,
             cfg={'startup_wait_s': 60., 'map_max_age_s': 5., 'autonomous': False,
                  'cancel_timeout_s': 10.},
             pose_queries=[], sent_goals=[], cancellations=[], markers=[], events=[], results=[],
@@ -636,7 +641,8 @@ class ShutdownTests(unittest.TestCase):
         path = Path(__file__).resolve().parents[1] / 'src/limo_maze_mission/limo_maze_mission/node.py'
         tree = ast.parse(path.read_text(encoding='utf-8'))
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
-        names = ('cancel_to', 'on_goal_response', 'issue_cancel', 'on_cancel_response', 'on_goal_result', 'block')
+        names = ('cancel_to', 'on_goal_response', 'issue_cancel', 'on_cancel_response',
+                 'on_goal_result', 'block', 'bounded_observation_enabled')
         methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in names]
         cleanup = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'shutdown_mission')
         clock = SimpleNamespace(now=0., steps=0)
@@ -667,6 +673,7 @@ class ShutdownTests(unittest.TestCase):
                                  cancel_goal_async=lambda: cancel)
         node = type('Adapter', (), {name: namespace[name] for name in names})()
         node.__dict__.update(token=1, goal_handle=None, send_pending=pending, canceling=False,
+                             observation_active=None,
                              phase='exploring', cancel_response=False, cancel_terminal=False,
                              seconds=lambda: clock.now, event=lambda *a, **k: None,
                              saved=[], timer_stopped=False)

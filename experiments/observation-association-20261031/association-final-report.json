@@ -1,0 +1,52 @@
+{
+  "scope": "offline-only draft; production unchanged by this agent",
+  "baseline_git_commit": "278a4a5",
+  "baseline_sha256": {
+    "core.py": "4815a0d5725101c3f952c84ab540778e7341baf827678890a0bb66129401e113",
+    "node.py": "ab2ba10c5f5e70ba691f51a1ebcafca08fca6e56c30a5dd6f1839d5408aeca87"
+  },
+  "original_draft_sha256": {
+    "core.py": "6e56ed052df3c08da6d413de3f8a455fbcf4f683706f3ee1ebcb5b0f2a30ac8e",
+    "node.py": "55770bed4e77b65d0385624976d1d96ce58fa3cd3a9f09e63d31e3cdfcab9314",
+    "candidate-v2.patch": "81f8ae772380d79478273b38fc299ad031bf16739525037a4d62a259297796ed"
+  },
+  "original_draft_unchanged": true,
+  "final_source_sha256": {
+    "core.py": "6e56ed052df3c08da6d413de3f8a455fbcf4f683706f3ee1ebcb5b0f2a30ac8e",
+    "node.py": "55b6672802e7c5385c1ee07b6bd6f25c87d00f6b26ac6c447aad76c1a8a676fb",
+    "test_epoch_cleanup.py": "86a538c56349e69e94496f7eced2cb911c6286dbf1d9c3b576f35cd96ff82f0e"
+  },
+  "patch_sha256": "9f21033839c1d2a3ded491e706e3fd0e1227018ce3b6d2060951f2403e5308ea",
+  "patch_check": {
+    "against": "isolated baseline directory from Git278a4a5, not current production",
+    "returncode": 0,
+    "stderr": ""
+  },
+  "offline_tests": {
+    "passed": 40,
+    "failed": 0,
+    "log": "offline-tests-01.log"
+  },
+  "portable_patch_tests": {
+    "passed": 32,
+    "failed": 0,
+    "log": "portable-tests.log",
+    "ignored_directory_dependency": false
+  },
+  "closed_case11": {
+    "fresh_hash_verified_replay": true,
+    "selected_frames_equal_previous": true,
+    "comparisons_equal_previous": true,
+    "confirmed_counts_original_forward_reverse_candidate_forward_reverse": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "report_sha256": "a349c9b02ed2fec25c208b298ebf60bc3e3786671ea52cb5b9baf0e3d1c0992d",
+    "world_or_target_truth_read": false
+  },
+  "current_production_patch_applicability_claimed": false,
+  "requires_three_way_merge_with_observation": true,
+  "ros_nodes_started": false
+}

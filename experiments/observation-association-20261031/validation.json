@@ -1,0 +1,57 @@
+{
+  "runs": [
+    {
+      "label": "observation-association-pure-01",
+      "tests": 342,
+      "test_duration_s": 12.605,
+      "exit_code": 1,
+      "source_unchanged": true
+    },
+    {
+      "label": "observation-association-pure-02",
+      "tests": 342,
+      "test_duration_s": 12.044,
+      "exit_code": 0,
+      "source_unchanged": true
+    },
+    {
+      "label": "observation-action-dds-01",
+      "tests": 2,
+      "test_duration_s": 5.917,
+      "exit_code": 1,
+      "source_unchanged": true
+    },
+    {
+      "label": "observation-action-dds-02",
+      "tests": 2,
+      "test_duration_s": 22.23,
+      "exit_code": 1,
+      "source_unchanged": true
+    },
+    {
+      "label": "observation-action-dds-03",
+      "tests": 2,
+      "test_duration_s": 25.629,
+      "exit_code": 0,
+      "source_unchanged": true
+    },
+    {
+      "label": "observation-association-full-ros-01",
+      "tests": 343,
+      "test_duration_s": 72.534,
+      "exit_code": 1,
+      "source_unchanged": true
+    },
+    {
+      "label": "observation-association-full-ros-02",
+      "tests": 343,
+      "test_duration_s": 79.556,
+      "exit_code": 0,
+      "source_unchanged": true
+    }
+  ],
+  "scope": "pure and ROS Action/DDS fixtures, build/import and closed observation replay; no new Gazebo mission",
+  "node_sha256": "33c2316d1a32fc90b78843ac34e9dec81208e5b00ab7f28fc9a4c39e16c3835e",
+  "raw_images_retained_by_these_tests": false,
+  "physical_stop_or_visual_coverage_verified": false
+}

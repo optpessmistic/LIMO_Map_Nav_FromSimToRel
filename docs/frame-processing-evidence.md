@@ -15,7 +15,7 @@ ros2 run limo_maze_perception red_rgbd_detector --ros-args \
 
 `depth_registered_to_color` 仍是已核验注册的运行前提，不能仅凭两图尺寸相同就设置。新证据使用 `/mission/frame_processing` 的 `std_msgs/String` JSON；现有 `/mission/target_observations` 格式保持不变。两路发布不是原子事务，处理证据不证明目标消息已被任务节点接收。
 
-mission 现在可通过默认关闭的 `require_processed_inspection` 订阅此主题，在到达后停稳并等待新处理帧，详见[停稳观察等待](settled-inspection.md)。尚未新增主动观察站位/朝向队列；记录处理帧不会写入 `Coverage.frames`，不会自动使 `visual_coverage_complete` 或 `mission_success` 成立。
+mission 可通过默认关闭的 `require_processed_inspection` 订阅此主题，在到达后停稳并等待新处理帧，详见[停稳观察等待](settled-inspection.md)。另有默认关闭的[有界主动观察队列](bounded-observation.md)，必须同时启用处理等待；该整合的运行验证尚未完成。记录处理帧不会写入 `Coverage.frames`，不会自动使 `visual_coverage_complete` 或 `mission_success` 成立。
 
 ## 记录内容
 
