@@ -1,0 +1,1950 @@
+{
+  "schema_version": 1,
+  "role": "offline_run22_outcome_summary",
+  "run": "run22-isolated-writer",
+  "runtime_head": "f6831d8c980ed1040510bf7a4d12703c07ace460",
+  "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+  "mission": {
+    "status": "done",
+    "reason": "unreachable_frontiers_or_coverage_incomplete;final_observation_checks_incomplete",
+    "mission_success": false,
+    "returned_pose_verified": true,
+    "map_complete": false,
+    "visual_coverage_complete": false,
+    "mission_timed_out": false,
+    "target_definition_verified": false,
+    "coordinates_valid": true
+  },
+  "navigation": {
+    "by_kind": {
+      "frontier": {
+        "sent": 5,
+        "terminal_success": 5,
+        "terminal_failure": 0,
+        "without_recorded_terminal": 0
+      },
+      "home": {
+        "sent": 1,
+        "terminal_success": 1,
+        "terminal_failure": 0,
+        "without_recorded_terminal": 0
+      }
+    },
+    "dispatches": [
+      {
+        "stamp": 104.8,
+        "event": "goal_sent",
+        "token": 1,
+        "goal": {
+          "x": 0.23938948637620694,
+          "y": 0.03581704060364288,
+          "yaw": -2.9441970937399127,
+          "kind": "frontier",
+          "anchor": [
+            -0.01061051734908336,
+            -0.01418296014141518
+          ]
+        },
+        "terminal": {
+          "stamp": 116.785,
+          "event": "goal_terminal",
+          "token": 1,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 120.6,
+        "event": "goal_sent",
+        "token": 2,
+        "goal": {
+          "x": 1.5893895064927746,
+          "y": -0.1261905523146848,
+          "yaw": -2.432966381462123,
+          "kind": "frontier",
+          "anchor": [
+            1.2393895012773681,
+            -0.42619055678503315
+          ]
+        },
+        "terminal": {
+          "stamp": 144.9,
+          "event": "goal_terminal",
+          "token": 2,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 148.1,
+        "event": "goal_sent",
+        "token": 3,
+        "goal": {
+          "x": 1.5798969786224022,
+          "y": -1.1611042043956177,
+          "yaw": -2.922923707715851,
+          "kind": "frontier",
+          "anchor": [
+            1.1298969719168797,
+            -1.2611042058857338
+          ]
+        },
+        "terminal": {
+          "stamp": 162.6,
+          "event": "goal_terminal",
+          "token": 3,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 165.875,
+        "event": "goal_sent",
+        "token": 4,
+        "goal": {
+          "x": 1.4089493542849045,
+          "y": -1.5534644294572848,
+          "yaw": 2.279422598922567,
+          "kind": "frontier",
+          "anchor": [
+            1.1089493498145562,
+            -1.2034644242418784
+          ]
+        },
+        "terminal": {
+          "stamp": 178.499,
+          "event": "goal_terminal",
+          "token": 4,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 182.3,
+        "event": "goal_sent",
+        "token": 5,
+        "goal": {
+          "x": 1.758949359500311,
+          "y": -1.6034644302023429,
+          "yaw": 0.5880026035475677,
+          "kind": "frontier",
+          "anchor": [
+            2.2089493662058333,
+            -1.3034644257319945
+          ]
+        },
+        "terminal": {
+          "stamp": 195.864,
+          "event": "goal_terminal",
+          "token": 5,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 199.2,
+        "event": "goal_sent",
+        "token": 6,
+        "goal": {
+          "x": -0.0007902343989026617,
+          "y": -0.00081733317252052,
+          "yaw": -0.025009319848081663,
+          "kind": "home",
+          "anchor": [
+            -0.0007902343989026617,
+            -0.00081733317252052
+          ]
+        },
+        "terminal": {
+          "stamp": 255.815,
+          "event": "goal_terminal",
+          "token": 6,
+          "success": true,
+          "detail": "4:"
+        }
+      }
+    ],
+    "cancel_events": [
+      {
+        "stamp": 199.125,
+        "event": "cancel_requested",
+        "next_phase": "returning",
+        "reason": "unreachable_frontiers_or_coverage_incomplete"
+      }
+    ],
+    "note": "Terminal failure includes cancellation; timeout classification uses explicit recorded reasons only."
+  },
+  "inspection": {
+    "completed": [
+      {
+        "stamp": 120.6,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-1",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+          "ready": true,
+          "after_stamp_ns": 118426000000,
+          "deadline_wall": 683.333480721,
+          "expected_pose": [
+            0.23938948637620694,
+            0.03581704060364288,
+            -2.9441970937399127
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 118600000000,
+          "last_rgb_stamp_ns": 119000000000,
+          "first_depth_stamp_ns": 118600000000,
+          "last_depth_stamp_ns": 119000000000,
+          "producer_identity": [
+            "07326d66-56c0-4ee4-bc83-2f8ce95e2e5f",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 3,
+          "rejection_counts": {},
+          "last_evidence": {
+            "rgb_stamp_ns": 119000000000,
+            "depth_stamp_ns": 119000000000,
+            "processed_stamp_ns": 119100000000,
+            "sequence": 624,
+            "rgb_sha256": "316c284b24191b3ef13670f5ec532538cc3fddfbec26caed91961b698b8c20b9",
+            "depth_sha256": "41a1e514103be60b4269b31cb201c00985783fbc68332259c9dac9823e6bcf95",
+            "base_pose": [
+              0.21163445148657176,
+              0.0266724624096513,
+              3.1376186935801313
+            ],
+            "camera_pose": [
+              0.12763511476474151,
+              0.027006274171848817,
+              0.029999999999999943,
+              -0.5009925023266242,
+              -0.4990055236292555,
+              0.4990055236292556,
+              0.5009925023266243
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 1,
+          "sampling_after_stamp_ns": 118426000000,
+          "conditions": {
+            "stamp_ns": 120600000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              0.21163445148657176,
+              0.0266724624096513,
+              3.1376186935801313
+            ],
+            "distance_m": 0.029222684203729345,
+            "yaw_error_rad": 0.20136951985954177,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 5.628628660000004,
+            "odom_stamp_ns": 120592000000,
+            "odom_wall_age_s": 0.15406625100001747,
+            "odom_ros_age_s": 0.008,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 244,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 2,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 3,
+            "window_count": 2,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 148.1,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-2",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+          "ready": true,
+          "after_stamp_ns": 146300000000,
+          "deadline_wall": 745.548416253,
+          "expected_pose": [
+            1.5893895064927746,
+            -0.1261905523146848,
+            -2.432966381462123
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 146400000000,
+          "last_rgb_stamp_ns": 146700000000,
+          "first_depth_stamp_ns": 146400000000,
+          "last_depth_stamp_ns": 146700000000,
+          "producer_identity": [
+            "07326d66-56c0-4ee4-bc83-2f8ce95e2e5f",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 3,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 146700000000,
+            "depth_stamp_ns": 146700000000,
+            "processed_stamp_ns": 146750000000,
+            "sequence": 824,
+            "rgb_sha256": "fc26f53179ab7c41d6d3af4b34f3e428b2b6d2f41994025cec0e9129111c4155",
+            "depth_sha256": "f5865a5463e75337d0d8362ca41ad727576975c554d15ba6bd4a69deb83604bd",
+            "base_pose": [
+              1.5636202217575028,
+              -0.11478041706710583,
+              -2.300358568133577
+            ],
+            "camera_pose": [
+              1.5076305791337656,
+              -0.17739958281423293,
+              0.03,
+              -0.2522566852957663,
+              -0.6605804755846123,
+              0.6605804755846125,
+              0.25225668529576634
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 2,
+          "sampling_after_stamp_ns": 146300000000,
+          "conditions": {
+            "stamp_ns": 148100000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.5636202217575028,
+              -0.11478041706710583,
+              -2.300358568133577
+            ],
+            "distance_m": 0.02818239205843877,
+            "yaw_error_rad": 0.132607813328546,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 4.416148060000069,
+            "odom_stamp_ns": 148092000000,
+            "odom_wall_age_s": 0.07129991400006475,
+            "odom_ros_age_s": 0.008,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 204,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 4,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 6,
+            "window_count": 4,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 165.875,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-3",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+          "ready": true,
+          "after_stamp_ns": 163600000000,
+          "deadline_wall": 784.333668188,
+          "expected_pose": [
+            1.5798969786224022,
+            -1.1611042043956177,
+            -2.922923707715851
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 163700000000,
+          "last_rgb_stamp_ns": 164100000000,
+          "first_depth_stamp_ns": 163700000000,
+          "last_depth_stamp_ns": 164100000000,
+          "producer_identity": [
+            "07326d66-56c0-4ee4-bc83-2f8ce95e2e5f",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 164100000000,
+            "depth_stamp_ns": 164100000000,
+            "processed_stamp_ns": 164125000000,
+            "sequence": 949,
+            "rgb_sha256": "5e6ba46369c64942f0b2073219aea2d68318c8e0635bce25460a09214d03f009",
+            "depth_sha256": "39eeba35fe9613aa45416bb4413f0e7a5e7b9d5d8713a7c8a4779d86c81368a5",
+            "base_pose": [
+              1.5770296552136327,
+              -1.1325827938173907,
+              -2.7791249044135315
+            ],
+            "camera_pose": [
+              1.498487584579441,
+              -1.1623677420378191,
+              0.030000000000000027,
+              -0.40168933365541765,
+              -0.5819327102229831,
+              0.5819327102229833,
+              0.40168933365541776
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 3,
+          "sampling_after_stamp_ns": 163600000000,
+          "conditions": {
+            "stamp_ns": 165875000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.5770296552136327,
+              -1.1325827938173907,
+              -2.7791249044135315
+            ],
+            "distance_m": 0.028665177566208726,
+            "yaw_error_rad": 0.14379880330231964,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 5.60046153199994,
+            "odom_stamp_ns": 165872000000,
+            "odom_wall_age_s": 0.017869490999942172,
+            "odom_ros_age_s": 0.003,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 262,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 5,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 9,
+            "window_count": 5,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 182.3,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-4",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+          "ready": true,
+          "after_stamp_ns": 180300000000,
+          "deadline_wall": 820.278165133,
+          "expected_pose": [
+            1.4089493542849045,
+            -1.5534644294572848,
+            2.279422598922567
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 180400000000,
+          "last_rgb_stamp_ns": 180700000000,
+          "first_depth_stamp_ns": 180400000000,
+          "last_depth_stamp_ns": 180700000000,
+          "producer_identity": [
+            "07326d66-56c0-4ee4-bc83-2f8ce95e2e5f",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 3,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 180700000000,
+            "depth_stamp_ns": 180700000000,
+            "processed_stamp_ns": 180750000000,
+            "sequence": 1064,
+            "rgb_sha256": "22470dcb3406c2073246ed87630573d840e509bc6c9ec8d7655aae2d231281a9",
+            "depth_sha256": "87266548246cd17f7063b93becad65955934f27d95194636fa885d8f9791807b",
+            "base_pose": [
+              1.4181206516532494,
+              -1.5333724505253739,
+              2.3855340201162627
+            ],
+            "camera_pose": [
+              1.3570068157339585,
+              -1.475743472925298,
+              0.030000000000000027,
+              -0.6492417225394093,
+              -0.2801520760481006,
+              0.28015207604810066,
+              0.6492417225394093
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 4,
+          "sampling_after_stamp_ns": 180300000000,
+          "conditions": {
+            "stamp_ns": 182300000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.4181206516532494,
+              -1.533372450525374,
+              2.3855340201162627
+            ],
+            "distance_m": 0.022086201864941698,
+            "yaw_error_rad": 0.10611142119369577,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 4.947581937999985,
+            "odom_stamp_ns": 182292000000,
+            "odom_wall_age_s": 0.09210555300001033,
+            "odom_ros_age_s": 0.008,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 224,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 7,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 12,
+            "window_count": 7,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 199.125,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-5",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+          "ready": true,
+          "after_stamp_ns": 197125000000,
+          "deadline_wall": 858.780565028,
+          "expected_pose": [
+            1.758949359500311,
+            -1.6034644302023429,
+            0.5880026035475677
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 197200000000,
+          "last_rgb_stamp_ns": 197600000000,
+          "first_depth_stamp_ns": 197200000000,
+          "last_depth_stamp_ns": 197600000000,
+          "producer_identity": [
+            "07326d66-56c0-4ee4-bc83-2f8ce95e2e5f",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 197600000000,
+            "depth_stamp_ns": 197600000000,
+            "processed_stamp_ns": 197625000000,
+            "sequence": 1183,
+            "rgb_sha256": "a51baacf622ccb113844c1e3d0b27a13c06b44272c5cc671f3cda8532cee6a5e",
+            "depth_sha256": "b6eff20d0df497bb256aac4dbb836c4df5540d29b967bb1588f1d6832b9e26ea",
+            "base_pose": [
+              1.7339507865359047,
+              -1.5884905478918308,
+              0.4597191289689546
+            ],
+            "camera_pose": [
+              1.8092296675006565,
+              -1.551220049093254,
+              0.02999999999999997,
+              -0.6007695927451657,
+              0.3729288087997593,
+              -0.37292880879975937,
+              0.6007695927451661
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 5,
+          "sampling_after_stamp_ns": 197125000000,
+          "conditions": {
+            "stamp_ns": 199125000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.7339507865359045,
+              -1.5884905478918308,
+              0.4597191289689546
+            ],
+            "distance_m": 0.029140106412053817,
+            "yaw_error_rad": 0.128283474578613,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 6.799402067999949,
+            "odom_stamp_ns": 199122000000,
+            "odom_wall_age_s": 0.008151718000021901,
+            "odom_ros_age_s": 0.003,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 228,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 8,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 15,
+            "window_count": 8,
+            "offline_artifacts_verified": false
+          }
+        }
+      }
+    ],
+    "failed": [],
+    "interrupted": []
+  },
+  "observation": {
+    "snapshot": {
+      "mode": "bounded_processed_frames",
+      "closed": true,
+      "close_reason": "unreachable_frontiers_or_coverage_incomplete",
+      "started_wall": null,
+      "deadline_wall": null,
+      "queue": null,
+      "active": null,
+      "attempts": [],
+      "continuation": {
+        "home_frontier_resumes": 0,
+        "resume_limit": 1,
+        "resume_active": false,
+        "return_started_wall": 853.712933096,
+        "return_deadline_wall": 1093.7129330960001,
+        "return_reserve_s": 15.0,
+        "return_attempts": 1,
+        "return_attempt_limit": 4,
+        "decisions": []
+      },
+      "visual_coverage_claimed": false,
+      "validation_scope": "processed_frame_windows_only"
+    },
+    "finished_outcomes": {},
+    "explicit_timeout_attempts": []
+  },
+  "retention": {
+    "enabled": true,
+    "consumer_fault": null,
+    "accepted_count": 15,
+    "windows": [
+      {
+        "number": 1,
+        "binding": {
+          "after_stamp_ns": 117380000000,
+          "goal_token": 1,
+          "inspection_request_id": "goal-1",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "retired",
+        "reason": "inspection_window_reset",
+        "processing_satisfied": false,
+        "ledger_accepted_count": 0,
+        "late_results": 0,
+        "accepted_count": 0,
+        "frames": []
+      },
+      {
+        "number": 2,
+        "binding": {
+          "after_stamp_ns": 118426000000,
+          "goal_token": 1,
+          "inspection_request_id": "goal-1",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "complete",
+        "reason": null,
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 0,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-2fb7e3a3a6086db4695e9817058348933b44186080e15798b4c8361593c62077",
+            "accepted_ordinal": 1,
+            "request_sha256": "f3b273aa4a0e528116fcd071559cf21eccb33cee05702aa918d1eb9a8feb0af2",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-2fb7e3a3a6086db4695e9817058348933b44186080e15798b4c8361593c62077",
+              "request_sha256": "f3b273aa4a0e528116fcd071559cf21eccb33cee05702aa918d1eb9a8feb0af2",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-ce3b08234b502dde5b88236d6e7c32a279dc94604185e7844e9ae80cb1dc052b",
+            "accepted_ordinal": 2,
+            "request_sha256": "9193ee366e4e3a9324562b6fca9a4fd276593d99b0d275af661e2cff079e1333",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-ce3b08234b502dde5b88236d6e7c32a279dc94604185e7844e9ae80cb1dc052b",
+              "request_sha256": "9193ee366e4e3a9324562b6fca9a4fd276593d99b0d275af661e2cff079e1333",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-cbf8ea8294a445e1d9437947cfe7e6a6b00b218437765edd2ed6016ee9f9ed9d",
+            "accepted_ordinal": 3,
+            "request_sha256": "abe0f8552687ad31c3c6363ae5d51a00cd569518f51ceb0974b3a3c87dd719d3",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-cbf8ea8294a445e1d9437947cfe7e6a6b00b218437765edd2ed6016ee9f9ed9d",
+              "request_sha256": "abe0f8552687ad31c3c6363ae5d51a00cd569518f51ceb0974b3a3c87dd719d3",
+              "verified": true
+            }
+          }
+        ]
+      },
+      {
+        "number": 3,
+        "binding": {
+          "after_stamp_ns": 145625000000,
+          "goal_token": 2,
+          "inspection_request_id": "goal-2",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "retired",
+        "reason": "inspection_window_reset",
+        "processing_satisfied": false,
+        "ledger_accepted_count": 0,
+        "late_results": 0,
+        "accepted_count": 0,
+        "frames": []
+      },
+      {
+        "number": 4,
+        "binding": {
+          "after_stamp_ns": 146300000000,
+          "goal_token": 2,
+          "inspection_request_id": "goal-2",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "complete",
+        "reason": null,
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 0,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-2c197fe75f3ab99d84d51305097447e1078dd814a8913a77e5c8e6464217382d",
+            "accepted_ordinal": 1,
+            "request_sha256": "ace9acf52061d7a7c97f18d342f721de7113c8a4a9c0e62922f9987dc02125a4",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-2c197fe75f3ab99d84d51305097447e1078dd814a8913a77e5c8e6464217382d",
+              "request_sha256": "ace9acf52061d7a7c97f18d342f721de7113c8a4a9c0e62922f9987dc02125a4",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-ee3a02ff8c9af8716b8eda4a2277879583e2cc7933105bb8741cd1707b4a55c1",
+            "accepted_ordinal": 2,
+            "request_sha256": "42b77a5494e6c986f0841b0cf012a2c4086c8a3aa9e3f404be29b91ca6a35fbb",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-ee3a02ff8c9af8716b8eda4a2277879583e2cc7933105bb8741cd1707b4a55c1",
+              "request_sha256": "42b77a5494e6c986f0841b0cf012a2c4086c8a3aa9e3f404be29b91ca6a35fbb",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-c0bef2a441dff096ae404ba7c77575ff0a942dd7157d33fa1414eae76607d97f",
+            "accepted_ordinal": 3,
+            "request_sha256": "6eb75eb7afdf63136fef27e86372a8abcbf8cfcc0ab27077feeb192b35516622",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-c0bef2a441dff096ae404ba7c77575ff0a942dd7157d33fa1414eae76607d97f",
+              "request_sha256": "6eb75eb7afdf63136fef27e86372a8abcbf8cfcc0ab27077feeb192b35516622",
+              "verified": true
+            }
+          }
+        ]
+      },
+      {
+        "number": 5,
+        "binding": {
+          "after_stamp_ns": 163600000000,
+          "goal_token": 3,
+          "inspection_request_id": "goal-3",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "complete",
+        "reason": null,
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 0,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-60f3bfea44b50d5d4c7d8ef46ad52d90ac45dc72fcfbb4b61aefe92768728b6d",
+            "accepted_ordinal": 1,
+            "request_sha256": "323cf9114fc59221365a12c2abf4f754d4dc85df388ef75aeeb1a96190f83b9b",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-60f3bfea44b50d5d4c7d8ef46ad52d90ac45dc72fcfbb4b61aefe92768728b6d",
+              "request_sha256": "323cf9114fc59221365a12c2abf4f754d4dc85df388ef75aeeb1a96190f83b9b",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-0cdd7a4edea6a5b2a39bb033b8e0a58860a4d579fb5a33f71048f8b097328d57",
+            "accepted_ordinal": 2,
+            "request_sha256": "e4ca12325f737f276753a25c13b1723fd515c26fca8c3ae5f9adecc2b5c084df",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-0cdd7a4edea6a5b2a39bb033b8e0a58860a4d579fb5a33f71048f8b097328d57",
+              "request_sha256": "e4ca12325f737f276753a25c13b1723fd515c26fca8c3ae5f9adecc2b5c084df",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-fdf7cbf1f9450b870ec1e7bed7893871547f1169d60c1382c1513be1751513b5",
+            "accepted_ordinal": 3,
+            "request_sha256": "5211290df54ca986d77107721e58a6335dc3e1378fc3c064806dfcd960bb80a1",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-fdf7cbf1f9450b870ec1e7bed7893871547f1169d60c1382c1513be1751513b5",
+              "request_sha256": "5211290df54ca986d77107721e58a6335dc3e1378fc3c064806dfcd960bb80a1",
+              "verified": true
+            }
+          }
+        ]
+      },
+      {
+        "number": 6,
+        "binding": {
+          "after_stamp_ns": 179221000000,
+          "goal_token": 4,
+          "inspection_request_id": "goal-4",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "retired",
+        "reason": "inspection_window_reset",
+        "processing_satisfied": false,
+        "ledger_accepted_count": 0,
+        "late_results": 0,
+        "accepted_count": 0,
+        "frames": []
+      },
+      {
+        "number": 7,
+        "binding": {
+          "after_stamp_ns": 180300000000,
+          "goal_token": 4,
+          "inspection_request_id": "goal-4",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "complete",
+        "reason": null,
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 0,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-94294e8a1fb0b3bbac36d8ad9cbb4bbdfa7d6392cc9621df7b6877f1e39122bb",
+            "accepted_ordinal": 1,
+            "request_sha256": "021ac92e8f25d76c7683b56305fd989853718092db2c26b0dc8ee1f4cf1c1874",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-94294e8a1fb0b3bbac36d8ad9cbb4bbdfa7d6392cc9621df7b6877f1e39122bb",
+              "request_sha256": "021ac92e8f25d76c7683b56305fd989853718092db2c26b0dc8ee1f4cf1c1874",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-907b98c4510df33eea1f756cd5851f0ed5666e71ad66d877c4a2500e3623fc66",
+            "accepted_ordinal": 2,
+            "request_sha256": "e2e5af240f76a5fceacc65bfb226669a9861ffcd7316a972541e7331244f2484",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-907b98c4510df33eea1f756cd5851f0ed5666e71ad66d877c4a2500e3623fc66",
+              "request_sha256": "e2e5af240f76a5fceacc65bfb226669a9861ffcd7316a972541e7331244f2484",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-dcb678904febc705a708792ad0c54470a497f083d7a021d5f0df759746b4ffe2",
+            "accepted_ordinal": 3,
+            "request_sha256": "8775ffcf9a6046eec7502a828515e83259d405ba7df33a301f08fa2043c7930d",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-dcb678904febc705a708792ad0c54470a497f083d7a021d5f0df759746b4ffe2",
+              "request_sha256": "8775ffcf9a6046eec7502a828515e83259d405ba7df33a301f08fa2043c7930d",
+              "verified": true
+            }
+          }
+        ]
+      },
+      {
+        "number": 8,
+        "binding": {
+          "after_stamp_ns": 197125000000,
+          "goal_token": 5,
+          "inspection_request_id": "goal-5",
+          "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e"
+        },
+        "state": "complete",
+        "reason": null,
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 0,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-deb89effdc9ba4bfb71a1b0c76597bce053e73f17e8cdc7fa4a571de13183497",
+            "accepted_ordinal": 1,
+            "request_sha256": "0f7a980dd3fc947d3bc5e73b4305cdd71fe7c122fd594819b74813d1988a7e12",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-deb89effdc9ba4bfb71a1b0c76597bce053e73f17e8cdc7fa4a571de13183497",
+              "request_sha256": "0f7a980dd3fc947d3bc5e73b4305cdd71fe7c122fd594819b74813d1988a7e12",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-c445144bb29c4f290b2f4c5073b5998de0f23878d16536e61514a9c86171fd69",
+            "accepted_ordinal": 2,
+            "request_sha256": "9b060d68f05fc464fa96549eb79a36e45256e8de765b010e647392e6833d3678",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-c445144bb29c4f290b2f4c5073b5998de0f23878d16536e61514a9c86171fd69",
+              "request_sha256": "9b060d68f05fc464fa96549eb79a36e45256e8de765b010e647392e6833d3678",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-4c64557f2c77e18323d906edda6c50175b584a73da7fdbaf9d93f2255a9dc66b",
+            "accepted_ordinal": 3,
+            "request_sha256": "8190e31a61ba4ecefad2a1837dd8b72b38319ce6f0612be78cb0cea8ba4ea5f2",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-4c64557f2c77e18323d906edda6c50175b584a73da7fdbaf9d93f2255a9dc66b",
+              "request_sha256": "8190e31a61ba4ecefad2a1837dd8b72b38319ce6f0612be78cb0cea8ba4ea5f2",
+              "verified": true
+            }
+          }
+        ]
+      }
+    ],
+    "producer_result_counts": {
+      "stored": 15
+    },
+    "producer_checkpoint_closed": true,
+    "producer_fault": null,
+    "shutdown": {
+      "shutdown": {
+        "elapsed_wall_s": 0.47786454600009165,
+        "owned_writer_exit_confirmed": true,
+        "final_checkpoint_persisted": true,
+        "limitation": "SIGKILL cannot guarantee bounded exit from uninterruptible kernel I/O"
+      },
+      "writer": null,
+      "fault": null,
+      "reason": "SIGINT"
+    },
+    "offline_audit": {
+      "schema_version": 1,
+      "passed": true,
+      "accepted_count": 15,
+      "verified_count": 15,
+      "errors": [],
+      "frames": [
+        {
+          "retention_id": "retain-2fb7e3a3a6086db4695e9817058348933b44186080e15798b4c8361593c62077",
+          "request_sha256": "f3b273aa4a0e528116fcd071559cf21eccb33cee05702aa918d1eb9a8feb0af2",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-ce3b08234b502dde5b88236d6e7c32a279dc94604185e7844e9ae80cb1dc052b",
+          "request_sha256": "9193ee366e4e3a9324562b6fca9a4fd276593d99b0d275af661e2cff079e1333",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-cbf8ea8294a445e1d9437947cfe7e6a6b00b218437765edd2ed6016ee9f9ed9d",
+          "request_sha256": "abe0f8552687ad31c3c6363ae5d51a00cd569518f51ceb0974b3a3c87dd719d3",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-2c197fe75f3ab99d84d51305097447e1078dd814a8913a77e5c8e6464217382d",
+          "request_sha256": "ace9acf52061d7a7c97f18d342f721de7113c8a4a9c0e62922f9987dc02125a4",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-ee3a02ff8c9af8716b8eda4a2277879583e2cc7933105bb8741cd1707b4a55c1",
+          "request_sha256": "42b77a5494e6c986f0841b0cf012a2c4086c8a3aa9e3f404be29b91ca6a35fbb",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-c0bef2a441dff096ae404ba7c77575ff0a942dd7157d33fa1414eae76607d97f",
+          "request_sha256": "6eb75eb7afdf63136fef27e86372a8abcbf8cfcc0ab27077feeb192b35516622",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-60f3bfea44b50d5d4c7d8ef46ad52d90ac45dc72fcfbb4b61aefe92768728b6d",
+          "request_sha256": "323cf9114fc59221365a12c2abf4f754d4dc85df388ef75aeeb1a96190f83b9b",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-0cdd7a4edea6a5b2a39bb033b8e0a58860a4d579fb5a33f71048f8b097328d57",
+          "request_sha256": "e4ca12325f737f276753a25c13b1723fd515c26fca8c3ae5f9adecc2b5c084df",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-fdf7cbf1f9450b870ec1e7bed7893871547f1169d60c1382c1513be1751513b5",
+          "request_sha256": "5211290df54ca986d77107721e58a6335dc3e1378fc3c064806dfcd960bb80a1",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-94294e8a1fb0b3bbac36d8ad9cbb4bbdfa7d6392cc9621df7b6877f1e39122bb",
+          "request_sha256": "021ac92e8f25d76c7683b56305fd989853718092db2c26b0dc8ee1f4cf1c1874",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-907b98c4510df33eea1f756cd5851f0ed5666e71ad66d877c4a2500e3623fc66",
+          "request_sha256": "e2e5af240f76a5fceacc65bfb226669a9861ffcd7316a972541e7331244f2484",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-dcb678904febc705a708792ad0c54470a497f083d7a021d5f0df759746b4ffe2",
+          "request_sha256": "8775ffcf9a6046eec7502a828515e83259d405ba7df33a301f08fa2043c7930d",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-deb89effdc9ba4bfb71a1b0c76597bce053e73f17e8cdc7fa4a571de13183497",
+          "request_sha256": "0f7a980dd3fc947d3bc5e73b4305cdd71fe7c122fd594819b74813d1988a7e12",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-c445144bb29c4f290b2f4c5073b5998de0f23878d16536e61514a9c86171fd69",
+          "request_sha256": "9b060d68f05fc464fa96549eb79a36e45256e8de765b010e647392e6833d3678",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-4c64557f2c77e18323d906edda6c50175b584a73da7fdbaf9d93f2255a9dc66b",
+          "request_sha256": "8190e31a61ba4ecefad2a1837dd8b72b38319ce6f0612be78cb0cea8ba4ea5f2",
+          "verified": true
+        }
+      ],
+      "scope": "exact_accepted_files_reopened_and_hashed; supplied_TF_identity_only; does_not_verify_process_exit_scene_coverage_target_recall_or_motion"
+    },
+    "audit_scope": "Existing closed-run audit result, not a second raw-image decode or independent TF-accuracy test."
+  },
+  "targets": {
+    "count": 2,
+    "annotations": [
+      {
+        "uid": 1,
+        "class_id": "red_object",
+        "x": 3.5705938180064365,
+        "y": -0.1972431461419223,
+        "z": -0.03938912392516815,
+        "hits": 163,
+        "first_stamp": 104.9,
+        "last_stamp": 257.5,
+        "confirmed": true,
+        "source_id": ""
+      },
+      {
+        "uid": 2,
+        "class_id": "red_object",
+        "x": -0.4429322867980797,
+        "y": -1.5758650564666035,
+        "z": -0.043427235368701037,
+        "hits": 39,
+        "first_stamp": 161.6,
+        "last_stamp": 178.5,
+        "confirmed": true,
+        "source_id": ""
+      }
+    ],
+    "unconfirmed": [],
+    "count_prior": null
+  },
+  "return": {
+    "home_map_pose": [
+      -0.0007902343989026617,
+      -0.00081733317252052,
+      -0.025009319848081663
+    ],
+    "final_map_pose": [
+      0.02953686271079159,
+      -0.002865692794314937,
+      -0.15949049430844067
+    ],
+    "map_error": {
+      "xy_distance_m": 0.03039619377884381,
+      "yaw_error_rad": 0.134481174460359
+    },
+    "native": {
+      "scope": "Same native model sampled at home and final observer time; no map/world identity assumption.",
+      "home_event_stamp": 104.8,
+      "home_bracket": [
+        {
+          "sim_s": 104.786,
+          "x": -7.79738676949826e-06,
+          "y": -4.109437028218807e-07,
+          "z": -0.0050000028318972324,
+          "yaw": -0.018036418502966025,
+          "id": 114,
+          "receipt_wall_elapsed_s": 17.195931498999926
+        },
+        {
+          "sim_s": 104.819,
+          "x": -7.79738676949826e-06,
+          "y": -4.109437028218807e-07,
+          "z": -0.0050000028318972324,
+          "yaw": -0.018036418502966025,
+          "id": 114,
+          "receipt_wall_elapsed_s": 17.324515055000006
+        }
+      ],
+      "home_bracket_gap_s": 0.03300000000000125,
+      "home_bracket_movement": {
+        "xy_distance_m": 0.0,
+        "yaw_delta_rad": 0.0
+      },
+      "same_native_id": true,
+      "home_bracket_stationary_at_sample_endpoints": true,
+      "final_sample": {
+        "sim_s": 276.436,
+        "x": 0.021732683760768663,
+        "y": 0.005711016030626696,
+        "z": -0.005000002831897229,
+        "yaw": -0.1036646415918816,
+        "id": 114,
+        "receipt_wall_elapsed_s": 399.75436768400004
+      },
+      "sampled_home_to_final": {
+        "xy_distance_m": 0.02247818761843492,
+        "yaw_delta_rad": -0.08562822308891557
+      }
+    },
+    "stationary_tail": {
+      "sample_count": 966,
+      "first_sim_s": 246.469,
+      "last_sim_s": 276.436,
+      "span_s": 29.966999999999985,
+      "max_gap_s": 0.036000000000001364,
+      "x_span_m": 0.0006854749297662416,
+      "y_span_m": 0.00014076180826384354,
+      "yaw_span_rad": 2.806708646578688,
+      "latest_native_receipt_fresh": true,
+      "evidence_sufficient": true,
+      "stationary_within_1mm_002rad": false,
+      "entire_window_after_terminal": false,
+      "ready_for_operator_to_end_observer": false
+    },
+    "runner_full_terminal_tail_verified": false
+  },
+  "observer": {
+    "errors": [],
+    "final_status": {
+      "phase": "done",
+      "reason": "unreachable_frontiers_or_coverage_incomplete;final_observation_checks_incomplete",
+      "autonomous": true,
+      "confirmed_target_count": 2,
+      "map_complete": false,
+      "visual_coverage_complete": false,
+      "unresolved_failures": 0,
+      "inspection": {
+        "request_id": "goal-5",
+        "status": "satisfied",
+        "reason": "processed_frame_window",
+        "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+        "ready": true,
+        "after_stamp_ns": 197125000000,
+        "deadline_wall": 858.780565028,
+        "expected_pose": [
+          1.758949359500311,
+          -1.6034644302023429,
+          0.5880026035475677
+        ],
+        "required_frames": 3,
+        "min_span_ns": 200000000,
+        "accepted_frames": 3,
+        "first_rgb_stamp_ns": 197200000000,
+        "last_rgb_stamp_ns": 197600000000,
+        "first_depth_stamp_ns": 197200000000,
+        "last_depth_stamp_ns": 197600000000,
+        "producer_identity": [
+          "07326d66-56c0-4ee4-bc83-2f8ce95e2e5f",
+          "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+          "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+          "camera_optical_frame"
+        ],
+        "reset_count": 1,
+        "rejection_counts": {
+          "sample_before_barrier": 1
+        },
+        "last_evidence": {
+          "rgb_stamp_ns": 197600000000,
+          "depth_stamp_ns": 197600000000,
+          "processed_stamp_ns": 197625000000,
+          "sequence": 1183,
+          "rgb_sha256": "a51baacf622ccb113844c1e3d0b27a13c06b44272c5cc671f3cda8532cee6a5e",
+          "depth_sha256": "b6eff20d0df497bb256aac4dbb836c4df5540d29b967bb1588f1d6832b9e26ea",
+          "base_pose": [
+            1.7339507865359047,
+            -1.5884905478918308,
+            0.4597191289689546
+          ],
+          "camera_pose": [
+            1.8092296675006565,
+            -1.551220049093254,
+            0.02999999999999997,
+            -0.6007695927451657,
+            0.3729288087997593,
+            -0.37292880879975937,
+            0.6007695927451661
+          ],
+          "candidate_count": 0,
+          "detection_count": 0,
+          "unlocalized_candidate_count": 0
+        },
+        "visual_coverage_claimed": false,
+        "goal_token": 5,
+        "sampling_after_stamp_ns": 197125000000,
+        "conditions": {
+          "stamp_ns": 199125000000,
+          "phase": "inspecting",
+          "blocking_condition": null,
+          "current_pose": [
+            1.7339507865359045,
+            -1.5884905478918308,
+            0.4597191289689546
+          ],
+          "distance_m": 0.029140106412053817,
+          "yaw_error_rad": 0.128283474578613,
+          "position_tolerance_m": 0.05,
+          "yaw_tolerance_rad": 0.26,
+          "pose_within_tolerance": true,
+          "pose_stable_wall_s": 6.799402067999949,
+          "odom_stamp_ns": 199122000000,
+          "odom_wall_age_s": 0.008151718000021901,
+          "odom_ros_age_s": 0.003,
+          "odom_fresh": true,
+          "odom_sample_stationary": true,
+          "odom_stationary_count": 228,
+          "stop_confirmed": true
+        },
+        "frame_retention": {
+          "enabled": true,
+          "fault": null,
+          "current_window": 8,
+          "state": "complete",
+          "selected_count": 3,
+          "stored_count": 3,
+          "total_selected_count": 15,
+          "window_count": 8,
+          "offline_artifacts_verified": false
+        }
+      },
+      "last_inspection_failure": null,
+      "observation_actions": {
+        "mode": "bounded_processed_frames",
+        "closed": true,
+        "close_reason": "unreachable_frontiers_or_coverage_incomplete",
+        "started_wall": null,
+        "deadline_wall": null,
+        "queue": null,
+        "active": null,
+        "attempts": [],
+        "continuation": {
+          "home_frontier_resumes": 0,
+          "resume_limit": 1,
+          "resume_active": false,
+          "return_started_wall": 853.712933096,
+          "return_deadline_wall": 1093.7129330960001,
+          "return_reserve_s": 15.0,
+          "return_attempts": 1,
+          "return_attempt_limit": 4,
+          "decisions": []
+        },
+        "visual_coverage_claimed": false,
+        "validation_scope": "processed_frame_windows_only"
+      },
+      "selection": {
+        "state": "unreachable_frontiers_or_coverage",
+        "goal": null,
+        "frontier_count": 3,
+        "uncovered_count": 2582,
+        "reachable_count": 2582,
+        "unobserved_count": 0
+      }
+    },
+    "native_sample_count": 5733,
+    "native_ids": [
+      114
+    ]
+  },
+  "map_export": {
+    "passed": false,
+    "errors": [
+      "export_incomplete:/slam_toolbox/save_map",
+      "expected_export_files_missing_or_empty_at_capture"
+    ],
+    "exports": {
+      "/slam_toolbox/save_map": {
+        "service": "/slam_toolbox/save_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map",
+        "status": "service_failed",
+        "sent_wall_s": 6.999757288000069,
+        "sent_ros_ns": 271417000000,
+        "result": 255,
+        "completed_wall_s": 12.869747371000017
+      },
+      "/slam_toolbox/serialize_map": {
+        "service": "/slam_toolbox/serialize_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map",
+        "status": "service_success",
+        "sent_wall_s": 12.873291181000013,
+        "sent_ros_ns": 274173000000,
+        "result": 0,
+        "completed_wall_s": 13.383390347000045
+      }
+    },
+    "exported_files_at_capture": [
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map.yaml",
+        "exists": false
+      },
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map.pgm",
+        "exists": false
+      },
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map.posegraph",
+        "exists": true,
+        "bytes": 11607416,
+        "sha256": "a9fc8860219e10c761ffe1faae19bfdb01c48423728ac4d191e720ee344e389f"
+      },
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map.data",
+        "exists": true,
+        "bytes": 8405234,
+        "sha256": "0fddf1634adeefcdea8be11d0d8d6a5e0bee9bab518056157201c23b405064a6"
+      }
+    ]
+  },
+  "cleanup": {
+    "run": "run22-isolated-writer",
+    "epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+    "status": "orchestration_failed",
+    "stages": [
+      {
+        "name": "sim_start_and_sensor_check",
+        "elapsed_wall_s": 40.75143305200004
+      },
+      {
+        "name": "navigation_start_and_parameter_check",
+        "elapsed_wall_s": 107.82254279700004
+      },
+      {
+        "name": "recording_perception_and_initial_survey",
+        "elapsed_wall_s": 149.14547885000002
+      },
+      {
+        "name": "read_only_planning_and_processed_image_preflight",
+        "elapsed_wall_s": 264.22345278
+      },
+      {
+        "name": "autonomous_mission",
+        "elapsed_wall_s": 282.49118107000004
+      },
+      {
+        "name": "terminal_map_export_and_independent_stationary_tail",
+        "elapsed_wall_s": 663.395887206
+      },
+      {
+        "name": "owned_shutdown",
+        "elapsed_wall_s": 689.00218244
+      }
+    ],
+    "errors": [
+      "RuntimeError: save-final exited 1"
+    ],
+    "stops": {
+      "mission": {
+        "signals": [
+          {
+            "pid": 1673,
+            "start_ticks": 62900,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1711,
+            "start_ticks": 63888,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.0168046050000612,
+        "exit_code": 0
+      },
+      "recorder": {
+        "signals": [
+          {
+            "pid": 1427,
+            "start_ticks": 48522,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.6080521930000486,
+        "exit_code": 0
+      },
+      "observer": {
+        "signals": [
+          {
+            "pid": 1637,
+            "start_ticks": 61856,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.4167072889999872,
+        "exit_code": 0
+      },
+      "perception": {
+        "signals": [
+          {
+            "pid": 1428,
+            "start_ticks": 48523,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1465,
+            "start_ticks": 49396,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.8098987060000127,
+        "exit_code": 0
+      },
+      "motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.001497884999935195,
+        "exit_code": 0
+      },
+      "survey": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0015192819998901541,
+        "exit_code": 0
+      },
+      "navigation": {
+        "signals": [
+          {
+            "pid": 1138,
+            "start_ticks": 44389,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1200,
+            "start_ticks": 45571,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1201,
+            "start_ticks": 45572,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1202,
+            "start_ticks": 45572,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1203,
+            "start_ticks": 45574,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1204,
+            "start_ticks": 45577,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1205,
+            "start_ticks": 45580,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1206,
+            "start_ticks": 45583,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1207,
+            "start_ticks": 45590,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1208,
+            "start_ticks": 45593,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1209,
+            "start_ticks": 45597,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.4161991140001646,
+        "exit_code": 0
+      },
+      "sim": {
+        "signals": [
+          {
+            "pid": 904,
+            "start_ticks": 37682,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 953,
+            "start_ticks": 39383,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 954,
+            "start_ticks": 39383,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 955,
+            "start_ticks": 39384,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 10.15871583199987,
+        "exit_code": 0
+      },
+      "installed-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0011945819999255036,
+        "exit_code": 0
+      },
+      "sim-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.001018999000052645,
+        "exit_code": 0
+      },
+      "native-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009017760000915587,
+        "exit_code": 0
+      },
+      "nav-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009262789999411325,
+        "exit_code": 0
+      },
+      "parameter-gate": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009529870001188101,
+        "exit_code": 0
+      },
+      "native-before-motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0007122259999050584,
+        "exit_code": 0
+      },
+      "preflight": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009248779999779799,
+        "exit_code": 0
+      },
+      "save-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009704830001737719,
+        "exit_code": 0
+      },
+      "provenance": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0008522779999111663,
+        "exit_code": 0
+      },
+      "native-terminal": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.00080187699995804,
+        "exit_code": 0
+      },
+      "save-final": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0011164659999849391,
+        "exit_code": 1
+      }
+    },
+    "active_wall_budget_seconds": 1800,
+    "native_terminal_tail_verified": false,
+    "cleanup_budget_note": "Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.",
+    "stage": "owned_shutdown",
+    "terminal": {
+      "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/mission/mission_20261031_055739.json",
+      "sha256": "1d4259c8f4ccc7d5dc714f2358f7e2829245bd89a11ebbd6f34bfbdbf95b055f",
+      "status": "done",
+      "map_epoch": "3f4297ec-2699-4489-85df-ae52050cda1e",
+      "reported_mission_success": false
+    },
+    "same_native_instance_at_terminal": true,
+    "shutdown_signal_poll_budget_seconds": 560,
+    "recorder_inner_recheck": {
+      "owner": {
+        "pid": 1462,
+        "pgid": 1462,
+        "sid": 1462,
+        "start_ticks": 49315,
+        "token": "f5de491d908f4aae9542faa0993288bc"
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true,
+      "reported_cleanup": {
+        "signals": [
+          {
+            "pid": 1462,
+            "start_ticks": 49315,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 15.0,
+        "elapsed_wall_seconds": 0.4063023480000538
+      }
+    },
+    "elapsed_wall_s": 704.6352241830001,
+    "all_owned_groups_empty": true,
+    "all_run_token_processes_absent": false,
+    "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+    "owned_cleanup_scope": "Verified launched process groups, nested recorder and exact writer child exit",
+    "retention_audit_passed": true,
+    "evidence_collection_complete": false
+  },
+  "run_token_cleanup": {
+    "remaining": [],
+    "errors": [
+      {
+        "pid": "484",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "485",
+        "error": "PermissionError"
+      }
+    ],
+    "signals_sent": []
+  },
+  "run_token_cleanup_context": {
+    "original_global_absence_verified": false,
+    "recheck": {},
+    "denied_process_context": {},
+    "scope": "Ancillary evidence only; does not override the original incomplete global scan."
+  },
+  "limitations": [
+    "No ROS nodes or motion commands started by this review; no truth files read.",
+    "Owned groups and the retained-frame writer have closure evidence; global token absence remains as reported, including permission failures.",
+    "A bounded queue of processed-frame windows does not establish whole-maze visual coverage or target recall.",
+    "Saved online claims and closed-run artifact audit have different scopes; missing evidence is not a pass.",
+    "Native stationary brackets/tails are sampled evidence, not a continuous-motion proof.",
+    "No physical LIMO hardware evaluated."
+  ],
+  "missing_files": [
+    "run-token-process-recheck.json",
+    "denied-process-context.json"
+  ],
+  "source_files": {
+    "outputs/ros_smoke/run22-isolated-writer/orchestration.json": {
+      "bytes": 10890,
+      "sha256": "c6e3e86632f802e2ebedf241f1be4cf0ede2af22fb79ee966cfa125d8282899c"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/run-token-final-processes.json": {
+      "bytes": 194,
+      "sha256": "1841dc23a2384ccf0d751ce5a567b2d671700c7c61ffd78150f77a42ae8e40ed"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/retention-shutdown.json": {
+      "bytes": 295,
+      "sha256": "bc075c6946ca500d8faa5b272d7e9561c43441ca393e2c44216d44157a62a213"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/mission/mission_20261031_055739.json": {
+      "bytes": 98668,
+      "sha256": "1d4259c8f4ccc7d5dc714f2358f7e2829245bd89a11ebbd6f34bfbdbf95b055f"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/observer.json": {
+      "bytes": 17534163,
+      "sha256": "27f7d9a96e9342da60a947f55b7466f54d0324e751bced8d17074ab79b03efd3"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/retention-audit.json": {
+      "bytes": 3652,
+      "sha256": "3e935f86f12153b05672cf9766e162db78ccc24b3aaa3da9b95009121f014fb3"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/retained/checkpoint.json": {
+      "bytes": 31686,
+      "sha256": "67a26ea5ef5174f09c72a4f666f54db2fdd31737cfb05362bdeb7f32616d460d"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/preparation.json": {
+      "bytes": 1218,
+      "sha256": "daa9882bdc3b40970fb70109329ffff528871d5df7848ee41d5fa7013a296900"
+    },
+    "outputs/ros_smoke/run22-isolated-writer/final-save.json": {
+      "bytes": 106192,
+      "sha256": "701412c8d0a724480222693da416492cf63f6b392d77321e98cb01cbf4dbc963"
+    }
+  }
+}

@@ -1,0 +1,198 @@
+"""Summarize closed run22 evidence; no ROS, bag decoding, truth, or control.
+
+Run only after the experiment supervisor is terminal and its owned cleanup has
+been confirmed. Existing reports are never overwritten. Failed evidence stays
+failed; this summary is not a full visual-search or physical-robot acceptance.
+"""
+from collections import Counter
+import hashlib
+import json
+import math
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run22-isolated-writer'
+OUT = ROOT / 'outputs/setup/run22-outcome-review'
+SOURCES, MISSING = {}, []
+
+
+def load(name, required=False):
+    path = RUN / name
+    if not path.is_file():
+        if required:
+            raise RuntimeError('Missing required evidence: ' + str(path))
+        MISSING.append(str(name))
+        return {}
+    if path.is_symlink() or path.stat().st_size > 256 * 1024 * 1024:
+        raise RuntimeError('Unsafe or oversized evidence: ' + str(path))
+    raw = path.read_bytes()
+    SOURCES[str(path.relative_to(ROOT))] = {
+        'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+    return json.loads(raw)
+
+
+def delta(a, b):
+    return math.atan2(math.sin(a - b), math.cos(a - b))
+
+
+def native_delta(a, b):
+    return {'xy_distance_m': math.hypot(b['x'] - a['x'], b['y'] - a['y']),
+            'yaw_delta_rad': delta(b['yaw'], a['yaw'])}
+
+
+def main():
+    if OUT.with_suffix('.json').exists() or OUT.with_suffix('.md').exists():
+        raise RuntimeError('Refuse overwriting an outcome review')
+    orchestration = load('orchestration.json', required=True)
+    token_cleanup = load('run-token-final-processes.json', required=True)
+    shutdown = load('retention-shutdown.json', required=True)
+    if not (orchestration.get('status') in ('terminal_observed', 'orchestration_failed')
+            and 'elapsed_wall_s' in orchestration
+            and orchestration.get('all_owned_groups_empty') is True
+            and shutdown.get('writer') is None and shutdown.get('fault') is None
+            and shutdown.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown', {}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Run closure, owned groups, and producer writer exit not confirmed')
+    # A global /proc permission failure does not preclude reading closed files.
+    # Keep its original failure and ancillary rechecks separate: never promote
+    # an incomplete global token scan to proven process absence.
+    token_recheck = load('run-token-process-recheck.json')
+    denied_context = load('denied-process-context.json')
+    terminal = orchestration.get('terminal') or {}
+    # Resolve the recorded mission filename within this run, also on Windows.
+    name = str(terminal.get('path', '')).replace('\\', '/').rsplit('/', 1)[-1]
+    if not name.startswith('mission_') or not name.endswith('.json'):
+        raise RuntimeError('No exact terminal mission path in the supervisor report')
+    mission = load(Path('mission') / name, required=True)
+    if mission.get('status') not in ('done', 'blocked'):
+        raise RuntimeError('Saved mission is not terminal')
+    observer = load('observer.json')
+    audit = load('retention-audit.json')
+    checkpoint = load('retained/checkpoint.json')
+    preparation = load('preparation.json')
+    final = load('final-save.json')
+    events = mission.get('events', [])
+    goals = [e for e in events if e.get('event') == 'goal_sent']
+    terminals = [e for e in events if e.get('event') == 'goal_terminal']
+    terminal_by_token = {e['token']: e for e in terminals}
+    dispatches = [{**e, 'terminal': terminal_by_token.get(e['token'])} for e in goals]
+    kinds = {}
+    for kind in sorted({e['goal']['kind'] for e in goals}):
+        rows = [e for e in dispatches if e['goal']['kind'] == kind]
+        kinds[kind] = {'sent': len(rows),
+                      'terminal_success': sum((r['terminal'] or {}).get('success') is True for r in rows),
+                      'terminal_failure': sum((r['terminal'] or {}).get('success') is False for r in rows),
+                      'without_recorded_terminal': sum(r['terminal'] is None for r in rows)}
+    actions = mission.get('observation_actions') or {}
+    attempts = actions.get('attempts', [])
+    consumer = mission.get('frame_retention') or {}
+    producer_results = checkpoint.get('core', {}).get('results', [])
+    producer_by_id = {r['retention_id']: r for r in producer_results}
+    audited_by_id = {r['retention_id']: r for r in audit.get('frames', [])}
+    windows = []
+    for window in consumer.get('windows', []):
+        frames = []
+        for entry in window.get('accepted', []):
+            request = entry['request']
+            rid = request['retention_id']
+            source = producer_by_id.get(rid, {})
+            seen = entry.get('result') or {}
+            frames.append({'retention_id': rid, 'accepted_ordinal': request['accepted_ordinal'],
+                'request_sha256': entry['request_sha256'], 'consumer_state': entry.get('state'),
+                'consumer_reason': entry.get('reason'), 'producer_status': source.get('status'),
+                'producer_reason': source.get('reason'),
+                'producer_request_digest_matches': bool(source) and source.get('request_sha256') == entry['request_sha256'],
+                'consumer_checkpoint_persisted': seen.get('checkpoint_persisted'),
+                'offline_audit': audited_by_id.get(rid)})
+        windows.append({key: window.get(key) for key in (
+            'number', 'binding', 'state', 'reason', 'processing_satisfied', 'ledger_accepted_count', 'late_results')}
+            | {'accepted_count': len(frames), 'frames': frames})
+    world = observer.get('world_samples', [])
+    home_event = next((e for e in events if e.get('event') == 'home_recorded'), None)
+    native_return = {'scope': 'Same native model sampled at home and final observer time; no map/world identity assumption.'}
+    if world and home_event:
+        before = [p for p in world if p['sim_s'] <= home_event['stamp']]
+        after = [p for p in world if p['sim_s'] >= home_event['stamp']]
+        if before and after:
+            left, right = max(before, key=lambda p: p['sim_s']), min(after, key=lambda p: p['sim_s'])
+            movement = native_delta(left, right)
+            same_id = left['id'] == right['id'] == world[-1]['id']
+            stationary = same_id and movement['xy_distance_m'] <= 1e-9 and abs(movement['yaw_delta_rad']) <= 1e-9
+            native_return.update(home_event_stamp=home_event['stamp'], home_bracket=[left, right],
+                home_bracket_gap_s=right['sim_s'] - left['sim_s'], home_bracket_movement=movement,
+                same_native_id=same_id, home_bracket_stationary_at_sample_endpoints=stationary,
+                final_sample=world[-1],
+                sampled_home_to_final=native_delta(left, world[-1]) if stationary else None)
+    home, pose = mission.get('home'), mission.get('final_pose')
+    map_return = None if home is None or pose is None else {
+        'xy_distance_m': math.hypot(pose[0] - home[0], pose[1] - home[1]),
+        'yaw_error_rad': abs(delta(pose[2], home[2]))}
+    flags = ('status', 'reason', 'mission_success', 'returned_pose_verified', 'map_complete',
+             'visual_coverage_complete', 'mission_timed_out', 'target_definition_verified', 'coordinates_valid')
+    report = {'schema_version': 1, 'role': 'offline_run22_outcome_summary',
+        'run': RUN.name, 'runtime_head': preparation.get('code_head'), 'map_epoch': mission.get('map_epoch'),
+        'mission': {key: mission.get(key) for key in flags},
+        'navigation': {'by_kind': kinds, 'dispatches': dispatches,
+            'cancel_events': [e for e in events if e.get('event') == 'cancel_requested'],
+            'note': 'Terminal failure includes cancellation; timeout classification uses explicit recorded reasons only.'},
+        'inspection': {'completed': [e for e in events if e.get('event') == 'inspection_complete'],
+            'failed': [e for e in events if e.get('event') == 'inspection_failed'],
+            'interrupted': [e for e in events if e.get('event') == 'inspection_interrupted']},
+        'observation': {'snapshot': actions, 'finished_outcomes': dict(Counter(a.get('outcome') for a in attempts)),
+            'explicit_timeout_attempts': [a for a in attempts if 'timeout' in str(a.get('reason', ''))]},
+        'retention': {'enabled': consumer.get('enabled'), 'consumer_fault': consumer.get('fault'),
+            'accepted_count': sum(w['accepted_count'] for w in windows), 'windows': windows,
+            'producer_result_counts': dict(Counter(r.get('status') for r in producer_results)),
+            'producer_checkpoint_closed': checkpoint.get('closed'), 'producer_fault': checkpoint.get('fault'),
+            'shutdown': shutdown, 'offline_audit': audit,
+            'audit_scope': 'Existing closed-run audit result, not a second raw-image decode or independent TF-accuracy test.'},
+        'targets': {'count': len(mission.get('targets', [])), 'annotations': mission.get('targets', []),
+            'unconfirmed': mission.get('unconfirmed_target_candidates'), 'count_prior': mission.get('target_count_prior')},
+        'return': {'home_map_pose': home, 'final_map_pose': pose, 'map_error': map_return,
+            'native': native_return, 'stationary_tail': observer.get('final_native_tail_30sim'),
+            'runner_full_terminal_tail_verified': orchestration.get('native_terminal_tail_verified')},
+        'observer': {'errors': observer.get('errors'), 'final_status': observer.get('final_status'),
+            'native_sample_count': len(world), 'native_ids': sorted({p['id'] for p in world})},
+        'map_export': {key: final.get(key) for key in ('passed', 'errors', 'exports', 'exported_files_at_capture')},
+        'cleanup': orchestration, 'run_token_cleanup': token_cleanup,
+        'run_token_cleanup_context': {'original_global_absence_verified':
+            orchestration.get('all_run_token_processes_absent'),
+            'recheck': token_recheck, 'denied_process_context': denied_context,
+            'scope': 'Ancillary evidence only; does not override the original incomplete global scan.'},
+        'limitations': ['No ROS nodes or motion commands started by this review; no truth files read.',
+            'Owned groups and the retained-frame writer have closure evidence; global token absence remains as reported, including permission failures.',
+            'A bounded queue of processed-frame windows does not establish whole-maze visual coverage or target recall.',
+            'Saved online claims and closed-run artifact audit have different scopes; missing evidence is not a pass.',
+            'Native stationary brackets/tails are sampled evidence, not a continuous-motion proof.',
+            'No physical LIMO hardware evaluated.'], 'missing_files': MISSING, 'source_files': SOURCES}
+    with OUT.with_suffix('.json').open('x', encoding='utf-8') as stream:
+        json.dump(report, stream, ensure_ascii=False, indent=2, allow_nan=False)
+        stream.write('\n')
+    lines = ['# run22 离线结果摘要', '', '终态与原始证据闭合后生成；不读取目标真值，不启动 ROS。', '',
+        '```json', json.dumps(report['mission'], ensure_ascii=False, indent=2), '```', '',
+        '| 导航类型 | 下发 | 成功终态 | 失败终态（含取消） | 无记录终态 |', '|---|---:|---:|---:|---:|']
+    for kind, counts in kinds.items():
+        lines.append('| ' + kind + ' | ' + ' | '.join(str(v) for v in counts.values()) + ' |')
+    lines += ['', f"观察动作结果：`{json.dumps(report['observation']['finished_outcomes'], ensure_ascii=False)}`。",
+        f"关闭原因：`{actions.get('close_reason')}`；显式 timeout 原因的观察动作数：{len(report['observation']['explicit_timeout_attempts'])}。", '',
+        f"保存的 consumer 原始接受数：{report['retention']['accepted_count']}；离线文件审计："
+        f"passed={audit.get('passed')}，verified={audit.get('verified_count')}/{audit.get('accepted_count')}。", '',
+        f"地图内标注 {report['targets']['count']} 个目标；返航地图误差：`{json.dumps(map_return)}`。", '',
+        f"原生 home 括点到最终采样：`{json.dumps(native_return.get('sampled_home_to_final'))}`；"
+        '只有相同模型且 home 前后采样位姿相同时计算，详见 JSON 括点时间与跨度。', '',
+        f"记录的尾窗：`{json.dumps(report['return']['stationary_tail'])}`。",
+        f"编排器完整终态尾窗验证：`{orchestration.get('native_terminal_tail_verified')}`；"
+        '采样跨度及是否全部处于终态后以原始字段为准，不把部分尾窗当成完整通过。', '',
+        f"编排器状态：`{orchestration.get('status')}`；错误：`{json.dumps(orchestration.get('errors'), ensure_ascii=False)}`。",
+        f"地图服务导出：passed=`{final.get('passed')}`；错误：`{json.dumps(final.get('errors'), ensure_ascii=False)}`。", '',
+        '所有具体阈值、失败原因、accepted ID、producer 状态、原始审计及来源 SHA256 见同名 JSON。', '',
+        '**本摘要不把 done、有限多朝向观察或原图留存通过解释为全迷宫视觉覆盖、正式目标识别或实车验收。**', '']
+    with OUT.with_suffix('.md').open('x', encoding='utf-8') as stream:
+        stream.write('\n'.join(lines))
+    print(json.dumps({'json': str(OUT.with_suffix('.json')), 'markdown': str(OUT.with_suffix('.md')),
+                      'mission': report['mission'], 'retention_accepted': report['retention']['accepted_count'],
+                      'offline_audit_passed': audit.get('passed')}, ensure_ascii=False, indent=2))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,350 @@
+#!/usr/bin/env python3
+"""Capture run22 file/process provenance without creating ROS nodes.
+
+Invoke through run22-env.sh's python mode so this collector resolves packages
+under the same ordered overlays. Static configuration files are not runtime
+parameter dumps. This script never starts, stops or signals robot processes.
+"""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import importlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import time
+
+# Importing the installed modules below must not create bytecode files.
+sys.dont_write_bytecode = True
+
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN_RELATIVE = Path('outputs/ros_smoke/run22-isolated-writer')
+TOKEN = 'run22-4ae4dba710b64d8a84f975c7006ca8eb'
+PACKAGES = ('limo_evidence_protocol', 'limo_sim_bringup', 'limo_harmonic_description', 'limo_maze_bringup',
+            'limo_maze_mission', 'limo_maze_perception', 'nav2_bringup',
+            'nav2_controller', 'nav2_regulated_pure_pursuit_controller',
+            'slam_toolbox', 'ros_gz_bridge', 'robot_state_publisher')
+MODULES = {'limo_evidence_protocol': ('__init__','retention'),
+           'limo_maze_mission': ('__init__','core','inspection','observation','retention','node'),
+           'limo_maze_perception': ('__init__','core','evidence','retention_adapter','retention_worker','node')}
+LIBRARIES = ('libnav2_regulated_pure_pursuit_controller.so',
+             'libtoolbox_common.so', 'libkartoSlamToolbox.so',
+             'libasync_slam_toolbox.so', 'libsync_slam_toolbox.so',
+             'libceres_solver_plugin.so')
+FILES = ('worlds/smoke_maze.world',
+         'scripts/odom_integrity.py',
+         'src/limo_sim_bringup/scripts/spawn_once.py',
+         'src/limo_sim_bringup/scripts/inspect_scene_once.py',
+         'src/limo_maze_bringup/config/nav2_rpp.yaml',
+         'src/limo_maze_bringup/config/slam_smoke_experimental.yaml',
+         'src/limo_maze_bringup/launch/mapping_navigation.launch.py',
+         'src/limo_maze_bringup/launch/navigation.launch.py',
+         'src/limo_sim_bringup/launch/sim.launch.py',
+         'scripts/env.sh', 'scripts/capture_motion_evidence.py',
+         'scripts/initial_survey.py', 'scripts/observe_sim_mission.py',
+         'scripts/check_sim_runtime.py', 'scripts/check_navigation_runtime.py',
+         'outputs/setup/run22-env.sh', 'outputs/setup/run22-process.py',
+         'config/recording_qos.yaml', 'outputs/setup/audit-run15-inspection.py',
+         'outputs/setup/run22-provenance.py',
+         'patches/0002-slam-toolbox-inclusive-grid.patch')
+SAFE_ENV = ('ROS_DISTRO', 'ROS_DOMAIN_ID', 'ROS_AUTOMATIC_DISCOVERY_RANGE',
+            'GZ_PARTITION', 'LIMO_RUN22_ID', 'ROS_LOG_DIR',
+            'AMENT_PREFIX_PATH', 'CMAKE_PREFIX_PATH', 'COLCON_PREFIX_PATH',
+            'LD_LIBRARY_PATH', 'PYTHONPATH')
+
+
+def file_record(path):
+    path = Path(path)
+    value = {'requested_path': str(path)}
+    try:
+        value['resolved_path'] = str(path.resolve(strict=True))
+        before = path.stat()
+        checksum = hashlib.sha256()
+        with path.open('rb') as source:
+            for chunk in iter(lambda: source.read(1024*1024), b''):
+                checksum.update(chunk)
+        after = path.stat()
+        value.update(sha256=checksum.hexdigest(), bytes=after.st_size,
+                     mtime_ns=after.st_mtime_ns, inode=after.st_ino,
+                     device_major=os.major(after.st_dev), device_minor=os.minor(after.st_dev),
+                     stable_during_hash=(before.st_size, before.st_mtime_ns, before.st_ino) ==
+                         (after.st_size, after.st_mtime_ns, after.st_ino))
+    except (OSError, ValueError) as exc:
+        value['error'] = type(exc).__name__
+    return value
+
+
+def git_state(root):
+    result = {'root': str(root), 'read_only': True}
+    environment = dict(os.environ, GIT_OPTIONAL_LOCKS='0')
+    for name, arguments in (('head', ['rev-parse', 'HEAD']),
+                            ('branch', ['rev-parse', '--abbrev-ref', 'HEAD']),
+                            ('status_porcelain', ['status', '--porcelain=v1', '--untracked-files=normal'])):
+        try:
+            command = subprocess.run(['git', '--no-optional-locks', '-C', str(root), *arguments],
+                capture_output=True, text=True, timeout=15, env=environment)
+            result[name] = command.stdout.rstrip('\n')[:262144]
+            if command.returncode:
+                result[name+'_error'] = {'returncode': command.returncode, 'stderr': command.stderr[:2000]}
+            if len(command.stdout) > 262144:
+                result[name+'_truncated'] = True
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            result[name+'_error'] = type(exc).__name__
+    result['dirty'] = bool(result['status_porcelain']) if 'status_porcelain' in result and 'status_porcelain_error' not in result else None
+    return result
+
+
+def environment_plan(path):
+    result = {'file': file_record(path), 'parsing': 'Read text only; this function does not execute the shell script.'}
+    try:
+        lines = path.read_text(encoding='utf-8').splitlines()
+        roots = {}
+        for line in lines:
+            match = re.fullmatch(r'(LIMO_RUN_ROOT|LIMO_RUNTIME_ROOT)=(\S+)', line.strip())
+            if match:
+                roots[match[1]] = match[2].strip('"\'')
+        sources = []
+        for line in lines:
+            if not line.strip().startswith('source '):
+                continue
+            value = line.strip()[7:].strip('"\'')
+            for name, replacement in roots.items():
+                value = value.replace('${'+name+'}', replacement).replace('$'+name, replacement)
+            sources.append({'expression': line.strip(), 'expanded_path': value,
+                            'setup_file': file_record(value) if '$' not in value else None})
+        result.update(declared_roots=roots, source_order=sources,
+                      export_lines=[line.strip() for line in lines if line.strip().startswith('export ')],
+                      known_launch_lines=[line.strip() for line in lines if re.match(r'\s*(sim|navigation|perception|mission|recorder)\)', line)])
+    except OSError as exc:
+        result['error'] = type(exc).__name__
+    return result
+
+
+def import_sources():
+    values = []
+    for package, modules in MODULES.items():
+        for short in modules:
+            name = package if short == '__init__' else package+'.'+short
+            source = ROOT/'src'/package/package/(short+'.py')
+            row = {'module': name, 'source': file_record(source),
+                   'scope': 'Imported in this collector using its inherited overlay environment; not live-process Python introspection.'}
+            try:
+                module = importlib.import_module(name)
+                row['imported_file'] = file_record(module.__file__)
+                row['imported_spec_origin'] = getattr(module.__spec__, 'origin', None)
+                row['source_matches_import'] = bool(row['source'].get('sha256')) and row['source'].get('sha256') == row['imported_file'].get('sha256')
+            except Exception as exc:
+                row['import_error'] = {'type': type(exc).__name__, 'detail': str(exc)[:1000]}
+                row['source_matches_import'] = False
+            values.append(row)
+    return values
+
+
+def package_prefixes():
+    result = {}
+    try:
+        from ament_index_python.packages import get_package_prefix, get_package_share_directory
+    except ImportError as exc:
+        return {'error': type(exc).__name__}
+    for package in PACKAGES:
+        try:
+            prefix = Path(get_package_prefix(package))
+            share = Path(get_package_share_directory(package))
+            row = {'prefix': str(prefix), 'share': str(share), 'package_xml': file_record(share/'package.xml')}
+            if package == 'limo_sim_bringup':
+                paths = ('launch/sim.launch.py', 'config/bridge.yaml')
+            elif package == 'limo_harmonic_description':
+                paths = ('urdf/limo_gazebo.xacro',)
+            elif package == 'limo_maze_bringup':
+                paths = ('launch/mapping_navigation.launch.py', 'launch/navigation.launch.py',
+                         'config/nav2_rpp.yaml', 'config/slam_smoke_experimental.yaml')
+            elif package == 'slam_toolbox':
+                paths = ('launch/online_async_launch.py',)
+            else:
+                paths = ()
+            row['selected_installed_inputs'] = {path: file_record(share/path) for path in paths}
+            result[package] = row
+        except Exception as exc:
+            result[package] = {'error': type(exc).__name__, 'detail': str(exc)[:1000]}
+    return result
+
+
+def proc_stat(pid):
+    raw = (Path('/proc')/str(pid)/'stat').read_text()
+    fields = raw[raw.rfind(')')+2:].split()
+    return {'pid': int(pid), 'state': fields[0], 'ppid': int(fields[1]),
+            'pgid': int(fields[2]), 'start_ticks': int(fields[19])}
+
+
+def path_argument_matches(argument, roots):
+    # Command arguments may contain ROS 'world:=/path' or parameter ':=/path'.
+    # Do not use a bare substring that would match /project-name-other.
+    for root in roots:
+        text = str(root).rstrip('/')
+        for candidate in (argument, argument.split(':=', 1)[-1], argument.split('=', 1)[-1]):
+            if candidate == text or candidate.startswith(text+'/'):
+                return True
+    return False
+
+
+def existing_records(run_dir):
+    result = []
+    for path in sorted(run_dir.glob('process-*.json')):
+        row = {'file': file_record(path)}
+        try:
+            if path.stat().st_size > 65536:
+                raise ValueError('record exceeds 64 KiB')
+            value = json.loads(path.read_text(encoding='utf-8'))
+            row['record'] = {key: value[key] for key in ('pid', 'state', 'pgid', 'start_ticks', 'owned', 'name', 'launched_unix') if key in value}
+            try:
+                live = proc_stat(value['pid'])
+                row['recorded_leader_now'] = live
+                row['leader_identity_matches'] = live['start_ticks'] == value.get('start_ticks')
+            except (OSError, ValueError, KeyError, IndexError) as exc:
+                row['recorded_leader_now'] = None
+                row['live_read_error'] = type(exc).__name__
+        except (OSError, ValueError, TypeError) as exc:
+            row['error'] = type(exc).__name__
+        result.append(row)
+    return result
+
+
+def loaded_libraries(proc_dir):
+    result = []
+    seen = set()
+    with (proc_dir/'maps').open() as source:
+        for line in source:
+            fields = line.rstrip('\n').split(maxsplit=5)
+            if len(fields) != 6 or not fields[5].startswith('/'):
+                continue
+            path = fields[5]
+            deleted = path.endswith(' (deleted)')
+            clean = path[:-10] if deleted else path
+            basename = Path(clean).name
+            if not any(basename == name or basename.startswith(name+'.') for name in LIBRARIES):
+                continue
+            identity = (clean, fields[3], fields[4])
+            if identity in seen:
+                continue
+            seen.add(identity)
+            record = file_record(clean)
+            device = fields[3].split(':')
+            mapped_device = [int(part, 16) for part in device]
+            record.update(map_device=fields[3], map_inode=int(fields[4]), mapping_marked_deleted=deleted,
+                          matches_mapped_inode_and_device=bool(not deleted and record.get('inode') == int(fields[4]) and
+                              [record.get('device_major'), record.get('device_minor')] == mapped_device),
+                          category='rpp' if 'regulated_pure_pursuit' in basename else 'slam')
+            result.append(record)
+    return result
+
+
+def process_inventory(roots, records):
+    result, unavailable = [], 0
+    verified_leaders = {item['record']['pid']: item['record'] for item in records
+                        if item.get('leader_identity_matches') is True}
+    marker = ('LIMO_RUN22_ID='+TOKEN).encode()
+    for directory in sorted(Path('/proc').iterdir(), key=lambda p: int(p.name) if p.name.isdecimal() else -1):
+        if not directory.name.isdecimal() or int(directory.name) == os.getpid():
+            continue
+        try:
+            before = proc_stat(directory.name)
+            environment = (directory/'environ').read_bytes().split(b'\0')
+            owned = marker in environment
+            argv = (directory/'cmdline').read_bytes().split(b'\0')
+            argv = [value.decode('utf-8', errors='replace') for value in argv if value]
+            project_argument = any(path_argument_matches(argument, roots) for argument in argv)
+            recorded_leader = (before['pid'] in verified_leaders and
+                               before['start_ticks'] == verified_leaders[before['pid']].get('start_ticks'))
+            if not (owned or recorded_leader or project_argument):
+                continue
+            # Scope checks above occur before retaining any command/environment.
+            if sum(map(len, argv)) > 65536:
+                argv = ['<task process argv exceeds 64 KiB; omitted>']
+            row = {**before, 'argv': argv, 'scope_evidence': {
+                    'exact_run_token': owned, 'verified_recorded_leader': recorded_leader,
+                    'exact_project_path_argument': project_argument},
+                   'run22_ownership_verified': owned or recorded_leader,
+                   'environment': {key: value.decode('utf-8', errors='replace') for key in
+                       ('ROS_DOMAIN_ID', 'ROS_AUTOMATIC_DISCOVERY_RANGE', 'GZ_PARTITION', 'LIMO_RUN22_ID')
+                       for entry in environment if entry.startswith((key+'=').encode())
+                       for value in [entry.split(b'=', 1)[1]]}}
+            try:
+                row['executable'] = file_record((directory/'exe').resolve(strict=True))
+            except OSError as exc:
+                row['executable_error'] = type(exc).__name__
+            try:
+                row['loaded_rpp_slam_libraries'] = loaded_libraries(directory)
+            except OSError as exc:
+                row['maps_error'] = type(exc).__name__
+            try:
+                after = proc_stat(directory.name)
+                row['same_process_after_capture'] = before['start_ticks'] == after['start_ticks']
+            except OSError:
+                row['same_process_after_capture'] = False
+            result.append(row)
+        except (OSError, ValueError, IndexError):
+            unavailable += 1
+    return {'selected_processes': result, 'unavailable_process_entries_count': unavailable,
+            'selection': 'Exact LIMO_RUN22_ID token, verified recorded leader PID/start_ticks, or exact known project path in an argument. No unrelated argv/environment is retained.',
+            'only_project_path_scope_is_not_run22_ownership_proof': True}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, required=True, help='New JSON file; existing output is refused')
+    parser.add_argument('--run-dir', type=Path, default=ROOT/RUN_RELATIVE)
+    args = parser.parse_args()
+    if args.output.exists():
+        raise SystemExit('Refusing existing provenance file: '+str(args.output))
+    started = time.time()
+    plan = environment_plan(ROOT/'outputs/setup/run22-env.sh')
+    runtime_text = plan.get('declared_roots', {}).get('LIMO_RUNTIME_ROOT')
+    runtime = Path(runtime_text) if runtime_text else None
+    roots = [ROOT]+([runtime] if runtime else [])
+    records = existing_records(args.run_dir)
+    result = {'schema_version': 1, 'read_only': True, 'run_token_expected': TOKEN,
+              'started_utc': datetime.now(timezone.utc).isoformat(), 'started_unix': started,
+              'repo': str(ROOT), 'git': git_state(ROOT),
+              'runtime_repo_git': git_state(runtime) if runtime and runtime != ROOT else None,
+              'collector': {'python_executable': sys.executable, 'python_version': sys.version,
+                            'pid': os.getpid(), 'environment': {key: os.environ.get(key) for key in SAFE_ENV},
+                            'expected_run_token_matches': os.environ.get('LIMO_RUN22_ID') == TOKEN,
+                            'expected_domain_matches': os.environ.get('ROS_DOMAIN_ID') == '73',
+                            'file': file_record(__file__)},
+              'declared_launch_environment': plan,
+              'static_input_files_at_capture': {path: file_record(ROOT/path) for path in FILES},
+              'python_source_and_current_environment_imports': import_sources(),
+              'resolved_package_prefixes': package_prefixes(),
+              'existing_process_records': records,
+              'process_inventory': process_inventory(roots, records),
+              'actual_ros_parameter_dump_included': False,
+              'ros_nodes_created': False,
+              'limitations': [
+                  'Static configuration hashes do not establish effective ROS parameters; collect parameter dumps separately.',
+                  'Collector module imports identify resolution under its current environment, not Python module files introspected inside an already running process.',
+                  'File hashes describe files at capture time, not independently attested startup bytes.',
+                  'Library records require /proc maps membership; on-disk file identity and stability are reported separately.',
+                  'Processes can start or exit during this non-atomic snapshot; missing live libraries are not proof that a component never ran.',
+                  'Project-path matches without the run token or validated PID/start_ticks remain explicitly unverified for run22 ownership.',
+                  'No detector quality, visual coverage or whole-mission success is inferred.']}
+    result['finished_unix'] = time.time()
+    result['elapsed_wall_seconds'] = result['finished_unix']-started
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open('x', encoding='utf-8') as stream:
+        json.dump(result, stream, ensure_ascii=False, indent=2, allow_nan=False)
+        stream.write('\n')
+    processes = result['process_inventory']['selected_processes']
+    print(json.dumps({'output': str(args.output), 'head': result['git'].get('head'), 'dirty': result['git']['dirty'],
+        'source_import_matches': {row['module']: row['source_matches_import'] for row in result['python_source_and_current_environment_imports']},
+        'selected_process_count': len(processes),
+        'owned_process_count': sum(row['run22_ownership_verified'] for row in processes),
+        'loaded_library_records': sum(len(row.get('loaded_rpp_slam_libraries', [])) for row in processes),
+        'actual_ros_parameter_dump_included': False, 'ros_nodes_created': False}, ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    main()

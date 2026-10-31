@@ -6,7 +6,7 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-最近的 run21 启用源端原图留存后，在首个有效停车观察窗口因持久化回执超时停止：三组原图最终保存，但任务在截止前只确认两组，未完成建图或返航。失败证据与隔离性能对照见 [run21 记录](docs/run21-retention-deadline.md)。此前 run20 完成五个探索点、两个替身标注及返航（原生误差约 3.79 cm / 7.52°），但存在原始 RGB-D 缺图，详见 [run20 记录](docs/autonomous-run20.md)。完整视觉搜索仍未验证。
+最新 run22 已通过五次停车观察，15 组实际接受的原始 RGB-D 在关闭后全部通过文件审计，并通过返航位姿检查、标注两个红色替身。但地图覆盖不足，未进入建图后的多朝向观察；收尾地图导出失败，完整静止尾段也未采齐，因此整轮尚未通过。详见 [run22 记录](docs/run22-retention-verification.md)。此前留存回执超时的失败和单次性能对照保留在 [run21 记录](docs/run21-retention-deadline.md)，没有以新结果改写旧失败。
 
 打开实时窗口见 [Gazebo / RViz](docs/visualization.md)，其中包含本机从零启动的三终端命令。已结束的实验不会因打开查看客户端自动重启。
 
