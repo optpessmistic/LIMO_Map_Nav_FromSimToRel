@@ -1,0 +1,133 @@
+"""Freeze a fresh run21 from the proven run20 orchestration, without launching."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT/'outputs/ros_smoke/run21-observation-retention'
+HEAD = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+TOKEN = 'run21-'+uuid.uuid4().hex
+NAMES = ('env.sh','process.py','param-gate.py','preflight.py','save.py','provenance.py')
+if OUT.exists() or any((ROOT/('outputs/setup/run21-'+name)).exists() for name in NAMES):
+    raise SystemExit('Refuse to reuse run21 output or helpers')
+
+def replace(text, old, new):
+    if text.count(old) != 1:
+        raise RuntimeError('Expected one replacement: '+old[:100])
+    return text.replace(old,new)
+
+helpers = {}
+for name in NAMES:
+    text=(ROOT/('outputs/setup/run20-'+name)).read_text()
+    text=text.replace('run20-arrival-margin','run21-observation-retention').replace('run20','run21').replace('Run20','Run21').replace('RUN20','RUN21')
+    text=text.replace('run21-observation-retention-b80aa8d', TOKEN)
+    if name == 'env.sh':
+        text=replace(text,'--max-bytes 8589934592','--max-bytes 2147483648')
+        text=replace(text,' /camera/color/image_raw /camera/depth/image_raw /camera/color/camera_info',
+                     ' /mission/frame_retention/request /mission/frame_retention/result /camera/color/camera_info')
+        text=replace(text,'-p publish_frame_processing:=true ;;',
+            '-p publish_frame_processing:=true -p retention_enabled:=true -p retention_output_dir:="$run_dir/retained" '
+            '-p retention_max_jobs:=96 -p retention_max_file_bytes:=268435456 ;;')
+        text=replace(text,'-p require_processed_inspection:=true -p initial_clearance_radius_m',
+            '-p require_processed_inspection:=true -p require_retained_inspection:=true '
+            '-p retention_max_total_samples:=96 -p retention_max_metadata_bytes:=4194304 '
+            '-p post_mapping_observation_mode:=bounded_processed_frames '
+            '-p observation_max_stations:=3 -p observation_headings_per_station:=4 '
+            '-p observation_max_dispatches:=12 -p observation_stage_timeout_s:=360.0 '
+            '-p initial_clearance_radius_m')
+    if name == 'process.py':
+        text=replace(text,"'/camera/color/image_raw','/camera/depth/image_raw'",
+            "'/camera/color/camera_info','/camera/depth/camera_info','/mission/frame_processing','/mission/frame_retention/result'")
+        text=replace(text,"    check_isolation()", """    check_isolation()
+    native_services=subprocess.run(['gz','service','-l'],capture_output=True,text=True,timeout=8)
+    write(OUT/'gazebo-isolation.json',dict(returncode=native_services.returncode,
+        services=native_services.stdout,stderr=native_services.stderr))
+    if native_services.returncode or native_services.stdout.strip():
+        raise RuntimeError('Gazebo partition occupied or discovery failed; preserve existing work')
+    run('installed-check',45,'python','outputs/setup/run21-installed-check.py')""")
+        text=replace(text,"    run('provenance',90", """    retained_expected={'require_retained_inspection':True,'retention_max_total_samples':96,
+        'post_mapping_observation_mode':'bounded_processed_frames','observation_max_stations':3,
+        'observation_headings_per_station':4,'observation_max_dispatches':12,
+        'observation_stage_timeout_s':360.0}
+    producer=parameters['red_rgbd_sim_baseline']['values']
+    producer_expected={'enabled':True,'depth_registered_to_color':True,'publish_frame_processing':True,
+        'retention_enabled':True,'retention_output_dir':str(OUT/'retained'),
+        'retention_max_jobs':96,'retention_max_file_bytes':268435456,
+        'retention_worker_timeout_s':5.0,'retention_request_timeout_s':10.0,
+        'retention_shutdown_timeout_s':8.0}
+    if any(actual[k]['value']!=v for k,v in retained_expected.items()) or any(
+            producer[k]['value']!=v for k,v in producer_expected.items()):
+        raise RuntimeError('Live observation/retention parameters differ from declared run21 profile')
+    run('provenance',90""")
+        text=replace(text,"    report['evidence_collection_complete']=bool(report['status']=='terminal_observed' and",
+            """    try:
+        # The writer starts its own session, so perception's process group is insufficient.
+        residue=[]
+        residue_errors=[]
+        for directory in Path('/proc').iterdir():
+            if not directory.name.isdigit(): continue
+            try:
+                if directory.stat().st_uid != os.getuid(): continue
+                env=(directory/'environ').read_bytes().split(b'\\0')
+                if (TOKEN_KEY+'='+TOKEN).encode() in env:
+                    row=proc_stat(int(directory.name))
+                    if row['state'] != 'Z':
+                        row['cmdline']=(directory/'cmdline').read_bytes().replace(b'\\0',b' ').decode(errors='replace')
+                        residue.append(row)
+            except (FileNotFoundError, ProcessLookupError): pass
+            except OSError as exc: residue_errors.append(dict(pid=directory.name,error=type(exc).__name__))
+        report['all_run_token_processes_absent']=not residue and not residue_errors
+        write(OUT/'run-token-final-processes.json',dict(remaining=residue,errors=residue_errors,signals_sent=[]))
+        if residue or residue_errors: report['errors'].append('Run token process absence not verified')
+        shutdown_lines=[line.split('retention_shutdown ',1)[1] for line in (OUT/'perception.log').read_text().splitlines()
+                        if 'retention_shutdown ' in line]
+        shutdown=json.loads(shutdown_lines[-1])
+        write(OUT/'retention-shutdown.json',shutdown)
+        if (shutdown.get('fault') is not None or shutdown.get('writer') is not None or
+                not shutdown['shutdown'].get('owned_writer_exit_confirmed') or
+                not shutdown['shutdown'].get('final_checkpoint_persisted')):
+            report['errors'].append('Producer did not confirm clean retained-frame shutdown')
+        sys.path.insert(0,str(ROOT/'tools'))
+        from audit_frame_retention import audit
+        terminal=report.get('terminal')
+        if terminal is None: raise RuntimeError('No terminal mission result for retained-frame audit')
+        audit_report=audit(json.loads(Path(terminal['path']).read_text()),OUT/'retained')
+        write(OUT/'retention-audit.json',audit_report)
+        report['retention_audit_passed']=audit_report['passed']
+        if not audit_report['passed']: report['errors'].append('Retained-frame offline audit failed')
+    except Exception as exc:
+        report['errors'].append('Retention closure audit: '+type(exc).__name__+': '+str(exc))
+    report['evidence_collection_complete']=bool(report['status']=='terminal_observed' and""")
+    if name == 'provenance.py':
+        text=replace(text,"PACKAGES = ('limo_sim_bringup',", "PACKAGES = ('limo_evidence_protocol', 'limo_sim_bringup',")
+        text=replace(text,"MODULES = {'limo_maze_mission': ('__init__', 'core', 'inspection', 'node'),\n           'limo_maze_perception': ('__init__', 'core', 'evidence', 'node')}",
+            "MODULES = {'limo_evidence_protocol': ('__init__','retention'),\n"
+            "           'limo_maze_mission': ('__init__','core','inspection','observation','retention','node'),\n"
+            "           'limo_maze_perception': ('__init__','core','evidence','retention_adapter','retention_worker','node')}")
+    helpers[name]=text
+
+world=ROOT/'worlds/smoke_maze.world'
+assert hashlib.sha256(world.read_bytes()).hexdigest() == '1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811'
+OUT.mkdir(parents=True)
+(OUT/'mission').mkdir()
+(OUT/'epoch.txt').write_text(str(uuid.uuid4())+'\n')
+baseline=ROOT/'outputs/ros_smoke/run20-arrival-margin/nav2-rpp-03m.yaml'
+(OUT/'nav2-rpp-03m.yaml').write_bytes(baseline.read_bytes())
+for name,text in helpers.items():
+    with (ROOT/('outputs/setup/run21-'+name)).open('x') as out: out.write(text)
+installed=(ROOT/'outputs/setup/verify-frame-retention-installed.py').read_text()
+installed=replace(installed,"root/'outputs/setup/frame-retention-installed-01.json'", "root/'outputs/ros_smoke/run21-observation-retention/installed-check.json'")
+installed=replace(installed,"rows = []", "names += ['limo_maze_mission.core','limo_maze_mission.inspection','limo_maze_mission.observation','limo_maze_perception.evidence']\nrows = []")
+with (ROOT/'outputs/setup/run21-installed-check.py').open('x') as out: out.write(installed)
+report=dict(run='run21-observation-retention',code_head=HEAD,token=TOKEN,
+    epoch=(OUT/'epoch.txt').read_text().strip(),world_sha256=hashlib.sha256(world.read_bytes()).hexdigest(),
+    nav2_sha256=hashlib.sha256(baseline.read_bytes()).hexdigest(),
+    profile=dict(max_jobs=96,file_bytes=268435456,consumer_samples=96,consumer_metadata_bytes=4194304,
+                 stations=3,headings=4,max_dispatches=12,observation_wall_s=360),
+    unchanged=['Nav2 XY .03m','mission XY .05m','yaw .26rad','stationarity .5s','inspection12s','writer5s','request10s','shutdown8s'],
+    recorded_inputs='rosbag metadata/TF/odom/map/actions and source-exact accepted RGB-D; continuous raw image topics omitted',
+    planned_active_wall_budget_s=1800)
+(OUT/'preparation.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(report),flush=True)

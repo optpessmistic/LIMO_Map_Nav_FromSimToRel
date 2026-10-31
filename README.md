@@ -6,7 +6,9 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-最新 run20 已完成五个探索点、两个红色替身标注及返航，原生相对起点误差约 3.79 cm / 7.52°。在线停车观察五次通过，但独立末帧审计发现原始 RGB-D 缺图，完整视觉搜索仍未验证。详见 [run20 记录](docs/autonomous-run20.md)；打开实时窗口见 [Gazebo / RViz](docs/visualization.md)。该轮已关闭，查看客户端不会自动重启实验。
+最近的 run21 启用源端原图留存后，在首个有效停车观察窗口因持久化回执超时停止：三组原图最终保存，但任务在截止前只确认两组，未完成建图或返航。失败证据与隔离性能对照见 [run21 记录](docs/run21-retention-deadline.md)。此前 run20 完成五个探索点、两个替身标注及返航（原生误差约 3.79 cm / 7.52°），但存在原始 RGB-D 缺图，详见 [run20 记录](docs/autonomous-run20.md)。完整视觉搜索仍未验证。
+
+打开实时窗口见 [Gazebo / RViz](docs/visualization.md)，其中包含本机从零启动的三终端命令。已结束的实验不会因打开查看客户端自动重启。
 
 后续 [固定帧标定](docs/red-surrogate-calibration.md) 已完成新的 12 场景、72 组 RGB-D 采集及离线哈希审计；90 项采集/审计测试通过。大红色平板仍产生候选，相邻双目标的实际观测回放还暴露了地图融合合并问题，不能据此宣称识别或完整视觉搜索通过。原先在第二场景停止的失败批次保持不变；[新实验记录](experiments/red-calibration-deferred-20261031/README.md)保留完整输入和限制。
 

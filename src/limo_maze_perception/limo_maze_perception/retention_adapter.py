@@ -18,6 +18,7 @@ import threading
 import time
 import uuid
 
+import limo_evidence_protocol.retention as retention_protocol
 from limo_evidence_protocol.retention import Core, Policy, canonical, sha, validate_request
 
 MAX_CHECKPOINT = 4 * 1024 * 1024
@@ -63,9 +64,13 @@ class OwnedWriter:
         self.pidfd = None
         self.setup_error = None
         worker_path = worker_path or Path(__file__).with_name('retention_worker.py')
-        env = os.environ.copy()
+        # This child needs only stdlib and the protocol package already loaded
+        # by its owner. Avoid repeated ROS site/.pth startup and ambient Python
+        # overrides (e.g. PYTHONHOME or PYTHONINSPECT) without changing run tokens.
+        env = {key: value for key, value in os.environ.items() if not key.startswith('PYTHON')}
+        env['PYTHONPATH'] = str(Path(retention_protocol.__file__).resolve(strict=True).parents[1])
         env['LIMO_RETENTION_WRITER_TOKEN'] = self.token
-        self.process = subprocess.Popen([sys.executable, '-B', str(worker_path), '--root', str(root),
+        self.process = subprocess.Popen([sys.executable, '-S', '-B', str(worker_path), '--root', str(root),
             '--max-wire-bytes', str(sum(len(raw) for raw in segments))],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             start_new_session=True, env=env)

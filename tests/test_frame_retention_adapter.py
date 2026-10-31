@@ -191,6 +191,32 @@ class AdapterTests(unittest.TestCase):
         saved = json.loads((owner.output/'checkpoint.json').read_bytes())
         self.assertEqual(saved['core']['results'][0]['reason'], 'cache_miss')
 
+    def test_real_worker_ignores_ambient_site_packages_and_python_startup_overrides(self):
+        poison = self.root/'ambient-python'
+        poison.mkdir()
+        marker = self.root/'ambient-python-executed'
+        poisoned_import = ('from pathlib import Path\nPath('+repr(str(marker))+').write_text("executed")\n'
+                           'raise RuntimeError("ambient Python imports must not run")\n')
+        (poison/'sitecustomize.py').write_text(poisoned_import)
+        (poison/'usercustomize.py').write_text(poisoned_import)
+        (poison/'limo_evidence_protocol').mkdir()
+        (poison/'limo_evidence_protocol/__init__.py').write_text(poisoned_import)
+        owner = self.owner()
+        req, rgb, _ = self.queue(owner)
+        expected_rgb = bytes(rgb)
+        with patch.dict(os.environ, {'PYTHONPATH': str(poison), 'PYTHONHOME': str(poison/'not-a-python-home'),
+                'PYTHONINSPECT': '1', 'PYTHONMALLOC': 'invalid-allocator',
+                'PYTHONUSERBASE': str(poison), 'PYTHONSTARTUP': str(poison/'sitecustomize.py')}):
+            spin(owner, lambda: owner.results()[0]['status'] == 'stored')
+            result = owner.results()[0]
+            self.assertTrue(result['checkpoint_persisted'])
+            self.assertEqual((owner.output/result['receipt']['directory']/'rgb.bin').read_bytes(), expected_rgb)
+            report = owner.shutdown()
+        self.assertIsNone(report['fault'])
+        self.assertTrue(report['shutdown']['owned_writer_exit_confirmed'])
+        self.assertTrue(report['shutdown']['final_checkpoint_persisted'])
+        self.assertFalse(marker.exists())
+
     def test_global_admission_fault_is_durable_not_reset_by_epoch(self):
         owner = self.owner(policy=Policy(max_requests=1))
         req, _, _ = self.queue(owner)
