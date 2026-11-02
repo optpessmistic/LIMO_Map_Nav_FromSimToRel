@@ -933,6 +933,13 @@ class MissionNode(Node):
 
     def block(self, reason):
         retention = getattr(self, 'frame_retention', None)
+        if (reason == 'frame_retention_failed' and retention is not None and
+                retention.fault == 'mission_blocked' and self.canceling and self.cancel_next == 'blocked'):
+            # block() invalidates retention itself. Do not turn that derived
+            # invalidation into a new cause while awaiting the owned action's
+            # terminal result. Real retention faults and cancel timeouts keep
+            # their existing handling.
+            return
         if retention is not None:
             retention.invalidate('mission_blocked')
         coordinate_fault = (reason == 'target_map_epoch_changed_requires_new_mission' or

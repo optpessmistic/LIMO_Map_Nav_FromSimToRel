@@ -1,0 +1,13 @@
+[INFO] [1793453789.441311624] [limo_maze_mission]: Mission loaded; autonomous=True
+[INFO] [1793453790.055227568] [limo_maze_mission]: home_recorded {"pose": [0.019249130410667798, 0.0002267555378196125, -0.014342355116964575], "map_epoch": "5f84ff8e-c30f-462f-9676-7a8e140b9075"}
+[INFO] [1793453790.092813751] [limo_maze_mission]: goal_sent {"token": 1, "goal": {"x": 0.24915437656192613, "y": 0.03434617725839084, "yaw": -2.9441970937399127, "kind": "frontier", "anchor": [-0.000845627163364171, -0.015653823486667218]}}
+[WARN] [1793453790.890397783] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the past.  Requested time 104.600000 but the earliest data is at time 104.805000, when looking up transform from frame [camera_optical_frame] to frame [map]
+[WARN] [1793453790.916974052] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the past.  Requested time 104.700000 but the earliest data is at time 104.805000, when looking up transform from frame [camera_optical_frame] to frame [map]
+[INFO] [1793453812.151077182] [limo_maze_mission]: goal_terminal {"token": 1, "success": false, "detail": "6:"}
+[INFO] [1793453812.209830990] [limo_maze_mission]: goal_sent {"token": 2, "goal": {"x": 1.5991543966784938, "y": -0.11024850421418675, "yaw": -2.432966381462123, "kind": "frontier", "anchor": [1.2491543914630874, -0.4102485086845351]}}
+[WARN] [1793453812.293860237] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 113.800000 but the latest data is at time 113.450000, when looking up transform from frame [camera_optical_frame] to frame [map]
+[INFO] [1793453812.362311144] [limo_maze_mission]: cancel_requested {"next_phase": "blocked", "reason": "stale_base_tf"}
+[INFO] [1793453812.412740075] [limo_maze_mission]: goal_terminal {"token": 2, "success": false, "detail": "5:"}
+[INFO] [1793453812.447492015] [limo_maze_mission]: Saved mission evidence: /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run24-startup-gate/mission/mission_20261031_063652.json
+[INFO] [1793453891.295357603] [limo_maze_mission]: cancel_requested {"next_phase": "blocked", "reason": "operator_sigint_stop_unverified"}
+[INFO] [1793453891.847117141] [limo_maze_mission]: Shutdown operator_sigint_stop_verified; evidence: /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run24-startup-gate/mission/shutdown_20261031_063811.json

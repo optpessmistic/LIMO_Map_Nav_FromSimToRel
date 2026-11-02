@@ -68,6 +68,52 @@ class RetentionNodeTests(unittest.TestCase):
         self.assertEqual(large.inspection.policy.required_frames,1000)
         self.assertIsNone(large.frame_retention)
 
+    def test_derived_invalidation_preserves_first_block_cause_until_action_terminal(self):
+        for pending_acceptance in (False, True):
+            with self.subTest(pending_acceptance=pending_acceptance):
+                self.fixture.setUp()
+                m = self.mission()
+                self.fixture.start(m)
+                handle = t.Handle(m.token)
+                if not pending_acceptance:
+                    m.nav.sent[-1][1].resolve(handle)
+                m.block('stale_base_tf')
+                deadline_start = m.cancel_started
+                self.assertEqual(m.frame_retention.fault, 'mission_blocked')
+                self.fixture.tick(m, .1)
+                self.fixture.tick(m, .1)
+                self.assertEqual(m.reason, 'stale_base_tf')
+                self.assertTrue(m.canceling)
+                self.assertEqual(m.cancel_started, deadline_start)
+                self.assertEqual(len(m.nav.sent), 1)
+                if pending_acceptance:
+                    m.nav.sent[-1][1].resolve(handle)
+                self.assertEqual(handle.cancel_calls, 1)
+                handle.result_future.resolve(S(status=5, result=S(error_msg='canceled')))
+                self.fixture.tick(m)
+                self.assertEqual((m.phase, m.reason), ('blocked', 'stale_base_tf'))
+                self.assertFalse(m.canceling)
+                self.assertEqual(len(m.saved_results), 1)
+
+    def test_real_retention_fault_still_initiates_block(self):
+        m = self.mission()
+        self.fixture.start(m)
+        m.frame_retention.invalidate('retention_window_deadline')
+        self.fixture.tick(m)
+        self.assertEqual(m.reason, 'frame_retention_failed')
+        self.assertTrue(m.canceling)
+        self.assertEqual(m.cancel_next, 'blocked')
+        self.assertEqual(m.frame_retention.fault, 'retention_window_deadline')
+
+    def test_unconfirmed_cancel_timeout_still_overrides_original_cause(self):
+        m = self.mission()
+        self.fixture.start(m)
+        m.block('stale_base_tf')
+        self.fixture.tick(m, m.cfg['cancel_timeout_s'] + .01)
+        self.assertEqual((m.phase, m.reason), ('blocked', 'cancel_timeout_stop_not_confirmed'))
+        self.assertFalse(m.canceling)
+        self.assertEqual(len(m.nav.sent), 1)
+
     def test_enabled_requires_processed_and_compatible_limits_at_construction(self):
         for params in ({'require_retained_inspection':True,'require_processed_inspection':False},
                        {'require_retained_inspection':1},

@@ -6,7 +6,9 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-最新 run22 已通过五次停车观察，15 组实际接受的原始 RGB-D 在关闭后全部通过文件审计，并通过返航位姿检查、标注两个红色替身。但地图覆盖不足，未进入建图后的多朝向观察；收尾地图导出失败，完整静止尾段也未采齐，因此整轮尚未通过。详见 [run22 记录](docs/run22-retention-verification.md)。此前留存回执超时的失败和单次性能对照保留在 [run21 记录](docs/run21-retention-deadline.md)，没有以新结果改写旧失败。
+最新 run24 已验证独立地图 PGM/YAML 导出及终态后的静止采集，但导航遭遇 TF 过期而阻断，未完成探索或返航；前一轮 run23 的启动参数采集失败也完整保留。详见 [run23/24 记录](docs/run23-24-reliability.md)。用户目前没有小车访问条件，继续推进仿真，实车验收暂缓。
+
+此前 run22 已通过五次停车观察，15 组实际接受的原始 RGB-D 在关闭后全部通过文件审计，并通过返航位姿检查、标注两个红色替身；地图覆盖和整轮收尾仍未通过，详见 [run22 记录](docs/run22-retention-verification.md)。留存回执超时的历史失败和单次性能对照保留在 [run21 记录](docs/run21-retention-deadline.md)。
 
 打开实时窗口见 [Gazebo / RViz](docs/visualization.md)，其中包含本机从零启动的三终端命令。已结束的实验不会因打开查看客户端自动重启。
 
