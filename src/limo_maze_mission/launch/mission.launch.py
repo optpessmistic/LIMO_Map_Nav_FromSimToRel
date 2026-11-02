@@ -9,6 +9,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('autonomous', default_value='false'),
         DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument('tf_max_age_s', default_value='1.0'),
         DeclareLaunchArgument('output_dir', default_value='mission_results'),
         DeclareLaunchArgument('frontier_min_translation_m', default_value='0.20'),
         DeclareLaunchArgument('goal_arrival_margin_m', default_value='0.05'),
@@ -24,6 +25,7 @@ def generate_launch_description():
         Node(package='limo_maze_mission', executable='mission', output='screen',
              parameters=[{'autonomous': ParameterValue(LaunchConfiguration('autonomous'), value_type=bool),
                           'use_sim_time': ParameterValue(LaunchConfiguration('use_sim_time'), value_type=bool),
+                          'tf_max_age_s': ParameterValue(LaunchConfiguration('tf_max_age_s'), value_type=float),
                           'require_processed_inspection': ParameterValue(LaunchConfiguration('require_processed_inspection'), value_type=bool),
                           'require_retained_inspection': ParameterValue(LaunchConfiguration('require_retained_inspection'), value_type=bool),
                           'retention_max_samples_per_window': ParameterValue(LaunchConfiguration('retention_max_samples_per_window'), value_type=int),

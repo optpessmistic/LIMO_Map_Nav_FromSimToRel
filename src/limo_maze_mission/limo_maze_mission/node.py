@@ -302,8 +302,22 @@ class MissionNode(Node):
     def get_pose(self):
         transform = self.tf_buffer.lookup_transform(self.cfg['map_frame'], self.cfg['base_frame'], Time())
         stamp = transform.header.stamp.sec + transform.header.stamp.nanosec/1e9
-        age = self.seconds() - stamp
+        now_ros_s = self.seconds()
+        age = now_ros_s - stamp
         if age < -.1 or age > self.cfg['tf_max_age_s']:
+            if not getattr(self, '_base_tf_age_rejection_logged', False):
+                self._base_tf_age_rejection_logged = True
+                # Keep the decision's clock sample; event() timestamps logging separately.
+                try:
+                    self.event('base_tf_age_rejected', now_ros_s=now_ros_s, tf_stamp_ros_s=stamp,
+                               tf_stamp_sec=transform.header.stamp.sec,
+                               tf_stamp_nanosec=transform.header.stamp.nanosec, age_s=age,
+                               min_age_s=-.1, max_age_s=self.cfg['tf_max_age_s'],
+                               map_frame=self.cfg['map_frame'], base_frame=self.cfg['base_frame'],
+                               tf_parent_frame=transform.header.frame_id,
+                               tf_child_frame=transform.child_frame_id)
+                except Exception:
+                    pass  # Diagnostics must not replace the control-path rejection.
             raise ValueError('stale_base_tf')
         p, q = transform.transform.translation, transform.transform.rotation
         if (not all(isfinite(v) for v in (p.x, p.y, p.z, q.x, q.y, q.z, q.w)) or
