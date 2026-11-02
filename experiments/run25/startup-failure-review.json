@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "run_outcome": "startup_failed",
+  "runtime_head": "b23c983d724a1c45a92350436991589cad541bd6",
+  "elapsed_wall_s": 155.79794011899997,
+  "original_errors": [
+    "RuntimeError: Recorder exited before the survey",
+    "Retention closure audit: IndexError: list index out of range"
+  ],
+  "normal_terminal_present": false,
+  "mission_artifacts": [],
+  "reported_owned_groups": {
+    "count": 10,
+    "all_recorded_stops_empty": true,
+    "source": "exact process-*.json identities and orchestration.stops",
+    "scope": "Recorded directly owned groups only; does not replace the original aggregate cleanup flag."
+  },
+  "original_all_owned_groups_empty": false,
+  "original_recorder_inner_recheck": {
+    "remaining_check_complete": false,
+    "error": "[Errno 2] No such file or directory: '/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run25-tf-tolerance/recording/supervisor.json'"
+  },
+  "original_all_run_token_processes_absent": false,
+  "original_token_scan": {
+    "remaining": [],
+    "errors": [
+      {
+        "pid": "480",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "481",
+        "error": "PermissionError"
+      }
+    ],
+    "signals_sent": []
+  },
+  "artifact_existence": {
+    "recording": false,
+    "recording/supervisor.json": false,
+    "retained": false,
+    "retained/checkpoint.json": false,
+    "retention-shutdown.json": false,
+    "retention-audit.json": false,
+    "process-mission.json": false,
+    "process-survey.json": false,
+    "process-motion.json": false,
+    "final-save.json": false,
+    "observer.json": false
+  },
+  "epoch": {
+    "bytes": 38,
+    "sha256": "a2d5b9504aa995e35ad8037f2c3d83cfc80ce79c3340d6fc02f067c0b8755ce7",
+    "hex": "30303730343337352d306364612d343634652d623562342d3566323264353331623237310d0a",
+    "ends_with_crlf": true,
+    "bash_substitution_argument_hex": "30303730343337352d306364612d343634652d623562342d3566323264353331623237310d",
+    "argument_has_trailing_cr": true,
+    "strip_would_change_argument": true
+  },
+  "recorder_prelaunch_failure": {
+    "supported": true,
+    "exit_code": 2,
+    "diagnostic": "An explicit nonempty map epoch is required",
+    "source_validation_precedes_directory_and_child_creation": true,
+    "scope": "Matching frozen source and exit diagnostic support that inner rosbag was not launched; original nested cleanup check remains incomplete."
+  },
+  "writer_startup": {
+    "inference": "Perception was interrupted during ros2cli/rclpy import, before detector startup.",
+    "exit_code": -2,
+    "writer_exit_receipt_available": false,
+    "checkpoint_available": false,
+    "scope": "No writer startup evidence; do not claim a verified writer shutdown."
+  },
+  "retention": {
+    "audit_available": false,
+    "audit_passed": null,
+    "accepted_count": null,
+    "scope": "No mission/consumer exists; do not manufacture a 0/0 audit."
+  },
+  "tf_diagnostics": {
+    "base_tf_age_rejected_events": null,
+    "mission_not_started": true,
+    "navigation_extrapolation_matching_lines": 0,
+    "examples_first_20": [],
+    "scope": "Navigation log-line count only; this run did not test autonomous TF tolerance."
+  },
+  "runtime_inputs_verified": [
+    {
+      "source": "outputs/setup/run25-env.sh",
+      "sha256": "3afb43b463e5385c80c45250b3d76730ad92d96e26f2ef1a75f725116da7a8f4",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run25-process.py",
+      "sha256": "467842da71f64e8084eb1e77dd8ce55f3208a4e0c6b0a915f4929a7360a78da8",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run25-param-gate.py",
+      "sha256": "59b6bd88d408b55208d1f4b01468d76245339199e1424de0ae50af6ad0cb3370",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run25-preflight.py",
+      "sha256": "f9759bd4ac7bb1e0d17c8db21d6567c182d8869a7f7a1ee98abcfc5eeff3ce6f",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run25-save.py",
+      "sha256": "33c4fae7bfe37c086b0c29561d3322ee4f65a96f3ee9cbc50aaafd0a36a79b58",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/record_bounded.py",
+      "sha256": "b741853dc92f43ad868ac64194439295afe8351cbff385a8a7c419ab50b4b2c2",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/capture_motion_evidence.py",
+      "sha256": "38f270fcc33a420dd86724a58f4a11e927f44235f302f91d68bbe1f85661a83c",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/terminal_evidence.py",
+      "sha256": "f488ad6e77f9e58c1dd8d6e8a3366cbdede1f649a22505952cf088965492d898",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "tools/export_occupancy_map.py",
+      "sha256": "238269daaad3e40a052fe19d477a34cbbfad5a9a96ac7a82b4d01a1e5dde5d66",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/check_sim_runtime.py",
+      "sha256": "b27e3b7bb7dae24288357db5461ae19e5931f164245903053bac84461c6cbf66",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/odom_integrity.py",
+      "sha256": "3fc14dd8aab56f4024d2b356031483db867dc6762c9f37648128f568c6e9a78d",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "src/limo_sim_bringup/launch/sim.launch.py",
+      "sha256": "b23d77849e80021061b35359fb60e5a2c1cbb9a65318c67f72b1cbef61880312",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "src/limo_sim_bringup/scripts/spawn_once.py",
+      "sha256": "cb2fba4cea4249aec8aa09aa379537b5cb3e87e90b17a9d218f620bbe8539222",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "src/limo_sim_bringup/scripts/inspect_scene_once.py",
+      "sha256": "a86a3313a706b8e9d73689b605ad38a10c85ed0cd8508eaa142cdb49943b23d3",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/ros_smoke/run25-tf-tolerance/nav2-rpp-03m.yaml",
+      "sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+      "matches_runtime_record": true
+    }
+  ],
+  "limitations": [
+    "No motion survey or autonomous mission started in the supervisor sequence.",
+    "No independent physical stop or native terminal-tail validation exists for this startup failure.",
+    "Original aggregate owned cleanup=false and global /proc permission uncertainty are preserved.",
+    "File archiving does not establish global process absence, mapping/search success or real-robot validity."
+  ]
+}

@@ -1,0 +1,50 @@
+# run26 离线结果摘要
+
+终态与原始证据闭合后生成；不读取目标真值，不启动 ROS。
+
+run26 沿用同一代码版本的 run25 构建；归档保留原 run25 测试、构建、launch 与 CI 回执，不宣称重新构建或运行测试。
+run25 因 epoch 文件 CRLF 在录包器构造阶段失败，未进入运动，尚未评价 TF 容差效果；run26 改为独立 ASCII/LF UUID 并在启动前逐字节校验。
+
+```json
+{
+  "status": "blocked",
+  "reason": "frame_retention_failed",
+  "mission_success": false,
+  "returned_pose_verified": false,
+  "map_complete": false,
+  "visual_coverage_complete": false,
+  "mission_timed_out": false,
+  "target_definition_verified": false,
+  "coordinates_valid": true
+}
+```
+
+| 导航类型 | 下发 | 成功终态 | 失败终态（含取消） | 无记录终态 |
+|---|---:|---:|---:|---:|
+| frontier | 6 | 6 | 0 | 0 |
+
+观察动作结果：`{}`。
+TF age 首次拒绝事件：0；navigation extrapolation 匹配日志行数：0。
+TF 事件保留判据 now、TF stamp、age、阈值与 frames；日志行计数不是独立故障数，不用零条日志推断 TF 无故障。
+关闭原因：`blocked:frame_retention_failed`；显式 timeout 原因的观察动作数：0。
+
+保存的 consumer 原始接受数：18；离线文件审计：passed=False，verified=0/0。
+
+保留的 producer fault：`writer_wall_timeout`；缺少预期文件的 accepted 帧数：3；producer 未 stored 的 accepted 帧数：3。
+缺失 ID 与逐文件路径见 JSON accepted_file_inventory；文件存在性不等于严格审计通过。严格审计可能因 producer fault 提前返回 failed 0/0，其计数不替代 mission 原始接受数。
+
+地图内标注 2 个目标；返航地图误差：`null`。
+
+原生 home 括点到最终采样：`{"xy_distance_m": 1.86835592757154, "yaw_delta_rad": 2.4435714627346434}`；只有相同模型且 home 前后采样位姿相同时计算，详见 JSON 括点时间与跨度。
+
+记录的尾窗：`{"sample_count": 963, "first_sim_s": 237.736, "last_sim_s": 267.735, "span_s": 29.999000000000024, "max_gap_s": 0.036000000000001364, "x_span_m": 0.0, "y_span_m": 0.0, "yaw_span_rad": 0.0, "latest_native_receipt_fresh": true, "evidence_sufficient": true, "stationary_within_1mm_002rad": true, "entire_window_after_terminal": true, "ready_for_operator_to_end_observer": true}`。
+编排器完整终态尾窗验证：`True`；采样跨度及是否全部处于终态后以原始字段为准，不把部分尾窗当成完整通过。
+
+编排器状态：`terminal_observed`；错误：`["Producer did not confirm clean retained-frame shutdown", "Retained-frame offline audit failed"]`。
+地图快照与 posegraph 捕获：passed=`True`；错误：`[]`。
+save_map 服务是否调用：`False`；独立捕获栅格导出：passed=`True`。
+独立栅格导出与原生终态尾窗结果分别保留，不互相替代，也不称为修复 save_map 服务。
+
+所有具体阈值、失败原因、accepted ID、producer 状态、原始审计及来源 SHA256 见同名 JSON。
+
+**本摘要不把 done、有限多朝向观察或原图留存通过解释为全迷宫视觉覆盖、正式目标识别或实车验收。**

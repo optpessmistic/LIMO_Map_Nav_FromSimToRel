@@ -2,6 +2,14 @@
 
 最近整理日期：2026-11-01。以下记录区分逻辑测试、ROS 接口、物理仿真和实车；某一层通过不代表其他层通过。完整课程任务仍未验收。
 
+## run25 / run26：TF 容差实验与写盘阻断
+
+`b23c983` 增加精确 TF 拒绝诊断、launch 参数转发和独立仿真配置：RPP 等待 0.5 秒、任务 TF 年龄 1.5 秒。新增边界/诊断和配置一致性测试、既有阻断回归、构建安装核对及 CI 通过。原始 run24 的时钟核查未发现时间域混用或时间戳倒退；仍不能确定调度延迟根因。
+
+run25 因 CRLF 会话 ID 在运动前被录包器拒绝，失败证据保留。修正后的 run26 完成 6 个 frontier 导航，未记录 TF 过期拒绝或外推错误，但第 6 个观察窗口发生 writer 5 秒超时。mission 实际接受 18 帧，producer 记录 15 stored、3 failed；原严格审计因 producer fault 提前失败，其 0/0 计数不是实际接受数，也不能计作通过。
+
+地图快照/位姿图、PGM/YAML 和终态后 30 sim 秒原生静止尾段通过；自有进程组与 writer 确认退出。完整地图、搜索、返航及 mission_success 均为 false。详情见 [TF 实验记录](tf-timing-experiment.md)、[run25](../experiments/run25/README.md) 和 [run26](../experiments/run26/README.md)。
+
 ## run23 / run24：导出与收尾通过，导航仍阻断
 
 `9f682ac` 的有界后备前沿站位、独立地图导出和收尾逻辑通过针对性测试、构建、真实 ROS 启动与 CI。run23 因任务参数响应超时提前结束；run24 调整启动顺序后参数采集通过，但第一个目标 Nav2 TF 外推失败，随后任务因 `stale_base_tf` 取消。原最终原因被派生留存失效覆盖为 `frame_retention_failed`，接受帧数为 0，不代表 writer 故障。原留存审计保持失败。

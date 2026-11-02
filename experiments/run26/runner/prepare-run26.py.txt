@@ -1,0 +1,47 @@
+"""Fresh run26 after run25 CRLF epoch startup failure; no ROS or motion."""
+import ast
+import hashlib
+import json
+from pathlib import Path
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+OLD = ROOT/'outputs/ros_smoke/run25-tf-tolerance'
+OUT = ROOT/'outputs/ros_smoke/run26-tf-tolerance'
+NAMES = ('env.sh','process.py','param-gate.py','preflight.py','save.py','provenance.py','installed-check.py')
+assert not OUT.exists()
+assert not any((ROOT/('outputs/setup/run26-'+n)).exists() for n in NAMES)
+closed = json.loads((OLD/'orchestration.json').read_text())
+assert closed['elapsed_wall_s'] > 0
+assert all(x.get('remaining_check_complete') and not x.get('remaining') and not x.get('ownership_errors') for x in closed['stops'].values())
+assert (OLD/'recorder.log').read_text().strip() == 'An explicit nonempty map epoch is required'
+assert not (OLD/'recording').exists()
+assert not (OLD/'retained').exists()
+previous = json.loads((OLD/'preparation.json').read_text())
+token = 'run26-'+uuid.uuid4().hex
+helpers = {}
+for name in NAMES:
+    value = (ROOT/('outputs/setup/run25-'+name)).read_text()
+    value = value.replace(previous['token'],token).replace('run25-tf-tolerance','run26-tf-tolerance')
+    value = value.replace('run25','run26').replace('Run25','Run26').replace('RUN25','RUN26')
+    if name.endswith('.py'): ast.parse(value)
+    helpers[name] = value
+OUT.mkdir(parents=True)
+(OUT/'mission').mkdir()
+epoch = str(uuid.uuid4())
+(OUT/'epoch.txt').write_bytes((epoch+'\n').encode('ascii'))
+nav = (ROOT/'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml').read_bytes()
+(OUT/'nav2-rpp-03m.yaml').write_bytes(nav)
+for name,value in helpers.items():
+    with (ROOT/('outputs/setup/run26-'+name)).open('xb') as f: f.write(value.encode('utf-8'))
+report = {**previous,'run':OUT.name,'code_head':None,'token':token,'epoch':epoch,
+          'nav2_sha256':hashlib.sha256(nav).hexdigest(),
+          'previous_attempt':{'run':OLD.name,'status':closed['status'],'errors':closed['errors']},
+          'startup_fix':'Write epoch as explicit ASCII+LF; assert exact UUID bytes before starting ROS.'}
+(OUT/'preparation.json').write_bytes((json.dumps(report,indent=2)+'\n').encode())
+start = (ROOT/'outputs/setup/start-run25.sh').read_text().replace('run25','run26')
+old = "assert not (out/'orchestration.json').exists()"
+new = old+"\nraw_epoch = (out/'epoch.txt').read_bytes()\nassert raw_epoch == (str(__import__('uuid').UUID(raw_epoch.decode().strip()))+'\\n').encode()"
+assert start.count(old)==1
+with (ROOT/'outputs/setup/start-run26.sh').open('xb') as f: f.write(start.replace(old,new).encode())
+print(json.dumps({'prepared':str(OUT),'epoch':epoch,'token':token}))
