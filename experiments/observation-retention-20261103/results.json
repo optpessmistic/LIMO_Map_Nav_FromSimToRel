@@ -1,0 +1,48 @@
+{
+  "parent_revision": "f59525e7113905ab65e32ecf35d4b91b41adfe01",
+  "pure": {
+    "patterns": [
+      "test_frame_retention_consumer.py",
+      "test_frame_retention_node.py",
+      "test_retired_retention_receipts.py",
+      "test_observation_*.py",
+      "test_navigation_recovery.py"
+    ],
+    "tests": 156,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3,
+    "elapsed_s": 1.4369999999180436,
+    "passed": true,
+    "scope": "Pure affected regressions; opt-in ROS tests may skip. No Gazebo or physical robot."
+  },
+  "retired_receipt_new_pure": {
+    "tests": 7,
+    "passed": true
+  },
+  "real_file_audit": {
+    "tests": 14,
+    "session_id": 55359,
+    "exit_code": 0
+  },
+  "real_retention_dds": {
+    "tests": 2,
+    "session_id": 14341,
+    "exit_code": 0
+  },
+  "real_observation_action_dds": {
+    "tests": 3,
+    "session_id": 34068,
+    "exit_code": 0
+  },
+  "mission_build": {
+    "session_id": 4901,
+    "exit_code": 0
+  },
+  "root_confirmation": "All four sessions above were observed closed with exit 0 before this script was executed.",
+  "limitations": [
+    "No Gazebo/real robot test in this archive.",
+    "Retired storage receipts do not grant observation credit or full visual coverage.",
+    "Original failing regression and Windows sandbox temporary-directory failures are retained."
+  ]
+}

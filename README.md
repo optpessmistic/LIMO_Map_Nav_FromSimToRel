@@ -10,6 +10,8 @@
 
 独立诊断复现 WSL 系统钟回跳使 SYSTEM Rate 暂停约 1.9–2.4 秒，而 STEADY WallRate 最大间隔约 21.7 ms。SLAM 发布循环的单行补丁已构建，run30 核实实际加载新库；运行期间仍观测到系统钟回跳。本轮结果支持该修复，但不能保证消除所有 TF 延迟，详见 [WSL 时钟与 TF](docs/wsl-clock-tf.md)。
 
+针对 run30 剩余问题，已改为同站连续多朝向观察，并保留退休窗口在原截止前收到的存储回执；旧帧不计入新窗口或恢复观察成功。受影响纯回归、真实 ROS Action/DDS、文件审计与任务包构建通过，新整车对照待验证。详见 [后续修复记录](docs/validation.md)；完整视觉覆盖仍需独立的目标可见性与覆盖证据，不能由有限队列完成替代。
+
 后续 [输入管道对照与改进](docs/writer-pipe-timing.md) 已完成，管道扩容保留原期限并通过测试、构建及 CI。run27 的启动失败完整保留；run28 新增启动计时后在 17.21 秒内就绪，三组接受的 RGB-D 均写入且没有 writer 故障。任务失败使 consumer 失效，整体留存审计仍失败，不能把文件已写入等同于整轮通过。见 [run27](experiments/run27/README.md) 与 [run28 档案](experiments/run28/README.md)。
 
 此前 run22 已通过五次停车观察，15 组实际接受的原始 RGB-D 在关闭后全部通过文件审计，并通过返航位姿检查、标注两个红色替身；地图覆盖和整轮收尾仍未通过，详见 [run22 记录](docs/run22-retention-verification.md)。留存回执超时的历史失败和单次性能对照保留在 [run21 记录](docs/run21-retention-deadline.md)。

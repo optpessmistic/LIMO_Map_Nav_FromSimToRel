@@ -1,0 +1,121 @@
+"""Archive closed focused validation, including the real DDS input files."""
+import hashlib
+import io
+import json
+from pathlib import Path
+import subprocess
+import tarfile
+
+root = Path(__file__).resolve().parents[2]
+setup = root/'outputs/setup'
+dest = root/'experiments/observation-retention-20261103'
+assert not dest.exists(), 'Preserve previous archives'
+payload, source_records = {}, {}
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+def encoded(value):
+    return (json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False)+'\n').encode()
+
+def keep(path, name):
+    assert path.is_file() and not path.is_symlink()
+    raw = path.read_bytes()
+    payload[name] = raw
+    source_records[path.relative_to(root).as_posix()] = {'archive': name, 'sha256': sha(raw)}
+
+logs = ('retired-receipts-before.log', 'retired-receipts-before-02.log', 'retired-receipts-after.log',
+        'observation-retention-pure.log', 'observation-retention-pure-01.json',
+        'observation-retention-pure-02.log', 'observation-retention-pure.json',
+        'retired-receipts-file-audit.log', 'retired-receipts-ros.log', 'observation-route-ros.log',
+        'observation-retention-build.log', 'observation-retention-installed.json')
+for name in logs:
+    keep(setup/name, 'validation/'+name)
+for name in ('check-observation-retention.py', 'build-observation-retention.sh',
+             'run-retired-receipts-ros.sh', 'run-observation-route-ros.sh',
+             'archive-observation-retention.py'):
+    keep(setup/name, 'runner/'+name+'.txt')
+for name in ('src/limo_maze_mission/limo_maze_mission/observation.py',
+             'src/limo_maze_mission/limo_maze_mission/retention.py',
+             'tests/test_observation_route.py', 'tests/test_retired_retention_receipts.py',
+             'tests/test_frame_retention_ros.py', 'tests/test_frame_retention_audit.py'):
+    keep(root/name, 'source/'+name.replace('/', '__')+'.txt')
+
+dds_root = root/'outputs/frame_retired_ros_20261103'
+cases = sorted(path for path in dds_root.iterdir() if path.is_dir())
+assert len(cases) == 2
+audits = {}
+for case in cases:
+    audit = json.loads((case/'audit.json').read_bytes())
+    cleanup = json.loads((case/'cleanup.json').read_bytes())
+    shutdown = json.loads((case/'producer-shutdown.json').read_bytes())
+    assert audit['passed'] and audit['accepted_count'] == audit['verified_count'] == 3
+    assert all(cleanup[k] is True for k in ('source_destroyed', 'executor_shutdown', 'context_shutdown', 'owned_writer_exit_confirmed'))
+    assert cleanup['errors'] == [] and shutdown['fault'] is None and shutdown['writer'] is None
+    audits[case.name] = {'audit': audit, 'cleanup': cleanup}
+raw_dds = {}
+for path in sorted(dds_root.rglob('*')):
+    assert not path.is_symlink()
+    if path.is_file():
+        raw_dds[path.relative_to(dds_root).as_posix()] = path.read_bytes()
+buffer = io.BytesIO()
+with tarfile.open(fileobj=buffer, mode='w:gz') as archive:
+    for name, raw in raw_dds.items():
+        info = tarfile.TarInfo(name)
+        info.size, info.mode, info.mtime = len(raw), 0o644, 0
+        archive.addfile(info, io.BytesIO(raw))
+payload['dds-originals.tar.gz'] = buffer.getvalue()
+with tarfile.open(fileobj=io.BytesIO(payload['dds-originals.tar.gz']), mode='r:gz') as archive:
+    assert set(archive.getnames()) == set(raw_dds)
+    for member in archive.getmembers():
+        assert member.isfile() and archive.extractfile(member).read() == raw_dds[member.name]
+payload['dds-originals-manifest.json'] = encoded({
+    'source_directory': dds_root.relative_to(root).as_posix(),
+    'members': {name: {'bytes': len(raw), 'sha256': sha(raw)} for name,raw in raw_dds.items()},
+    'archived_member_bytes_verified': True, 'closed_case_audits': audits})
+payload['results.json'] = encoded({
+    'parent_revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
+    'pure': json.loads(payload['validation/observation-retention-pure.json']),
+    'retired_receipt_new_pure': {'tests': 7, 'passed': True},
+    'real_file_audit': {'tests': 14, 'session_id': 55359, 'exit_code': 0},
+    'real_retention_dds': {'tests': 2, 'session_id': 14341, 'exit_code': 0},
+    'real_observation_action_dds': {'tests': 3, 'session_id': 34068, 'exit_code': 0},
+    'mission_build': {'session_id': 4901, 'exit_code': 0},
+    'root_confirmation': 'All four sessions above were observed closed with exit 0 before this script was executed.',
+    'limitations': ['No Gazebo/real robot test in this archive.',
+        'Retired storage receipts do not grant observation credit or full visual coverage.',
+        'Original failing regression and Windows sandbox temporary-directory failures are retained.']})
+payload['manifest.json'] = encoded(source_records)
+payload['.gitattributes'] = b'* -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol\n'
+payload['README.md'] = ("# Observation routing and retired-window receipt validation\n\n"
+    "Frozen observation actions are reordered by station and known-safe grid path length. "
+    "Retired windows may preserve valid storage receipts received before their original deadline, "
+    "without restoring observation credit or changing the replacement window.\n\n"
+    "See results.json and original validation logs. The pure suite has 153 passes and 3 ROS skips; "
+    "the three skipped Action/DDS cases passed separately. Two real retention DDS cases and "
+    "14 real-file audit regressions also passed. Mission build and installed-source hashes are retained. "
+    "The real DDS fixture uses synthetic blank RGB-D, exact synthetic TF and a fixed pose, not robot motion.\n\n"
+    "dds-originals.tar.gz contains both complete test directories, including six actual accepted "
+    "RGB-D pairs, metadata, final producer checkpoints, consumer snapshots and cleanup records. "
+    "Every member was compared byte for byte; its size and SHA256 are in dds-originals-manifest.json. "
+    "The retired test controls admission/worker order by pausing the producer timer before accepted "
+    "requests are queued, then restoring it after retirement; it does not fabricate stored receipts "
+    "or extend the original inspection deadline.\n\n"
+    "Source snapshots bind these checks to the precommit working files; parent_revision alone "
+    "does not identify the changed code. Historical run30 remains 33/36 and is not regraded. "
+    "This archive does not claim full search coverage or mission success.\n\n"
+    "Verify archive files using sha256sum -c SHA256SUMS; tar members have their own manifest.\n").encode()
+for path, record in source_records.items():
+    assert sha((root/path).read_bytes()) == record['sha256'], path
+dest.mkdir(parents=True)
+for name, raw in payload.items():
+    target = dest/name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open('xb') as stream:
+        stream.write(raw)
+    assert target.read_bytes() == raw
+checksums = ''.join(sha(raw)+'  '+name+'\n' for name,raw in sorted(payload.items()))
+(dest/'SHA256SUMS').write_bytes(checksums.encode())
+print(json.dumps({'archive': str(dest), 'files': len(payload)+1,
+    'bytes': sum(map(len,payload.values()))+len(checksums), 'dds_members': len(raw_dds),
+    'sha256sums_sha256': sha(checksums.encode()), 'member_bytes_verified': True}, indent=2))

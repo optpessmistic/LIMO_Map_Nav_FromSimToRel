@@ -5,8 +5,9 @@ With Jazzy and workspace dependencies sourced, in an otherwise empty domain:
     ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST /usr/bin/python3 -B -m unittest \
     discover -s tests -p test_frame_retention_ros.py -v
 
-FRAME_RETENTION_ROS_OUTPUT may name a NEW output directory. Otherwise a
-small temporary directory is retained and printed, including on failure. Three
+FRAME_RETENTION_ROS_OUTPUT may name a NEW parent output directory, with one
+subdirectory per test. Otherwise a small temporary directory is retained and
+printed for each test, including on failure. Three
 non-red blank images have distinct blue/depth bytes to expose substitution.
 Each image is published once; no replacement frames or retries are allowed.
 Actual RedRGBDBaseline callbacks receive Image/CameraInfo through DDS; their
@@ -49,12 +50,22 @@ N = 1_000_000_000
 
 @unittest.skipUnless(ENABLED, 'Set RUN_FRAME_RETENTION_ROS_TEST=1 with Jazzy, domain 74 / LOCALHOST')
 class FrameRetentionDDSTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.output_parent = None
+        destination = os.environ.get('FRAME_RETENTION_ROS_OUTPUT')
+        if destination:
+            candidate = Path(destination).absolute()
+            candidate.mkdir(parents=True, exist_ok=False)
+            cls.output_parent = candidate.resolve()
+
     def setUp(self):
         from rclpy.context import Context
         from rclpy.executors import SingleThreadedExecutor
         self.context = self.executor = self.probe = self.source = self.listener = None
         self.output = self.consumer = self.ledger = self.shutdown_report = None
         self.records, self.decisions, self.requests, self.results, self.inputs = [], [], [], [], []
+        self.result_decisions = []
         self.callback_errors = []
         self.closed_source = False
         self.old_pythonpath = os.environ.get('PYTHONPATH')
@@ -63,10 +74,9 @@ class FrameRetentionDDSTests(unittest.TestCase):
         # test, rather than accidentally importing a stale installed protocol.
         os.environ['PYTHONPATH'] = os.pathsep.join(
             [str(p) for p in PACKAGE_ROOTS] + ([self.old_pythonpath] if self.old_pythonpath else []))
-        destination = os.environ.get('FRAME_RETENTION_ROS_OUTPUT')
-        if destination:
-            candidate = Path(destination).absolute()
-            candidate.mkdir(parents=True, exist_ok=False)
+        if self.output_parent is not None:
+            candidate = self.output_parent / self._testMethodName
+            candidate.mkdir(exist_ok=False)
             self.output = candidate.resolve()
         else:
             self.output = Path(tempfile.mkdtemp(prefix='limo-retention-dds-')).resolve()
@@ -91,6 +101,7 @@ class FrameRetentionDDSTests(unittest.TestCase):
     def diagnostic(self):
         return {'records': self.records, 'decisions': self.decisions,
                 'request_count': len(self.requests), 'result_count': len(self.results),
+                'result_decisions': self.result_decisions,
                 'callback_errors': self.callback_errors,
                 'ledger': self.ledger.snapshot() if self.ledger else None,
                 'consumer': self.consumer.snapshot() if self.consumer else None,
@@ -130,7 +141,8 @@ class FrameRetentionDDSTests(unittest.TestCase):
         try:
             self.save('input-identities.json', self.inputs)
             self.save('dds-metadata.json', {'records': self.records, 'requests': self.requests,
-                                           'results': self.results, 'decisions': self.decisions})
+                                           'results': self.results, 'decisions': self.decisions,
+                                           'result_decisions': self.result_decisions})
             if self.consumer is not None:
                 self.save('consumer.json', self.consumer.snapshot())
             if self.ledger is not None:
@@ -282,7 +294,11 @@ class FrameRetentionDDSTests(unittest.TestCase):
         try:
             result = json.loads(message.data)
             self.results.append(result)
-            self.consumer.on_result(result, time.monotonic())
+            received_wall = time.monotonic()
+            decision = self.consumer.on_result(result, received_wall)
+            self.result_decisions.append({'retention_id': result['retention_id'],
+                'status': result['status'], 'received_wall': received_wall,
+                'decision': decision})
         except Exception as exc:
             self.callback_errors.append('result:' + repr(exc))
 
@@ -353,6 +369,82 @@ class FrameRetentionDDSTests(unittest.TestCase):
         self.assertEqual(self.records[index]['processing']['detection_count'], 0)
         self.assertEqual(self.records[index]['processing']['empty_reason'], 'no_red_candidates')
 
+    def assert_strict_file_audit(self, snapshot):
+        self.close_source()  # Audit only after the source and all owned writers are closed.
+        result = self.audit(snapshot, self.output / 'retained')
+        self.save('audit.json', result)
+        self.assertTrue(result['passed'], result)
+        self.assertEqual(result['accepted_count'], 3)
+        self.assertEqual(result['verified_count'], 3)
+        self.assertEqual(result['errors'], [])
+
+    def test_retired_window_keeps_real_dds_receipts_without_crediting_replacement(self):
+        self.setup_chain()
+        # Control callback ordering, not writer speed: admission still uses DDS,
+        # but no writer starts until all three accepted requests are retired.
+        # Resetting this real timer below resumes the production worker path.
+        self.source.retention_timer.cancel()
+        for index in range(3):
+            if index:
+                self.spin(.12)
+            self.publish_blank_pair(index)
+        self.wait(lambda: len(self.source.retention.results()) == 3,
+                  'all accepted requests reached the producer through DDS')
+        self.assertEqual(self.ledger.accepted_frames, 3)
+        self.assertEqual(self.ledger.status, 'satisfied')
+        self.assertEqual(len(self.requests), 3)
+        self.assertEqual([r['status'] for r in self.source.retention.results()], ['queued']*3)
+        self.assertFalse(any(r['status'] == 'stored' for r in self.results))
+        old = self.consumer.current
+        original_deadline = old['deadline_wall']
+        binding = dict(old['binding'])
+        requests = json.loads(json.dumps(self.requests))
+        retired_wall = time.monotonic()
+        self.consumer.retire('inspection_window_reset', retired_wall)
+        self.ledger.reset_window(self.probe.get_clock().now().nanoseconds,
+                                 'stationarity_established')
+        self.assertTrue(self.consumer.begin_window(self.ledger, self.token, time.monotonic()))
+        replacement = self.consumer.current
+        self.assertIsNot(replacement, old)
+        self.assertEqual(self.ledger.deadline_wall, original_deadline)
+        self.assertEqual(replacement['deadline_wall'], original_deadline)
+        self.source.retention_timer.reset()
+        self.wait(lambda: all(self.consumer.slots[rid]['state'] == 'stored' for rid in old['ids']),
+                  'real durable DDS receipts preserved for the retired window',
+                  timeout=min(10., max(0., original_deadline-time.monotonic())))
+        self.assertLess(time.monotonic(), original_deadline)
+        self.assertEqual((old['state'], old['binding'], old['closed_wall'], old['deadline_wall']),
+                         ('retired', binding, retired_wall, original_deadline))
+        self.assertTrue(old['processing_satisfied'])
+        self.assertEqual((replacement['state'], replacement['ids'], self.ledger.accepted_frames),
+                         ('collecting', [], 0))
+        self.assertFalse(self.consumer.current_satisfied(self.ledger, self.token, time.monotonic()))
+        self.assertEqual((len(self.inputs), len(self.records), len(self.requests)), (3, 3, 3))
+        self.assertEqual(self.requests, requests)
+        snapshot = self.consumer.snapshot()
+        accepted = snapshot['windows'][0]['accepted']
+        self.assertEqual([e['request'] for e in accepted], requests)
+        confirmed = [row for row in self.result_decisions
+                     if row['status'] == 'stored' and row['decision'].get('retired_storage_confirmed')]
+        self.assertEqual({row['retention_id'] for row in confirmed}, set(old['ids']))
+        self.assertFalse(any(row['decision'].get('credited') for row in self.result_decisions))
+        for row in confirmed:
+            self.assertFalse(row['decision']['credited'])
+            self.assertEqual(row['status'], 'stored')
+            self.assertGreaterEqual(row['received_wall'], retired_wall)
+            self.assertLess(row['received_wall'], original_deadline)
+        for original, entry in zip(self.inputs, accepted):
+            self.assertEqual(entry['request']['sample']['rgb_sha256'], original['rgb_sha256'])
+            self.assertEqual(entry['request']['sample']['depth_sha256'], original['depth_sha256'])
+            self.assertGreaterEqual(entry['stored_receipt_wall'], retired_wall)
+            self.assertLess(entry['stored_receipt_wall'], original_deadline)
+            self.assertTrue(entry['result']['checkpoint_persisted'])
+        self.save('retired-receipt-order.json', {'retired_wall': retired_wall,
+            'original_deadline_wall': original_deadline, 'result_decisions': self.result_decisions,
+            'replacement_ledger': self.ledger.snapshot()})
+        self.save('consumer.json', snapshot)
+        self.assert_strict_file_audit(snapshot)
+
     def test_exact_three_blank_frames_survive_dds_worker_shutdown_and_offline_audit(self):
         self.setup_chain()
         for index in range(3):
@@ -389,15 +481,10 @@ class FrameRetentionDDSTests(unittest.TestCase):
         self.save('consumer.json', snapshot)
         self.save('input-identities.json', self.inputs)
         self.save('dds-metadata.json', {'records': self.records, 'requests': self.requests,
-                                       'results': self.results, 'decisions': self.decisions})
+                                       'results': self.results, 'decisions': self.decisions,
+                                       'result_decisions': self.result_decisions})
         self.save('ledger.json', self.ledger.snapshot())
-        self.close_source()  # Audit only after the source and all owned writers are closed.
-        result = self.audit(snapshot, self.output / 'retained')
-        self.save('audit.json', result)
-        self.assertTrue(result['passed'], result)
-        self.assertEqual(result['accepted_count'], 3)
-        self.assertEqual(result['verified_count'], 3)
-        self.assertEqual(result['errors'], [])
+        self.assert_strict_file_audit(snapshot)
 
 
 if __name__ == '__main__':

@@ -87,6 +87,20 @@ class AuditTests(unittest.TestCase):
         self.accepted[1]['result']['checkpoint_persisted'] = False
         self.assertFalse(audit(self.consumer, self.root)['passed'])
 
+    def test_retired_window_still_requires_each_exact_consumer_receipt(self):
+        window = self.consumer['windows'][0]
+        window.update(state='retired', reason='inspection_window_reset')
+        self.assertTrue(audit(self.consumer, self.root)['passed'])
+        # Producer files/checkpoint stay complete; retirement cannot exempt a
+        # missing consumer confirmation or replace it with another stored frame.
+        missing = copy.deepcopy(self.consumer)
+        missing['windows'][0]['accepted'][1].update(state='pending', result=None)
+        result = audit(missing, self.root)
+        self.assertFalse(result['passed'])
+        self.assertEqual(result['accepted_count'], 3)
+        self.assertEqual(result['verified_count'], 2)
+        self.assertEqual(result['frames'][1]['error'], 'consumer_receipt_not_confirmed')
+
     def test_symlink_to_other_frame_is_rejected(self):
         path = self.root / self.accepted[1]['request_sha256'] / 'rgb.bin'
         path.unlink()

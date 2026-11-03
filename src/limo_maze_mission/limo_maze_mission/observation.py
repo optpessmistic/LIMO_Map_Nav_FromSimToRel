@@ -90,6 +90,39 @@ def endpoint_radius(grid, policy, offset=0.):
             hypot(grid.resolution, grid.resolution)/2+offset)
 
 
+def station_first_order(grid, pose, distances, views):
+    """Reorder exactly the frozen actions using known-safe grid path lengths.
+
+    Visit a nearest remaining station, then its remaining headings with the
+    smallest planned yaw change. This is a deterministic greedy route, not a
+    globally optimal path or a prediction of Nav2's actual travel/turning time.
+    The original reachable component already passed the footprint checks.
+    Later dispatches must still revalidate safety on the current raw map.
+    """
+    by_station = {}
+    for action_id, view in views.items():
+        by_station.setdefault(view.station_id, []).append(action_id)
+    cells = {station: grid.to_cell(views[actions[0]].goal.x, views[actions[0]].goal.y)
+             for station, actions in by_station.items()}
+    order, remaining = [], set(by_station)
+    steps, yaw = distances, pose[2]
+    while remaining:
+        station = min(remaining, key=lambda s: (steps[cells[s]], s))
+        remaining.remove(station)
+        actions = list(by_station[station])
+        while actions:
+            action_id = min(actions, key=lambda a: (
+                abs(core.angle_delta(views[a].goal.yaw, yaw)), views[a].heading_index, a))
+            actions.remove(action_id)
+            order.append(action_id)
+            yaw = views[action_id].goal.yaw
+        if remaining:
+            # Same conservative four-neighbor graph as the production planner;
+            # nearby coordinates across a wall may require a long detour.
+            steps = grid.component(cells[station], distances)
+    return order
+
+
 class ObservationQueue:
     """At most max_dispatches attempts, independent of contains()/detector claims.
 
@@ -135,8 +168,8 @@ class ObservationQueue:
         headings = [core.angle_delta(2*pi*i/policy.headings_per_station, 0.)
                     for i in range(policy.headings_per_station)]
         heading_order = sorted(range(len(headings)), key=lambda i: (abs(core.angle_delta(headings[i], pose[2])), i))
-        # Round-robin station headings gives a bounded partial queue a chance to
-        # visit multiple stations; no guarantee of globally shortest travel.
+        # Keep the original round-robin selection/IDs, including a truncated
+        # max_dispatches set. Only its execution order is optimized below.
         for heading_index in heading_order:
             for station_index, xy in enumerate(stations):
                 if len(self.views) >= policy.max_dispatches:
@@ -147,6 +180,7 @@ class ObservationQueue:
                 self.views[action_id] = view
                 self.records[action_id] = {'state': 'pending', 'attempts': 0, 'outcomes': []}
                 self.pending.append(action_id)
+        self.pending = deque(station_first_order(observed_grid, pose, distances, self.views))
 
     def invalidate(self, reason):
         if not self.invalid_reason:

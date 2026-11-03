@@ -153,7 +153,8 @@ class Consumer:
         # No transport call occurs until the exact accepted slot is frozen.
         rid = payload['retention_id']
         self.slots[rid] = {'request': raw, 'sha256': sha(raw), 'window': w['number'], 'state': 'pending',
-                           'reason': None, 'result': None, 'stored_receipt_sha256': None}
+                           'reason': None, 'result': None, 'stored_receipt_sha256': None,
+                           'stored_receipt_wall': None}
         w['ids'].append(rid)
         w['ledger_accepted_count'] = ledger.accepted_frames
         self.reserved_bytes += SLOT_RESERVATION
@@ -210,9 +211,14 @@ class Consumer:
         if fingerprint != slot['sha256']:
             self._fail(w, 'retention_result_identity_conflict', fatal=is_current or w['state'] == 'complete')
             return {'matched': False, 'reason': 'request_sha256_mismatch', 'window': w['number']}
-        if w['state'] in ('retired', 'failed'):
+        retired = w['state'] == 'retired'
+        if retired or w['state'] == 'failed':
             w['late_results'] = min(w['late_results']+1, 2**63-1)
-            return {'matched': True, 'credited': False, 'reason': 'closed_window', 'window': w['number']}
+            if not retired or now >= w['deadline_wall'] or self.fault:
+                return {'matched': True, 'credited': False, 'reason': 'closed_window', 'window': w['number']}
+            # Retirement removes observation authority, not the accepted file
+            # inventory. Validate storage receipts before the ORIGINAL deadline
+            # without reopening this window or crediting a replacement Ledger.
         status = result.get('status')
         if status == 'failed':
             slot.update(state='failed', reason='producer_reported_failed', result=raw)
@@ -232,13 +238,17 @@ class Consumer:
                              slot['stored_receipt_sha256'] != receipt_hash):
                 self._fail(w, 'invalid_or_conflicting_stored_receipt', fatal=is_current or w['state'] == 'complete')
             else:
+                if slot['stored_receipt_wall'] is None:
+                    slot['stored_receipt_wall'] = now
                 slot.update(state='stored', result=raw, stored_receipt_sha256=receipt_hash)
                 self._maybe_complete(w, now)
         elif status not in ('queued', 'writing', 'checkpoint_pending', 'stored'):
             self._fail(w, 'invalid_result_status', fatal=is_current or w['state'] == 'complete')
         # Pending/older queued messages never downgrade a credited stored slot.
         return {'matched': True, 'window': w['number'], 'current': is_current,
-                'credited': slot['state'] == 'stored', 'consumer_fault': self.fault}
+                'credited': slot['state'] == 'stored' and not retired,
+                'retired_storage_confirmed': retired and w['state'] == 'retired' and slot['state'] == 'stored',
+                'consumer_fault': self.fault}
 
     def tick(self, now):
         if not self.policy.enabled:
@@ -278,6 +288,7 @@ class Consumer:
             windows.append({**w, 'accepted': [{
                 'request': json.loads(self.slots[rid]['request']), 'request_sha256': self.slots[rid]['sha256'],
                 'state': self.slots[rid]['state'], 'reason': self.slots[rid]['reason'],
+                'stored_receipt_wall': self.slots[rid]['stored_receipt_wall'],
                 'result': json.loads(self.slots[rid]['result']) if self.slots[rid]['result'] else None}
                 for rid in w['ids']]})
         return json.loads(canonical({'enabled': self.policy.enabled, 'consumer_session': self.session,

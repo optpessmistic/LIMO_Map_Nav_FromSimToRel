@@ -1,0 +1,54 @@
+test_before_deadline_stored_receipts_preserve_retired_evidence_only (test_retired_retention_receipts.RetiredReceiptTests.test_before_deadline_stored_receipts_preserve_retired_evidence_only) ... ERROR
+test_duplicates_preserve_first_receipt_time_and_conflicts_fail_old_window (test_retired_retention_receipts.RetiredReceiptTests.test_duplicates_preserve_first_receipt_time_and_conflicts_fail_old_window) ... ERROR
+test_failed_window_and_consumer_fault_are_never_repaired (test_retired_retention_receipts.RetiredReceiptTests.test_failed_window_and_consumer_fault_are_never_repaired) ... ok
+test_original_deadline_is_not_extended_by_a_later_window (test_retired_retention_receipts.RetiredReceiptTests.test_original_deadline_is_not_extended_by_a_later_window) ... ok
+test_pending_and_unpersisted_receipts_do_not_confirm_storage (test_retired_retention_receipts.RetiredReceiptTests.test_pending_and_unpersisted_receipts_do_not_confirm_storage) ... ok
+test_retired_current_window_cannot_be_reopened_by_receipts (test_retired_retention_receipts.RetiredReceiptTests.test_retired_current_window_cannot_be_reopened_by_receipts) ... ok
+test_wrong_binding_and_invalid_stored_receipts_are_rejected (test_retired_retention_receipts.RetiredReceiptTests.test_wrong_binding_and_invalid_stored_receipts_are_rejected) ... 
+  test_wrong_binding_and_invalid_stored_receipts_are_rejected (test_retired_retention_receipts.RetiredReceiptTests.test_wrong_binding_and_invalid_stored_receipts_are_rejected) (changes={'writer_owned': True}) ... FAIL
+  test_wrong_binding_and_invalid_stored_receipts_are_rejected (test_retired_retention_receipts.RetiredReceiptTests.test_wrong_binding_and_invalid_stored_receipts_are_rejected) (changes={'receipt': None}) ... FAIL
+
+======================================================================
+ERROR: test_before_deadline_stored_receipts_preserve_retired_evidence_only (test_retired_retention_receipts.RetiredReceiptTests.test_before_deadline_stored_receipts_preserve_retired_evidence_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Admin\.codex\worktrees\0dd9\Personal_Plan\LIMO_Map_Nav_FromSimToRel\tests\test_retired_retention_receipts.py", line 31, in test_before_deadline_stored_receipts_preserve_retired_evidence_only
+    self.assertTrue(decision['retired_storage_confirmed'])
+                    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'retired_storage_confirmed'
+
+======================================================================
+ERROR: test_duplicates_preserve_first_receipt_time_and_conflicts_fail_old_window (test_retired_retention_receipts.RetiredReceiptTests.test_duplicates_preserve_first_receipt_time_and_conflicts_fail_old_window)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Admin\.codex\worktrees\0dd9\Personal_Plan\LIMO_Map_Nav_FromSimToRel\tests\test_retired_retention_receipts.py", line 90, in test_duplicates_preserve_first_receipt_time_and_conflicts_fail_old_window
+    self.assertEqual(slot['stored_receipt_wall'], 100.8)
+                     ~~~~^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'stored_receipt_wall'
+
+======================================================================
+FAIL: test_wrong_binding_and_invalid_stored_receipts_are_rejected (test_retired_retention_receipts.RetiredReceiptTests.test_wrong_binding_and_invalid_stored_receipts_are_rejected) (changes={'writer_owned': True})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Admin\.codex\worktrees\0dd9\Personal_Plan\LIMO_Map_Nav_FromSimToRel\tests\test_retired_retention_receipts.py", line 104, in test_wrong_binding_and_invalid_stored_receipts_are_rejected
+    self.assertEqual(old['state'], 'failed')
+AssertionError: 'retired' != 'failed'
+- retired
++ failed
+
+
+======================================================================
+FAIL: test_wrong_binding_and_invalid_stored_receipts_are_rejected (test_retired_retention_receipts.RetiredReceiptTests.test_wrong_binding_and_invalid_stored_receipts_are_rejected) (changes={'receipt': None})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Admin\.codex\worktrees\0dd9\Personal_Plan\LIMO_Map_Nav_FromSimToRel\tests\test_retired_retention_receipts.py", line 104, in test_wrong_binding_and_invalid_stored_receipts_are_rejected
+    self.assertEqual(old['state'], 'failed')
+AssertionError: 'retired' != 'failed'
+- retired
++ failed
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.018s
+
+FAILED (failures=2, errors=2)
