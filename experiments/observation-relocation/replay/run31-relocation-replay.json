@@ -1,0 +1,1863 @@
+{
+  "schema_version": 1,
+  "offline_replay_only": true,
+  "motion_commanded": false,
+  "navigation_success_claimed": false,
+  "new_observation_completions_claimed": 0,
+  "visual_coverage_claimed": false,
+  "mission_success_claimed": false,
+  "sources": {
+    "experiments/run31/observer-snapshots/0032-phase-observation_select.json": {
+      "bytes": 19977,
+      "sha256": "4b402135965c479911b68266ad006705b62fb0fa20c3aa46ddce3a009085c73e"
+    },
+    "experiments/run31/observer-snapshots/0058-phase-canceling.json": {
+      "bytes": 35246,
+      "sha256": "7e25c93247abf13ff9186fe0525c3c83dd1692e1b1832c4401ae38ab19ca4bcf"
+    },
+    "experiments/run31/mission/mission_20261103_014821.json": {
+      "bytes": 252147,
+      "sha256": "e3fb7e29973f2faf24f67802cd8cd9982e9dc99d648fe05967b11c19a8d2c902"
+    },
+    "experiments/run31/validation/run31-skip-analysis.json": {
+      "bytes": 66366,
+      "sha256": "023536da7aba6f6790e204e85e1dc8aa6f837e063399f655de77c35b6b989195"
+    },
+    "src/limo_maze_mission/limo_maze_mission/observation.py": {
+      "bytes": 19767,
+      "sha256": "878e071f6cf72b816bda9e732a907814578b6ff2f704e5ef438e28ea97eccd30"
+    },
+    "src/limo_maze_mission/limo_maze_mission/core.py": {
+      "bytes": 28916,
+      "sha256": "44295e9560023829669f7dfeff07bc2f0a9021e5a7ce78111d936055179ff774"
+    }
+  },
+  "map_epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+  "original_mission_flags": {
+    "status": "done",
+    "reason": "bounded_observation_exhausted;final_observation_checks_incomplete",
+    "map_complete": true,
+    "visual_coverage_complete": false,
+    "returned_pose_verified": true,
+    "mission_success": false
+  },
+  "original_recorded_queue": {
+    "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+    "invalidated": false,
+    "invalid_reason": null,
+    "active_action_id": null,
+    "active_dispatch_id": null,
+    "cancel_required": false,
+    "planned_stations": 3,
+    "planned_views": 12,
+    "dispatches": 5,
+    "dispatch_budget": 12,
+    "pending_views": 0,
+    "state_counts": {
+      "completed": 5,
+      "skipped_unsafe_or_unreachable": 7
+    },
+    "all_planned_actions_completed": false,
+    "visual_coverage_claimed": false,
+    "mission_success_claimed": false,
+    "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+  },
+  "first_snapshot_map_stamp_ns": 221375000000,
+  "fixed_remaining_map_stamp_ns": 278250000000,
+  "map_stamp_conversion": "integer nanoseconds from saved map stamp decimal seconds",
+  "fixed_remaining_pose": [
+    0.3523893105171874,
+    -0.0034605950960583335,
+    -1.6960736951306485
+  ],
+  "history_scope": "0032 map and pose with the five recorded successful outcomes construct queue state only; historical per-dispatch map/pose is not claimed.",
+  "enumeration_scope": "Every hypothetical remaining dispatch is finished canceled solely to expose the next action; 0058 map AND pose remain unchanged.",
+  "variants": {
+    "default_disabled": {
+      "policy": {
+        "robot_radius_m": 0.25,
+        "arrival_margin_m": 0.05,
+        "station_spacing_m": 1.0,
+        "max_stations": 3,
+        "headings_per_station": 4,
+        "max_dispatches": 12,
+        "max_attempts_per_view": 1,
+        "max_grid_cells": 250000,
+        "relocation_radius_m": 0.0
+      },
+      "initial_order": [
+        "observation-0001",
+        "observation-0004",
+        "observation-0010",
+        "observation-0007",
+        "observation-0009",
+        "observation-0003",
+        "observation-0006",
+        "observation-0012",
+        "observation-0011",
+        "observation-0005",
+        "observation-0002",
+        "observation-0008"
+      ],
+      "planned_action_ids": [
+        "observation-0001",
+        "observation-0002",
+        "observation-0003",
+        "observation-0004",
+        "observation-0005",
+        "observation-0006",
+        "observation-0007",
+        "observation-0008",
+        "observation-0009",
+        "observation-0010",
+        "observation-0011",
+        "observation-0012"
+      ],
+      "actual_first_five_matches": [
+        {
+          "action_id": "observation-0001",
+          "dispatch_id": 1,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0004",
+          "dispatch_id": 2,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0010",
+          "dispatch_id": 3,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0007",
+          "dispatch_id": 4,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0009",
+          "dispatch_id": 5,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        }
+      ],
+      "remaining_decisions": [
+        {
+          "state": "exhausted",
+          "view": null,
+          "reason": "remaining_views_unsafe_or_unreachable",
+          "dispatch_id": null,
+          "validation": null
+        }
+      ],
+      "remaining_skips": [
+        {
+          "action_id": "observation-0003",
+          "station_id": 2,
+          "heading_index": 0,
+          "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+          "map": {
+            "width": 84,
+            "height": 53,
+            "resolution": 0.05000000074505806,
+            "origin": [
+              -0.5018672475186436,
+              -2.1192623631253813,
+              0.0
+            ],
+            "stamp_ns": 278250000000,
+            "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+          },
+          "pose": [
+            0.3523893105171874,
+            -0.0034605950960583335,
+            -1.6960736951306485
+          ],
+          "planned_goal": {
+            "x": 0.33067193222009106,
+            "y": 0.005737668539586238,
+            "yaw": 0.0,
+            "kind": "observation_queue",
+            "anchor": [
+              0.33067193222009106,
+              0.005737668539586238
+            ]
+          },
+          "original_check": {
+            "xy": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "cell": [
+              16,
+              42
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 1,
+            "endpoint_safe": false
+          },
+          "preferred_check": {
+            "xy": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "cell": [
+              16,
+              42
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 1,
+            "endpoint_safe": false
+          },
+          "relocation_radius_m": 0.0,
+          "local_candidate_count": 0,
+          "selected_check": null,
+          "selected_shift_from_anchor_m": null,
+          "relocation_reason": "relocation_disabled",
+          "state": "skipped_unsafe_or_unreachable"
+        },
+        {
+          "action_id": "observation-0006",
+          "station_id": 2,
+          "heading_index": 1,
+          "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+          "map": {
+            "width": 84,
+            "height": 53,
+            "resolution": 0.05000000074505806,
+            "origin": [
+              -0.5018672475186436,
+              -2.1192623631253813,
+              0.0
+            ],
+            "stamp_ns": 278250000000,
+            "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+          },
+          "pose": [
+            0.3523893105171874,
+            -0.0034605950960583335,
+            -1.6960736951306485
+          ],
+          "planned_goal": {
+            "x": 0.33067193222009106,
+            "y": 0.005737668539586238,
+            "yaw": 1.5707963267948966,
+            "kind": "observation_queue",
+            "anchor": [
+              0.33067193222009106,
+              0.005737668539586238
+            ]
+          },
+          "original_check": {
+            "xy": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "cell": [
+              16,
+              42
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 1,
+            "endpoint_safe": false
+          },
+          "preferred_check": {
+            "xy": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "cell": [
+              16,
+              42
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 1,
+            "endpoint_safe": false
+          },
+          "relocation_radius_m": 0.0,
+          "local_candidate_count": 0,
+          "selected_check": null,
+          "selected_shift_from_anchor_m": null,
+          "relocation_reason": "relocation_disabled",
+          "state": "skipped_unsafe_or_unreachable"
+        },
+        {
+          "action_id": "observation-0012",
+          "station_id": 2,
+          "heading_index": 2,
+          "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+          "map": {
+            "width": 84,
+            "height": 53,
+            "resolution": 0.05000000074505806,
+            "origin": [
+              -0.5018672475186436,
+              -2.1192623631253813,
+              0.0
+            ],
+            "stamp_ns": 278250000000,
+            "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+          },
+          "pose": [
+            0.3523893105171874,
+            -0.0034605950960583335,
+            -1.6960736951306485
+          ],
+          "planned_goal": {
+            "x": 0.33067193222009106,
+            "y": 0.005737668539586238,
+            "yaw": -3.141592653589793,
+            "kind": "observation_queue",
+            "anchor": [
+              0.33067193222009106,
+              0.005737668539586238
+            ]
+          },
+          "original_check": {
+            "xy": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "cell": [
+              16,
+              42
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 1,
+            "endpoint_safe": false
+          },
+          "preferred_check": {
+            "xy": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "cell": [
+              16,
+              42
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 1,
+            "endpoint_safe": false
+          },
+          "relocation_radius_m": 0.0,
+          "local_candidate_count": 0,
+          "selected_check": null,
+          "selected_shift_from_anchor_m": null,
+          "relocation_reason": "relocation_disabled",
+          "state": "skipped_unsafe_or_unreachable"
+        },
+        {
+          "action_id": "observation-0011",
+          "station_id": 1,
+          "heading_index": 2,
+          "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+          "map": {
+            "width": 84,
+            "height": 53,
+            "resolution": 0.05000000074505806,
+            "origin": [
+              -0.5018672475186436,
+              -2.1192623631253813,
+              0.0
+            ],
+            "stamp_ns": 278250000000,
+            "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+          },
+          "pose": [
+            0.3523893105171874,
+            -0.0034605950960583335,
+            -1.6960736951306485
+          ],
+          "planned_goal": {
+            "x": 3.1806719746884005,
+            "y": -0.04426233220547182,
+            "yaw": -3.141592653589793,
+            "kind": "observation_queue",
+            "anchor": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ]
+          },
+          "original_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "preferred_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "relocation_radius_m": 0.0,
+          "local_candidate_count": 0,
+          "selected_check": null,
+          "selected_shift_from_anchor_m": null,
+          "relocation_reason": "relocation_disabled",
+          "state": "skipped_unsafe_or_unreachable"
+        },
+        {
+          "action_id": "observation-0005",
+          "station_id": 1,
+          "heading_index": 1,
+          "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+          "map": {
+            "width": 84,
+            "height": 53,
+            "resolution": 0.05000000074505806,
+            "origin": [
+              -0.5018672475186436,
+              -2.1192623631253813,
+              0.0
+            ],
+            "stamp_ns": 278250000000,
+            "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+          },
+          "pose": [
+            0.3523893105171874,
+            -0.0034605950960583335,
+            -1.6960736951306485
+          ],
+          "planned_goal": {
+            "x": 3.1806719746884005,
+            "y": -0.04426233220547182,
+            "yaw": 1.5707963267948966,
+            "kind": "observation_queue",
+            "anchor": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ]
+          },
+          "original_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "preferred_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "relocation_radius_m": 0.0,
+          "local_candidate_count": 0,
+          "selected_check": null,
+          "selected_shift_from_anchor_m": null,
+          "relocation_reason": "relocation_disabled",
+          "state": "skipped_unsafe_or_unreachable"
+        },
+        {
+          "action_id": "observation-0002",
+          "station_id": 1,
+          "heading_index": 0,
+          "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+          "map": {
+            "width": 84,
+            "height": 53,
+            "resolution": 0.05000000074505806,
+            "origin": [
+              -0.5018672475186436,
+              -2.1192623631253813,
+              0.0
+            ],
+            "stamp_ns": 278250000000,
+            "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+          },
+          "pose": [
+            0.3523893105171874,
+            -0.0034605950960583335,
+            -1.6960736951306485
+          ],
+          "planned_goal": {
+            "x": 3.1806719746884005,
+            "y": -0.04426233220547182,
+            "yaw": 0.0,
+            "kind": "observation_queue",
+            "anchor": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ]
+          },
+          "original_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "preferred_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "relocation_radius_m": 0.0,
+          "local_candidate_count": 0,
+          "selected_check": null,
+          "selected_shift_from_anchor_m": null,
+          "relocation_reason": "relocation_disabled",
+          "state": "skipped_unsafe_or_unreachable"
+        },
+        {
+          "action_id": "observation-0008",
+          "station_id": 1,
+          "heading_index": 3,
+          "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+          "map": {
+            "width": 84,
+            "height": 53,
+            "resolution": 0.05000000074505806,
+            "origin": [
+              -0.5018672475186436,
+              -2.1192623631253813,
+              0.0
+            ],
+            "stamp_ns": 278250000000,
+            "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+          },
+          "pose": [
+            0.3523893105171874,
+            -0.0034605950960583335,
+            -1.6960736951306485
+          ],
+          "planned_goal": {
+            "x": 3.1806719746884005,
+            "y": -0.04426233220547182,
+            "yaw": -1.5707963267948966,
+            "kind": "observation_queue",
+            "anchor": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ]
+          },
+          "original_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "preferred_check": {
+            "xy": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "cell": [
+              73,
+              41
+            ],
+            "cell_center_offset_m": 0.007539167445276718,
+            "effective_endpoint_radius_m": 0.34289450758616297,
+            "reachable": true,
+            "path_steps": 57,
+            "endpoint_safe": false
+          },
+          "relocation_radius_m": 0.0,
+          "local_candidate_count": 0,
+          "selected_check": null,
+          "selected_shift_from_anchor_m": null,
+          "relocation_reason": "relocation_disabled",
+          "state": "skipped_unsafe_or_unreachable"
+        }
+      ],
+      "after_recorded_history": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": null,
+        "active_dispatch_id": null,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "relocation_radius_m": 0.0,
+        "planned_stations_xy": [
+          [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        ],
+        "station_dispatch_xy": {
+          "0": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "1": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "2": [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        },
+        "pending_views": 7,
+        "state_counts": {
+          "completed": 5,
+          "pending": 7
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      },
+      "remaining_selected_map_sha256": [
+        "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+      ],
+      "remaining_dispatch_count": 0,
+      "remaining_skip_count": 7,
+      "final_queue": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": null,
+        "active_dispatch_id": null,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "relocation_radius_m": 0.0,
+        "planned_stations_xy": [
+          [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        ],
+        "station_dispatch_xy": {
+          "0": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "1": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "2": [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        },
+        "pending_views": 0,
+        "state_counts": {
+          "completed": 5,
+          "skipped_unsafe_or_unreachable": 7
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      },
+      "final_records": {
+        "observation-0001": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0002": {
+          "state": "skipped_unsafe_or_unreachable",
+          "attempts": 0,
+          "outcomes": []
+        },
+        "observation-0003": {
+          "state": "skipped_unsafe_or_unreachable",
+          "attempts": 0,
+          "outcomes": []
+        },
+        "observation-0004": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0005": {
+          "state": "skipped_unsafe_or_unreachable",
+          "attempts": 0,
+          "outcomes": []
+        },
+        "observation-0006": {
+          "state": "skipped_unsafe_or_unreachable",
+          "attempts": 0,
+          "outcomes": []
+        },
+        "observation-0007": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0008": {
+          "state": "skipped_unsafe_or_unreachable",
+          "attempts": 0,
+          "outcomes": []
+        },
+        "observation-0009": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0010": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0011": {
+          "state": "skipped_unsafe_or_unreachable",
+          "attempts": 0,
+          "outcomes": []
+        },
+        "observation-0012": {
+          "state": "skipped_unsafe_or_unreachable",
+          "attempts": 0,
+          "outcomes": []
+        }
+      },
+      "planned_ids_and_frozen_goals_unchanged": true
+    },
+    "enabled_0_15m": {
+      "policy": {
+        "robot_radius_m": 0.25,
+        "arrival_margin_m": 0.05,
+        "station_spacing_m": 1.0,
+        "max_stations": 3,
+        "headings_per_station": 4,
+        "max_dispatches": 12,
+        "max_attempts_per_view": 1,
+        "max_grid_cells": 250000,
+        "relocation_radius_m": 0.15
+      },
+      "initial_order": [
+        "observation-0001",
+        "observation-0004",
+        "observation-0010",
+        "observation-0007",
+        "observation-0009",
+        "observation-0003",
+        "observation-0006",
+        "observation-0012",
+        "observation-0011",
+        "observation-0005",
+        "observation-0002",
+        "observation-0008"
+      ],
+      "planned_action_ids": [
+        "observation-0001",
+        "observation-0002",
+        "observation-0003",
+        "observation-0004",
+        "observation-0005",
+        "observation-0006",
+        "observation-0007",
+        "observation-0008",
+        "observation-0009",
+        "observation-0010",
+        "observation-0011",
+        "observation-0012"
+      ],
+      "actual_first_five_matches": [
+        {
+          "action_id": "observation-0001",
+          "dispatch_id": 1,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0004",
+          "dispatch_id": 2,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0010",
+          "dispatch_id": 3,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0007",
+          "dispatch_id": 4,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        },
+        {
+          "action_id": "observation-0009",
+          "dispatch_id": 5,
+          "exact_view_and_goal_match": true,
+          "recorded_outcome_replayed": "inspection_satisfied"
+        }
+      ],
+      "remaining_decisions": [
+        {
+          "state": "dispatch",
+          "view": {
+            "action_id": "observation-0003",
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "station_id": 2,
+            "heading_index": 0,
+            "goal": {
+              "x": 0.3731327655198724,
+              "y": 0.005737668539586238,
+              "yaw": 0.0,
+              "kind": "observation_queue",
+              "anchor": [
+                0.33067193222009106,
+                0.005737668539586238
+              ]
+            }
+          },
+          "reason": null,
+          "dispatch_id": 6,
+          "validation": {
+            "action_id": "observation-0003",
+            "station_id": 2,
+            "heading_index": 0,
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "map": {
+              "width": 84,
+              "height": 53,
+              "resolution": 0.05000000074505806,
+              "origin": [
+                -0.5018672475186436,
+                -2.1192623631253813,
+                0.0
+              ],
+              "stamp_ns": 278250000000,
+              "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+            },
+            "pose": [
+              0.3523893105171874,
+              -0.0034605950960583335,
+              -1.6960736951306485
+            ],
+            "planned_goal": {
+              "x": 0.33067193222009106,
+              "y": 0.005737668539586238,
+              "yaw": 0.0,
+              "kind": "observation_queue",
+              "anchor": [
+                0.33067193222009106,
+                0.005737668539586238
+              ]
+            },
+            "original_check": {
+              "xy": [
+                0.33067193222009106,
+                0.005737668539586238
+              ],
+              "cell": [
+                16,
+                42
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 1,
+              "endpoint_safe": false
+            },
+            "preferred_check": {
+              "xy": [
+                0.33067193222009106,
+                0.005737668539586238
+              ],
+              "cell": [
+                16,
+                42
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 1,
+              "endpoint_safe": false
+            },
+            "relocation_radius_m": 0.15,
+            "local_candidate_count": 3,
+            "selected_check": {
+              "xy": [
+                0.3731327655198724,
+                0.005737668539586238
+              ],
+              "cell": [
+                17,
+                42
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 0,
+              "endpoint_safe": true
+            },
+            "selected_shift_from_anchor_m": 0.04246083329978134,
+            "relocation_reason": "preferred_endpoint_unavailable_local_safe_replacement",
+            "anchor_robot_disk_safe": true,
+            "state": "dispatch",
+            "dispatch_id": 6
+          },
+          "synthetic_enumeration_finish": "canceled",
+          "actual_navigation_or_observation_success": false
+        },
+        {
+          "state": "dispatch",
+          "view": {
+            "action_id": "observation-0006",
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "station_id": 2,
+            "heading_index": 1,
+            "goal": {
+              "x": 0.3731327655198724,
+              "y": 0.005737668539586238,
+              "yaw": 1.5707963267948966,
+              "kind": "observation_queue",
+              "anchor": [
+                0.33067193222009106,
+                0.005737668539586238
+              ]
+            }
+          },
+          "reason": null,
+          "dispatch_id": 7,
+          "validation": {
+            "action_id": "observation-0006",
+            "station_id": 2,
+            "heading_index": 1,
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "map": {
+              "width": 84,
+              "height": 53,
+              "resolution": 0.05000000074505806,
+              "origin": [
+                -0.5018672475186436,
+                -2.1192623631253813,
+                0.0
+              ],
+              "stamp_ns": 278250000000,
+              "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+            },
+            "pose": [
+              0.3523893105171874,
+              -0.0034605950960583335,
+              -1.6960736951306485
+            ],
+            "planned_goal": {
+              "x": 0.33067193222009106,
+              "y": 0.005737668539586238,
+              "yaw": 1.5707963267948966,
+              "kind": "observation_queue",
+              "anchor": [
+                0.33067193222009106,
+                0.005737668539586238
+              ]
+            },
+            "original_check": {
+              "xy": [
+                0.33067193222009106,
+                0.005737668539586238
+              ],
+              "cell": [
+                16,
+                42
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 1,
+              "endpoint_safe": false
+            },
+            "preferred_check": {
+              "xy": [
+                0.3731327655198724,
+                0.005737668539586238
+              ],
+              "cell": [
+                17,
+                42
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 0,
+              "endpoint_safe": true
+            },
+            "relocation_radius_m": 0.15,
+            "local_candidate_count": 0,
+            "selected_check": {
+              "xy": [
+                0.3731327655198724,
+                0.005737668539586238
+              ],
+              "cell": [
+                17,
+                42
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 0,
+              "endpoint_safe": true
+            },
+            "selected_shift_from_anchor_m": 0.04246083329978134,
+            "relocation_reason": null,
+            "state": "dispatch",
+            "dispatch_id": 7
+          },
+          "synthetic_enumeration_finish": "canceled",
+          "actual_navigation_or_observation_success": false
+        },
+        {
+          "state": "dispatch",
+          "view": {
+            "action_id": "observation-0012",
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "station_id": 2,
+            "heading_index": 2,
+            "goal": {
+              "x": 0.3731327655198724,
+              "y": 0.005737668539586238,
+              "yaw": -3.141592653589793,
+              "kind": "observation_queue",
+              "anchor": [
+                0.33067193222009106,
+                0.005737668539586238
+              ]
+            }
+          },
+          "reason": null,
+          "dispatch_id": 8,
+          "validation": {
+            "action_id": "observation-0012",
+            "station_id": 2,
+            "heading_index": 2,
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "map": {
+              "width": 84,
+              "height": 53,
+              "resolution": 0.05000000074505806,
+              "origin": [
+                -0.5018672475186436,
+                -2.1192623631253813,
+                0.0
+              ],
+              "stamp_ns": 278250000000,
+              "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+            },
+            "pose": [
+              0.3523893105171874,
+              -0.0034605950960583335,
+              -1.6960736951306485
+            ],
+            "planned_goal": {
+              "x": 0.33067193222009106,
+              "y": 0.005737668539586238,
+              "yaw": -3.141592653589793,
+              "kind": "observation_queue",
+              "anchor": [
+                0.33067193222009106,
+                0.005737668539586238
+              ]
+            },
+            "original_check": {
+              "xy": [
+                0.33067193222009106,
+                0.005737668539586238
+              ],
+              "cell": [
+                16,
+                42
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 1,
+              "endpoint_safe": false
+            },
+            "preferred_check": {
+              "xy": [
+                0.3731327655198724,
+                0.005737668539586238
+              ],
+              "cell": [
+                17,
+                42
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 0,
+              "endpoint_safe": true
+            },
+            "relocation_radius_m": 0.15,
+            "local_candidate_count": 0,
+            "selected_check": {
+              "xy": [
+                0.3731327655198724,
+                0.005737668539586238
+              ],
+              "cell": [
+                17,
+                42
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 0,
+              "endpoint_safe": true
+            },
+            "selected_shift_from_anchor_m": 0.04246083329978134,
+            "relocation_reason": null,
+            "state": "dispatch",
+            "dispatch_id": 8
+          },
+          "synthetic_enumeration_finish": "canceled",
+          "actual_navigation_or_observation_success": false
+        },
+        {
+          "state": "dispatch",
+          "view": {
+            "action_id": "observation-0011",
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "station_id": 1,
+            "heading_index": 2,
+            "goal": {
+              "x": 3.1231328064980657,
+              "y": -0.04426233220547182,
+              "yaw": -3.141592653589793,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            }
+          },
+          "reason": null,
+          "dispatch_id": 9,
+          "validation": {
+            "action_id": "observation-0011",
+            "station_id": 1,
+            "heading_index": 2,
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "map": {
+              "width": 84,
+              "height": 53,
+              "resolution": 0.05000000074505806,
+              "origin": [
+                -0.5018672475186436,
+                -2.1192623631253813,
+                0.0
+              ],
+              "stamp_ns": 278250000000,
+              "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+            },
+            "pose": [
+              0.3523893105171874,
+              -0.0034605950960583335,
+              -1.6960736951306485
+            ],
+            "planned_goal": {
+              "x": 3.1806719746884005,
+              "y": -0.04426233220547182,
+              "yaw": -3.141592653589793,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            },
+            "original_check": {
+              "xy": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ],
+              "cell": [
+                73,
+                41
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 57,
+              "endpoint_safe": false
+            },
+            "preferred_check": {
+              "xy": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ],
+              "cell": [
+                73,
+                41
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 57,
+              "endpoint_safe": false
+            },
+            "relocation_radius_m": 0.15,
+            "local_candidate_count": 2,
+            "selected_check": {
+              "xy": [
+                3.1231328064980657,
+                -0.04426233220547182
+              ],
+              "cell": [
+                72,
+                41
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 56,
+              "endpoint_safe": true
+            },
+            "selected_shift_from_anchor_m": 0.05753916819033478,
+            "relocation_reason": "preferred_endpoint_unavailable_local_safe_replacement",
+            "anchor_robot_disk_safe": true,
+            "state": "dispatch",
+            "dispatch_id": 9
+          },
+          "synthetic_enumeration_finish": "canceled",
+          "actual_navigation_or_observation_success": false
+        },
+        {
+          "state": "dispatch",
+          "view": {
+            "action_id": "observation-0005",
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "station_id": 1,
+            "heading_index": 1,
+            "goal": {
+              "x": 3.1231328064980657,
+              "y": -0.04426233220547182,
+              "yaw": 1.5707963267948966,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            }
+          },
+          "reason": null,
+          "dispatch_id": 10,
+          "validation": {
+            "action_id": "observation-0005",
+            "station_id": 1,
+            "heading_index": 1,
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "map": {
+              "width": 84,
+              "height": 53,
+              "resolution": 0.05000000074505806,
+              "origin": [
+                -0.5018672475186436,
+                -2.1192623631253813,
+                0.0
+              ],
+              "stamp_ns": 278250000000,
+              "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+            },
+            "pose": [
+              0.3523893105171874,
+              -0.0034605950960583335,
+              -1.6960736951306485
+            ],
+            "planned_goal": {
+              "x": 3.1806719746884005,
+              "y": -0.04426233220547182,
+              "yaw": 1.5707963267948966,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            },
+            "original_check": {
+              "xy": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ],
+              "cell": [
+                73,
+                41
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 57,
+              "endpoint_safe": false
+            },
+            "preferred_check": {
+              "xy": [
+                3.1231328064980657,
+                -0.04426233220547182
+              ],
+              "cell": [
+                72,
+                41
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 56,
+              "endpoint_safe": true
+            },
+            "relocation_radius_m": 0.15,
+            "local_candidate_count": 0,
+            "selected_check": {
+              "xy": [
+                3.1231328064980657,
+                -0.04426233220547182
+              ],
+              "cell": [
+                72,
+                41
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 56,
+              "endpoint_safe": true
+            },
+            "selected_shift_from_anchor_m": 0.05753916819033478,
+            "relocation_reason": null,
+            "state": "dispatch",
+            "dispatch_id": 10
+          },
+          "synthetic_enumeration_finish": "canceled",
+          "actual_navigation_or_observation_success": false
+        },
+        {
+          "state": "dispatch",
+          "view": {
+            "action_id": "observation-0002",
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "station_id": 1,
+            "heading_index": 0,
+            "goal": {
+              "x": 3.1231328064980657,
+              "y": -0.04426233220547182,
+              "yaw": 0.0,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            }
+          },
+          "reason": null,
+          "dispatch_id": 11,
+          "validation": {
+            "action_id": "observation-0002",
+            "station_id": 1,
+            "heading_index": 0,
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "map": {
+              "width": 84,
+              "height": 53,
+              "resolution": 0.05000000074505806,
+              "origin": [
+                -0.5018672475186436,
+                -2.1192623631253813,
+                0.0
+              ],
+              "stamp_ns": 278250000000,
+              "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+            },
+            "pose": [
+              0.3523893105171874,
+              -0.0034605950960583335,
+              -1.6960736951306485
+            ],
+            "planned_goal": {
+              "x": 3.1806719746884005,
+              "y": -0.04426233220547182,
+              "yaw": 0.0,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            },
+            "original_check": {
+              "xy": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ],
+              "cell": [
+                73,
+                41
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 57,
+              "endpoint_safe": false
+            },
+            "preferred_check": {
+              "xy": [
+                3.1231328064980657,
+                -0.04426233220547182
+              ],
+              "cell": [
+                72,
+                41
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 56,
+              "endpoint_safe": true
+            },
+            "relocation_radius_m": 0.15,
+            "local_candidate_count": 0,
+            "selected_check": {
+              "xy": [
+                3.1231328064980657,
+                -0.04426233220547182
+              ],
+              "cell": [
+                72,
+                41
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 56,
+              "endpoint_safe": true
+            },
+            "selected_shift_from_anchor_m": 0.05753916819033478,
+            "relocation_reason": null,
+            "state": "dispatch",
+            "dispatch_id": 11
+          },
+          "synthetic_enumeration_finish": "canceled",
+          "actual_navigation_or_observation_success": false
+        },
+        {
+          "state": "dispatch",
+          "view": {
+            "action_id": "observation-0008",
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "station_id": 1,
+            "heading_index": 3,
+            "goal": {
+              "x": 3.1231328064980657,
+              "y": -0.04426233220547182,
+              "yaw": -1.5707963267948966,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            }
+          },
+          "reason": null,
+          "dispatch_id": 12,
+          "validation": {
+            "action_id": "observation-0008",
+            "station_id": 1,
+            "heading_index": 3,
+            "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+            "map": {
+              "width": 84,
+              "height": 53,
+              "resolution": 0.05000000074505806,
+              "origin": [
+                -0.5018672475186436,
+                -2.1192623631253813,
+                0.0
+              ],
+              "stamp_ns": 278250000000,
+              "grid_sha256": "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+            },
+            "pose": [
+              0.3523893105171874,
+              -0.0034605950960583335,
+              -1.6960736951306485
+            ],
+            "planned_goal": {
+              "x": 3.1806719746884005,
+              "y": -0.04426233220547182,
+              "yaw": -1.5707963267948966,
+              "kind": "observation_queue",
+              "anchor": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ]
+            },
+            "original_check": {
+              "xy": [
+                3.1806719746884005,
+                -0.04426233220547182
+              ],
+              "cell": [
+                73,
+                41
+              ],
+              "cell_center_offset_m": 0.007539167445276718,
+              "effective_endpoint_radius_m": 0.34289450758616297,
+              "reachable": true,
+              "path_steps": 57,
+              "endpoint_safe": false
+            },
+            "preferred_check": {
+              "xy": [
+                3.1231328064980657,
+                -0.04426233220547182
+              ],
+              "cell": [
+                72,
+                41
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 56,
+              "endpoint_safe": true
+            },
+            "relocation_radius_m": 0.15,
+            "local_candidate_count": 0,
+            "selected_check": {
+              "xy": [
+                3.1231328064980657,
+                -0.04426233220547182
+              ],
+              "cell": [
+                72,
+                41
+              ],
+              "cell_center_offset_m": 0.0,
+              "effective_endpoint_radius_m": 0.335355339586163,
+              "reachable": true,
+              "path_steps": 56,
+              "endpoint_safe": true
+            },
+            "selected_shift_from_anchor_m": 0.05753916819033478,
+            "relocation_reason": null,
+            "state": "dispatch",
+            "dispatch_id": 12
+          },
+          "synthetic_enumeration_finish": "canceled",
+          "actual_navigation_or_observation_success": false
+        },
+        {
+          "state": "exhausted",
+          "view": null,
+          "reason": null,
+          "dispatch_id": null,
+          "validation": null
+        }
+      ],
+      "remaining_skips": [],
+      "after_recorded_history": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": null,
+        "active_dispatch_id": null,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "relocation_radius_m": 0.15,
+        "planned_stations_xy": [
+          [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        ],
+        "station_dispatch_xy": {
+          "0": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "1": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "2": [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        },
+        "pending_views": 7,
+        "state_counts": {
+          "completed": 5,
+          "pending": 7
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      },
+      "remaining_selected_map_sha256": [
+        "1e0ebe41aa88186d443b026553448317f31cf2624370165207e79919a50d388f"
+      ],
+      "remaining_dispatch_count": 7,
+      "remaining_skip_count": 0,
+      "final_queue": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": null,
+        "active_dispatch_id": null,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 12,
+        "dispatch_budget": 12,
+        "relocation_radius_m": 0.15,
+        "planned_stations_xy": [
+          [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        ],
+        "station_dispatch_xy": {
+          "0": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "1": [
+            3.1231328064980657,
+            -0.04426233220547182
+          ],
+          "2": [
+            0.3731327655198724,
+            0.005737668539586238
+          ]
+        },
+        "pending_views": 0,
+        "state_counts": {
+          "completed": 5,
+          "failed": 7
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      },
+      "final_records": {
+        "observation-0001": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0002": {
+          "state": "failed",
+          "attempts": 1,
+          "outcomes": [
+            "canceled"
+          ]
+        },
+        "observation-0003": {
+          "state": "failed",
+          "attempts": 1,
+          "outcomes": [
+            "canceled"
+          ]
+        },
+        "observation-0004": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0005": {
+          "state": "failed",
+          "attempts": 1,
+          "outcomes": [
+            "canceled"
+          ]
+        },
+        "observation-0006": {
+          "state": "failed",
+          "attempts": 1,
+          "outcomes": [
+            "canceled"
+          ]
+        },
+        "observation-0007": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0008": {
+          "state": "failed",
+          "attempts": 1,
+          "outcomes": [
+            "canceled"
+          ]
+        },
+        "observation-0009": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0010": {
+          "state": "completed",
+          "attempts": 1,
+          "outcomes": [
+            "inspection_satisfied"
+          ]
+        },
+        "observation-0011": {
+          "state": "failed",
+          "attempts": 1,
+          "outcomes": [
+            "canceled"
+          ]
+        },
+        "observation-0012": {
+          "state": "failed",
+          "attempts": 1,
+          "outcomes": [
+            "canceled"
+          ]
+        }
+      },
+      "planned_ids_and_frozen_goals_unchanged": true
+    }
+  },
+  "replay_checks_passed": true,
+  "comparison": {
+    "default_reproduces_seven_skips": true,
+    "enabled_selects_seven_dispatches": true,
+    "same_twelve_planned_ids": true,
+    "same_fixed_0058_map_binding": true,
+    "new_actual_successes": 0
+  },
+  "limitations": [
+    "Current production source is SHA-bound here; this is not a new ROS/Gazebo run.",
+    "0032 and 0058 observer snapshots are not atomic decision-time MissionNode inputs.",
+    "No pose is updated to any selected hypothetical goal. No depth frame, settling or return evidence is created.",
+    "Enabled final failed records are consequences of synthetic canceled enumeration, not observed navigation failures.",
+    "Original five completions and seven skips remain the authoritative run31 outcome; no new completion or coverage is credited."
+  ]
+}

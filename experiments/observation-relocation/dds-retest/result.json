@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_observation_ros.py",
+    "-k",
+    "test_map_update_relocates",
+    "-v"
+  ],
+  "exit_code": 0,
+  "reason": "completed",
+  "elapsed_monotonic_s": 23.606947038000015,
+  "source_sha256": {
+    "src/limo_maze_mission/limo_maze_mission/observation.py": "878e071f6cf72b816bda9e732a907814578b6ff2f704e5ef438e28ea97eccd30",
+    "src/limo_maze_mission/limo_maze_mission/node.py": "a980287b34980cf19f5387d3bf763b09fbddc342e7372c513758eafea1b602e7",
+    "tests/test_observation_ros.py": "da5e3009c9d4669e365ba320445f5e6a58a73a45263541b0eaaa30c1f133ddda"
+  },
+  "log_io": "native Linux /tmp during test, copied to archive after process closed",
+  "scope": "Same code, test, expiry and stop thresholds; log sink changed only. A single pass cannot establish scheduling root cause."
+}

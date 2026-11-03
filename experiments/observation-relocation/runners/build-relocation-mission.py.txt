@@ -1,0 +1,38 @@
+import hashlib
+import importlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import time
+
+root = Path(__file__).resolve().parents[2]
+out = root/'outputs/validation/observation-relocation-build'
+out.mkdir(parents=True, exist_ok=False)
+command = [shutil.which('colcon'), '--log-base', str(out/'colcon'), 'build',
+           '--base-paths', 'src', '--packages-select', 'limo_maze_mission',
+           '--symlink-install', '--event-handlers', 'console_direct+']
+started = time.monotonic()
+with (out/'build.log').open('xb') as stream:
+    try:
+        result = subprocess.run(command, cwd=root, stdout=stream, stderr=subprocess.STDOUT, timeout=180)
+        code = result.returncode
+    except subprocess.TimeoutExpired:
+        code = 124
+receipt = {'command': command, 'exit_code': code, 'elapsed_monotonic_s': time.monotonic()-started,
+           'installed_modules': {}}
+if code == 0:
+    for name in ('core', 'observation', 'node'):
+        module = importlib.import_module('limo_maze_mission.'+name)
+        installed = Path(module.__file__)
+        expected = root/'src/limo_maze_mission/limo_maze_mission'/f'{name}.py'
+        actual_sha = hashlib.sha256(installed.read_bytes()).hexdigest()
+        source_sha = hashlib.sha256(expected.read_bytes()).hexdigest()
+        receipt['installed_modules'][name] = {'path': str(installed), 'resolved': str(installed.resolve()),
+            'sha256': actual_sha, 'source_sha256': source_sha, 'matches_source': actual_sha == source_sha}
+    if not all(entry['matches_source'] for entry in receipt['installed_modules'].values()):
+        code = receipt['exit_code'] = 1
+(out/'result.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+print(json.dumps(receipt, indent=2), flush=True)
+print('\n'.join((out/'build.log').read_text().splitlines()[-12:]), flush=True)
+raise SystemExit(code)

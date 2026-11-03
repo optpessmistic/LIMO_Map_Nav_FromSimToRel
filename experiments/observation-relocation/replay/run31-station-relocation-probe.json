@@ -1,0 +1,566 @@
+{
+  "schema_version": 1,
+  "diagnostic_only": true,
+  "motion_commanded": false,
+  "navigation_success_claimed": false,
+  "recognition_coverage_verified": false,
+  "sources": {
+    "experiments/run31/observer-snapshots/0058-phase-canceling.json": {
+      "bytes": 35246,
+      "sha256": "7e25c93247abf13ff9186fe0525c3c83dd1692e1b1832c4401ae38ab19ca4bcf"
+    },
+    "experiments/run31/validation/run31-skip-analysis.json": {
+      "bytes": 66366,
+      "sha256": "023536da7aba6f6790e204e85e1dc8aa6f837e063399f655de77c35b6b989195"
+    },
+    "outputs/setup/run31-visibility-gaps.json": {
+      "bytes": 114905,
+      "sha256": "eef8da8daac22f8ab83efd20f4893535f9614f9b50b2aa5aefa8711cc9ea6144"
+    },
+    "src/limo_maze_mission/limo_maze_mission/core.py": {
+      "bytes": 28916,
+      "sha256": "44295e9560023829669f7dfeff07bc2f0a9021e5a7ce78111d936055179ff774"
+    },
+    "src/limo_maze_mission/limo_maze_mission/observation.py": {
+      "bytes": 13360,
+      "sha256": "8ba8ef18856750b552e29231ed06d1e45b5b813b2b7242af2baea6273a886720"
+    }
+  },
+  "map_epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+  "policy_unchanged": {
+    "robot_radius_m": 0.25,
+    "arrival_margin_m": 0.05,
+    "station_spacing_m": 1.0,
+    "max_stations": 3,
+    "headings_per_station": 4,
+    "max_dispatches": 12,
+    "max_attempts_per_view": 1,
+    "max_grid_cells": 250000
+  },
+  "snapshot_ros_s": 278.9,
+  "map_metadata": {
+    "stamp": 278.25,
+    "frame": "map",
+    "width": 84,
+    "height": 53,
+    "resolution": 0.05000000074505806,
+    "origin": [
+      -0.5018672475186436,
+      -2.1192623631253813,
+      0.0
+    ]
+  },
+  "current_pose": [
+    0.3523893105171874,
+    -0.0034605950960583335,
+    -1.6960736951306485
+  ],
+  "current_cell": [
+    17,
+    42
+  ],
+  "actual_pose_to_cell_center_offset_m": 0.022691385576011837,
+  "reachable_cells": 783,
+  "base_endpoint_radius_m": 0.335355339586163,
+  "selection": "minimum displacement, then safe BFS path steps, then cell tuple; no truth or straight-line path assumption",
+  "stations": [
+    {
+      "station_id": 1,
+      "original_xy_m": [
+        3.1806719746884005,
+        -0.04426233220547182
+      ],
+      "original_cell": [
+        73,
+        41
+      ],
+      "original_robot_radius_reachable": true,
+      "original_effective_endpoint_radius_m": 0.34289450758616297,
+      "original_endpoint_clear": false,
+      "search_radius_m": 0.2,
+      "all_grid_centers_in_radius": 48,
+      "raw_free_centers_in_radius": 48,
+      "robot_radius_reachable_centers_in_radius": 27,
+      "safe_reachable_candidates": [
+        {
+          "cell": [
+            72,
+            41
+          ],
+          "xy_m": [
+            3.1231328064980657,
+            -0.04426233220547182
+          ],
+          "displacement_from_original_m": 0.05753916819033478,
+          "robot_radius_reachable": true,
+          "endpoint_clear": true,
+          "frozen_goal_offset_ceil_m": 0.0,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "grid_path_steps_from_current_cell": 56,
+          "grid_path_length_m": 2.8000000417232513,
+          "euclidean_distance_from_actual_pose_m": 2.771043901180832,
+          "safe_grid_path_cells": [
+            [
+              17,
+              42
+            ],
+            [
+              17,
+              41
+            ],
+            [
+              18,
+              41
+            ],
+            [
+              19,
+              41
+            ],
+            [
+              20,
+              41
+            ],
+            [
+              21,
+              41
+            ],
+            [
+              22,
+              41
+            ],
+            [
+              23,
+              41
+            ],
+            [
+              24,
+              41
+            ],
+            [
+              25,
+              41
+            ],
+            [
+              26,
+              41
+            ],
+            [
+              27,
+              41
+            ],
+            [
+              28,
+              41
+            ],
+            [
+              29,
+              41
+            ],
+            [
+              30,
+              41
+            ],
+            [
+              31,
+              41
+            ],
+            [
+              32,
+              41
+            ],
+            [
+              33,
+              41
+            ],
+            [
+              34,
+              41
+            ],
+            [
+              35,
+              41
+            ],
+            [
+              36,
+              41
+            ],
+            [
+              37,
+              41
+            ],
+            [
+              38,
+              41
+            ],
+            [
+              39,
+              41
+            ],
+            [
+              40,
+              41
+            ],
+            [
+              41,
+              41
+            ],
+            [
+              42,
+              41
+            ],
+            [
+              43,
+              41
+            ],
+            [
+              44,
+              41
+            ],
+            [
+              45,
+              41
+            ],
+            [
+              46,
+              41
+            ],
+            [
+              47,
+              41
+            ],
+            [
+              48,
+              41
+            ],
+            [
+              49,
+              41
+            ],
+            [
+              50,
+              41
+            ],
+            [
+              51,
+              41
+            ],
+            [
+              52,
+              41
+            ],
+            [
+              53,
+              41
+            ],
+            [
+              54,
+              41
+            ],
+            [
+              55,
+              41
+            ],
+            [
+              56,
+              41
+            ],
+            [
+              57,
+              41
+            ],
+            [
+              58,
+              41
+            ],
+            [
+              59,
+              41
+            ],
+            [
+              60,
+              41
+            ],
+            [
+              61,
+              41
+            ],
+            [
+              62,
+              41
+            ],
+            [
+              63,
+              41
+            ],
+            [
+              64,
+              41
+            ],
+            [
+              65,
+              41
+            ],
+            [
+              66,
+              41
+            ],
+            [
+              67,
+              41
+            ],
+            [
+              68,
+              41
+            ],
+            [
+              69,
+              41
+            ],
+            [
+              70,
+              41
+            ],
+            [
+              71,
+              41
+            ],
+            [
+              72,
+              41
+            ]
+          ]
+        },
+        {
+          "cell": [
+            71,
+            41
+          ],
+          "xy_m": [
+            3.0731328057530076,
+            -0.04426233220547182
+          ],
+          "displacement_from_original_m": 0.10753916893539284,
+          "robot_radius_reachable": true,
+          "endpoint_clear": true,
+          "frozen_goal_offset_ceil_m": 0.0,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "grid_path_steps_from_current_cell": 55,
+          "grid_path_length_m": 2.7500000409781933,
+          "euclidean_distance_from_actual_pose_m": 2.72104942046615
+        },
+        {
+          "cell": [
+            70,
+            41
+          ],
+          "xy_m": [
+            3.0231328050079496,
+            -0.04426233220547182
+          ],
+          "displacement_from_original_m": 0.1575391696804509,
+          "robot_radius_reachable": true,
+          "endpoint_clear": true,
+          "frozen_goal_offset_ceil_m": 0.0,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "grid_path_steps_from_current_cell": 54,
+          "grid_path_length_m": 2.7000000402331352,
+          "euclidean_distance_from_actual_pose_m": 2.6710551464011134
+        }
+      ],
+      "candidate_count": 3,
+      "minimum_displacement_m": 0.05753916819033478,
+      "heading_check": {
+        "gap_component": 1,
+        "gap_representative_xy_m": [
+          2.8231328020277173,
+          -0.04426233220547182
+        ],
+        "base_center_to_gap_rep_distance_m": 0.30000000447034836,
+        "bearing_to_gap_rep_deg": 180.0,
+        "raw_grid_supercover_line_free_to_rep": true,
+        "unchanged_remaining_views": [
+          {
+            "action_id": "observation-0002",
+            "heading_index": 0,
+            "unchanged_goal_yaw_rad": 0.0,
+            "bearing_error_to_gap_rep_deg": -180.0
+          },
+          {
+            "action_id": "observation-0005",
+            "heading_index": 1,
+            "unchanged_goal_yaw_rad": 1.5707963267948966,
+            "bearing_error_to_gap_rep_deg": 90.0
+          },
+          {
+            "action_id": "observation-0008",
+            "heading_index": 3,
+            "unchanged_goal_yaw_rad": -1.5707963267948966,
+            "bearing_error_to_gap_rep_deg": -90.0
+          },
+          {
+            "action_id": "observation-0011",
+            "heading_index": 2,
+            "unchanged_goal_yaw_rad": -3.141592653589793,
+            "bearing_error_to_gap_rep_deg": 0.0
+          }
+        ],
+        "nearest_existing_heading": {
+          "action_id": "observation-0011",
+          "heading_index": 2,
+          "unchanged_goal_yaw_rad": -3.141592653589793,
+          "bearing_error_to_gap_rep_deg": 0.0
+        },
+        "camera_pose_or_depth_prediction": false,
+        "note": "Map-base bearing only. Camera offset, FoV, 3D occlusion and usable recognition range are not inferred."
+      }
+    },
+    {
+      "station_id": 2,
+      "original_xy_m": [
+        0.33067193222009106,
+        0.005737668539586238
+      ],
+      "original_cell": [
+        16,
+        42
+      ],
+      "original_robot_radius_reachable": true,
+      "original_effective_endpoint_radius_m": 0.34289450758616297,
+      "original_endpoint_clear": false,
+      "search_radius_m": 0.2,
+      "all_grid_centers_in_radius": 48,
+      "raw_free_centers_in_radius": 48,
+      "robot_radius_reachable_centers_in_radius": 34,
+      "safe_reachable_candidates": [
+        {
+          "cell": [
+            17,
+            42
+          ],
+          "xy_m": [
+            0.3731327655198724,
+            0.005737668539586238
+          ],
+          "displacement_from_original_m": 0.04246083329978134,
+          "robot_radius_reachable": true,
+          "endpoint_clear": true,
+          "frozen_goal_offset_ceil_m": 0.0,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "grid_path_steps_from_current_cell": 0,
+          "grid_path_length_m": 0.0,
+          "euclidean_distance_from_actual_pose_m": 0.022691385576011837,
+          "safe_grid_path_cells": [
+            [
+              17,
+              42
+            ]
+          ]
+        },
+        {
+          "cell": [
+            18,
+            42
+          ],
+          "xy_m": [
+            0.42313276626493046,
+            0.005737668539586238
+          ],
+          "displacement_from_original_m": 0.0924608340448394,
+          "robot_radius_reachable": true,
+          "endpoint_clear": true,
+          "frozen_goal_offset_ceil_m": 0.0,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "grid_path_steps_from_current_cell": 1,
+          "grid_path_length_m": 0.05000000074505806,
+          "euclidean_distance_from_actual_pose_m": 0.07133894157501708
+        },
+        {
+          "cell": [
+            19,
+            42
+          ],
+          "xy_m": [
+            0.4731327670099885,
+            0.005737668539586238
+          ],
+          "displacement_from_original_m": 0.14246083478989746,
+          "robot_radius_reachable": true,
+          "endpoint_clear": true,
+          "frozen_goal_offset_ceil_m": 0.0,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "grid_path_steps_from_current_cell": 2,
+          "grid_path_length_m": 0.10000000149011612,
+          "euclidean_distance_from_actual_pose_m": 0.12109331253103854
+        },
+        {
+          "cell": [
+            20,
+            42
+          ],
+          "xy_m": [
+            0.5231327677550466,
+            0.005737668539586238
+          ],
+          "displacement_from_original_m": 0.19246083553495552,
+          "robot_radius_reachable": true,
+          "endpoint_clear": true,
+          "frozen_goal_offset_ceil_m": 0.0,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "grid_path_steps_from_current_cell": 3,
+          "grid_path_length_m": 0.15000000223517418,
+          "euclidean_distance_from_actual_pose_m": 0.1709910414128397
+        }
+      ],
+      "candidate_count": 4,
+      "minimum_displacement_m": 0.04246083329978134,
+      "heading_check": {
+        "gap_component": 2,
+        "gap_representative_xy_m": [
+          0.42313276626493046,
+          0.005737668539586238
+        ],
+        "base_center_to_gap_rep_distance_m": 0.05000000074505806,
+        "bearing_to_gap_rep_deg": 0.0,
+        "raw_grid_supercover_line_free_to_rep": true,
+        "unchanged_remaining_views": [
+          {
+            "action_id": "observation-0003",
+            "heading_index": 0,
+            "unchanged_goal_yaw_rad": 0.0,
+            "bearing_error_to_gap_rep_deg": 0.0
+          },
+          {
+            "action_id": "observation-0006",
+            "heading_index": 1,
+            "unchanged_goal_yaw_rad": 1.5707963267948966,
+            "bearing_error_to_gap_rep_deg": -90.0
+          },
+          {
+            "action_id": "observation-0012",
+            "heading_index": 2,
+            "unchanged_goal_yaw_rad": -3.141592653589793,
+            "bearing_error_to_gap_rep_deg": -180.0
+          }
+        ],
+        "nearest_existing_heading": {
+          "action_id": "observation-0003",
+          "heading_index": 0,
+          "unchanged_goal_yaw_rad": 0.0,
+          "bearing_error_to_gap_rep_deg": 0.0
+        },
+        "camera_pose_or_depth_prediction": false,
+        "note": "Map-base bearing only. Camera offset, FoV, 3D occlusion and usable recognition range are not inferred."
+      }
+    }
+  ],
+  "limitations": [
+    "0058 is an independent observer snapshot, not exact atomic mission decision-time data.",
+    "Raw map only: unknown, intermediate, occupied and outside remain blocked; no free-space prior or filling.",
+    "Candidate reachability is a four-neighbor robot-radius map property, not an actual Nav2 traversal.",
+    "A zero grid path length means the same grid cell; the actual pose may be offset from its center.",
+    "Only XY is hypothetically moved; existing heading/action sets and denominator are retained, never executed here.",
+    "Gap representatives come from final frozen diagnostic layers using historical map poses; no final-graph reprojection.",
+    "A free 2D map ray and matching base heading do not establish camera/depth/recognition visibility.",
+    "Real dispatch would require fresh safety/reachability checks and recorded arrival/frame evidence."
+  ]
+}

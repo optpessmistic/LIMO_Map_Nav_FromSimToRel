@@ -118,7 +118,7 @@ class ObservationActionDDSTests(unittest.TestCase):
         # Deliberately keep execute_goal suspended: ACK alone is not terminal.
         return CancelResponse.ACCEPT
 
-    def create_mission(self, *, stage_timeout=30., navigation_cooldown=0.):
+    def create_mission(self, *, stage_timeout=30., navigation_cooldown=0., relocation_radius=0.):
         from geometry_msgs.msg import TransformStamped
         from nav2_msgs.action import NavigateToPose
         from nav_msgs.msg import OccupancyGrid, Odometry
@@ -160,6 +160,7 @@ class ObservationActionDDSTests(unittest.TestCase):
                   "observation_headings_per_station": 2,
                   "observation_max_dispatches": 2,
                   "observation_stage_timeout_s": stage_timeout,
+                  "observation_relocation_radius_m": relocation_radius,
                   "inspection_timeout_s": 8., "mission_timeout_s": 60.,
                   "return_timeout_s": 12., "cancel_timeout_s": 4.,
                   "navigation_failure_cooldown_s": navigation_cooldown,
@@ -423,6 +424,68 @@ class ObservationActionDDSTests(unittest.TestCase):
         self.assertEqual(len(self.server_goals), 3)
         self.assertEqual(result["observation_actions"]["queue"]["dispatches"], 2)
         self.assertEqual(self.server_cancels, [])
+
+    def test_map_update_relocates_remaining_heading_with_actual_goal_and_fresh_dds_window(self):
+        self.create_mission(relocation_radius=.15)
+        first = self.goal_entry(0, kind="observation_queue")
+        node, queue = self.mission, self.mission.observation_queue
+        original_views = dict(queue.views)
+        deadline = node.observation_deadline_wall
+        anchor = queue.stations[0]
+        cell = node.grid.to_cell(*anchor)
+        obstacle = (cell[0]+4, cell[1])
+        # A new observed obstacle leaves the original robot disk clear but
+        # invalidates its larger arrival reserve. Publish it over DDS while the
+        # original action is still owned; that action must not be rewritten.
+        self.grid_message.data[obstacle[1]*node.grid.width+obstacle[0]] = 100
+        self.publish_map()
+        self.wait_until(lambda: node.grid.value(obstacle) == 100, "updated raw map consumed")
+        self.assertEqual((node.goal.x, node.goal.y), anchor)
+        self.assertEqual(queue.active_view, original_views[queue.active_id])
+        for index in range(2):
+            entry = first if index == 0 else self.goal_entry(index, kind="observation_queue")
+            active = dict(node.observation_active)
+            expected = [node.goal.x, node.goal.y, node.goal.yaw]
+            if index == 1:
+                self.assertAlmostEqual(node.goal.x, anchor[0]-node.grid.resolution)
+                self.assertAlmostEqual(node.goal.y, anchor[1])
+                self.assertNotEqual(active["goal"], active["planned_goal"])
+                self.assertEqual(active["planned_goal"]["x"], anchor[0])
+                self.assertEqual(active["selection"]["map"]["stamp_ns"],
+                                 queue.selection_history[-1]["map"]["stamp_ns"])
+                self.assertTrue(active["selection"]["selected_check"]["endpoint_safe"])
+            self.succeed(entry)
+            self.wait_until(lambda: node.phase == "inspecting", "stationary before relocated frame sampling")
+            self.assertEqual(node.inspection_snapshot()["expected_pose"], expected)
+            self.assertEqual(node.inspection.accepted_frames, 0)
+            for ordinal in range(3):
+                self.pulse()
+                self.assertEqual(node.phase, "inspecting")
+                self.publish_record(self.record())
+            self.wait_until(lambda: len(node.observation_attempt_records) == index+1,
+                            "new frames complete the selected actual goal")
+            record = node.observation_attempt_records[index]
+            self.assertEqual(record["inspection"]["expected_pose"], expected)
+            self.assertEqual(record["nav_goal_uuid"], entry["uuid"])
+            self.assertEqual(record["outcome"], "inspection_satisfied")
+            self.assertEqual(node.observation_deadline_wall, deadline)
+            self.assertEqual(queue.views, original_views)
+        home = self.goal_entry(2, kind="home")
+        self.succeed(home, home=True)
+        result = self.verify_return_result()
+        records = result["observation_actions"]["attempts"]
+        self.assertEqual([r["inspection"]["accepted_frames"] for r in records], [3, 3])
+        self.assertNotEqual(records[0]["inspection_request_id"], records[1]["inspection_request_id"])
+        self.assertEqual(queue.snapshot()["state_counts"], {"completed": 2})
+        print("RELOCATION_DDS_RESULT " + json.dumps({
+            "actual_goals": [r["goal"] for r in records],
+            "planned_goals": [r["planned_goal"] for r in records],
+            "selection": records[1]["selection"],
+            "accepted_frames": [r["inspection"]["accepted_frames"] for r in records],
+            "distinct_goal_uuids": len({tuple(r["nav_goal_uuid"]) for r in records}),
+            "deadline_unchanged": node.observation_deadline_wall == deadline,
+            "mission_success": result["mission_success"],
+            "scope": "controlled ActionServer, synthetic map/pose/frames; not Gazebo or physical motion"}))
 
     def test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return(self):
         self.create_mission(stage_timeout=3.)

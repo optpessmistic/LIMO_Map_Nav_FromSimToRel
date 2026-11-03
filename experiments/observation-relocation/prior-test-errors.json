@@ -1,0 +1,17 @@
+{
+  "windows_observation_discovery": {
+    "exit_code": 1,
+    "tests_run": 103,
+    "errors": 5,
+    "skipped": 4,
+    "failure_scope": "Existing shutdown test TemporaryDirectory cleanup hit sandbox WinError 5 in the virtualized AC/Temp directory; no reported assertion failures. Run is not counted as a pass.",
+    "remedy": "Run the affected suite in the supported WSL Linux environment."
+  },
+  "first_wsl_shell_attempt": {
+    "tool_session_id": 70524,
+    "exit_code": 1,
+    "tests_started": false,
+    "error": "/opt/ros/jazzy/setup.bash: line 8: AMENT_TRACE_SETUP_FILES: unbound variable",
+    "remedy": "Source the ROS environment before enabling shell nounset; production code unchanged."
+  }
+}

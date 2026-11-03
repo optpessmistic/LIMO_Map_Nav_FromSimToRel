@@ -91,6 +91,7 @@ class MissionNode(Node):
             'observation_station_spacing_m': 1.0, 'observation_max_stations': 3,
             'observation_headings_per_station': 4, 'observation_max_dispatches': 12,
             'observation_stage_timeout_s': 180.0, 'observation_max_grid_cells': 250000,
+            'observation_relocation_radius_m': 0.0,
             'home_frontier_resume_limit': 1, 'home_frontier_return_reserve_s': 15.0,
         }
         for key, value in defaults.items():
@@ -100,6 +101,10 @@ class MissionNode(Node):
             if key == 'navigation_failure_cooldown_s':
                 if type(value) not in (int, float) or not isfinite(value) or value < 0:
                     raise ValueError(key + ' must be finite and nonnegative (zero disables recovery)')
+                continue
+            if key == 'observation_relocation_radius_m':
+                if type(value) not in (int, float) or not isfinite(value) or value < 0:
+                    raise ValueError(key + ' must be finite and nonnegative (zero disables relocation)')
                 continue
             if key == 'initial_clearance_radius_m':
                 if not isfinite(float(value)) or value < 0:
@@ -132,7 +137,8 @@ class MissionNode(Node):
             self.cfg['robot_radius_m'], self.cfg['goal_arrival_margin_m'],
             self.cfg['observation_station_spacing_m'], self.cfg['observation_max_stations'],
             self.cfg['observation_headings_per_station'], self.cfg['observation_max_dispatches'],
-            max_attempts_per_view=1, max_grid_cells=self.cfg['observation_max_grid_cells'])
+            max_attempts_per_view=1, max_grid_cells=self.cfg['observation_max_grid_cells'],
+            relocation_radius_m=self.cfg['observation_relocation_radius_m'])
         self.observation_queue = None
         self.observation_closed = False
         self.observation_close_reason = None
@@ -144,6 +150,7 @@ class MissionNode(Node):
         self.prior_filled_cells = 0
         self.grid = None
         self.map_received = None
+        self.map_stamp_ns = None
         self.map_signature = None
         self.map_epoch = None
         self.map_epoch_ready = False
@@ -272,6 +279,8 @@ class MissionNode(Node):
             self.block('invalid_map: ' + str(exc))
             return
         self.map_signature = signature
+        stamp = getattr(msg.header, 'stamp', None)
+        self.map_stamp_ns = None if stamp is None else stamp.sec*1_000_000_000 + stamp.nanosec
         self.map_received = time.monotonic()
 
     def on_epoch(self, msg):
@@ -1136,6 +1145,7 @@ class MissionNode(Node):
                     self.coordinates_valid and self.map_epoch_ready and not self.inspection_clock_invalid and
                     active['epoch'] == self.map_epoch == queue.epoch and
                     active['action_id'] == queue.active_id and active['dispatch_id'] == queue.active_dispatch_id and
+                    queue.active_view is not None and active['goal'] == asdict(queue.active_view.goal) and
                     active['nav_token'] == self.token and active['goal'] == asdict(self.goal))
 
     def finish_observation(self, outcome, reason):
@@ -1240,7 +1250,8 @@ class MissionNode(Node):
                 not self.dispatch_budget_allows('observation_queue')):
             return
         try:
-            decision = self.observation_queue.take_next(self.grid, pose, self.map_epoch)
+            decision = self.observation_queue.take_next(self.grid, pose, self.map_epoch,
+                map_stamp_ns=getattr(self, 'map_stamp_ns', None))
         except ValueError:
             # A valid SLAM map can expand beyond the fixed work budget after
             # queue creation. Reject it without unwinding the executor, making
@@ -1253,6 +1264,8 @@ class MissionNode(Node):
                 'epoch': view.epoch, 'action_id': view.action_id, 'dispatch_id': decision.dispatch_id,
                 'station_id': view.station_id, 'heading_index': view.heading_index,
                 'goal': asdict(view.goal), 'nav_token': None, 'nav_goal_uuid': None,
+                'planned_goal': asdict(self.observation_queue.views[view.action_id].goal),
+                'selection': decision.validation,
                 'inspection_request_id': None, 'nav_terminal_status': None,
                 'selected_wall': now, 'dispatched_wall': None}
             self.phase = 'observation_navigating'

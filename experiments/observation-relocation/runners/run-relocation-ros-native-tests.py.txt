@@ -1,0 +1,37 @@
+"""Repeat the failed DDS case with native Linux log I/O; original run retained."""
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
+import time
+
+root = Path(__file__).resolve().parents[2]
+out = root/'outputs/validation/observation-relocation-dds-native-log'
+out.mkdir(parents=True, exist_ok=False)
+command = ['/usr/bin/python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests',
+           '-p', 'test_observation_ros.py', '-k', 'test_map_update_relocates', '-v']
+sources = ['src/limo_maze_mission/limo_maze_mission/observation.py',
+           'src/limo_maze_mission/limo_maze_mission/node.py', 'tests/test_observation_ros.py']
+fingerprints = {p: hashlib.sha256((root/p).read_bytes()).hexdigest() for p in sources}
+started = time.monotonic()
+with tempfile.TemporaryDirectory(prefix='limo-relocation-dds-', dir='/tmp') as directory:
+    native_log = Path(directory)/'tests.log'
+    with native_log.open('xb') as stream:
+        try:
+            result = subprocess.run(command, cwd=root, stdout=stream, stderr=subprocess.STDOUT, timeout=90)
+            code, reason = result.returncode, 'completed'
+        except subprocess.TimeoutExpired:
+            code, reason = 124, 'test_process_timeout'
+    shutil.copyfile(native_log, out/'tests.log')
+receipt = {'command': command, 'exit_code': code, 'reason': reason,
+           'elapsed_monotonic_s': time.monotonic()-started, 'source_sha256': fingerprints,
+           'log_io': 'native Linux /tmp during test, copied to archive after process closed',
+           'scope': 'Same code, test, expiry and stop thresholds; log sink changed only. A single pass cannot establish scheduling root cause.'}
+(out/'result.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+print(json.dumps(receipt, indent=2), flush=True)
+for line in (out/'tests.log').read_text().splitlines():
+    if line.startswith(('RELOCATION_DDS_RESULT ', 'Ran ', 'OK', 'FAILED', 'FAIL:', 'ERROR:')):
+        print(line[:3500], flush=True)
+raise SystemExit(code)

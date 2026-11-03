@@ -1,0 +1,179 @@
+"""Offline bounded station relocation feasibility on the saved raw 0058 map."""
+import argparse
+from dataclasses import asdict
+import hashlib
+import json
+import math
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT/'src/limo_maze_mission'))
+from limo_maze_mission.observation import Grid, Policy, reachable, endpoint_radius
+from limo_maze_mission.core import angle_delta
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output-prefix', type=Path,
+        default=ROOT/'outputs/setup/run31-station-relocation-probe')
+    args = parser.parse_args()
+    outputs = [args.output_prefix.with_suffix(ext) for ext in ('.json', '.md')]
+    if any(path.exists() or path.is_symlink() for path in outputs):
+        raise FileExistsError('Refusing to overwrite relocation probe')
+    sources = {}
+    def read(relative):
+        raw = (ROOT/relative).read_bytes()
+        sources[relative] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+        return json.loads(raw)
+    snapshot_path = 'experiments/run31/observer-snapshots/0058-phase-canceling.json'
+    snapshot = read(snapshot_path)
+    original = read('experiments/run31/validation/run31-skip-analysis.json')
+    gaps = read('outputs/setup/run31-visibility-gaps.json')
+    for name in ('core.py', 'observation.py'):
+        relative = 'src/limo_maze_mission/limo_maze_mission/'+name
+        raw = (ROOT/relative).read_bytes()
+        sources[relative] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+    archived_hash = next(value for key, value in original['sources'].items()
+                         if key.replace('\\', '/').endswith('/0058-phase-canceling.json'))
+    assert archived_hash == sources[snapshot_path]['sha256']
+    metadata = snapshot['map']
+    grid = Grid(metadata['width'], metadata['height'], metadata['resolution'],
+                *metadata['origin'], tuple(snapshot['map_data']))
+    policy = Policy(**original['policy'])
+    assert policy.robot_radius_m == .25 and policy.arrival_margin_m == .05
+    assert gaps['map_epoch'] == original['reconstruction']['views'][0]['epoch']
+    assert metadata['frame'] == gaps['map_geometry']['frame_id']
+    pose = (*snapshot['pose']['xyz'][:2], snapshot['pose']['yaw'])
+    distances = reachable(grid, pose, policy)
+    assert distances, 'Recorded current pose has no safe raw-map component'
+    radius = endpoint_radius(grid, policy)
+    endpoints = grid.safe_cells(radius)
+    start = grid.to_cell(*pose[:2])
+    current_offset = math.dist(grid.to_world(start), pose[:2])
+
+    def witness(cell):
+        path = [cell]
+        while distances[path[-1]]:
+            previous = min(n for n in grid.neighbors(path[-1])
+                           if distances.get(n) == distances[path[-1]]-1)
+            path.append(previous)
+        path.reverse()
+        assert path[0] == start
+        return path
+
+    stations = []
+    for station in (1, 2):
+        old = original['reconstruction']['stations'][station]
+        old_cell = grid.to_cell(*old)
+        old_offset = math.ceil(math.dist(grid.to_world(old_cell), old)*1e9)/1e9
+        old_effective_radius = endpoint_radius(grid, policy, old_offset)
+        nearby = [cell for cell in grid.cells() if math.dist(grid.to_world(cell), old) <= .20]
+        feasible = sorted((cell for cell in nearby if cell in distances and cell in endpoints),
+                         key=lambda cell: (math.dist(grid.to_world(cell), old), distances[cell], cell))
+        candidates = []
+        for cell in feasible:
+            xy = grid.to_world(cell)
+            # Exercise the same frozen-world-to-current-cell offset calculation;
+            # these new goals are actual current-map centers, not relaxed disks.
+            relocated_cell = grid.to_cell(*xy)
+            offset = math.ceil(math.dist(grid.to_world(relocated_cell), xy)*1e9)/1e9
+            effective = endpoint_radius(grid, policy, offset)
+            assert relocated_cell == cell and cell in grid.safe_cells(effective)
+            candidates.append({'cell': cell, 'xy_m': xy,
+                'displacement_from_original_m': math.dist(xy, old),
+                'robot_radius_reachable': True, 'endpoint_clear': True,
+                'frozen_goal_offset_ceil_m': offset, 'effective_endpoint_radius_m': effective,
+                'grid_path_steps_from_current_cell': distances[cell],
+                'grid_path_length_m': distances[cell]*grid.resolution,
+                'euclidean_distance_from_actual_pose_m': math.dist(xy, pose[:2])})
+        entry = {'station_id': station, 'original_xy_m': old, 'original_cell': old_cell,
+            'original_robot_radius_reachable': old_cell in distances,
+            'original_effective_endpoint_radius_m': old_effective_radius,
+            'original_endpoint_clear': old_cell in grid.safe_cells(old_effective_radius),
+            'search_radius_m': .20, 'all_grid_centers_in_radius': len(nearby),
+            'raw_free_centers_in_radius': sum(grid.free(cell) for cell in nearby),
+            'robot_radius_reachable_centers_in_radius': sum(cell in distances for cell in nearby),
+            'safe_reachable_candidates': candidates, 'candidate_count': len(candidates),
+            'minimum_displacement_m': candidates[0]['displacement_from_original_m'] if candidates else None,
+            'heading_check': None}
+        if candidates:
+            chosen = candidates[0]
+            chosen['safe_grid_path_cells'] = witness(tuple(chosen['cell']))
+            component = gaps['components'][station-1]
+            gap_xy = component['representative']['xy_m']
+            bearing = math.atan2(gap_xy[1]-chosen['xy_m'][1], gap_xy[0]-chosen['xy_m'][0])
+            remaining = [view for view in original['reconstruction']['views']
+                if view['station_id'] == station and view['reconstructed_final_state'] == 'skipped_unsafe_or_unreachable']
+            heading_rows = [{'action_id': view['action_id'], 'heading_index': view['heading_index'],
+                'unchanged_goal_yaw_rad': view['goal']['yaw'],
+                'bearing_error_to_gap_rep_deg': math.degrees(angle_delta(bearing, view['goal']['yaw']))}
+                for view in remaining]
+            entry['heading_check'] = {'gap_component': component['component'],
+                'gap_representative_xy_m': gap_xy,
+                'base_center_to_gap_rep_distance_m': math.dist(chosen['xy_m'], gap_xy),
+                'bearing_to_gap_rep_deg': math.degrees(bearing),
+                'raw_grid_supercover_line_free_to_rep': grid.line_free(tuple(chosen['cell']), grid.to_cell(*gap_xy)),
+                'unchanged_remaining_views': heading_rows,
+                'nearest_existing_heading': min(heading_rows, key=lambda row: abs(row['bearing_error_to_gap_rep_deg'])),
+                'camera_pose_or_depth_prediction': False,
+                'note': 'Map-base bearing only. Camera offset, FoV, 3D occlusion and usable recognition range are not inferred.'}
+        stations.append(entry)
+    result = {'schema_version': 1, 'diagnostic_only': True, 'motion_commanded': False,
+        'navigation_success_claimed': False, 'recognition_coverage_verified': False,
+        'sources': sources, 'map_epoch': gaps['map_epoch'], 'policy_unchanged': asdict(policy),
+        'snapshot_ros_s': snapshot['ros_s'], 'map_metadata': metadata,
+        'current_pose': pose, 'current_cell': start, 'actual_pose_to_cell_center_offset_m': current_offset,
+        'reachable_cells': len(distances), 'base_endpoint_radius_m': radius,
+        'selection': 'minimum displacement, then safe BFS path steps, then cell tuple; no truth or straight-line path assumption',
+        'stations': stations,
+        'limitations': [
+            '0058 is an independent observer snapshot, not exact atomic mission decision-time data.',
+            'Raw map only: unknown, intermediate, occupied and outside remain blocked; no free-space prior or filling.',
+            'Candidate reachability is a four-neighbor robot-radius map property, not an actual Nav2 traversal.',
+            'A zero grid path length means the same grid cell; the actual pose may be offset from its center.',
+            'Only XY is hypothetically moved; existing heading/action sets and denominator are retained, never executed here.',
+            'Gap representatives come from final frozen diagnostic layers using historical map poses; no final-graph reprojection.',
+            'A free 2D map ray and matching base heading do not establish camera/depth/recognition visibility.',
+            'Real dispatch would require fresh safety/reachability checks and recorded arrival/frame evidence.']}
+    lines = ['# Run31 station relocation feasibility', '',
+        f'0058 observer ROS={snapshot["ros_s"]} s, map stamp={metadata["stamp"]} s. '
+        f'Unchanged endpoint reserve={radius:.12f} m = robot 0.25 + arrival 0.05 + half-cell diagonal.', '',
+        '| Station | Safe reachable centers within 0.20 m | Minimum shift | Candidate XY (m) | Safe-grid path |',
+        '|---|---:|---:|---|---|']
+    for row in stations:
+        best = row['safe_reachable_candidates'][0] if row['candidate_count'] else None
+        if best:
+            x, y = best['xy_m']
+            lines.append(f'| {row["station_id"]} | {row["candidate_count"]} | '
+                f'{row["minimum_displacement_m"]:.6f} m | ({x:.6f}, {y:.6f}) | '
+                f'{best["grid_path_steps_from_current_cell"]} steps / {best["grid_path_length_m"]:.3f} m |')
+    lines += ['', 'Both original frozen endpoints fail the unchanged endpoint test on this snapshot. '
+        'The substitutes are actual raw-map cell centers and pass the same production safety checks; '
+        'their zero origin-offset reserve is geometric recentering, not a reduced robot/arrival margin.', '',
+        'Station 1: remaining heading 2 (-pi) points exactly toward the right-gap representative, '
+        '0.30 m from the selected base center. Station 2: remaining heading 0 (0 rad) points toward '
+        'the left-gap representative, but that point is only 0.05 m away. This does not certify '
+        'a usable camera or recognition distance. Both planar supercover rays are free on 0058.', '',
+        f'Station 2 is already in the current pose cell; its actual pose-to-center distance is '
+        f'{current_offset:.6f} m. Zero BFS steps do not prove zero motion or successful settling.', '',
+        'Applicability: a bounded same-station XY replacement has map-geometric candidates without '
+        'loosening safety or adding headings. It is worth testing with fresh dispatch checks and actual '
+        'arrival/frame evidence. These outputs do not alter the queue, command motion, credit actions '
+        'or establish visibility/search completion.', '',
+        'Scope: current core/observation APIs, saved 0058 raw map, archived station reconstruction, '
+        'and prior frozen map-gap diagnostics only. No world or target truth. Snapshot timing and '
+        'historical map-pose limits remain; full candidate coordinates, sources and one safe-grid '
+        'path witness per selected station are retained in JSON.', '',
+        'Replay with a fresh prefix: `python -B outputs/setup/run31-station-relocation-probe.py '
+        '--output-prefix <new-prefix>`. Existing outputs are refused.', '']
+    for path, text in zip(outputs, (json.dumps(result, indent=2)+'\n', '\n'.join(lines))):
+        with path.open('x', encoding='utf-8', newline='\n') as handle:
+            handle.write(text)
+    print(json.dumps({'outputs': [str(path) for path in outputs],
+        'stations': [{'station': row['station_id'], 'count': row['candidate_count'],
+                      'minimum_displacement_m': row['minimum_displacement_m']} for row in stations]}))
+
+
+if __name__ == '__main__':
+    main()

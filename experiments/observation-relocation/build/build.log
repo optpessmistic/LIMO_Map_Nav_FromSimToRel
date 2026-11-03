@@ -1,0 +1,31 @@
+[8.863s] WARNING:colcon.colcon_core.package_selection:Some selected packages are already built in one or more underlay workspaces:
+	'limo_maze_mission' is in: /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission
+If a package in a merged underlay workspace is overridden and it installs headers, then all packages in the overlay must sort their include directories by workspace order. Failure to do so may result in build failures or undefined behavior at run time.
+If the overridden package is used by another package in any underlay, then the overriding package in the overlay must be API and ABI compatible or undefined behavior at run time may occur.
+
+If you understand the risks and want to override a package anyways, add the following to the command line:
+	--allow-overriding limo_maze_mission
+
+This may be promoted to an error in a future release of colcon-override-check.
+Starting >>> limo_maze_mission
+running develop
+running egg_info
+writing limo_maze_mission.egg-info/PKG-INFO
+writing dependency_links to limo_maze_mission.egg-info/dependency_links.txt
+writing entry points to limo_maze_mission.egg-info/entry_points.txt
+writing requirements to limo_maze_mission.egg-info/requires.txt
+writing top-level names to limo_maze_mission.egg-info/top_level.txt
+reading manifest file 'limo_maze_mission.egg-info/SOURCES.txt'
+writing manifest file 'limo_maze_mission.egg-info/SOURCES.txt'
+running build_ext
+Creating /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/lib/python3.12/site-packages/limo-maze-mission.egg-link (link to .)
+Installing mission script to /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/lib/limo_maze_mission
+
+Installed /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission
+running symlink_data
+symbolically linking /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/resource/limo_maze_mission -> /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/share/ament_index/resource_index/packages
+symbolically linking /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/package.xml -> /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/share/limo_maze_mission
+symbolically linking /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/launch/mission.launch.py -> /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_mission/share/limo_maze_mission/launch
+Finished <<< limo_maze_mission [19.1s]
+
+Summary: 1 package finished [20.7s]

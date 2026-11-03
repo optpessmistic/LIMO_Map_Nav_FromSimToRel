@@ -1,0 +1,26 @@
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import time
+
+root = Path(__file__).resolve().parents[2]
+out = root/'outputs/validation/observation-relocation-dds'
+out.mkdir(parents=True, exist_ok=False)
+command = ['/usr/bin/python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_observation*.py', '-v']
+sources = ['src/limo_maze_mission/limo_maze_mission/observation.py',
+           'src/limo_maze_mission/limo_maze_mission/node.py', 'tests/test_observation_ros.py']
+fingerprints = {p: hashlib.sha256((root/p).read_bytes()).hexdigest() for p in sources}
+started = time.monotonic()
+with (out/'tests.log').open('xb') as stream:
+    try:
+        result = subprocess.run(command, cwd=root, stdout=stream, stderr=subprocess.STDOUT, timeout=180)
+        code, reason = result.returncode, 'completed'
+    except subprocess.TimeoutExpired:
+        code, reason = 124, 'test_process_timeout'
+receipt = {'command': command, 'exit_code': code, 'reason': reason,
+           'elapsed_monotonic_s': time.monotonic()-started, 'source_sha256': fingerprints}
+(out/'result.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+print(json.dumps(receipt, indent=2), flush=True)
+print('\n'.join((out/'tests.log').read_text().splitlines()[-12:]), flush=True)
+raise SystemExit(code)

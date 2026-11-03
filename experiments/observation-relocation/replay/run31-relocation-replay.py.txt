@@ -1,0 +1,201 @@
+"""Offline production-queue comparison; no hypothetical arrival or completion."""
+import argparse
+from copy import deepcopy
+from dataclasses import asdict
+from decimal import Decimal
+import hashlib
+import json
+from pathlib import Path
+import sys
+import traceback
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output-prefix', type=Path, default=ROOT/'outputs/setup/run31-relocation-replay')
+    args = parser.parse_args()
+    outputs = [args.output_prefix.with_suffix(ext) for ext in ('.json', '.md')]
+    if any(path.exists() or path.is_symlink() for path in outputs):
+        raise FileExistsError('Refusing to overwrite queue replay')
+    sources = {}
+    def read(relative, json_data=True):
+        raw = (ROOT/relative).read_bytes()
+        sources[relative] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+        return json.loads(raw) if json_data else raw
+    initial = read('experiments/run31/observer-snapshots/0032-phase-observation_select.json')
+    later = read('experiments/run31/observer-snapshots/0058-phase-canceling.json')
+    mission = read('experiments/run31/mission/mission_20261103_014821.json')
+    archive = read('experiments/run31/validation/run31-skip-analysis.json')
+    source_names = ['src/limo_maze_mission/limo_maze_mission/'+name
+                    for name in ('observation.py', 'core.py')]
+    for name in source_names:
+        read(name, False)
+    sys.path.insert(0, str(ROOT/'src/limo_maze_mission'))
+    from limo_maze_mission.observation import Grid, Policy, ObservationQueue
+
+    def grid(snapshot):
+        m = snapshot['map']
+        return Grid(m['width'], m['height'], m['resolution'], *m['origin'], tuple(snapshot['map_data']))
+    def pose(snapshot):
+        return (*snapshot['pose']['xyz'][:2], snapshot['pose']['yaw'])
+    def stamp(snapshot):
+        value = Decimal(str(snapshot['map']['stamp']))*Decimal(1000000000)
+        assert value == value.to_integral_value(), 'Saved decimal seconds have fractional nanoseconds'
+        return int(value)
+    def normalized(value):
+        return json.loads(json.dumps(value))
+    def compact_snapshot(queue):
+        return {k: v for k, v in queue.snapshot().items() if k != 'selection_history'}
+
+    first_grid, late_grid = grid(initial), grid(later)
+    first_pose, fixed_pose = pose(initial), pose(later)
+    first_stamp, late_stamp = stamp(initial), stamp(later)
+    epoch = mission['map_epoch']
+    actual = mission['observation_actions']['attempts']
+    expected_views = {row['action_id']: {k: row[k] for k in
+        ('action_id', 'epoch', 'station_id', 'heading_index', 'goal')}
+        for row in archive['reconstruction']['views']}
+    result = {'schema_version': 1, 'offline_replay_only': True, 'motion_commanded': False,
+        'navigation_success_claimed': False, 'new_observation_completions_claimed': 0,
+        'visual_coverage_claimed': False, 'mission_success_claimed': False,
+        'sources': sources, 'map_epoch': epoch,
+        'original_mission_flags': {key: mission.get(key) for key in
+            ('status', 'reason', 'map_complete', 'visual_coverage_complete', 'returned_pose_verified', 'mission_success')},
+        'original_recorded_queue': mission['observation_actions']['queue'],
+        'first_snapshot_map_stamp_ns': first_stamp, 'fixed_remaining_map_stamp_ns': late_stamp,
+        'map_stamp_conversion': 'integer nanoseconds from saved map stamp decimal seconds',
+        'fixed_remaining_pose': fixed_pose,
+        'history_scope': '0032 map and pose with the five recorded successful outcomes construct queue state only; historical per-dispatch map/pose is not claimed.',
+        'enumeration_scope': 'Every hypothetical remaining dispatch is finished canceled solely to expose the next action; 0058 map AND pose remain unchanged.',
+        'variants': {}, 'replay_checks_passed': False}
+    try:
+        assert len(actual) == 5 and all(row['outcome'] == 'inspection_satisfied' for row in actual)
+        for name, radius in (('default_disabled', None), ('enabled_0_15m', .15)):
+            settings = dict(archive['policy'])
+            if radius is not None:
+                settings['relocation_radius_m'] = radius
+            policy = Policy(**settings)
+            queue = ObservationQueue(first_grid, first_pose, epoch, policy)
+            frozen_views = normalized({key: asdict(view) for key, view in queue.views.items()})
+            assert frozen_views == expected_views, 'Frozen IDs/stations/headings/goals differ from archived reconstruction'
+            assert list(queue.pending) == archive['reconstruction']['initial_execution_order']
+            variant = {'policy': asdict(policy), 'initial_order': list(queue.pending),
+                'planned_action_ids': sorted(queue.views), 'actual_first_five_matches': [],
+                'remaining_decisions': [], 'remaining_skips': []}
+            result['variants'][name] = variant
+            for attempt in actual:
+                decision = queue.take_next(first_grid, first_pose, epoch, map_stamp_ns=first_stamp)
+                assert decision.state == 'dispatch'
+                view = decision.view
+                exact = (view.action_id == attempt['action_id'] and view.station_id == attempt['station_id']
+                         and view.heading_index == attempt['heading_index']
+                         and normalized(asdict(view.goal)) == attempt['goal']
+                         and decision.dispatch_id == attempt['dispatch_id'])
+                assert exact, 'Original five-action order or complete selected goal differs'
+                variant['actual_first_five_matches'].append({'action_id': view.action_id,
+                    'dispatch_id': decision.dispatch_id, 'exact_view_and_goal_match': exact,
+                    'recorded_outcome_replayed': attempt['outcome']})
+                queue.finish(view.action_id, epoch, attempt['outcome'], decision.dispatch_id)
+            assert list(queue.pending) == archive['reconstruction']['pending_after_five_actual_successes']
+            variant['after_recorded_history'] = compact_snapshot(queue)
+            remaining_ids = set(queue.pending)
+            history_offset = len(queue.selection_history)
+            for call in range(policy.max_dispatches+1):
+                decision = queue.take_next(late_grid, fixed_pose, epoch, map_stamp_ns=late_stamp)
+                saved = normalized(asdict(decision))
+                variant['remaining_decisions'].append(saved)
+                if decision.state != 'dispatch':
+                    break
+                assert decision.validation == queue.selection_history[-1]
+                assert decision.validation['pose'] == list(fixed_pose)
+                assert decision.validation['map']['stamp_ns'] == late_stamp
+                assert decision.view.action_id in remaining_ids
+                saved['synthetic_enumeration_finish'] = 'canceled'
+                saved['actual_navigation_or_observation_success'] = False
+                queue.finish(decision.view.action_id, epoch, 'canceled', decision.dispatch_id)
+            else:
+                raise AssertionError('Bounded enumeration did not terminate')
+            selections = queue.selection_history[history_offset:]
+            variant['remaining_skips'] = deepcopy([row for row in selections
+                if row['state'] == 'skipped_unsafe_or_unreachable'])
+            assert all(row['pose'] == list(fixed_pose) and row['map']['stamp_ns'] == late_stamp for row in selections)
+            variant['remaining_selected_map_sha256'] = sorted({row['map']['grid_sha256'] for row in selections})
+            variant['remaining_dispatch_count'] = sum(row['state'] == 'dispatch' for row in selections)
+            variant['remaining_skip_count'] = len(variant['remaining_skips'])
+            variant['final_queue'] = compact_snapshot(queue)
+            variant['final_records'] = deepcopy(queue.records)
+            variant['planned_ids_and_frozen_goals_unchanged'] = frozen_views == normalized(
+                {key: asdict(view) for key, view in queue.views.items()})
+            assert variant['planned_ids_and_frozen_goals_unchanged']
+            assert {row['action_id'] for row in selections} == remaining_ids
+            assert len(selections) == len(remaining_ids) == 7
+            assert queue.snapshot()['state_counts'].get('completed') == 5
+            assert not queue.snapshot()['all_planned_actions_completed']
+            assert not queue.snapshot()['visual_coverage_claimed'] and not queue.snapshot()['mission_success_claimed']
+        disabled, enabled = result['variants']['default_disabled'], result['variants']['enabled_0_15m']
+        assert disabled['policy']['relocation_radius_m'] == 0
+        result['comparison'] = {
+            'default_reproduces_seven_skips': disabled['remaining_skip_count'] == 7 and disabled['remaining_dispatch_count'] == 0,
+            'enabled_selects_seven_dispatches': enabled['remaining_dispatch_count'] == 7 and enabled['remaining_skip_count'] == 0,
+            'same_twelve_planned_ids': disabled['planned_action_ids'] == enabled['planned_action_ids'] and len(enabled['planned_action_ids']) == 12,
+            'same_fixed_0058_map_binding': disabled['remaining_selected_map_sha256'] == enabled['remaining_selected_map_sha256'],
+            'new_actual_successes': 0}
+        for name in source_names:
+            assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest() == sources[name]['sha256'], 'Source changed during replay'
+        assert all(value for key, value in result['comparison'].items() if key != 'new_actual_successes')
+        result['replay_checks_passed'] = True
+    except Exception as error:
+        result['error'] = {'type': type(error).__name__, 'message': str(error),
+                           'traceback': traceback.format_exc(limit=8)}
+    result['limitations'] = [
+        'Current production source is SHA-bound here; this is not a new ROS/Gazebo run.',
+        '0032 and 0058 observer snapshots are not atomic decision-time MissionNode inputs.',
+        'No pose is updated to any selected hypothetical goal. No depth frame, settling or return evidence is created.',
+        'Enabled final failed records are consequences of synthetic canceled enumeration, not observed navigation failures.',
+        'Original five completions and seven skips remain the authoritative run31 outcome; no new completion or coverage is credited.']
+    lines = ['# Run31 production queue relocation replay', '',
+        f'Replay checks passed: {result["replay_checks_passed"]}. No robot/simulation ran.', '',
+        'Both independent queues are rebuilt from 0032; all 12 frozen views and original order must match '
+        'the archived reconstruction. Five recorded inspection_satisfied outcomes construct history only.', '',
+        '| Variant | Remaining dispatches | Remaining skips | Final state counts |',
+        '|---|---:|---:|---|']
+    for name, variant in result['variants'].items():
+        lines.append(f'| {name} | {variant.get("remaining_dispatch_count", "unverified")} | '
+            f'{variant.get("remaining_skip_count", "unverified")} | '
+            f'{variant.get("final_queue", {}).get("state_counts", "unverified")} |')
+    lines += ['', 'The 0.15 m case does not claim seven new successes. Each selected dispatch is deliberately '
+        'finished canceled to enumerate the next action, while the 0058 map and actual saved pose stay fixed. '
+        'Only the original five completed records remain completed. All 12 planned action IDs, original '
+        'anchors, yaw/heading sets and safety/budget parameters remain bound in JSON.', '',
+        '## Hypothetical selected goals', '',
+        '| Action | Station / heading | Selected XY (m) | Shift from frozen anchor (m) |',
+        '|---|---|---|---:|']
+    for row in result['variants'].get('enabled_0_15m', {}).get('remaining_decisions', []):
+        if row['state'] != 'dispatch':
+            continue
+        view, validation = row['view'], row['validation']
+        lines.append(f'| {view["action_id"]} | {view["station_id"]} / {view["heading_index"]} | '
+            f'({view["goal"]["x"]:.6f}, {view["goal"]["y"]:.6f}) | '
+            f'{validation["selected_shift_from_anchor_m"]:.9f} |')
+    lines += ['', 'Decision validation includes source map geometry/hash/stamp, unchanged current pose, '
+        'original/preferred/selected endpoint checks and effective safety radii. Default skipped decisions '
+        'are retained from the production selection history. No world or target truth is read.', '',
+        'Original mission_success and visual_coverage_complete remain false. Offline selection feasibility '
+        'does not prove Nav2 arrival, observation completion or usable camera range.', '',
+        'Replay: `python -B outputs/setup/run31-relocation-replay.py --output-prefix <fresh-prefix>`. '
+        'Existing outputs are refused.', '']
+    if result.get('error'):
+        lines += ['Failure: '+json.dumps(result['error'], ensure_ascii=False), '']
+    for path, content in zip(outputs, (json.dumps(result, indent=2)+'\n', '\n'.join(lines))):
+        with path.open('x', encoding='utf-8', newline='\n') as handle:
+            handle.write(content)
+    print(json.dumps({'replay_checks_passed': result['replay_checks_passed'],
+        'comparison': result.get('comparison'), 'error': result.get('error'),
+        'outputs': [str(path) for path in outputs]}))
+    return 0 if result['replay_checks_passed'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
