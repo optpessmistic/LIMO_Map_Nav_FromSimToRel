@@ -1,0 +1,63 @@
+{
+  "archive_copy_validation_passed": true,
+  "copy_count": 93,
+  "reopened_and_sha_verified_copy_count": 93,
+  "gzip_count": 2,
+  "external_file_count": 21,
+  "external_file_bytes": 26331740,
+  "files_before_this_validation": 96,
+  "original_root_session": 74954,
+  "original_root_exit_code": 1,
+  "original_mission": {
+    "status": "blocked",
+    "reason": "map_stale",
+    "mission_success": false,
+    "returned_pose_verified": false,
+    "map_complete": false,
+    "visual_coverage_complete": false,
+    "mission_timed_out": false,
+    "target_definition_verified": false,
+    "coordinates_valid": true
+  },
+  "frontier_as_recorded": {
+    "sent": 2,
+    "terminal_success": 1,
+    "terminal_failure": 1,
+    "terminal_unknown": 0
+  },
+  "cancel_events_as_recorded": [
+    {
+      "stamp": 162.859,
+      "event": "cancel_requested",
+      "next_phase": "blocked",
+      "reason": "map_stale"
+    }
+  ],
+  "observation_queue_created": false,
+  "planned_views_denominator": null,
+  "consumer_accepted_count": 3,
+  "consumer_stored_state_count": 3,
+  "consumer_fault": "mission_blocked",
+  "strict_retention_audit_as_recorded": {
+    "schema_version": 1,
+    "passed": false,
+    "accepted_count": 0,
+    "verified_count": 0,
+    "errors": [
+      "consumer_disabled_or_faulted"
+    ],
+    "frames": [],
+    "scope": "exact_accepted_files_reopened_and_hashed; supplied_TF_identity_only; does_not_verify_process_exit_scene_coverage_target_recall_or_motion"
+  },
+  "selection_audit_passed": false,
+  "selection_audit_errors": [
+    {
+      "check": "audit_unavailable_or_aborted",
+      "detail": "ValueError: No observation queue was recorded; selection audit unavailable"
+    }
+  ],
+  "map_delivery_analysis_completed": true,
+  "original_all_owned_groups_empty": true,
+  "global_process_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+  "scope": "Copy integrity passed, not mission, relocation, return or strict retention success. New fixes/builds are excluded. Root must add README and final manifest."
+}

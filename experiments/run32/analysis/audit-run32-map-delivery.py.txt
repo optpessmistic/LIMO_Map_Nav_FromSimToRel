@@ -1,0 +1,221 @@
+"""Closed run32 offline map/scan/TF delivery diagnosis; no ROS initialization."""
+import argparse
+from collections import defaultdict
+import hashlib
+import importlib.util
+import json
+import math
+from pathlib import Path
+import re
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT/'outputs/ros_smoke/run32-observation-relocation'
+OUT = ROOT/'outputs/setup/run32-map-delivery-audit.json'
+SOURCES, STATS = {}, {}
+
+
+def stat_key(path):
+    s = path.stat()
+    return s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns
+
+
+def fingerprint(path, capture=False):
+    path = path.absolute()
+    relative = path.relative_to(ROOT)
+    cursor = ROOT
+    for part in relative.parts:
+        cursor /= part
+        if part == '..' or cursor.is_symlink():
+            raise ValueError('Unsafe input: '+str(path))
+    if not path.is_file() or not path.resolve().is_relative_to(ROOT):
+        raise ValueError('Missing/unsafe input: '+str(path))
+    before = stat_key(path)
+    if capture and before[2] > 64*1024*1024:
+        raise ValueError('Oversized captured input')
+    digest, chunks = hashlib.sha256(), []
+    with path.open('rb') as stream:
+        while chunk := stream.read(4*1024*1024):
+            digest.update(chunk)
+            if capture:
+                chunks.append(chunk)
+    after = stat_key(path)
+    if before != after or path in STATS and STATS[path] != after:
+        raise ValueError('Input changed: '+str(path))
+    STATS[path] = after
+    SOURCES[relative.as_posix()] = {'sha256':digest.hexdigest(), 'bytes':after[2]}
+    return b''.join(chunks) if capture else digest.hexdigest()
+
+
+def load(path):
+    return json.loads(fingerprint(path, True))
+
+
+def require(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def prior_functions():
+    path = ROOT/'outputs/setup/audit-run30-tf-delivery.py'
+    fingerprint(path)
+    spec = importlib.util.spec_from_file_location('_run32_summary_functions', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.summary, module.row_json
+
+
+def analyze():
+    summary, row_json = prior_functions()
+    prep, closed = load(RUN/'preparation.json'), load(RUN/'orchestration.json')
+    writer = load(RUN/'retention-shutdown.json')
+    require(prep['run'] == closed['run'] == RUN.name and prep['epoch'] == closed['epoch'], 'Run identity mismatch')
+    require(closed.get('all_owned_groups_empty') is True, 'Owned groups not confirmed closed')
+    receipts = [*(closed.get('stops') or {}).values(), closed.get('recorder_inner_recheck', {})]
+    require(len(receipts) > 1 and all(r.get('remaining') == [] and r.get('ownership_errors') == [] and r.get('remaining_check_complete') is True for r in receipts), 'Incomplete closure receipts')
+    require(writer.get('writer') is None and writer.get('shutdown', {}).get('owned_writer_exit_confirmed') is True, 'Writer exit not confirmed')
+    terminal = closed['terminal']
+    path = Path(terminal['path'])
+    require(path.parent == RUN/'mission', 'Terminal path outside this run')
+    mission = load(path)
+    require(SOURCES[path.relative_to(ROOT).as_posix()]['sha256'] == terminal['sha256'] and mission['map_epoch'] == prep['epoch'], 'Terminal hash/epoch mismatch')
+    events = [e for e in mission['events'] if e.get('event') == 'cancel_requested' and e.get('reason') == 'map_stale']
+    require(len(events) == 1, 'Expected exactly one recorded map_stale cancellation')
+    fault = events[0]['stamp']
+    require(type(fault) in (float, int) and math.isfinite(fault), 'Invalid event stamp')
+    observer = load(RUN/'observer.json')
+    params = load(RUN/'parameters-early.json')
+    nav = fingerprint(RUN/'navigation.log', True).decode('utf-8', errors='replace')
+    fingerprint(RUN/'mission.log')
+    fingerprint(RUN/'sim.log')
+    node = ROOT/'src/limo_maze_mission/limo_maze_mission/node.py'
+    require(fingerprint(node) == prep['prepared_source_sha256'][node.relative_to(ROOT).as_posix()], 'Runtime node source mismatch')
+    source_paths = [ROOT/'outputs/slam-steady-ws/src/slam_toolbox/src'/name for name in ('slam_toolbox_common.cpp','slam_toolbox_async.cpp')]
+    for source in source_paths:
+        require(fingerprint(source) == prep['slam_overlay']['files_sha256'][source.relative_to(ROOT).as_posix()], 'Built SLAM source mismatch')
+    snapshots = []
+    for snapshot in sorted((RUN/'observer-snapshots').glob('[0-9]*.json')):
+        d = load(snapshot)
+        snapshots.append({'file':snapshot.relative_to(ROOT).as_posix(), 'wall_s':d.get('wall_s'),
+            'ros_s':d.get('ros_s'), 'reason':d.get('reason'), 'map':d.get('map'),
+            'map_age_s':d.get('map_age_s'), 'pose_stamp_s':d.get('pose', {}).get('stamp'),
+            'pose_age_s':d.get('pose_age_s'), 'pose_error':d.get('pose_error')})
+    import yaml
+    import rosbag2_py
+    from rclpy.serialization import deserialize_message
+    from rosidl_runtime_py.utilities import get_message
+    bag = RUN/'recording/bag'
+    metadata = yaml.safe_load(fingerprint(bag/'metadata.yaml', True))['rosbag2_bagfile_information']
+    require(metadata['storage_identifier'] == 'mcap', 'Expected MCAP')
+    files = metadata['relative_file_paths']
+    require(files and len(set(files)) == len(files), 'Missing/duplicate bag segments')
+    for name in files:
+        require(Path(name).name == name and name.endswith('.mcap'), 'Unsafe segment filename')
+        fingerprint(bag/name)
+    reader = rosbag2_py.SequentialReader()
+    reader.open(rosbag2_py.StorageOptions(uri=str(bag), storage_id='mcap'), rosbag2_py.ConverterOptions('', ''))
+    topics = ('/clock','/scan','/odom','/tf','/map')
+    types = {t.name:get_message(t.type) for t in reader.get_all_topics_and_types() if t.name in topics}
+    require(set(types) == set(topics), 'Missing requested reference topic')
+    reader.set_filter(rosbag2_py.StorageFilter(topics=list(topics)))
+    series, counts, maps = defaultdict(list), defaultdict(int), []
+    def ns(stamp):
+        return stamp.sec*10**9+stamp.nanosec
+    try:
+        while reader.has_next():
+            topic, raw, receipt = reader.read_next()
+            msg = deserialize_message(raw, types[topic])
+            counts[topic] += 1
+            if topic == '/tf':
+                for t in msg.transforms:
+                    if (t.header.frame_id,t.child_frame_id) == ('map','odom'):
+                        series['map->odom'].append((receipt,ns(t.header.stamp)))
+            else:
+                pair = receipt, ns(msg.clock if topic == '/clock' else msg.header.stamp)
+                series[topic].append(pair)
+                if topic == '/map':
+                    q=msg.info.origin.orientation
+                    geometry={'width':msg.info.width,'height':msg.info.height,'resolution':msg.info.resolution,
+                        'origin':[msg.info.origin.position.x,msg.info.origin.position.y,
+                            math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))]}
+                    digest=hashlib.sha256(json.dumps({**geometry,'data':tuple(msg.data)},sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+                    maps.append({**row_json(pair),'grid_sha256':digest,'frame_id':msg.header.frame_id,'geometry':geometry})
+    finally:
+        del reader
+    expected_counts={t['topic_metadata']['name']:t['message_count'] for t in metadata['topics_with_message_count'] if t['topic_metadata']['name'] in topics}
+    require(dict(counts)==expected_counts, 'Decoded topic counts differ from metadata')
+    require(series['map->odom'] and series['/map'], 'No TF/map evidence')
+    map_rows = series['/map']
+    pairs=[(i,a,b) for i,(a,b) in enumerate(zip(map_rows,map_rows[1:])) if a[0]/1e9 <= fault <= b[0]/1e9]
+    require(len(pairs)==1, 'No unique /map receipt interval spanning the fault event')
+    index,before,after=pairs[0]
+    lo,hi=before[0]/1e9,after[0]/1e9
+    fault_window={name:summary([r for r in rows if fault-5 <= r[0]/1e9 <= fault+3]) for name,rows in series.items()}
+    gap_window={name:summary([r for r in rows if lo <= r[0]/1e9 <= hi]) for name,rows in series.items()}
+    sample_rows=[r for r in observer['continuous_tf_samples'] if lo-1 <= r['ros_s'] <= hi+1]
+    compact_tf=[{'wall_s':r['wall_s'],'ros_s':r['ros_s'],'tf_age_ros_s':r.get('tf_age_ros_s'),
+        'tf_errors':r.get('tf_errors'), 'same_stamp_chain_complete':r.get('same_stamp_chain_complete'),
+        'odom':{k:r.get('latest_odom',{}).get(k) for k in ('stamp_ns','receipt_wall_s','receipt_ros_s','receipt_age_wall_s','header_age_ros_s')}} for r in sample_rows]
+    log_rows=[]
+    for number,line in enumerate(nav.splitlines(),1):
+        match=re.search(r'\[controller_server-3\].*\[([0-9]+\.[0-9]+)\] \[controller_server\]',line)
+        if match:
+            log_rows.append({'line':number,'system_log_stamp_s':float(match[1]),'text':line})
+    backwards=[{'before':a,'after':b,'signed_stamp_delta_s':b['system_log_stamp_s']-a['system_log_stamp_s']} for a,b in zip(log_rows,log_rows[1:]) if b['system_log_stamp_s'] < a['system_log_stamp_s']]
+    require(all(stat_key(p)==s for p,s in STATS.items()), 'Input stat changed after decode')
+    original=dict(SOURCES)
+    for p in list(STATS):
+        fingerprint(p)
+    require(SOURCES==original, 'Input bytes changed after decode')
+    return {'run':RUN.name,'epoch':prep['epoch'],'prepared_code_head':prep['code_head'],
+        'original_result':{k:mission.get(k) for k in ('status','reason','mission_success','map_complete','visual_coverage_complete','returned_pose_verified')},
+        'original_orchestration':{k:closed.get(k) for k in ('status','errors','elapsed_wall_s','all_owned_groups_empty','retention_audit_passed')},
+        'fault_event':events[0],'live_parameters':{node:{key:params['parameters'][node]['values'].get(key) for key in keys} for node,keys in {
+            'limo_maze_mission':('map_max_age_s','use_sim_time'),
+            'slam_toolbox':('map_update_interval','use_sim_time','transform_publish_period','restamp_tf','transform_timeout','minimum_time_interval')}.items()},
+        'topics':{name:summary(rows) for name,rows in series.items()},'decoded_topic_counts':dict(counts),'metadata_topic_counts':expected_counts,
+        'fault_centered_window':{'ros_time_bounds_s':[fault-5,fault+3],'topics':fault_window},
+        'map_receipt_interval_spanning_fault':{'before':maps[index],'after':maps[index+1],
+            'bag_ros_gap_s':hi-lo,'source_header_step_s':(after[1]-before[1])/1e9,
+            'topics_received_within_interval':gap_window},
+        'all_recorded_maps':maps,'observer_snapshots':snapshots,'observer_tf_samples_near_gap':compact_tf,
+        'controller_log_backward_stamp_pairs':backwards,
+        'input_hashes_reverified_after_decode':True,
+        'definitions':{'map_stale':'Mission monotonic callback-receipt silence > live map_max_age_s. It does not test /map source header age.',
+            'map_header':'SLAM updateMap stamps with latest scan_header; not publication wall time or guaranteed last incorporated scan.',
+            'observer_wall':'time.monotonic elapsed from independent observer start; not the mission absolute monotonic origin.',
+            'bag_receipt':'Recorder ROS time because --use-sim-time; not independent wall reception.'},
+        'limitations':['Bag gaps cannot distinguish publishing, DDS transport and recorder scheduling. Independent observer snapshots constrain but do not eliminate these alternatives.',
+            'Mission did not save the precise map_received monotonic value or map callback duration; the 5s trigger cannot be reconstructed exactly from bag ROS timestamps.',
+            'TF observer map->odom is sampled/interpolated at a common TF reference time; use raw bag TF header statistics for source progress.',
+            'Controller log order/stamp reversal is an observed log anomaly, not a simultaneous system/steady clock probe and not direct evidence of a blocked SLAM Rate sleep.',
+            'SLAM map publishing still uses rclcpp::Rate; map generation and graph publication also acquire smapper_mutex. Existing evidence does not directly time those sleep/lock/computation phases.',
+            'No simulator truth, playback, ROS initialization, nodes, motion, deadline changes, or success-flag changes.']}
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-root-session',type=int,choices=[74954],required=True)
+    parser.add_argument('--confirmed-root-exit-code',type=int,choices=[1],required=True)
+    args=parser.parse_args()
+    require(sys.platform=='linux','Offline CDR decoding requires sourced Linux ROS libraries')
+    require(not OUT.exists() and not OUT.is_symlink(),'Refuse overwriting prior audit')
+    result={'schema_version':1,'analysis_completed':False,'read_only':True,
+        'root_exec_completion':{'session_id':args.confirmed_root_session,'exit_code':args.confirmed_root_exit_code,'source':'Explicit parent/root completion confirmation'},'errors':[]}
+    try:
+        fingerprint(Path(__file__))
+        result.update(analyze())
+        result['analysis_completed']=True
+    except Exception as exc:
+        result['errors'].append({'type':type(exc).__name__,'detail':str(exc)})
+    result['sources']=SOURCES
+    with OUT.open('x',encoding='utf-8',newline='\n') as stream:
+        json.dump(result,stream,indent=2,allow_nan=False);stream.write('\n')
+    print(json.dumps({'output':str(OUT),'analysis_completed':result['analysis_completed'],'errors':result['errors'],
+        'fault_event':result.get('fault_event'),'map_gap':result.get('map_receipt_interval_spanning_fault'),
+        'ros_nodes_started':False},indent=2))
+    return 0 if result['analysis_completed'] else 1
+
+
+if __name__=='__main__':
+    raise SystemExit(main())

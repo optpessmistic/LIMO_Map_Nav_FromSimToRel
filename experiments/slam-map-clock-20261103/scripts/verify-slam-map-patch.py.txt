@@ -1,0 +1,82 @@
+"""Exercise the source-fetch guard in disposable local fixtures; no network."""
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
+
+root = Path(__file__).resolve().parents[2]
+output = root/'outputs/setup/slam-steady-map-patch-validation.json'
+if output.exists():
+    raise FileExistsError(output)
+patches = ['0002-slam-toolbox-inclusive-grid.patch', '0003-slam-toolbox-steady-transform-publish.patch',
+           '0004-slam-toolbox-steady-map-publish.patch']
+header = 'lib/karto_sdk/include/karto_sdk/Karto.h'
+common = 'src/slam_toolbox_common.cpp'
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+def command(args, cwd, expected=0):
+    result = subprocess.run(args, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=40)
+    if (result.returncode == 0) != (expected == 0):
+        raise AssertionError({'command': args, 'returncode': result.returncode, 'output': result.stdout[-2500:]})
+    return {'command': args, 'returncode': result.returncode, 'output': result.stdout[-3000:]}
+results = {'scope': 'Temporary local Git fixtures only; real vendor and old overlays unchanged.',
+           'source_sha256': {str(p.relative_to(root)): sha(p) for p in
+               [root/'scripts/fetch_slam_vendor.sh', *(root/'patches'/n for n in patches)]}, 'cases': []}
+try:
+    with tempfile.TemporaryDirectory(prefix='limo-slam-map-guard-', dir='/tmp') as directory:
+        base = Path(directory)
+        for prefix in range(4):
+            fixture = base/str(prefix)
+            fixture.mkdir()
+            command(['git', 'init', '-q'], fixture)
+            (fixture/'.gitignore').write_text('vendor/\n')
+            (fixture/'scripts').mkdir()
+            (fixture/'patches').mkdir()
+            (fixture/'vendor').mkdir()
+            shutil.copyfile(root/'scripts/fetch_slam_vendor.sh', fixture/'scripts/fetch_slam_vendor.sh')
+            for name in patches:
+                shutil.copyfile(root/'patches'/name, fixture/'patches'/name)
+            command(['git', 'clone', '-q', '--local', str(root/'vendor/slam_toolbox'), 'vendor/slam_toolbox'], fixture)
+            vendor = fixture/'vendor/slam_toolbox'
+            command(['git', 'remote', 'set-url', 'origin', 'https://github.com/SteveMacenski/slam_toolbox.git'], vendor)
+            for name in patches[:prefix]:
+                command(['git', 'apply', str(fixture/'patches'/name)], vendor)
+            (vendor/'COLCON_IGNORE').touch()
+            before = {p: sha(vendor/p) for p in (header, common)}
+            checks = [command(['bash', 'scripts/fetch_slam_vendor.sh', '--check-only'], fixture, 0 if prefix == 3 else 1)]
+            assert before == {p: sha(vendor/p) for p in before}
+            # A real unexpected source edit must be preserved and block application.
+            original = (vendor/common).read_bytes()
+            (vendor/common).write_bytes(original+b'\n// owned unexpected edit probe\n')
+            dirty = {p: sha(vendor/p) for p in before}
+            checks.append(command(['bash', 'scripts/fetch_slam_vendor.sh'], fixture, 1))
+            assert dirty == {p: sha(vendor/p) for p in dirty}
+            (vendor/common).write_bytes(original)
+            probe = vendor/'.owned-untracked-probe'
+            probe.write_bytes(b'fixture owned probe\n')
+            checks.append(command(['bash', 'scripts/fetch_slam_vendor.sh'], fixture, 1))
+            assert probe.read_bytes() == b'fixture owned probe\n'
+            assert before == {p: sha(vendor/p) for p in before}
+            probe.unlink()
+            checks.append(command(['bash', 'scripts/fetch_slam_vendor.sh'], fixture))
+            after = {p: sha(vendor/p) for p in before}
+            checks.append(command(['bash', 'scripts/fetch_slam_vendor.sh'], fixture))
+            checks.append(command(['bash', 'scripts/fetch_slam_vendor.sh', '--check-only'], fixture))
+            assert after == {p: sha(vendor/p) for p in after}
+            source = (vendor/common).read_text()
+            for period in ('transform_publish_period', 'map_update_interval'):
+                assert source.count('rclcpp::WallRate r(1.0 / '+period+');') == 1
+                assert 'rclcpp::Rate r(1.0 / '+period+');' not in source
+            command(['git', 'diff', '--check'], vendor)
+            results['cases'].append({'initial_prefix_length': prefix, 'checks': checks,
+                                     'final_source_sha256': after, 'passed': True})
+    results['passed'] = True
+except Exception as exc:
+    results['passed'] = False
+    results['error'] = type(exc).__name__+': '+str(exc)
+with output.open('x', encoding='utf-8') as stream:
+    stream.write(json.dumps(results, indent=2)+'\n')
+print(json.dumps({'output': str(output), 'passed': results['passed'], 'cases': len(results['cases']), 'error': results.get('error')}))
+raise SystemExit(0 if results['passed'] else 1)

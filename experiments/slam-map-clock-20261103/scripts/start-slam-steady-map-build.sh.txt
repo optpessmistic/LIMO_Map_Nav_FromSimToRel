@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -eo pipefail
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+bash -n scripts/fetch_slam_vendor.sh
+bash -n outputs/setup/build-slam-steady-map.sh
+bash scripts/fetch_slam_vendor.sh
+exec bash outputs/setup/build-slam-steady-map.sh

@@ -12,10 +12,12 @@ original_header_sha256="277fd3ddbb4c655408660e7bab8ff39f49875af709bd7a83ff3d0291
 patched_header_sha256="3a91277a6fb16bd5796f41d484c2d405384f9bcfef6956f90511fa7c4391512c"
 source_path="src/slam_toolbox_common.cpp"
 original_source_sha256="7ee09d3669435b1936e1c6aca5e4d1d916d5712c08ba00148d9f8e96a612a9d0"
-patched_source_sha256="c1b96ccf0e516cc83dc7628047c0114b489f566d0516c0c3291b7310f7cddfdf"
+transform_patched_source_sha256="c1b96ccf0e516cc83dc7628047c0114b489f566d0516c0c3291b7310f7cddfdf"
+patched_source_sha256="2c80e9d4af5974f449473bd0b568d00fac0be2aa24e6b97161548766529ac406"
 patches=(
   "$project_root/patches/0002-slam-toolbox-inclusive-grid.patch"
   "$project_root/patches/0003-slam-toolbox-steady-transform-publish.patch"
+  "$project_root/patches/0004-slam-toolbox-steady-map-publish.patch"
 )
 check_only=false
 if [[ "${1:-}" == "--check-only" && $# -eq 1 ]]; then
@@ -66,8 +68,8 @@ git -C "$vendor_path" diff --cached --quiet || {
 }
 
 # Validate the entire working tree before applying any missing patch. Accept
-# only exact prefixes: pristine, 0002, or 0002+0003. A matching hunk alone is
-# insufficient: unrelated edits elsewhere in either file must be preserved.
+# only exact prefixes: pristine, 0002, 0002+0003, or 0002+0003+0004. A matching
+# hunk alone is insufficient: unrelated edits in either file must be preserved.
 while IFS= read -r changed_path; do
   [[ "$changed_path" == "$header_path" || "$changed_path" == "$source_path" ]] || {
     printf 'Unexpected vendor modification preserved: %s\n' "$changed_path" >&2
@@ -82,18 +84,20 @@ source_sha256="$(sha256sum "$vendor_path/$source_path" | cut -d ' ' -f 1)"
 case "$header_sha256:$source_sha256" in
   "$original_header_sha256:$original_source_sha256") applied=0 ;;
   "$patched_header_sha256:$original_source_sha256") applied=1 ;;
-  "$patched_header_sha256:$patched_source_sha256") applied=2 ;;
+  "$patched_header_sha256:$transform_patched_source_sha256") applied=2 ;;
+  "$patched_header_sha256:$patched_source_sha256") applied=3 ;;
   *) printf 'Unknown or out-of-order vendor patch state; checkout preserved.\n' >&2; exit 1 ;;
 esac
 for ((i=0; i<applied; i++)); do
   git -C "$vendor_path" apply --reverse --check "${patches[i]}"
 done
 if "$check_only" && ((applied != ${#patches[@]})); then
-  printf 'Both pinned SLAM patches are required; %s of %s applied.\n' "$applied" "${#patches[@]}" >&2
+  printf 'All three pinned SLAM patches are required; %s of %s applied.\n' "$applied" "${#patches[@]}" >&2
   exit 1
 fi
-# Preflight every missing patch before the first write. The files are disjoint;
-# both checks therefore work on the pristine tree as well as the 0002 prefix.
+# Preflight every missing patch before the first write. 0002 changes the header;
+# 0003 and 0004 change separate, non-overlapping source hunks. Each check works
+# directly on every accepted earlier prefix, including the pristine tree.
 for ((i=applied; i<${#patches[@]}; i++)); do
   git -C "$vendor_path" apply --check "${patches[i]}"
 done
@@ -103,7 +107,7 @@ done
 [[ "$(git -C "$vendor_path" diff --name-only)" == "$header_path"$'\n'"$source_path" &&
    "$(sha256sum "$vendor_path/$header_path" | cut -d ' ' -f 1)" == "$patched_header_sha256" &&
    "$(sha256sum "$vendor_path/$source_path" | cut -d ' ' -f 1)" == "$patched_source_sha256" ]] || {
-  printf 'Vendor result differs from the exact two pinned patches; inspect before proceeding.\n' >&2
+  printf 'Vendor result differs from the exact three pinned patches; inspect before proceeding.\n' >&2
   exit 1
 }
 

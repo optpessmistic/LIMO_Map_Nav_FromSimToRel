@@ -1,0 +1,42 @@
+"""Read-only environment inventory after the incremental recheck precondition failed."""
+from pathlib import Path
+import hashlib
+import json
+import os
+import time
+
+root = Path(__file__).resolve().parents[2]
+native = Path('/tmp/limo-slam-steady-map-20261103')
+copied = root / 'outputs/slam-steady-map-ws/install/slam_toolbox/lib'
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with path.open('rb') as stream:
+        while chunk := stream.read(4 * 1024 * 1024):
+            value.update(chunk)
+    return value.hexdigest()
+
+
+paths = (native, native / 'src/slam_toolbox', native / 'build', native / 'install/slam_toolbox/lib', copied)
+result = {
+    'current_boot_id': Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+    'previous_build_boot_id_as_supplied_by_root': '826b4e0a-ed08-4ad7-afca-9167af908703',
+    'wsl_distribution_name': os.environ.get('WSL_DISTRO_NAME'),
+    'os_release': Path('/etc/os-release').read_text(),
+    'monotonic_s': time.monotonic(),
+    'uptime': Path('/proc/uptime').read_text().strip(),
+    'paths': {str(path): {'exists': path.exists(), 'is_dir': path.is_dir(), 'is_symlink': path.is_symlink()}
+              for path in paths},
+    'tmp_direct_children': sorted(path.name for path in Path('/tmp').iterdir()),
+    'c_lib_regular_files_now': {path.relative_to(copied).as_posix(): {'sha256': digest(path), 'bytes': path.stat().st_size}
+                                for path in sorted(copied.rglob('*')) if path.is_file() and not path.is_symlink()},
+    'original_build_log_sha256_now': digest(root / 'outputs/setup/slam-steady-map-build.log'),
+    'scope': 'Current filesystem/boot inventory only. A changed boot plus missing /tmp supports restart-related loss, but does not prove which cleanup mechanism removed the workspace. No build, source modification, directory creation or install copy.'}
+output = root / 'outputs/setup/slam-steady-map-recheck-environment.json'
+with output.open('x', encoding='utf-8', newline='\n') as stream:
+    json.dump(result, stream, indent=2)
+    stream.write('\n')
+print(json.dumps({'path': str(output), 'current_boot_id': result['current_boot_id'],
+                  'wsl_distribution_name': result['wsl_distribution_name'], 'native_exists': native.exists(),
+                  'c_lib_exists': copied.is_dir(), 'c_regular_file_count': len(result['c_lib_regular_files_now'])}))

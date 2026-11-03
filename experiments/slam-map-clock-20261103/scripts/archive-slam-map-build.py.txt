@@ -1,0 +1,116 @@
+"""Archive a completed build only after root's terminal receipt is confirmed."""
+from pathlib import Path
+import argparse
+import gzip
+import hashlib
+import json
+import re
+import shutil
+
+p = argparse.ArgumentParser()
+p.add_argument('--confirmed-root-session', type=int, required=True)
+p.add_argument('--confirmed-root-exit-code', type=int, required=True)
+a = p.parse_args()
+assert a.confirmed_root_session == 22504 and a.confirmed_root_exit_code == 0
+root = Path(__file__).resolve().parents[2]
+out = root/'outputs/setup'
+ws = root/'outputs/slam-steady-map-ws'
+old = root/'outputs/slam-steady-ws'
+dest = root/'experiments/slam-map-clock-20261103'
+assert not dest.exists(), 'Preserve previous archive'
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+log = (out/'slam-steady-map-build.log').read_text()
+assert '1 package finished' in log and 'Failed <<<' not in log
+prefix = (out/'slam-steady-map-prefix.txt').read_text().strip()
+assert prefix.endswith('/LIMO_Map_Nav_FromSimToRel/outputs/slam-steady-map-ws/install/slam_toolbox')
+ldd = (out/'slam-steady-map-common-ldd.txt').read_text()
+assert 'not found' not in ldd
+symbols = out/'slam-steady-map-common-symbols.txt'
+assert 'rclcpp::WallRate::WallRate(double)' in symbols.read_text()
+source = ws/'src/slam_toolbox/src/slam_toolbox_common.cpp'
+assert sha(source) == '2c80e9d4af5974f449473bd0b568d00fac0be2aa24e6b97161548766529ac406'
+binding = json.loads((ws/'build-source.json').read_text())
+assert binding['source_files']['src/slam_toolbox_common.cpp'] == sha(source)
+validation = json.loads((out/'slam-steady-map-patch-validation.json').read_text())
+assert validation['passed'] and len(validation['cases']) == 4
+for rel, expected in validation['source_sha256'].items():
+    assert sha(root/rel) == expected, rel
+old_expected = {
+    'libtoolbox_common.so': 'fcab10ab8277a05738e9fcb9687daf2919f1875ff1996b501b3a01cd2135bde3',
+    'libkartoSlamToolbox.so': '3078c8ea6bfd2f979c38a8de4079a726028304bb7632409d6a96b3b2bb44f515',
+}
+old_actual = {name: sha(old/'install/slam_toolbox/lib'/name) for name in old_expected}
+assert old_actual == old_expected
+new_actual = {name: sha(ws/'install/slam_toolbox/lib'/name) for name in old_expected}
+assert new_actual['libtoolbox_common.so'] != old_actual['libtoolbox_common.so']
+recheck_path = out/'slam-steady-map-recheck.json'
+recheck = json.loads(recheck_path.read_text())
+assert recheck['passed'] is False and recheck['exit_code'] == 1
+assert recheck['root_exec_completion']['session_id'] == 99394
+assert recheck['root_exec_completion']['exit_code'] == 1
+install_check_path = out/'slam-steady-map-install-check.json'
+install_check = json.loads(install_check_path.read_text())
+assert install_check['passed'] and install_check['libraries_unchanged']
+assert install_check['original_build_log_unchanged']
+assert install_check['root_exec_completion']['exit_code'] == 0
+receipt = {
+    'exec_session_id': a.confirmed_root_session, 'exit_code': a.confirmed_root_exit_code,
+    'status': 'completed', 'packages_finished': 1,
+    'build_duration_reported': re.search(r'Summary: 1 package finished \[([^\]]+)\]', log).group(1),
+    'first_build_clock_skew_warning': 'Clock skew detected.' in log,
+    'first_build_warning_detail': 'Generated introspection pause header had modification time 1.2 seconds in the future; original log retained.',
+    'new_overlay': 'outputs/slam-steady-map-ws', 'native_build_workspace': '/tmp/limo-slam-steady-map-20261103',
+    'source_common_sha256': sha(source), 'old_overlay_library_hashes_match_baseline': True,
+    'old_overlay_library_sha256': old_actual, 'new_library_sha256': new_actual,
+    'wallrate_constructor_reference_present': True, 'ldd_missing_dependencies': False,
+    'selected_package_prefix': prefix,
+    'patch_fixture_validation': {'exec_session_id': 8317, 'exit_code': 0, 'passed': True, 'exact_prefix_cases': 4},
+    'incremental_recheck': {'path': recheck_path.relative_to(root).as_posix(),
+        'sha256': sha(recheck_path), 'exec_session_id': 99394, 'exit_code': 1, 'passed': False,
+        'build_executed': False},
+    'installation_check': {'path': install_check_path.relative_to(root).as_posix(),
+        'sha256': sha(install_check_path), 'exec_session_id': install_check['root_exec_completion']['session_id'],
+        'exit_code': 0, 'passed': True},
+    'scope': 'Full package build and relocated installation/link checks; no 0004 whole-vehicle simulation result yet. Runtime loaded-library identity must be verified separately.',
+}
+receipt_path = out/'slam-steady-map-build-receipt.json'
+assert not receipt_path.exists()
+receipt_path.write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8', newline='\n')
+copies = [
+    (receipt_path, 'build-receipt.json'),
+    (ws/'build-source.json', 'build-source.json'),
+    (out/'slam-steady-map-build.log', 'build.log'),
+    (out/'slam-steady-map-prefix.txt', 'package-prefix.txt'),
+    (out/'slam-steady-map-common-ldd.txt', 'common-ldd.txt'),
+    (out/'slam-steady-map-sha256.txt', 'source-library-sha256.txt'),
+    (out/'slam-steady-map-patch-validation.json', 'patch-validation.json'),
+    (out/'verify-slam-map-patch.py', 'scripts/verify-slam-map-patch.py.txt'),
+    (out/'build-slam-steady-map.sh', 'scripts/build-slam-steady-map.sh.txt'),
+    (out/'start-slam-steady-map-build.sh', 'scripts/start-slam-steady-map-build.sh.txt'),
+    (recheck_path, 'incremental-recheck.json'),
+    (out/'slam-steady-map-recheck.log', 'incremental-recheck.log'),
+    (out/'slam-steady-map-recheck-environment.json', 'incremental-recheck-environment.json'),
+    (install_check_path, 'installation-check.json'),
+    (out/'recheck-slam-steady-map.py', 'scripts/recheck-slam-steady-map.py.txt'),
+    (out/'check-slam-steady-map-install.py', 'scripts/check-slam-steady-map-install.py.txt'),
+    (out/'check-slam-steady-map-install.sh', 'scripts/check-slam-steady-map-install.sh.txt'),
+    (out/'inspect-slam-steady-map-recheck-environment.py', 'scripts/inspect-slam-steady-map-recheck-environment.py.txt'),
+    (Path(__file__).resolve(), 'scripts/archive-slam-map-build.py.txt'),
+]
+dest.mkdir(parents=True)
+records = []
+for src, rel in copies:
+    target = dest/rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(src, target)
+    assert sha(src) == sha(target)
+    records.append({'source': src.relative_to(root).as_posix(), 'archive': rel, 'sha256': sha(src), 'bytes': src.stat().st_size})
+compressed = dest/'common-symbols.txt.gz'
+compressed.write_bytes(gzip.compress(symbols.read_bytes(), mtime=0))
+assert gzip.decompress(compressed.read_bytes()) == symbols.read_bytes()
+records.append({'source': symbols.relative_to(root).as_posix(), 'archive': compressed.name,
+                'source_sha256': sha(symbols), 'archive_sha256': sha(compressed), 'encoding': 'gzip mtime=0'})
+(dest/'archive-provenance.json').write_text(json.dumps({'copies': records, 'all_reopened_and_verified': True}, indent=2)+'\n', encoding='utf-8', newline='\n')
+print(json.dumps(receipt, indent=2))
+print('Archived build evidence; root must add README and SHA256SUMS.')

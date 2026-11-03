@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "passed": false,
+  "executed_build": false,
+  "exit_code": 1,
+  "phase": "precondition_failed_before_colcon",
+  "root_exec_completion": {
+    "session_id": 99394,
+    "exit_code": 1,
+    "source": "Actual tool completion"
+  },
+  "helper_path": "outputs/setup/recheck-slam-steady-map.py",
+  "helper_sha256": "b65981fc6173aaa79b90b552bc93d02f8fd3642f7d04e03c31b6a1e67be273f2",
+  "native_workspace": "/tmp/limo-slam-steady-map-20261103",
+  "native_workspace_exists_at_followup": false,
+  "previous_build_boot_id": "826b4e0a-ed08-4ad7-afca-9167af908703",
+  "current_boot_id": "bd4ef3ea-813b-4a77-bec4-bf25082c26c9",
+  "boot_id_changed": true,
+  "before": null,
+  "after": null,
+  "comparisons": null,
+  "native_c_library_content_equal_after": null,
+  "original_build_log": {
+    "path": "outputs/setup/slam-steady-map-build.log",
+    "sha256": "eb1e64a3d04f81c6bd52ce2676b8037e57ca77ebdb970bf69c0680b7d1473743"
+  },
+  "original_build_warning_lines": [
+    "gmake[2]: Warning: File 'rosidl_typesupport_introspection_cpp/slam_toolbox/srv/detail/pause__rosidl_typesupport_introspection_cpp.hpp' has modification time 1.2 s in the future",
+    "gmake[2]: warning:  Clock skew detected.  Your build may be incomplete."
+  ],
+  "environment_evidence": {
+    "path": "outputs/setup/slam-steady-map-recheck-environment.json",
+    "sha256": "a449666e6ec3eb3d5a3efc1ffa36d09a8052b13d46a3ddc7f5ad32214d540e1b",
+    "actual_root_session_id": 67609,
+    "exit_code": 0
+  },
+  "recheck_log": {
+    "path": "outputs/setup/slam-steady-map-recheck.log",
+    "sha256": "b679d557d8b1ac1b4ce141c4c0f496d168cbea83146359c354cd70cb5a6eb2ac",
+    "scope": "Failure summary transcribed from actual tool completion; no colcon build log was generated."
+  },
+  "source_edited": false,
+  "c_install_copied_or_modified": false,
+  "limitations": [
+    "No incremental build occurred and no before/after library equivalence is claimed.",
+    "Changed boot ID and missing /tmp support restart-related workspace loss; the exact cleanup mechanism is unproved.",
+    "The initial clock-skew warning is not resolved or erased by this failed check.",
+    "A separate installed-library check is not an incremental rebuild or a stability test."
+  ]
+}

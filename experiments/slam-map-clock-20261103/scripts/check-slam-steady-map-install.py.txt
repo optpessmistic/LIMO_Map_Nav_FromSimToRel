@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+"""Read-only installed ELF dependencies and generated service type support.
+
+No rclpy.init(), ROS node, Gazebo, build, install copy, or source modification.
+"""
+import hashlib
+import importlib
+import json
+from pathlib import Path
+import subprocess
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+PREFIX = ROOT / 'outputs/slam-steady-map-ws/install/slam_toolbox'
+LIB = PREFIX / 'lib'
+OUTPUT = ROOT / 'outputs/setup/slam-steady-map-install-check.json'
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with path.open('rb') as stream:
+        while chunk := stream.read(4 * 1024 * 1024):
+            value.update(chunk)
+    return value.hexdigest()
+
+
+def inventory():
+    return {path.relative_to(LIB).as_posix(): {'sha256': digest(path), 'bytes': path.stat().st_size}
+            for path in sorted(LIB.rglob('*')) if path.is_file() and not path.is_symlink()}
+
+
+def main():
+    assert not OUTPUT.exists(), 'Preserve previous installation check'
+    started = time.monotonic()
+    result = {'schema_version': 1, 'passed': False, 'scope': 'Installed-library/type-support inspection only; not an incremental rebuild or stability proof.',
+        'source_environment_order': ['/opt/ros/jazzy/setup.bash', str(PREFIX.parent / 'local_setup.bash')],
+        'helper': {'path': str(Path(__file__)), 'sha256': digest(Path(__file__))},
+        'prefix': str(PREFIX), 'boot_id': Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+        'libraries_before': inventory(), 'ldd': [], 'services': [], 'errors': [],
+        'original_build_log': {'path': str(ROOT / 'outputs/setup/slam-steady-map-build.log'),
+                               'sha256': digest(ROOT / 'outputs/setup/slam-steady-map-build.log')}}
+    expected_libraries = {'libtoolbox_common.so': 'c76c2113745bf3a765c9f58e17097404f46d3ea96e5ff2cf75db4b26a36723d0',
+                         'libkartoSlamToolbox.so': '3078c8ea6bfd2f979c38a8de4079a726028304bb7632409d6a96b3b2bb44f515'}
+    for name, expected in expected_libraries.items():
+        if result['libraries_before'].get(name, {}).get('sha256') != expected:
+            result['errors'].append('Initial built library SHA mismatch: ' + name)
+    shared = sorted(path for path in LIB.rglob('*') if path.is_file() and '.so' in path.name
+                    and (path.name.endswith('.so') or '.so.' in path.name))
+    if not shared:
+        result['errors'].append('No installed shared objects found')
+    print('Checking installed shared objects and all installed slam_toolbox service types', flush=True)
+    for path in shared:
+        try:
+            completed = subprocess.run(['ldd', str(path)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                       text=True, timeout=20, check=False)
+            row = {'path': str(path), 'sha256': digest(path), 'exit_code': completed.returncode,
+                   'output': completed.stdout,
+                   'passed': completed.returncode == 0 and 'not found' not in completed.stdout}
+        except Exception as exc:
+            row = {'path': str(path), 'passed': False, 'error': type(exc).__name__ + ': ' + str(exc)}
+        result['ldd'].append(row)
+        if not row['passed']:
+            result['errors'].append('ldd failed: ' + str(path))
+    service_files = sorted((PREFIX / 'share/slam_toolbox/srv').glob('*.srv'))
+    result['installed_service_definition_count'] = len(service_files)
+    if len(service_files) != 11:
+        result['errors'].append('Pinned package should install 11 service definitions')
+    try:
+        from rclpy.type_support import check_for_type_support
+        from rosidl_runtime_py.utilities import get_service
+        from rosidl_generator_py import import_type_support
+        native = import_type_support('slam_toolbox')
+        native_path = Path(native.__file__).resolve()
+        result['native_type_support'] = {'path': str(native_path), 'sha256': digest(native_path),
+                                         'from_requested_prefix': native_path.is_relative_to(PREFIX.resolve())}
+        if not result['native_type_support']['from_requested_prefix']:
+            result['errors'].append('Native type support resolved outside the new overlay')
+        for path in service_files:
+            row = {'service': 'slam_toolbox/srv/' + path.stem, 'definition_path': str(path),
+                   'definition_sha256': digest(path), 'passed': False}
+            try:
+                service = get_service(row['service'])
+                module_path = Path(importlib.import_module(service.__module__).__file__).resolve()
+                row['python_module_path'] = str(module_path)
+                row['python_module_sha256'] = digest(module_path)
+                row['from_requested_prefix'] = module_path.is_relative_to(PREFIX.resolve())
+                for message in (service, service.Request, service.Response):
+                    check_for_type_support(message)
+                row['type_support_capsules_present'] = all(message._TYPE_SUPPORT is not None
+                    for message in (service, service.Request, service.Response))
+                row['passed'] = row['from_requested_prefix'] and row['type_support_capsules_present']
+            except Exception as exc:
+                row['error'] = type(exc).__name__ + ': ' + str(exc)
+            result['services'].append(row)
+            if not row['passed']:
+                result['errors'].append('Native service import failed: ' + row['service'])
+    except Exception as exc:
+        result['errors'].append('Native type support bootstrap failed: ' + type(exc).__name__ + ': ' + str(exc))
+    result['libraries_after'] = inventory()
+    result['libraries_unchanged'] = result['libraries_before'] == result['libraries_after']
+    if not result['libraries_unchanged']:
+        result['errors'].append('Installed regular-file library contents changed during check')
+    result['elapsed_monotonic_s'] = time.monotonic() - started
+    result['passed'] = (not result['errors'] and len(result['services']) == len(service_files))
+    result['limitations'] = ['No compiler was run because the original native /tmp workspace was absent after a WSL boot change.',
+        'ldd and generated service type-support imports do not prove every runtime code path or map-publishing behavior.',
+        'The original future-mtime/clock-skew warning and failed incremental-recheck receipt remain authoritative evidence.',
+        'Root tool completion will be appended only after this process actually exits.']
+    with OUTPUT.open('x', encoding='utf-8', newline='\n') as stream:
+        json.dump(result, stream, indent=2)
+        stream.write('\n')
+    print(json.dumps({'output': str(OUTPUT), 'passed': result['passed'], 'errors': result['errors'],
+                      'shared_objects': len(shared), 'services': len(result['services']),
+                      'libraries_unchanged': result['libraries_unchanged']}), flush=True)
+    return 0 if result['passed'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

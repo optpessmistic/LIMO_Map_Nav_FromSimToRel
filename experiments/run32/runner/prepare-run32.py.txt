@@ -1,0 +1,440 @@
+"""Prepare, never launch, run32 from the closed run31 templates.
+
+Execute only after the reviewed mission changes are built and committed. The
+existing steady SLAM overlay and its live identity gates are retained. No ROS nodes or robot processes are started here.
+"""
+import argparse
+import ast
+import hashlib
+import json
+import math
+from pathlib import Path
+import subprocess
+import sys
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT / 'outputs/setup'
+OLD = ROOT / 'outputs/ros_smoke/run31-observation-route'
+OUT = ROOT / 'outputs/ros_smoke/run32-observation-relocation'
+SLAM = ROOT / 'outputs/slam-steady-ws'
+NAMES = ('env.sh', 'process.py', 'param-gate.py', 'preflight.py', 'save.py',
+         'provenance.py', 'installed-check.py')
+RECOVERY = {'navigation_failure_cooldown_s': 1.0, 'navigation_recovery_timeout_s': 3.0}
+SOURCE_ROOTS = ('src', 'scripts', 'tools', 'config', 'worlds', 'patches')
+EXPECTED_HEAD = 'c15d0f3af8cf4ea9b18cb81275f6f92286b137ed'
+RELOCATION_RADIUS_M = 0.15
+POSTCLOSURE = SETUP / 'run31-postclosure-check.json'
+PREVIOUS_EVIDENCE_SHA256 = {
+    "outputs/ros_smoke/run31-observation-route/preparation.json": "6b3e988a4ed490a3d3bc199d8dc2dfe24b414626d72de88f86d53a186ffbc777",
+    "outputs/ros_smoke/run31-observation-route/orchestration.json": "da4346dee07ad13daed560667a806956ce08370c003e40fea26e2af730d0c543",
+    "outputs/setup/run31-postclosure-check.json": "5806642ba303b16e3f13d0793f822d2c6796e73b6dbaa28b1ffcd5767da47721"
+}
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+def replace_once(source, old, new):
+    if source.count(old) != 1:
+        raise RuntimeError('Expected exactly one frozen template anchor: ' + old[:120])
+    return source.replace(old, new, 1)
+
+
+def template(previous, name):
+    path = SETUP / name
+    raw = path.read_bytes()
+    expected = previous['prepared_helper_sha256'][path.relative_to(ROOT).as_posix()]
+    if sha(raw) != expected:
+        raise RuntimeError('Frozen run31 helper changed: ' + name)
+    return raw.decode('utf-8').replace('\r\n', '\n')
+
+
+def slam_snapshot():
+    build = read(SLAM / 'build-source.json')
+    source = SLAM / 'src/slam_toolbox'
+    common = source / 'src/slam_toolbox_common.cpp'
+    raw = common.read_bytes()
+    if (raw.count(b'rclcpp::WallRate r(1.0 / transform_publish_period);') != 1
+            or b'rclcpp::Rate r(1.0 / transform_publish_period);' in raw):
+        raise RuntimeError('New SLAM source is not the steady transform-publisher profile')
+    files = {}
+    for name, expected in build['source_files'].items():
+        path = source / name
+        if not path.resolve(strict=True).is_relative_to(source.resolve(strict=True)):
+            raise RuntimeError('Source snapshot escapes new overlay: ' + name)
+        actual = sha(path.read_bytes())
+        if actual != expected:
+            raise RuntimeError('Build source receipt mismatch: ' + name)
+        files[path.relative_to(ROOT).as_posix()] = actual
+    for name, expected in build['patches'].items():
+        if sha((ROOT / 'patches' / name).read_bytes()) != expected:
+            raise RuntimeError('Built patch differs from current input: ' + name)
+    prefix = SLAM / 'install/slam_toolbox'
+    libraries = {}
+    for name in ('libtoolbox_common.so', 'libkartoSlamToolbox.so'):
+        path = prefix / 'lib' / name
+        resolved = path.resolve(strict=True)
+        if not resolved.is_relative_to(SLAM.resolve(strict=True)):
+            raise RuntimeError('New SLAM library resolves outside the new overlay: ' + name)
+        checksum = sha(path.read_bytes())
+        files[path.relative_to(ROOT).as_posix()] = checksum
+        libraries[name] = {'path': str(path), 'resolved_path': str(resolved), 'sha256': checksum}
+    for path in (SLAM / 'build-source.json', SLAM / 'install/local_setup.bash'):
+        files[path.relative_to(ROOT).as_posix()] = sha(path.read_bytes())
+    return {'overlay': str(SLAM), 'package_prefix': str(prefix),
+            'source_common_sha256': sha(raw),
+            'source_karto_header_sha256': sha((source / 'lib/karto_sdk/include/karto_sdk/Karto.h').read_bytes()),
+            'libraries': libraries, 'files_sha256': files,
+            'tf_stamp_policy': 'Unchanged ROS scan stamp plus transform_timeout; restamp_tf=false.',
+            'scheduling_change': 'Only transform-publisher rclcpp::Rate -> rclcpp::WallRate.'}
+
+
+
+def rename_current(value, previous, token=None):
+    if token is not None:
+        value = value.replace(previous['token'], token)
+    return (value.replace(OLD.name, OUT.name).replace('run31', 'run32')
+            .replace('Run31', 'Run32').replace('RUN31', 'RUN32'))
+
+
+def render_installed_check(value):
+    """Permit exact source symlinks, while retaining package-prefix/hash gates."""
+    begin = value.index('rows = []\n')
+    end = value.index('\nfrom ament_index_python.packages import get_package_prefix\n')
+    replacement = '''from ament_index_python.packages import get_package_prefix, get_package_share_directory
+preparation = json.loads((root/'outputs/ros_smoke/run32-observation-relocation/preparation.json').read_text())
+
+def installation_row(package, source, raw_path):
+    source = source.absolute()
+    raw_path = raw_path.absolute()
+    resolved = raw_path.resolve(strict=True)
+    prefix = Path(get_package_prefix(package)).absolute()
+    expected_prefix = root/'install'/package
+    exact_source = source.resolve(strict=True) == source
+    source_link = (resolved == source and (
+        raw_path == source or raw_path.is_relative_to(expected_prefix)
+        or raw_path.is_relative_to(root/'build'/package)))
+    install_copy = (raw_path.is_relative_to(expected_prefix)
+                    and resolved.is_relative_to(expected_prefix))
+    expected_sha = preparation['prepared_source_sha256'][source.relative_to(root).as_posix()]
+    source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    installed_sha = hashlib.sha256(resolved.read_bytes()).hexdigest()
+    return dict(source=str(source), installed=str(raw_path), raw_import_path=str(raw_path),
+        resolved_path=str(resolved), package_prefix=str(prefix),
+        expected_package_prefix=str(expected_prefix), sha256=source_sha,
+        installed_sha256=installed_sha, prepared_source_sha256=expected_sha,
+        resolution_kind='exact_source' if source_link else 'install_copy' if install_copy else 'rejected',
+        equal=source_sha == installed_sha == expected_sha,
+        current_workspace=(prefix == expected_prefix and exact_source
+            and (source_link or install_copy)))
+
+rows = []
+for name in names:
+    module = importlib.import_module(name)
+    package, filename = name.split('.')
+    source = root/'src'/package/package/(filename+'.py')
+    rows.append(dict(module=name, **installation_row(package, source, Path(module.__file__))))
+launch_rows=[]
+for package,filename in (('limo_maze_mission','mission.launch.py'),
+        ('limo_maze_bringup','mapping_navigation.launch.py'),
+        ('limo_maze_bringup','navigation.launch.py'),('limo_sim_bringup','sim.launch.py')):
+    source=root/'src'/package/'launch'/filename
+    share=Path(get_package_share_directory(package)).absolute()
+    installed=share/'launch'/filename
+    row=installation_row(package, source, installed)
+    row['current_workspace'] = (row['current_workspace']
+        and share == root/'install'/package/'share'/package)
+    launch_rows.append(dict(package=package,file=filename,**row))
+passed = all(r['equal'] and r['current_workspace'] for r in rows+launch_rows)
+report = dict(passed=passed, modules=rows, launch_files=launch_rows)
+'''
+    return value[:begin] + replacement + value[end:]
+
+
+def render_helpers(previous, token):
+    """Only relabel frozen templates, add one parameter/gate, allow exact symlinks."""
+    helpers = {name: rename_current(template(previous, 'run31-'+name), previous, token)
+               for name in NAMES}
+    original_env = helpers['env.sh']
+    env_anchor = '-p observation_stage_timeout_s:=360.0'
+    helpers['env.sh'] = replace_once(original_env, env_anchor,
+        env_anchor+' -p observation_relocation_radius_m:=0.15')
+    if helpers['env.sh'].replace(' -p observation_relocation_radius_m:=0.15', '', 1) != original_env:
+        raise RuntimeError('Mission CLI changed beyond the single relocation parameter')
+    gate = '''    relocation_expected={'observation_relocation_radius_m':0.15,
+        'robot_radius_m':0.25,'goal_arrival_margin_m':0.05,'observation_station_spacing_m':1.0}
+    relocation_actual={name:actual.get(name) for name in relocation_expected}
+    relocation_passed=(parameters['limo_maze_mission']['status']=='received' and all(
+        isinstance(relocation_actual[name],dict) and relocation_actual[name].get('set') is True
+        and relocation_actual[name].get('type')==3
+        and type(relocation_actual[name].get('value')) in (int,float)
+        and math.isfinite(relocation_actual[name]['value'])
+        and relocation_actual[name]['value']==value for name,value in relocation_expected.items()))
+    report['observation_relocation_parameter_gate']={'expected':relocation_expected,
+        'actual':relocation_actual,'passed':relocation_passed,
+        'scope':'Read-only live receipt after Mission loaded/save-early; not a pre-first-goal claim.'}
+    write(OUT/'observation-relocation-parameter-gate.json',report['observation_relocation_parameter_gate'])
+    if not relocation_passed:raise RuntimeError('Live bounded relocation/safety parameters differ from run32 profile')
+'''
+    anchor = "    actual=parameters['limo_maze_mission']['values']\n"
+    helpers['process.py'] = replace_once(helpers['process.py'], anchor, anchor+gate)
+    helpers['installed-check.py'] = render_installed_check(helpers['installed-check.py'])
+    # The controller is otherwise byte-for-byte the relabeled frozen controller.
+    process = helpers['process.py']
+    if process.replace(gate, '', 1) != rename_current(template(previous, 'run31-process.py'), previous, token):
+        raise RuntimeError('Controller changed beyond the read-only relocation gate')
+    for fragment in ('wait_motion_startup(60)', "wait_ready('observer','READY:',25)",
+                     'deadline = began+1800', "run('save-early',60,", "run('parameter-gate',45,",
+                     "run('provenance',90,", "'retention_worker_timeout_s':5.0,'retention_request_timeout_s':10.0",
+                     "'retention_shutdown_timeout_s':8.0", 'def check_isolation():',
+                     "['gz','service','-l']"):
+        if fragment not in process:
+            raise RuntimeError('Preserved runtime/identity bound missing: '+fragment)
+    if not (process.index("wait_ready('mission','Mission loaded; autonomous=True',30)")
+            < process.index("run('save-early',60,") < process.index(gate)):
+        raise RuntimeError('Relocation readback gate precedes mission/parameter capture')
+    for fragment in ('--duration 70 --motion-wait 90', '-p tf_max_age_s:=1.5',
+                     '-p mission_timeout_s:=900.0', '-p return_timeout_s:=240.0',
+                     '-p goal_timeout_s:=120.0', '-p observation_stage_timeout_s:=360.0',
+                     '-p observation_max_stations:=3', '-p observation_headings_per_station:=4',
+                     '-p observation_max_dispatches:=12', '-p require_retained_inspection:=true',
+                     '-p retention_enabled:=true', '-p retention_max_jobs:=96',
+                     '-p navigation_failure_cooldown_s:=1.0', '-p navigation_recovery_timeout_s:=3.0',
+                     'source "$LIMO_RUN_ROOT/outputs/slam-steady-ws/install/local_setup.bash"'):
+        if fragment not in helpers['env.sh']:
+            raise RuntimeError('Preserved runtime setting missing: '+fragment)
+    for name, fragments in {
+        'provenance.py': ('def check_slam_overlay(', "result['slam_overlay_gate'] = check_slam_overlay(result, args.run_dir)",
+                          'matches_mapped_inode_and_device', 'run32_ownership_verified'),
+        'installed-check.py': ('limo_maze_mission.node', 'limo_maze_mission.observation',
+                              'exact_source', 'expected_package_prefix', 'slam_overlay', 'slam_passed')}.items():
+        if any(fragment not in helpers[name] for fragment in fragments):
+            raise RuntimeError('Source/install or live SLAM identity gate missing: '+name)
+    for name, value in helpers.items():
+        if '\r' in value or 'slam-boundary-ws' in value or 'run31' in value or 'RUN31' in value:
+            raise RuntimeError('Stale run/overlay or non-LF generated helper: '+name)
+        if name.endswith('.py'):
+            ast.parse(value, filename='run32-'+name)
+    return helpers
+
+
+def render_start(previous):
+    start = rename_current(template(previous, 'start-run31.sh'), previous)
+    start = replace_once(start, 'import ast, hashlib, json, subprocess, yaml',
+                         'import ast, hashlib, importlib.util, json, subprocess, yaml')
+    start = replace_once(start, "['session_id'] == 96593", "['session_id'] == 26612")
+    start = replace_once(start,
+        "assert report['previous_attempt']['original_all_owned_groups_empty'] is True",
+        "assert report['previous_attempt']['original_all_owned_groups_empty'] is False\n"
+        "assert report['previous_attempt']['later_postclosure_check']['all_owned_groups_empty_at_later_check'] is True")
+    start = replace_once(start,
+        "assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip() == report['prepared_head_actual']",
+        "assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip() == report['prepared_head_actual'] == '"+EXPECTED_HEAD+"'\n"
+        "assert report['observation_relocation_parameters'] == {'observation_relocation_radius_m':0.15}")
+    begin = start.index("prior = root/'outputs/ros_smoke/run30-steady-tf'\n")
+    end = start.index("report['code_head'] =", begin)
+    start = start[:begin] + '''# Recheck the original failure and its separate later closure receipt unchanged.
+prep_path = root/'outputs/setup/prepare-run32.py'
+spec = importlib.util.spec_from_file_location('run32_preparation_check', prep_path)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+prior_closed, prior_writer, prior_preparation, terminal, later = module.previous_run_evidence()
+assert terminal == report['previous_attempt']['terminal_mission']
+assert later == report['previous_attempt']['later_postclosure_check']
+assert prior_closed['retention_audit_passed'] == report['previous_attempt']['retention_audit_passed']
+assert hashlib.sha256((module.OLD/'orchestration.json').read_bytes()).hexdigest() == report['previous_attempt']['original_orchestration_sha256']
+assert hashlib.sha256((module.OLD/'retention-shutdown.json').read_bytes()).hexdigest() == report['previous_attempt']['retention_shutdown_sha256']
+''' + start[end:]
+    embedded = start.split("<<'PY'\n", 1)[1].split('\nPY\n', 1)[0]
+    ast.parse(embedded, filename='start-run32.sh:embedded-python')
+    if '\r' in start or "['exit_code'] == 1" not in embedded or 'previous_run_evidence()' not in embedded:
+        raise RuntimeError('Generated start closure/format validation failed')
+    return start
+
+
+def previous_run_evidence():
+    for name, expected in PREVIOUS_EVIDENCE_SHA256.items():
+        if sha((ROOT/name).read_bytes()) != expected:
+            raise RuntimeError('Pinned run31 evidence changed: '+name)
+    closed = read(OLD/'orchestration.json')
+    previous = read(OLD/'preparation.json')
+    elapsed = closed.get('elapsed_wall_s')
+    if not (closed.get('run') == OLD.name and closed.get('epoch') == previous.get('epoch')
+            and closed.get('status') == 'terminal_observed' and closed.get('terminal')
+            and closed.get('stage') == 'owned_shutdown'
+            and type(elapsed) in (int,float) and math.isfinite(elapsed) and elapsed > 0
+            and closed.get('all_owned_groups_empty') is False):
+        raise RuntimeError('Run31 original terminal/failure receipt missing')
+    if previous.get('run') != OLD.name or not previous.get('code_head'):
+        raise RuntimeError('Run31 preparation identity missing')
+    if (OLD/'epoch.txt').read_bytes() != (previous['epoch']+'\n').encode('ascii'):
+        raise RuntimeError('Run31 epoch bytes do not match preparation')
+    if sha((SETUP/'prepare-run31.py').read_bytes()) != previous['preparation_script_sha256']:
+        raise RuntimeError('Frozen run31 preparation script changed')
+    later = read(POSTCLOSURE)
+    groups = later.get('groups') or []
+    receipt = later.get('root_exec_completion') or {}
+    if not (later.get('run') == OLD.name and later.get('epoch') == previous['epoch']
+            and receipt.get('session_id') == 26612 and receipt.get('exit_code') == 1
+            and later.get('original_orchestration_sha256') == sha((OLD/'orchestration.json').read_bytes())
+            and later.get('original_all_owned_groups_empty') is False
+            and later.get('all_owned_groups_empty_at_later_check') is True
+            and later.get('signals_sent') == [] and len(groups) == 20
+            and later.get('boot_id_at_later_check')):
+        raise RuntimeError('Run31 later same-run/root closure receipt missing')
+    owner_files = set()
+    owner_names = set()
+    for row in groups:
+        owner_path = ROOT/row['owner_file']
+        if (owner_path.parent != OLD or owner_path.name != 'process-'+row['owner']['name']+'.json'
+                or row.get('remaining') != [] or row.get('errors') != []
+                or row.get('remaining_check_complete') is not True
+                or row['owner'].get('token') != previous['token']
+                or sha(owner_path.read_bytes()) != row.get('owner_sha256')
+                or read(owner_path) != row['owner']):
+            raise RuntimeError('Run31 later group identity/closure mismatch: '+str(owner_path))
+        owner_files.add(owner_path)
+        owner_names.add(row['owner']['name'])
+    if (len(owner_files) != 20 or len(owner_names) != 20
+            or owner_files != set(OLD.glob('process-*.json'))
+            or owner_names != set(closed.get('stops') or {})):
+        raise RuntimeError('Run31 later closure does not cover every original owned group')
+    nested = closed.get('recorder_inner_recheck') or {}
+    if not (nested.get('remaining') == [] and nested.get('ownership_errors') == []
+            and nested.get('remaining_check_complete') is True):
+        raise RuntimeError('Run31 nested recorder closure incomplete')
+    writer = read(OLD/'retention-shutdown.json')
+    if not (writer.get('writer') is None and writer.get('fault') is None
+            and writer.get('shutdown',{}).get('owned_writer_exit_confirmed') is True
+            and writer.get('shutdown',{}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Run31 writer exit/final checkpoint not confirmed')
+    terminal = closed['terminal']
+    name = str(terminal.get('path','')).replace('\\','/').rsplit('/',1)[-1]
+    if not name.startswith('mission_') or not name.endswith('.json'):
+        raise RuntimeError('Run31 exact terminal mission filename missing')
+    mission_path = OLD/'mission'/name
+    raw = mission_path.read_bytes()
+    mission = json.loads(raw)
+    if (sha(raw) != terminal.get('sha256') or mission.get('status') not in ('done','blocked')
+            or mission.get('status') != terminal.get('status')
+            or mission.get('map_epoch') != previous['epoch']
+            or terminal.get('map_epoch') != previous['epoch']
+            or mission.get('mission_success') != terminal.get('reported_mission_success')):
+        raise RuntimeError('Run31 original terminal mission hash/epoch/state disagrees')
+    prior_mission = {'path':mission_path.relative_to(ROOT).as_posix(), 'sha256':sha(raw),
+        'status':mission['status'], 'mission_success':mission.get('mission_success'),
+        'map_complete':mission.get('map_complete'),
+        'visual_coverage_complete':mission.get('visual_coverage_complete')}
+    later_binding = {'path':POSTCLOSURE.relative_to(ROOT).as_posix(),
+        'sha256':sha(POSTCLOSURE.read_bytes()), 'run':later['run'], 'epoch':later['epoch'],
+        'root_exec_completion':receipt, 'owned_group_count':len(groups),
+        'all_owned_groups_empty_at_later_check':True,
+        'original_all_owned_groups_empty':False,
+        'boot_id_at_later_check':later['boot_id_at_later_check'],
+        'checked_monotonic_s':later['checked_monotonic_s'],
+        'scope':later['scope']+' Historical boot/PIDs are not reused as current process identities.'}
+    return closed, writer, previous, prior_mission, later_binding
+
+
+def source_snapshot():
+    if subprocess.check_output(['git','status','--porcelain','--untracked-files=normal'], cwd=ROOT):
+        raise RuntimeError('Use the reviewed clean tree before preparation')
+    head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT, text=True).strip()
+    if head != EXPECTED_HEAD:
+        raise RuntimeError('Run32 must use the reviewed c15d0f3 source head')
+    names = subprocess.check_output(['git','ls-files','-z','--',*SOURCE_ROOTS], cwd=ROOT)
+    paths = sorted(name.decode('utf-8') for name in names.split(b'\0') if name)
+    if not paths:
+        raise RuntimeError('No tracked runtime source files found')
+    return head, {name:sha((ROOT/name).read_bytes()) for name in paths}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-previous-root-session',type=int,choices=[26612],required=True)
+    parser.add_argument('--confirmed-previous-root-exit-code',type=int,choices=[1],required=True)
+    args = parser.parse_args(argv)
+    if sys.platform != 'linux':
+        raise RuntimeError('Prepare in WSL so bound paths match the Linux runtime')
+    targets = [SETUP/('run32-'+name) for name in NAMES] + [SETUP/'start-run32.sh']
+    if (OUT.exists() or OUT.is_symlink() or (ROOT/'experiments/run32').exists()
+            or any(path.exists() or path.is_symlink() for path in targets)):
+        raise RuntimeError('Refuse any existing run32 output/helper/archive; no overwrite or restart')
+    closed, writer, previous, prior_mission, later = previous_run_evidence()
+    nav = (ROOT/'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml').read_bytes()
+    world = (ROOT/'worlds/smoke_maze.world').read_bytes()
+    if nav != (OLD/'nav2-rpp-03m.yaml').read_bytes() or sha(nav) != previous['nav2_sha256']:
+        raise RuntimeError('Nav2/TF profile changed from run31')
+    if sha(world) != previous['world_sha256']:
+        raise RuntimeError('Comparison world changed from run31')
+    slam_params = 'src/limo_maze_bringup/config/slam_smoke_experimental.yaml'
+    if sha((ROOT/slam_params).read_bytes()) != previous['prepared_source_sha256'][slam_params]:
+        raise RuntimeError('SLAM parameter profile changed from run31')
+    head, sources = source_snapshot()
+    collector = (ROOT/'scripts/capture_motion_evidence.py').read_bytes()
+    if sha(collector) != previous['collector_source_sha256_at_preparation']:
+        raise RuntimeError('Motion collector changed from run31')
+    binding = slam_snapshot()
+    if binding != previous.get('slam_overlay'):
+        raise RuntimeError('Steady SLAM source/library binding changed from run31')
+    ci_path = SETUP/'observation-relocation-ci.json'
+    ci = read(ci_path)
+    if (ci.get('head_sha') != head or ci.get('id') != 41622759580
+            or ci.get('status') != 'completed' or ci.get('conclusion') != 'success'):
+        raise RuntimeError('Reviewed source CI receipt missing')
+    token, epoch = 'run32-'+uuid.uuid4().hex, str(uuid.uuid4())
+    helpers, start = render_helpers(previous, token), render_start(previous)
+    payloads = {SETUP/('run32-'+name):value.encode('utf-8') for name,value in helpers.items()}
+    payloads[SETUP/'start-run32.sh'] = start.encode('utf-8')
+    report = {**previous, 'run':OUT.name, 'code_head':None, 'prepared_head_actual':head,
+        'token':token, 'epoch':epoch, 'navigation_recovery_parameters':RECOVERY,
+        'observation_relocation_parameters':{'observation_relocation_radius_m':RELOCATION_RADIUS_M},
+        'slam_overlay':binding, 'prepared_source_sha256':sources,
+        'prepared_helper_sha256':{path.relative_to(ROOT).as_posix():sha(data) for path,data in payloads.items()},
+        'preparation_script_sha256':sha(Path(__file__).read_bytes()),
+        'reviewed_ci':{'path':ci_path.relative_to(ROOT).as_posix(),'sha256':sha(ci_path.read_bytes()),**ci},
+        'previous_attempt':{'run':OLD.name,'status':closed['status'],'errors':closed['errors'],
+            'original_all_owned_groups_empty':closed['all_owned_groups_empty'],
+            'original_orchestration_sha256':sha((OLD/'orchestration.json').read_bytes()),
+            'retention_shutdown_sha256':sha((OLD/'retention-shutdown.json').read_bytes()),
+            'retention_audit_passed':closed['retention_audit_passed'],
+            'terminal_mission':prior_mission,'later_postclosure_check':later,
+            'all_run_token_processes_absent':closed.get('all_run_token_processes_absent'),
+            'global_scan_limitation':closed.get('global_scan_limitation'),
+            'owned_writer_exit_confirmed':writer['shutdown']['owned_writer_exit_confirmed'],
+            'final_checkpoint_persisted':writer['shutdown']['final_checkpoint_persisted'],
+            'scope':'Original failed cleanup retained; later same-run 20-group closure and writer receipt permit a fresh isolation check. No global process-absence or mission success claim.',
+            'root_exec_completion':{'session_id':args.confirmed_previous_root_session,
+                'exit_code':args.confirmed_previous_root_exit_code,
+                'source':'Root confirmation supplied as explicit prepare arguments.'}},
+        'change':'Only experiment parameter observation_relocation_radius_m changes from default0 to0.15; configured station/heading/dispatch limits, safety clearance and all budgets remain unchanged. Actual frozen queue IDs/count are measured from this run.',
+        'startup_change':'None relative to run31: motion startup60/global1800 and independent ROS/Gazebo isolation gates preserved.',
+        'installation_gate_change':'Current C install package prefix; exact expected source resolution for legitimate symlinks or current install copy; raw/resolved paths and prepared source SHA bound for modules and launches.',
+        'comparison_scope':'Same run31 world, Nav2/SLAM parameters, steady overlay and libraries, recovery1/3, /mnt/c output, strict retention5/10/8 and startup60. Same radius.25/arrival.05/spacing1, configured maximum3 stations/4 headings/12 dispatches and all mission/return/goal/observation/inspection budgets; actual planned-view denominator comes from this run queue. No actual reachability, visual-coverage or mission-success claim from preparation.'}
+    # Validate everything before exclusive writes. Never reuse a partial preparation.
+    if source_snapshot() != (head,sources) or slam_snapshot() != binding:
+        raise RuntimeError('Source or SLAM artifacts changed during preparation')
+    previous_run_evidence()
+    if sha(ci_path.read_bytes()) != report['reviewed_ci']['sha256']:
+        raise RuntimeError('CI receipt changed during preparation')
+    OUT.mkdir(parents=True)
+    (OUT/'mission').mkdir()
+    for path,data in ((OUT/'epoch.txt',(epoch+'\n').encode('ascii')),
+                      (OUT/'nav2-rpp-03m.yaml',nav),*payloads.items(),
+                      (OUT/'preparation.json',(json.dumps(report,indent=2,allow_nan=False)+'\n').encode('utf-8'))):
+        with path.open('xb') as stream:
+            stream.write(data)
+    print(json.dumps({'prepared':str(OUT),'epoch':epoch,'token':token,'prepared_head_actual':head,
+        'launched':False,'observation_relocation_parameters':report['observation_relocation_parameters'],
+        'previous_original_cleanup':False,'previous_later_owned_closure':True,
+        'generated_helper_count':len(payloads)},indent=2))
+
+
+if __name__ == '__main__':
+    main()

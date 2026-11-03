@@ -1,0 +1,352 @@
+#!/usr/bin/env python3
+"""Read-only run32 selection/bag audit, AFTER the root execution has closed.
+
+Requires a sourced ROS environment solely for offline CDR decoding; never calls
+rclpy.init(), replays a bag, starts a node, or reads simulator/target truth.
+Example (substitute the actually closed root execution):
+  python3 -B outputs/setup/run32-selection-audit.py --root-session-id ID --root-exit-code CODE
+The output is exclusive-create; original mission, bag and outcomes stay intact.
+"""
+import argparse
+from collections import Counter, defaultdict
+import hashlib
+import importlib.util
+import json
+import math
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run32-observation-relocation'
+DEFAULT_OUTPUT = ROOT / 'outputs/setup/run32-selection-audit.json'
+MAX_JSON_BYTES = 64 * 1024 * 1024
+SOURCES, STATS = {}, {}
+
+
+def stat_key(stat):
+    return stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns
+
+
+def safe_file(path):
+    path = Path(path).absolute()
+    relative = path.relative_to(ROOT)
+    cursor = ROOT
+    for part in relative.parts:
+        cursor /= part
+        if part == '..' or cursor.is_symlink():
+            raise ValueError('Symlink/path traversal rejected: ' + str(path))
+    if not path.is_file() or not path.resolve().is_relative_to(ROOT):
+        raise ValueError('Missing/unsafe input: ' + str(path))
+    return path
+
+
+def fingerprint(path, *, capture=False):
+    path = safe_file(path)
+    before = stat_key(path.stat())
+    if capture and before[2] > MAX_JSON_BYTES:
+        raise ValueError('Oversized JSON/metadata input: ' + str(path))
+    digest, chunks = hashlib.sha256(), []
+    with path.open('rb') as stream:
+        while chunk := stream.read(4 * 1024 * 1024):
+            digest.update(chunk)
+            if capture:
+                chunks.append(chunk)
+    after = stat_key(path.stat())
+    if before != after or path in STATS and STATS[path] != after:
+        raise ValueError('Input changed: ' + str(path))
+    STATS[path] = after
+    SOURCES[path.relative_to(ROOT).as_posix()] = {
+        'path': str(path), 'bytes': after[2], 'sha256': digest.hexdigest()}
+    return b''.join(chunks) if capture else digest.hexdigest()
+
+
+def load(path):
+    return json.loads(fingerprint(path, capture=True))
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def finite(value):
+    return type(value) in (int, float) and math.isfinite(value)
+
+
+def closed_inputs():
+    preparation = load(RUN / 'preparation.json')
+    orchestration = load(RUN / 'orchestration.json')
+    writer = load(RUN / 'retention-shutdown.json')
+    require(preparation['run'] == orchestration['run'] == RUN.name, 'Run identity mismatch')
+    require(isinstance(preparation['epoch'], str) and preparation['epoch'] and
+            preparation['epoch'] == orchestration['epoch'], 'Run epoch missing/mismatched')
+    require(orchestration.get('all_owned_groups_empty') is True, 'Original owned-group closure is not confirmed; no implicit later-closure substitution')
+    stops = orchestration.get('stops')
+    require(isinstance(stops, dict) and stops, 'Missing owned-stop receipts')
+    for name, receipt in [*stops.items(), ('recorder_inner_recheck', orchestration.get('recorder_inner_recheck', {}))]:
+        require(receipt.get('remaining') == [] and receipt.get('ownership_errors') == [] and
+                receipt.get('remaining_check_complete') is True, 'Incomplete owned closure: ' + name)
+    require(writer.get('writer') is None and writer.get('shutdown', {}).get('owned_writer_exit_confirmed') is True,
+            'Retained-frame writer exit is not confirmed')
+    terminal = orchestration['terminal']
+    path = safe_file(Path(terminal['path']))
+    require(path.resolve().parent == (RUN / 'mission').resolve() and
+            path.name.startswith('mission_') and path.suffix == '.json', 'Terminal path must name a file directly in run32/mission')
+    mission = load(path)
+    require(SOURCES[path.relative_to(ROOT).as_posix()]['sha256'] == terminal['sha256'], 'Terminal mission SHA mismatch')
+    require(mission.get('status') in ('done', 'blocked') and mission['status'] == terminal['status'], 'Mission is not the recorded terminal result')
+    require(mission['map_epoch'] == terminal['map_epoch'] == preparation['epoch'], 'Terminal mission epoch mismatch')
+    require(mission.get('mission_success') == terminal.get('reported_mission_success'), 'Terminal reported success mismatch')
+    return preparation, orchestration, mission
+
+
+def map_records(wanted_stamps, preparation):
+    # Load the hashed source Grid, not an accidentally selected installed module.
+    core_path = ROOT / 'src/limo_maze_mission/limo_maze_mission/core.py'
+    expected = preparation['prepared_source_sha256']
+    for name in ('core.py', 'observation.py', 'node.py'):
+        path = core_path.with_name(name)
+        require(fingerprint(path) == expected[path.relative_to(ROOT).as_posix()], 'Prepared source mismatch: ' + name)
+    spec = importlib.util.spec_from_file_location('_run32_audit_core', core_path)
+    core = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = core
+    spec.loader.exec_module(core)
+    import yaml
+    import rosbag2_py
+    from rclpy.serialization import deserialize_message
+    from nav_msgs.msg import OccupancyGrid
+    bag_dir = RUN / 'recording/bag'
+    metadata = yaml.safe_load(fingerprint(bag_dir / 'metadata.yaml', capture=True))['rosbag2_bagfile_information']
+    require(metadata['storage_identifier'] == 'mcap', 'Unexpected bag storage type')
+    files = metadata['relative_file_paths']
+    require(isinstance(files, list) and files and len(files) == len(set(files)), 'Missing/duplicate closed bag file list')
+    for name in files:
+        require(isinstance(name, str) and Path(name).name == name and name.endswith('.mcap'), 'Unsafe bag segment path')
+        fingerprint(bag_dir / name)
+    topics = [item for item in metadata['topics_with_message_count'] if item['topic_metadata']['name'] == '/map']
+    require(len(topics) == 1 and topics[0]['topic_metadata']['type'] == 'nav_msgs/msg/OccupancyGrid', 'Missing/ambiguous /map metadata')
+    reader = rosbag2_py.SequentialReader()
+    reader.open(rosbag2_py.StorageOptions(uri=str(bag_dir), storage_id='mcap'), rosbag2_py.ConverterOptions('', ''))
+    reader.set_filter(rosbag2_py.StorageFilter(topics=['/map']))
+    records, count = defaultdict(dict), 0
+    try:
+        while reader.has_next():
+            topic, raw, receipt_ns = reader.read_next()
+            require(topic == '/map', 'Unexpected filtered topic')
+            count += 1
+            msg = deserialize_message(raw, OccupancyGrid)
+            stamp_ns = msg.header.stamp.sec * 1_000_000_000 + msg.header.stamp.nanosec
+            if stamp_ns not in wanted_stamps:
+                continue
+            q = msg.info.origin.orientation
+            yaw = math.atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z))
+            require(0 < msg.info.width * msg.info.height <= 1_000_000, 'Map exceeds bounded Grid size')
+            grid = core.Grid(msg.info.width, msg.info.height, msg.info.resolution,
+                             msg.info.origin.position.x, msg.info.origin.position.y, yaw, tuple(msg.data))
+            geometry = {'width': grid.width, 'height': grid.height, 'resolution': grid.resolution,
+                        'origin': [grid.origin_x, grid.origin_y, grid.origin_yaw]}
+            content = json.dumps({**geometry, 'data': grid.data}, sort_keys=True,
+                                 separators=(',', ':'), allow_nan=False).encode('utf-8')
+            digest = hashlib.sha256(content).hexdigest()
+            key = (digest, msg.header.frame_id)
+            row = records[stamp_ns].setdefault(key, {'grid_sha256': digest, 'frame_id': msg.header.frame_id,
+                'geometry': geometry, 'message_count': 0, 'first_bag_receipt_ns': receipt_ns,
+                'last_bag_receipt_ns': receipt_ns})
+            row['message_count'] += 1
+            row['last_bag_receipt_ns'] = receipt_ns
+    finally:
+        del reader
+    return records, {'decoded_map_messages': count, 'metadata_map_messages': topics[0]['message_count'],
+                     'bag_segment_count': len(files), 'wanted_distinct_header_stamps': len(wanted_stamps)}
+
+
+def audit(preparation, orchestration, mission):
+    errors, rows = [], []
+    def check(condition, code, index=None):
+        if not condition:
+            errors.append({'check': code, 'selection_index': index})
+        return bool(condition)
+    observation = mission.get('observation_actions')
+    require(isinstance(observation, dict) and isinstance(observation.get('queue'), dict), 'No observation queue was recorded; selection audit unavailable')
+    queue = observation['queue']
+    history = queue.get('selection_history')
+    require(isinstance(history, list) and len(history) <= 1024, 'Missing/oversized selection history')
+    attempts = observation.get('attempts')
+    require(isinstance(attempts, list) and len(attempts) <= 1024, 'Missing/oversized attempts')
+    attempts = [*attempts, *([observation['active']] if observation.get('active') else [])]
+    frozen = [event['queue'] for event in mission.get('events', []) if event.get('event') == 'observation_queue_frozen']
+    require(len(frozen) == 1, 'Exactly one original frozen queue snapshot required')
+    frozen = frozen[0]
+    profile = preparation['profile']
+    check((profile.get('stations'), profile.get('headings'), profile.get('max_dispatches')) == (3, 4, 12), 'prepared_3_by_4_budget')
+    for key in ('epoch', 'planned_stations', 'planned_views', 'dispatch_budget', 'planned_stations_xy', 'relocation_radius_m'):
+        check(queue.get(key) == frozen.get(key), 'frozen_' + key)
+    check(queue.get('epoch') == preparation['epoch'], 'queue_epoch')
+    check(queue.get('relocation_radius_m') == .15, 'configured_radius_0_15')
+    stations = frozen.get('planned_stations_xy')
+    require(isinstance(stations, list) and all(isinstance(xy, list) and len(xy) == 2 and all(map(finite, xy)) for xy in stations), 'Missing/malformed frozen station coordinates')
+    planned = queue.get('planned_views')
+    require(type(planned) is int and 0 <= planned <= 12, 'Invalid planned view count')
+    check(len(stations) == queue.get('planned_stations') and planned == len(stations) * 4, 'planned_station_view_counts')
+    expected_ids = ['observation-%04d' % number for number in range(1, planned + 1)]
+    by_dispatch = defaultdict(list)
+    for attempt in attempts:
+        by_dispatch[(attempt.get('action_id'), attempt.get('dispatch_id'))].append(attempt)
+    wanted_stamps = {entry.get('map', {}).get('stamp_ns') for entry in history
+                     if type(entry.get('map', {}).get('stamp_ns')) is int and entry['map']['stamp_ns'] >= 0}
+    try:
+        records, bag_counts = map_records(wanted_stamps, preparation)
+        bag_counts['available'] = True
+        check(bag_counts['decoded_map_messages'] == bag_counts['metadata_map_messages'], 'bag_map_message_count_matches_metadata')
+    except Exception as exc:
+        records, bag_counts = {}, {'available': False, 'decoded_map_messages': None,
+            'detail': type(exc).__name__ + ': ' + str(exc)}
+        errors.append({'check': 'bag_map_audit_unavailable', 'detail': bag_counts['detail']})
+    originals, heading_groups, used_attempts, seen_ids, nav_uuids = {}, {}, set(), set(), set()
+    dispatch_ids, actual_sent, relocated_sent = [], 0, 0
+    for index, entry in enumerate(history):
+        row = {'selection_index': index, 'action_id': entry.get('action_id'), 'dispatch_id': entry.get('dispatch_id'),
+               'state': entry.get('state'), 'station_id': entry.get('station_id'), 'heading_index': entry.get('heading_index'),
+               'map_stamp_ns': entry.get('map', {}).get('stamp_ns'), 'grid_sha256': entry.get('map', {}).get('grid_sha256'),
+               'actual_navigation_sent': False, 'inspection_present': False}
+        rows.append(row)
+        error_start = len(errors)
+        try:
+            action_id, station, heading = entry['action_id'], entry['station_id'], entry['heading_index']
+            require(action_id in expected_ids and type(station) is int and 0 <= station < len(stations)
+                    and type(heading) is int and 0 <= heading < 4, 'Invalid action/station/heading identity')
+            seen_ids.add(action_id)
+            number = int(action_id.rsplit('-', 1)[1]) - 1
+            check(number % len(stations) == station, 'frozen_id_station', index)
+            group = number // len(stations)
+            check(heading_groups.setdefault(group, heading) == heading, 'frozen_id_group_heading', index)
+            check(entry['epoch'] == queue['epoch'], 'selection_epoch', index)
+            goal = entry['planned_goal']
+            require(isinstance(goal, dict) and all(finite(goal.get(key)) for key in ('x', 'y', 'yaw')), 'Invalid planned goal')
+            check([goal['x'], goal['y']] == goal.get('anchor') == stations[station], 'frozen_goal_xy_anchor', index)
+            yaw = (2 * math.pi * heading / 4 + math.pi) % (2 * math.pi) - math.pi
+            check(goal['yaw'] == yaw and goal.get('kind') == 'observation_queue', 'frozen_heading_yaw_kind', index)
+            identity = {key: entry[key] for key in ('station_id', 'heading_index', 'epoch', 'planned_goal')}
+            check(originals.setdefault(action_id, identity) == identity, 'same_id_original_identity', index)
+            check(entry.get('relocation_radius_m') == .15, 'selection_radius_0_15', index)
+            binding = entry['map']
+            stamp = binding.get('stamp_ns')
+            valid_stamp = check(type(stamp) is int and stamp >= 0, 'exact_map_stamp_valid', index)
+            variants = list(records.get(stamp, {}).values()) if valid_stamp else []
+            row['map_variants_at_exact_stamp'] = variants
+            matching = [item for item in variants if item['grid_sha256'] == binding.get('grid_sha256')
+                        and item['frame_id'] == mission['frame_id']]
+            check(bool(variants), 'exact_map_stamp_present_in_bag', index)
+            check(len(matching) == 1, 'exact_map_hash_and_frame_present_in_bag', index)
+            if matching:
+                check(matching[0]['geometry'] == {key: binding[key] for key in ('width', 'height', 'resolution', 'origin')}, 'map_geometry_matches_bag', index)
+            if entry['state'] == 'skipped_unsafe_or_unreachable':
+                check(entry.get('selected_check') is None and entry.get('dispatch_id') is None, 'skip_has_no_dispatch', index)
+                check(not any(key[0] == action_id for key in by_dispatch), 'skipped_view_has_no_attempt_in_this_one_attempt_profile', index)
+                continue
+            require(entry['state'] == 'dispatch', 'Unknown selection state')
+            dispatch = entry['dispatch_id']
+            require(type(dispatch) is int and 1 <= dispatch <= 12, 'Invalid dispatch ID')
+            dispatch_ids.append(dispatch)
+            matching_attempts = by_dispatch[(action_id, dispatch)]
+            require(len(matching_attempts) == 1, 'Dispatch must bind exactly one attempt or active record')
+            used_attempts.add((action_id, dispatch))
+            attempt = matching_attempts[0]
+            for key in ('action_id', 'dispatch_id', 'station_id', 'heading_index', 'epoch', 'planned_goal'):
+                check(attempt.get(key) == entry[key], 'attempt_' + key, index)
+            check(attempt.get('selection') == entry, 'attempt_selection_exact_copy', index)
+            actual = attempt['goal']
+            require(isinstance(actual, dict) and all(finite(actual.get(key)) for key in ('x', 'y', 'yaw')), 'Invalid actual goal')
+            check({key: actual.get(key) for key in ('yaw', 'anchor', 'kind')} ==
+                  {key: goal.get(key) for key in ('yaw', 'anchor', 'kind')}, 'actual_preserves_yaw_anchor_kind', index)
+            shift = math.hypot(actual['x'] - goal['x'], actual['y'] - goal['y'])
+            row.update(planned_goal=goal, actual_goal=actual, recomputed_shift_m=shift, outcome=attempt.get('outcome'))
+            check(shift <= .15, 'actual_shift_within_0_15', index)
+            check(entry.get('selected_shift_from_anchor_m') == shift, 'reported_shift_exact', index)
+            selected = entry.get('selected_check') or {}
+            check(selected.get('xy') == [actual['x'], actual['y']] and selected.get('reachable') is True
+                  and selected.get('endpoint_safe') is True, 'selected_check_binds_actual_goal', index)
+            sent = attempt.get('nav_token') is not None
+            row['actual_navigation_sent'] = sent
+            actual_sent += int(sent)
+            relocated_sent += int(sent and shift > 0)
+            check(sent == (attempt.get('dispatched_wall') is not None), 'navigation_send_fields_consistent', index)
+            sends = [event for event in mission.get('events', []) if event.get('event') == 'goal_sent'
+                     and event.get('token') == attempt.get('nav_token')] if sent else []
+            if sent:
+                check(len(sends) == 1 and sends[0].get('goal') == actual, 'goal_sent_event_binds_actual_goal', index)
+            if attempt.get('nav_goal_uuid') is not None:
+                uuid = attempt['nav_goal_uuid']
+                require(isinstance(uuid, list) and len(uuid) == 16 and all(type(v) is int and 0 <= v <= 255 for v in uuid), 'Invalid navigation UUID')
+                check(sent and tuple(uuid) not in nav_uuids, 'navigation_uuid_unique_and_sent', index)
+                nav_uuids.add(tuple(uuid))
+            inspection = attempt.get('inspection')
+            row['inspection_present'] = inspection is not None
+            if inspection is not None:
+                check(inspection.get('expected_pose') == [actual['x'], actual['y'], actual['yaw']], 'inspection_actual_pose', index)
+                check(inspection.get('map_epoch') == entry['epoch'] and inspection.get('goal_token') == attempt.get('nav_token')
+                      and inspection.get('request_id') == attempt.get('inspection_request_id'), 'inspection_attempt_identity', index)
+                row['inspection_status'] = inspection.get('status')
+                row['inspection_accepted_frames'] = inspection.get('accepted_frames')
+            if attempt.get('outcome') == 'inspection_satisfied':
+                check(sent and attempt.get('nav_goal_uuid') is not None and attempt.get('nav_terminal_status') == 4
+                      and inspection is not None and inspection.get('status') == 'satisfied', 'completed_attempt_has_navigation_and_inspection', index)
+        except (KeyError, TypeError, ValueError, IndexError) as exc:
+            errors.append({'selection_index': index, 'check': 'malformed_or_missing_selection_evidence', 'detail': str(exc)})
+        finally:
+            row['evidence_errors'] = errors[error_start:]
+            row['evidence_binding_verified'] = not row['evidence_errors']
+    check(sorted(dispatch_ids) == list(range(1, queue.get('dispatches', 0) + 1)), 'dispatch_ids_unique_contiguous_and_counted')
+    check(len(used_attempts) == len(attempts), 'every_attempt_bound_to_one_selection')
+    check(len(set(heading_groups.values())) == len(heading_groups), 'distinct_frozen_heading_groups')
+    check(sum(queue.get('state_counts', {}).values()) == planned, 'queue_state_count_denominator')
+    return {'errors': errors, 'selections': rows, 'bag_counts': bag_counts,
+        'mission_original': {key: mission.get(key) for key in ('status', 'reason', 'mission_success', 'map_complete', 'visual_coverage_complete', 'returned_pose_verified')},
+        'queue_original': {key: queue.get(key) for key in ('planned_views', 'dispatches', 'pending_views', 'state_counts', 'all_planned_actions_completed', 'invalid_reason')},
+        'observation_closed': observation.get('closed'), 'observation_close_reason': observation.get('close_reason'),
+        'counts': {'requested_view_budget': 12, 'planned_views_actual': planned, 'selection_records': len(history),
+            'selection_states': dict(Counter(item.get('state') for item in history)), 'attempt_records_including_active': len(attempts),
+            'attempts_recording_navigation_send': sum(item.get('nav_token') is not None for item in attempts),
+            'navigation_sends_reached_in_selection_audit': actual_sent, 'relocated_sends_reached_in_selection_audit': relocated_sent,
+            'inspections_present': sum(row['inspection_present'] for row in rows),
+            'evidence_verified_selection_records': sum(row['evidence_binding_verified'] for row in rows)},
+        'unobserved_planned_action_ids': sorted(set(expected_ids) - seen_ids),
+        'not_created_budget_action_ids': ['observation-%04d' % n for n in range(planned + 1, 13)],
+        'observed_heading_group_mapping': heading_groups,
+        'scope': 'passed means evidence binding only, never observation/mission success. Selection/attempt/inspection identity and exact recorded /map fingerprint audit only. Does not independently re-run geometric safety or prove execution/coverage. Skipped states and original mission failure remain unchanged. No nearest-time map substitution. Frozen snapshot omits the complete initial heading-to-ID order: unselected identities remain unobserved; initial yaw order is not inferred from a later pose.'}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root-session-id', required=True, type=int)
+    parser.add_argument('--root-exit-code', required=True, type=int)
+    parser.add_argument('--output', type=Path, default=DEFAULT_OUTPUT)
+    args = parser.parse_args()
+    require(sys.platform == 'linux', 'Run under WSL/Linux with the ROS decoding environment sourced')
+    output = args.output.absolute()
+    require(output.parent.resolve() == DEFAULT_OUTPUT.parent.resolve() and not output.exists() and not output.is_symlink(), 'Output must be a new file directly in outputs/setup')
+    result = {'schema_version': 1, 'run': RUN.name, 'passed': False,
+              'root_exec_completion': {'session_id': args.root_session_id, 'exit_code': args.root_exit_code,
+                  'source': 'Operator-supplied actual completion receipt; script does not operate or inspect processes.'}}
+    try:
+        fingerprint(Path(__file__))
+        preparation, orchestration, mission = closed_inputs()
+        result.update(epoch=preparation['epoch'], prepared_code_head=preparation['code_head'], run_token=preparation['token'])
+        result.update(audit(preparation, orchestration, mission))
+    except Exception as exc:
+        result.setdefault('errors', []).append({'check': 'audit_unavailable_or_aborted', 'detail': type(exc).__name__ + ': ' + str(exc)})
+    for path, before in STATS.items():
+        if not path.exists() or path.is_symlink() or stat_key(path.stat()) != before:
+            result.setdefault('errors', []).append({'check': 'input_changed_during_audit', 'path': str(path)})
+    result['sources'] = SOURCES
+    result['passed'] = not result.get('errors')
+    with output.open('x', encoding='utf-8', newline='\n') as stream:
+        json.dump(result, stream, ensure_ascii=False, indent=2, allow_nan=False)
+        stream.write('\n')
+    print(json.dumps({'output': str(output), 'passed': result['passed'],
+                      'error_count': len(result.get('errors', [])), 'counts': result.get('counts')}, ensure_ascii=False))
+    return 0 if result['passed'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

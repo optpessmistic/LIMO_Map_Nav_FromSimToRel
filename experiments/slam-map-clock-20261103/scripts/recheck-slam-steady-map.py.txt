@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+"""One incremental native build; no source edit, install copying, or ROS nodes."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import stat
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+NATIVE = Path('/tmp/limo-slam-steady-map-20261103')
+DESTINATION = ROOT / 'outputs/slam-steady-map-ws'
+LOG = ROOT / 'outputs/setup/slam-steady-map-recheck.log'
+RECEIPT = ROOT / 'outputs/setup/slam-steady-map-recheck.json'
+
+
+def fingerprint(path):
+    before = path.stat()
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        while chunk := stream.read(4 * 1024 * 1024):
+            digest.update(chunk)
+    after = path.stat()
+    assert (before.st_size, before.st_mtime_ns, before.st_ino) == (after.st_size, after.st_mtime_ns, after.st_ino), str(path)
+    return {'sha256': digest.hexdigest(), 'bytes': after.st_size, 'mtime_ns': after.st_mtime_ns}
+
+
+def inventory(folder):
+    assert folder.is_dir() and not folder.is_symlink(), str(folder)
+    files, links, unsupported = {}, {}, []
+    for path in sorted(folder.rglob('*')):
+        name = path.relative_to(folder).as_posix()
+        mode = path.lstat().st_mode
+        if stat.S_ISREG(mode):
+            files[name] = fingerprint(path)
+        elif stat.S_ISLNK(mode):
+            links[name] = os.readlink(path)
+        elif not stat.S_ISDIR(mode):
+            unsupported.append(name)
+    assert files and not unsupported, (str(folder), unsupported)
+    return {'path': str(folder), 'regular_files': files, 'symlinks_not_followed': links}
+
+
+def content(value):
+    return {name: {'sha256': item['sha256'], 'bytes': item['bytes']}
+            for name, item in value['regular_files'].items()}
+
+
+def compare(before, after):
+    a, b = content(before), content(after)
+    return {'unchanged': a == b and before['symlinks_not_followed'] == after['symlinks_not_followed'],
+            'added': sorted(b.keys() - a.keys()), 'removed': sorted(a.keys() - b.keys()),
+            'content_changed': sorted(name for name in a.keys() & b.keys() if a[name] != b[name]),
+            'mtime_changed': sorted(name for name in a.keys() & b.keys()
+                                    if before['regular_files'][name]['mtime_ns'] != after['regular_files'][name]['mtime_ns']),
+            'symlink_targets_unchanged': before['symlinks_not_followed'] == after['symlinks_not_followed']}
+
+
+def main():
+    assert sys.platform == 'linux', 'Use WSL/Linux'
+    assert not LOG.exists() and not RECEIPT.exists(), 'Preserve previous evidence'
+    source_manifest_path = DESTINATION / 'build-source.json'
+    original_helper = ROOT / 'outputs/setup/build-slam-steady-map.sh'
+    original_log = ROOT / 'outputs/setup/slam-steady-map-build.log'
+    source_manifest = json.loads(source_manifest_path.read_bytes())
+    record = {'schema_version': 1, 'scope': 'Incremental rebuild integrity check only; no stability/mission/root-cause proof.',
+              'source_helper': {'path': str(original_helper), **fingerprint(original_helper)},
+              'recheck_helper': {'path': str(Path(__file__)), **fingerprint(Path(__file__))},
+              'source_manifest': {'path': str(source_manifest_path), **fingerprint(source_manifest_path)},
+              'original_build_log': {'path': str(original_log), **fingerprint(original_log)},
+              'native_workspace': str(NATIVE), 'c_install_root': str(DESTINATION / 'install'),
+              'pid': os.getpid(), 'ppid': os.getppid(),
+              'environment_overrides': {'CMAKE_BUILD_PARALLEL_LEVEL': '2', 'MAKEFLAGS': '-j2'},
+              'cwd': str(ROOT), 'source_edits_requested': False, 'c_install_copied_or_modified': False}
+    original_text = original_log.read_text(errors='replace')
+    record['original_build_warning_lines'] = [line for line in original_text.splitlines()
+        if any(word in line.lower() for word in ('warning', 'future', 'clock skew'))]
+    record['before'] = {
+        'native_lib': inventory(NATIVE / 'install/slam_toolbox/lib'),
+        'c_lib': inventory(DESTINATION / 'install/slam_toolbox/lib'),
+        'native_source': inventory(NATIVE / 'src/slam_toolbox')}
+    before_source_hashes = {name: item['sha256'] for name, item in record['before']['native_source']['regular_files'].items()}
+    record['native_source_matches_build_manifest_before'] = before_source_hashes == source_manifest['source_files']
+    record['native_c_library_content_equal_before'] = content(record['before']['native_lib']) == content(record['before']['c_lib'])
+    assert record['native_source_matches_build_manifest_before'], 'Native source differs from pinned initial build source'
+    command = ['colcon', '--log-base', str(NATIVE / 'log'), 'build',
+        '--base-paths', str(NATIVE / 'src'), '--build-base', str(NATIVE / 'build'),
+        '--install-base', str(NATIVE / 'install'), '--packages-select', 'slam_toolbox',
+        '--parallel-workers', '1', '--allow-overriding', 'slam_toolbox',
+        '--cmake-args', '-DBUILD_TESTING=OFF']
+    record['command'] = command
+    record['environment_setup'] = '/opt/ros/jazzy/setup.bash'
+    # The same colcon/flags as the initial helper, without its preparation/copies.
+    launcher = ['bash', '-c', 'set -eo pipefail; source /opt/ros/jazzy/setup.bash; '
+                'export CMAKE_BUILD_PARALLEL_LEVEL=2 MAKEFLAGS=-j2; exec "$@"', 'recheck-colcon', *command]
+    record['started_monotonic_s'] = time.monotonic()
+    record['started_realtime_ns'] = time.time_ns()
+    print('Native incremental recheck started; C installation will remain untouched', flush=True)
+    with LOG.open('xb') as stream:
+        result = subprocess.run(launcher, cwd=ROOT, stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT)
+    record['exit_code'] = result.returncode
+    record['finished_monotonic_s'] = time.monotonic()
+    record['finished_realtime_ns'] = time.time_ns()
+    record['elapsed_monotonic_s'] = record['finished_monotonic_s'] - record['started_monotonic_s']
+    record['after'] = {
+        'native_lib': inventory(NATIVE / 'install/slam_toolbox/lib'),
+        'c_lib': inventory(DESTINATION / 'install/slam_toolbox/lib'),
+        'native_source': inventory(NATIVE / 'src/slam_toolbox')}
+    record['comparisons'] = {name: compare(record['before'][name], record['after'][name])
+                             for name in ('native_lib', 'c_lib', 'native_source')}
+    record['native_c_library_content_equal_after'] = content(record['after']['native_lib']) == content(record['after']['c_lib'])
+    record['original_build_log_unchanged'] = fingerprint(original_log) == {
+        key: record['original_build_log'][key] for key in ('sha256', 'bytes', 'mtime_ns')}
+    record['recheck_log'] = {'path': str(LOG), **fingerprint(LOG)}
+    text = LOG.read_text(errors='replace')
+    record['recheck_warning_lines'] = [line for line in text.splitlines()
+        if any(word in line.lower() for word in ('warning', 'future', 'clock skew'))]
+    record['passed'] = (result.returncode == 0 and record['original_build_log_unchanged'] and
+                         all(value['unchanged'] for value in record['comparisons'].values()))
+    record['limitations'] = [
+        'An incremental build pass does not erase the initial future-mtime/clock-skew warning.',
+        'Hashes cover all regular files below each stated lib root; symlinks are listed separately and not followed.',
+        'No forced rebuild, clean build, stress test, ROS node, or Gazebo run was performed.',
+        'No attempt was made to change WSL clock synchronization or fix host time.',
+        'The actual tool root session ID and its observed completion are recorded separately after this process exits.']
+    with RECEIPT.open('x', encoding='utf-8', newline='\n') as stream:
+        json.dump(record, stream, indent=2, ensure_ascii=False)
+        stream.write('\n')
+    print(json.dumps({'receipt': str(RECEIPT), 'exit_code': result.returncode, 'passed': record['passed'],
+        'elapsed_monotonic_s': record['elapsed_monotonic_s'], 'comparisons': record['comparisons'],
+        'native_c_equal_after': record['native_c_library_content_equal_after'],
+        'warning_count': len(record['recheck_warning_lines'])}), flush=True)
+    return 0 if record['passed'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

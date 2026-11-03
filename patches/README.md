@@ -1,7 +1,7 @@
 # Pinned upstream patches
 
-Both SLAM patches apply in order to official SLAM Toolbox 2.8.5,
-commit `ec8f7635dea317b531c419f798f87d90a336f32e`.
+The three SLAM patches (`0002`, `0003`, `0004`) apply in order to official
+SLAM Toolbox 2.8.5, commit `ec8f7635dea317b531c419f798f87d90a336f32e`.
 
 `0002-slam-toolbox-inclusive-grid.patch` adds one cell to each
 occupancy-grid dimension so the maximum quantized scan endpoint is valid. The
@@ -27,6 +27,24 @@ return. Visual coverage remained false and the strict retention audit passed onl
 fewer TF receipt gaps from slower worst-case advancement of scan timestamps;
 neither zero logged errors nor the successful build proves a general timing fix.
 
+`0004-slam-toolbox-steady-map-publish.patch` changes exactly one line in
+`SlamToolbox::publishVisualizations`: the `map_update_interval` loop uses
+`rclcpp::WallRate` instead of `rclcpp::Rate`. It removes the same system-clock
+dependency from this loop's sleep. The configured period, `updateMap()`, graph
+publication, locks and map/TF timestamp sources are unchanged. In run32, the
+mission stopped with `map_stale` before reaching the observation queue; an
+independent observer also recorded an old map while TF continued, alongside
+backward controller-log timestamps (not a concurrent clock probe).
+These observations motivate a controlled comparison;
+they do not establish that this sleep caused the failure. A steady sleep does
+not bound map computation, lock waits, executor or DDS delays, and it does not
+relax the mission's map-freshness checks. Keep the failed run32 result intact.
+There is no whole-vehicle simulation result for `0004` yet.
+The [separate build/install archive](../experiments/slam-map-clock-20261103/README.md)
+records the successful full build with its clock-skew warning, a failed
+incremental precheck after loss of the temporary workspace, and the successful
+installed-library/type-support check. These are separate results.
+
 Fetch/apply and then verify without writes:
 
 ```bash
@@ -35,13 +53,20 @@ bash scripts/fetch_slam_vendor.sh --check-only
 ```
 
 The script accepts only the exact pinned pristine checkout, the exact `0002`
-prefix, or both exact patches. It applies missing patches in order, refuses
-unknown/out-of-order edits before applying anything, and never resets an existing
-checkout. `--check-only` requires both patches and `COLCON_IGNORE` to exist.
+prefix, the exact `0002+0003` prefix, or all three exact patches. Thus an existing
+validated TF-steady source checkout receives only `0004`. It applies missing
+patches in order, refuses unknown/out-of-order edits before applying anything,
+and never resets an existing checkout. Full-file SHA256 checks reject unrelated changes even when every patch
+hunk would apply. `--check-only` requires all three patches and `COLCON_IGNORE`
+to exist; it refuses an older prefix without applying the missing patch or
+creating the ignore marker. Repeating normal fetch on the exact full state is
+supported. Missing-patch preflight covers the separate header hunk and the two
+non-overlapping hunks in `slam_toolbox_common.cpp` before any source write.
 
 Build a **new, separate overlay** from this validated source; preserve the existing
-`outputs/slam-boundary-ws` as the historical boundary-only baseline. For example,
-use a fresh `outputs/slam-steady-ws` source snapshot and the isolated colcon
+`outputs/slam-boundary-ws` boundary-only baseline and `outputs/slam-steady-ws`
+TF-steady baseline. For the map-publishing comparison, use a fresh
+`outputs/slam-steady-map-ws` source snapshot and the isolated colcon
 procedure in the boundary document, changing its workspace path accordingly.
 Do not reuse an existing destination or silently source the new overlay into a
 running experiment. Record its source hashes, build results and actually loaded
@@ -49,8 +74,8 @@ library paths before evaluating timing. No system ROS installation is replaced.
 Retain upstream LICENSE and source notices; `vendor/slam_toolbox/COLCON_IGNORE`
 keeps the source out of ordinary project colcon discovery.
 
-The completed local build used `/tmp/limo-slam-steady-20261103`; its relocated
-installation is `outputs/slam-steady-ws/install` in the C-drive checkout. Load it
+The completed `0002+0003` local build used `/tmp/limo-slam-steady-20261103`;
+its relocated installation is `outputs/slam-steady-ws/install` in the C-drive checkout. Load it
 after the F-drive runtime environment and before the current checkout's main
 `install/local_setup.bash`. The old boundary-only overlay remains available as
 the historical baseline. See the [build receipt](../experiments/run30/validation/slam-steady-build-receipt.json)

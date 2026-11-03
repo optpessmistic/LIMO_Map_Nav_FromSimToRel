@@ -1,0 +1,252 @@
+{
+  "scope": "Temporary local Git fixtures only; real vendor and old overlays unchanged.",
+  "source_sha256": {
+    "scripts/fetch_slam_vendor.sh": "284354504e1bb317d11681071e9908efe8017a259009538b8d55302224ed1bac",
+    "patches/0002-slam-toolbox-inclusive-grid.patch": "d5b84271971957f3675fe3a0b3263b48a829e32cb02bf74073a1c8f387794c70",
+    "patches/0003-slam-toolbox-steady-transform-publish.patch": "e57dc731e24c3534336d1fe733266e88339bc3b35caa8564098a14ad894955dc",
+    "patches/0004-slam-toolbox-steady-map-publish.patch": "744f7c5bf7eda85968f6b9a151c64fd123f97e442960c7a24a741f9221a7ac8d"
+  },
+  "cases": [
+    {
+      "initial_prefix_length": 0,
+      "checks": [
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 1,
+          "output": "All three pinned SLAM patches are required; 0 of 3 applied.\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unknown or out-of-order vendor patch state; checkout preserved.\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unexpected untracked vendor file preserved: .owned-untracked-probe\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/0/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        }
+      ],
+      "final_source_sha256": {
+        "lib/karto_sdk/include/karto_sdk/Karto.h": "3a91277a6fb16bd5796f41d484c2d405384f9bcfef6956f90511fa7c4391512c",
+        "src/slam_toolbox_common.cpp": "2c80e9d4af5974f449473bd0b568d00fac0be2aa24e6b97161548766529ac406"
+      },
+      "passed": true
+    },
+    {
+      "initial_prefix_length": 1,
+      "checks": [
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 1,
+          "output": "All three pinned SLAM patches are required; 1 of 3 applied.\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unknown or out-of-order vendor patch state; checkout preserved.\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unexpected untracked vendor file preserved: .owned-untracked-probe\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/1/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        }
+      ],
+      "final_source_sha256": {
+        "lib/karto_sdk/include/karto_sdk/Karto.h": "3a91277a6fb16bd5796f41d484c2d405384f9bcfef6956f90511fa7c4391512c",
+        "src/slam_toolbox_common.cpp": "2c80e9d4af5974f449473bd0b568d00fac0be2aa24e6b97161548766529ac406"
+      },
+      "passed": true
+    },
+    {
+      "initial_prefix_length": 2,
+      "checks": [
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 1,
+          "output": "All three pinned SLAM patches are required; 2 of 3 applied.\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unknown or out-of-order vendor patch state; checkout preserved.\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unexpected untracked vendor file preserved: .owned-untracked-probe\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/2/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        }
+      ],
+      "final_source_sha256": {
+        "lib/karto_sdk/include/karto_sdk/Karto.h": "3a91277a6fb16bd5796f41d484c2d405384f9bcfef6956f90511fa7c4391512c",
+        "src/slam_toolbox_common.cpp": "2c80e9d4af5974f449473bd0b568d00fac0be2aa24e6b97161548766529ac406"
+      },
+      "passed": true
+    },
+    {
+      "initial_prefix_length": 3,
+      "checks": [
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unknown or out-of-order vendor patch state; checkout preserved.\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 1,
+          "output": "Unexpected untracked vendor file preserved: .owned-untracked-probe\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        },
+        {
+          "command": [
+            "bash",
+            "scripts/fetch_slam_vendor.sh",
+            "--check-only"
+          ],
+          "returncode": 0,
+          "output": "Validated upstream: https://github.com/SteveMacenski/slam_toolbox.git @ ec8f7635dea317b531c419f798f87d90a336f32e (2.8.5)\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0002-slam-toolbox-inclusive-grid.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0003-slam-toolbox-steady-transform-publish.patch\nPatch: /tmp/limo-slam-map-guard-oz91amhe/3/patches/0004-slam-toolbox-steady-map-publish.patch\nIsolated overlay / validation scope: patches/README.md\n"
+        }
+      ],
+      "final_source_sha256": {
+        "lib/karto_sdk/include/karto_sdk/Karto.h": "3a91277a6fb16bd5796f41d484c2d405384f9bcfef6956f90511fa7c4391512c",
+        "src/slam_toolbox_common.cpp": "2c80e9d4af5974f449473bd0b568d00fac0be2aa24e6b97161548766529ac406"
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}

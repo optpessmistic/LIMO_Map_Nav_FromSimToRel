@@ -1,0 +1,12 @@
+diff --git a/src/slam_toolbox_common.cpp b/src/slam_toolbox_common.cpp
+--- a/src/slam_toolbox_common.cpp
++++ b/src/slam_toolbox_common.cpp
+@@ -533,7 +533,7 @@ void SlamToolbox::publishVisualizations()
+     this->declare_parameter("map_update_interval", map_update_interval);
+   }
+   map_update_interval = this->get_parameter("map_update_interval").as_double();
+-  rclcpp::Rate r(1.0 / map_update_interval);
++  rclcpp::WallRate r(1.0 / map_update_interval);
+ 
+   while (rclcpp::ok()) {
+     boost::this_thread::interruption_point();
