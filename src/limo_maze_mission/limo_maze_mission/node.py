@@ -64,6 +64,7 @@ class MissionNode(Node):
             'goal_timeout_s': 90.0,
             'mission_timeout_s': 900.0, 'return_timeout_s': 180.0,
             'cancel_timeout_s': 10.0, 'tf_max_age_s': 1.0, 'map_max_age_s': 5.0,
+            'navigation_failure_cooldown_s': 0.0, 'navigation_recovery_timeout_s': 3.0,
             'observation_max_age_s': 1.5, 'detector_timeout_s': 5.0,
             'observation_dwell_s': 3.0, 'startup_wait_s': 60.0,
             'home_position_tolerance_m': .15, 'home_yaw_tolerance_rad': .26,
@@ -96,12 +97,20 @@ class MissionNode(Node):
             self.declare_parameter(key, value)
         self.cfg = {key: self.get_parameter(key).value for key in defaults}
         for key, value in self.cfg.items():
+            if key == 'navigation_failure_cooldown_s':
+                if type(value) not in (int, float) or not isfinite(value) or value < 0:
+                    raise ValueError(key + ' must be finite and nonnegative (zero disables recovery)')
+                continue
             if key == 'initial_clearance_radius_m':
                 if not isfinite(float(value)) or value < 0:
                     raise ValueError(key + ' must be finite and nonnegative (zero disables the prior)')
                 continue
             if key.endswith(('_s', '_m')) and (not isfinite(float(value)) or value <= 0):
                 raise ValueError(f'{key} must be finite and positive')
+        if (type(self.cfg['navigation_recovery_timeout_s']) not in (int, float) or
+                self.cfg['navigation_recovery_timeout_s'] > 30 or
+                self.cfg['navigation_failure_cooldown_s'] >= self.cfg['navigation_recovery_timeout_s']):
+            raise ValueError('navigation recovery requires 0 <= cooldown < timeout <= 30 seconds')
         if self.cfg['initial_clearance_radius_m'] > 0 and (
                 not self.cfg['initial_clearance_source'].strip() or
                 self.cfg['initial_clearance_radius_m'] <= self.cfg['initial_clearance_margin_m']):
@@ -170,6 +179,7 @@ class MissionNode(Node):
         self.token = 0
         self.goal_started = None
         self.goal_result = None
+        self.navigation_recovery = None
         self.canceling = False
         self.cancel_response = False
         self.cancel_terminal = False
@@ -233,7 +243,8 @@ class MissionNode(Node):
             self.create_subscription(String, self.cfg['frame_retention_result_topic'],
                                      self.on_frame_retention_result, retention_qos)
         # ROS time still timestamps measurements; wall deadlines must run while /clock is paused.
-        timer_options = {'clock': Clock(clock_type=ClockType.STEADY_TIME)} if self.inspection else {}
+        wall_timer = self.inspection is not None or self.cfg['navigation_failure_cooldown_s'] > 0
+        timer_options = {'clock': Clock(clock_type=ClockType.STEADY_TIME)} if wall_timer else {}
         self._mission_timer = self.create_timer(.1 if self.inspection else .5, self.tick, **timer_options)
         self.get_logger().info('Mission loaded; autonomous=' + str(self.cfg['autonomous']))
 
@@ -774,7 +785,7 @@ class MissionNode(Node):
     def dispatch_budget_allows(self, kind):
         # Planning may have crossed a wall deadline since tick's initial check.
         # Run before consuming a Nav token/home send or creating new ownership.
-        if not self.bounded_observation_enabled():
+        if not self.bounded_observation_enabled() and self.cfg['navigation_failure_cooldown_s'] == 0:
             return True
         now = time.monotonic()
         if self.return_budget_expired(now):
@@ -792,12 +803,75 @@ class MissionNode(Node):
             return True
         return False
 
+    def begin_navigation_recovery(self, detail):
+        # Only call after rejection or a verified terminal failure. Never relax
+        # action ownership, TF validity, or the existing mission/return clocks.
+        if (self.cfg['navigation_failure_cooldown_s'] == 0 or self.phase in ('done', 'blocked') or
+                self.canceling and self.cancel_next == 'blocked'):
+            return
+        if self.navigation_recovery is not None:
+            return  # Duplicate results cannot restart this failure's wall budget.
+        started = time.monotonic()
+        try:
+            transform = self.tf_buffer.lookup_transform(self.cfg['map_frame'], self.cfg['odom_frame'], Time())
+        except (TransformException, ValueError) as exc:
+            self.block(str(exc))
+            return
+        stamp_ns = transform.header.stamp.sec*1_000_000_000 + transform.header.stamp.nanosec
+        self.navigation_recovery = {
+            'token': self.token, 'detail': detail, 'started_wall': started,
+            'not_before_wall': started+self.cfg['navigation_failure_cooldown_s'],
+            'deadline_wall': started+self.cfg['navigation_recovery_timeout_s'],
+            'failed_map_odom_stamp_ns': stamp_ns, 'latest_map_odom_stamp_ns': stamp_ns}
+        self.event('navigation_recovery_started', **self.navigation_recovery)
+
+    def navigation_recovery_allows_dispatch(self, kind=None):
+        recovery = self.navigation_recovery
+        if recovery is None:
+            return True
+        kind = kind or ('home' if self.phase == 'returning' else 'frontier')
+        if not self.dispatch_budget_allows(kind):
+            return False
+        now = time.monotonic()
+        if now >= recovery['deadline_wall']:
+            self.block('navigation_recovery_timeout')
+            return False
+        try:
+            transform = self.tf_buffer.lookup_transform(self.cfg['map_frame'], self.cfg['odom_frame'], Time())
+        except (TransformException, ValueError) as exc:
+            self.block(str(exc))
+            return False
+        stamp_ns = transform.header.stamp.sec*1_000_000_000 + transform.header.stamp.nanosec
+        recovery['latest_map_odom_stamp_ns'] = stamp_ns
+        # TF lookup / executor scheduling can cross either original or recovery
+        # deadlines. Original mission/return/stage boundaries take precedence.
+        if not self.dispatch_budget_allows(kind):
+            return False
+        now = time.monotonic()
+        if now >= recovery['deadline_wall']:
+            self.block('navigation_recovery_timeout')
+            return False
+        if now < recovery['not_before_wall'] or stamp_ns <= recovery['failed_map_odom_stamp_ns']:
+            return False
+        self.event('navigation_recovery_ready', **recovery, ready_wall=now)
+        if not self.dispatch_budget_allows(kind):
+            return False
+        if time.monotonic() >= recovery['deadline_wall']:
+            self.block('navigation_recovery_timeout')
+            return False
+        self.navigation_recovery = None
+        return True
+
     def send_goal(self, goal):
         if self.goal_handle is not None or self.send_pending or self.canceling:
             raise RuntimeError('Attempt to overlap owned navigation goals')
         if not self.cfg['autonomous']:
             return False
         if not self.dispatch_budget_allows(goal.kind):
+            return False
+        if not self.navigation_recovery_allows_dispatch(goal.kind):
+            return False
+        if self.cfg['navigation_failure_cooldown_s'] > 0 and not self.dispatch_budget_allows(goal.kind):
             return False
         self.token += 1
         token = self.token
@@ -842,6 +916,8 @@ class MissionNode(Node):
             self.goal_result = (False, 'goal_rejected')
             if self.canceling:
                 self.cancel_response = self.cancel_terminal = True
+            if not self.canceling or self.reason in ('goal_timeout', 'observation_navigation_timeout'):
+                self.begin_navigation_recovery('goal_rejected')
             return
         self.goal_handle = handle
         if self.observation_active is not None and self.observation_active['nav_token'] == token:
@@ -873,7 +949,9 @@ class MissionNode(Node):
                 self.block('navigation_terminal_status_unverified:' + str(result.status))
                 return
             success = result.status == GoalStatus.STATUS_SUCCEEDED
-            detail = str(result.status) + ':' + str(getattr(result.result, 'error_msg', ''))
+            error_msg = getattr(result.result, 'error_msg', None)
+            error_msg = str(error_msg) if error_msg is not None else None
+            detail = str(result.status) + ':' + (error_msg or '')
         except Exception as exc:
             # An exception is not proof of a terminal action; preserve the handle.
             self.block('navigation_result_unavailable:' + str(exc))
@@ -886,7 +964,18 @@ class MissionNode(Node):
             self.inspection_terminal_received = time.monotonic(), self.get_clock().now().nanoseconds
         if self.canceling:
             self.cancel_terminal = True
-        self.event('goal_terminal', token=token, success=success, detail=detail)
+        # Older action IDLs may omit these fields; diagnostics do not infer a
+        # TF cause from STATUS_ABORTED or alter terminal/stop verification.
+        try:
+            error_code = getattr(result.result, 'error_code', None)
+            error_code = int(error_code) if error_code is not None else None
+        except (TypeError, ValueError, OverflowError):
+            error_code = None
+        self.event('goal_terminal', token=token, success=success, detail=detail,
+                   status=int(result.status), error_code=error_code, error_msg=error_msg)
+        if not success and (result.status != GoalStatus.STATUS_CANCELED or not self.canceling or
+                            self.reason in ('goal_timeout', 'observation_navigation_timeout')):
+            self.begin_navigation_recovery(detail)
 
     def issue_cancel(self, token):
         if self.goal_handle is None:
@@ -1145,6 +1234,11 @@ class MissionNode(Node):
         if self.observation_closed:
             self.start_return('observation_stage_already_closed')
             return
+        if not self.navigation_recovery_allows_dispatch('observation_queue'):
+            return  # take_next consumes a queue attempt, even before Nav2 sends.
+        if (self.cfg['navigation_failure_cooldown_s'] > 0 and
+                not self.dispatch_budget_allows('observation_queue')):
+            return
         try:
             decision = self.observation_queue.take_next(self.grid, pose, self.map_epoch)
         except ValueError:
@@ -1311,6 +1405,10 @@ class MissionNode(Node):
                 else:
                     self.failures.fail(self.goal, now, detail)
                     self.phase = 'exploring'
+        if (self.phase in ('exploring', 'returning', 'observation_select') and
+                not self.navigation_recovery_allows_dispatch()):
+            self.publish_status()
+            return
         if self.phase in ('settling', 'inspecting'):
             if not self.update_inspection(now, pose):
                 self.publish_status()
@@ -1416,6 +1514,7 @@ class MissionNode(Node):
                  'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
                  'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
                  'observation_actions': self.observation_snapshot(),
+                 'navigation_recovery': self.navigation_recovery,
                  'selection': asdict(self.selection) if self.selection else None}
         self.status_pub.publish(String(data=json.dumps(value)))
 
@@ -1439,6 +1538,7 @@ class MissionNode(Node):
                   'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
                   'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
                   'observation_actions': self.observation_snapshot(),
+                  'navigation_recovery': self.navigation_recovery,
                   'frame_retention': (self.frame_retention.snapshot()
                       if getattr(self, 'frame_retention', None) is not None else None),
                   'initial_clearance_prior': {

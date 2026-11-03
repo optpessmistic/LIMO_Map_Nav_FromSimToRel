@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-11-03T08:09:20.894137+00:00",
+  "kind": "navigation_recovery_validation",
+  "results": {
+    "new_pure_recovery": {
+      "log": "navigation-recovery-tests.log",
+      "tests_run": 18,
+      "passed": 18,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "duration_seconds": 0.255,
+      "terminal_result": "OK",
+      "skip_lines": []
+    },
+    "existing_pure_regressions": {
+      "log": "navigation-recovery-regressions.log",
+      "tests_run": 168,
+      "passed": 167,
+      "skipped": 1,
+      "failures": 0,
+      "errors": 0,
+      "duration_seconds": 16.232,
+      "terminal_result": "OK (skipped=1)",
+      "skip_lines": [
+        "test_construct_spin_and_destroy_with_autonomy_disabled (test_ros_mission_core.RosStartupTests.test_construct_spin_and_destroy_with_autonomy_disabled) ... skipped 'ROS rclpy is unavailable; source the ROS environment to run startup regression'"
+      ]
+    },
+    "real_dds_paused_clock": {
+      "log": "navigation-recovery-dds.log",
+      "tests_run": 1,
+      "passed": 1,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "duration_seconds": 17.679,
+      "terminal_result": "OK",
+      "skip_lines": []
+    },
+    "real_ros_startup": {
+      "log": "navigation-recovery-startup.log",
+      "tests_run": 1,
+      "passed": 1,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0,
+      "duration_seconds": 9.698,
+      "terminal_result": "OK",
+      "skip_lines": []
+    }
+  },
+  "build": {
+    "package": "limo_maze_mission",
+    "packages_finished": 1,
+    "log": "navigation-recovery-build.log",
+    "status": "passed",
+    "installed_source_equality_at_archive": true
+  },
+  "launch_defaults": {
+    "navigation_failure_cooldown_s": 0.0,
+    "navigation_recovery_timeout_s": 3.0
+  },
+  "external_root_exec_receipts": [
+    {
+      "session_id": 5471,
+      "exit_code": 0,
+      "scope": "pure tests and old regressions"
+    },
+    {
+      "session_id": 78184,
+      "exit_code": 0,
+      "scope": "real DDS paused-clock recovery timeout"
+    },
+    {
+      "session_id": 87704,
+      "exit_code": 0,
+      "scope": "package build, installed cmp and launch arguments"
+    },
+    {
+      "session_id": 87026,
+      "exit_code": 0,
+      "scope": "real ROS node startup regression"
+    }
+  ],
+  "external_receipt_scope": "Root reported these exec handles closed; this offline archiver does not inspect or control processes.",
+  "pure_regression_skip_preserved": true,
+  "real_startup_result_does_not_rewrite_pure_regression_skip": true,
+  "full_gazebo_mission_validated_by_this_archive": false,
+  "limitations": [
+    "Pure regression remains 168 run / 167 pass / 1 skipped. Real ROS startup is a separate 1/1 result.",
+    "The real DDS case validates paused-ROS-clock recovery timeout; it is not a complete Gazebo navigation run.",
+    "Source SHA256 values bind the reviewed frozen working files; log files do not independently attest imported bytes at test execution.",
+    "Installed/source equality is freshly checked during archive creation, in addition to root-reported build-time cmp.",
+    "No Git operation, source commit assumption, ROS node, simulator or test is performed by this script."
+  ]
+}

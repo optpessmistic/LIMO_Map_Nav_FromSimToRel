@@ -1,0 +1,235 @@
+"""Archive the closed navigation-recovery validation once, without ROS or Git.
+
+This file is inert on import. --confirm-closed-sessions acknowledges the root
+agent's external completion receipts, not a process scan performed here.
+All inputs/results are checked before the destination directory is created.
+"""
+import argparse
+import ast
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+import re
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT / 'outputs/setup'
+DEST = ROOT / 'experiments/navigation-recovery-20261103'
+EXPECTED_SOURCES = {
+    'src/limo_maze_mission/limo_maze_mission/node.py':
+        '614978d58578777639ed96b2bbe1178545bbf4969d3a26607b91ea3b55ac3f7d',
+    'src/limo_maze_mission/launch/mission.launch.py':
+        'c90112aacbbc77f8a7c4ae3b4068843b3a15d6a3157f4ff528a7b2cb95cbe061',
+    'tests/test_navigation_recovery.py':
+        '24f01f215b45c08dd7f11b9627c658c0ca20cbb21f971a97a87612c33ea15839',
+    'tests/test_observation_adapter.py':
+        'a1e10532dd1ed84d3a24efaf16cbf979e713cab3fb74e59c4aaeec44785ea6ca',
+    'tests/test_observation_ros.py':
+        '6acbce8a11ebe6dc4f574e2e50dfd84b2934916085b9ddac137a840ffd5f2eb7',
+    'tests/test_ros_mission_core.py':
+        'b76eb97f89387cb819c526a90d43c387425e767edae090c0bb99f52e925ecdfe',
+}
+SCRIPTS = ('verify-navigation-recovery.sh', 'test-navigation-recovery-dds.sh',
+           'test-navigation-recovery-startup.sh', 'build-navigation-recovery.sh')
+LOGS = ('navigation-recovery-tests.log', 'navigation-recovery-regressions.log',
+        'navigation-recovery-dds.log', 'navigation-recovery-startup.log',
+        'navigation-recovery-build.log', 'navigation-recovery-launch-args.log')
+SESSION_RECEIPTS = (
+    {'session_id':5471, 'exit_code':0, 'scope':'pure tests and old regressions'},
+    {'session_id':78184, 'exit_code':0, 'scope':'real DDS paused-clock recovery timeout'},
+    {'session_id':87704, 'exit_code':0, 'scope':'package build, installed cmp and launch arguments'},
+    {'session_id':87026, 'exit_code':0, 'scope':'real ROS node startup regression'},
+)
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def json_bytes(value):
+    return (json.dumps(value,indent=2,ensure_ascii=False,allow_nan=False)+'\n').encode('utf-8')
+
+
+def checked_bytes(path):
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError('Missing, linked or out-of-repository input: '+str(path))
+    if not 0 < path.stat().st_size <= 4*1024*1024:
+        raise RuntimeError('Empty or oversized input: '+str(path))
+    return path.read_bytes()
+
+
+def unittest_result(raw, name, total, skipped, required_test=None):
+    text = raw.decode('utf-8')
+    summaries = list(re.finditer(r'^Ran (\d+) tests? in ([0-9]+(?:\.[0-9]+)?)s\s*$', text, re.M))
+    if len(summaries) != 1:
+        raise RuntimeError('Expected one closed unittest summary: '+name)
+    match = summaries[0]
+    expected = 'OK' if skipped == 0 else 'OK (skipped='+str(skipped)+')'
+    if int(match.group(1)) != total or text[match.end():].strip() != expected:
+        raise RuntimeError('Unittest count/status differs from reviewed result: '+name)
+    skip_lines = [line for line in text.splitlines() if ' ... skipped ' in line]
+    if len(skip_lines) != skipped:
+        raise RuntimeError('Unittest skip evidence differs: '+name)
+    if required_test is not None and required_test not in text:
+        raise RuntimeError('Required test identity missing: '+name)
+    if skipped and not all('RosStartupTests.test_construct_spin_and_destroy_with_autonomy_disabled' in row
+                           and 'ROS rclpy is unavailable' in row for row in skip_lines):
+        raise RuntimeError('The retained regression skip is not the reviewed ROS-startup skip')
+    return {'log':name,'tests_run':total,'passed':total-skipped,'skipped':skipped,
+            'failures':0,'errors':0,'duration_seconds':float(match.group(2)),
+            'terminal_result':expected,'skip_lines':skip_lines}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirm-closed-sessions', action='store_true', required=True,
+                        help='Confirm root exec sessions 5471, 78184, 87704 and 87026 are closed with exit 0.')
+    args = parser.parse_args(argv)
+    if not args.confirm_closed_sessions:
+        parser.error('External closed-session confirmation is required')
+    if DEST.exists() or DEST.is_symlink() or not DEST.parent.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError('Refuse existing or out-of-repository archive')
+
+    # Capture every required input before writing anything. Copies use these
+    # exact bytes; final source rereads reject mutation during the operation.
+    inputs = {ROOT/name:checked_bytes(ROOT/name) for name in EXPECTED_SOURCES}
+    for name in (*SCRIPTS,*LOGS):
+        inputs[SETUP/name] = checked_bytes(SETUP/name)
+    inputs[Path(__file__).resolve()] = checked_bytes(Path(__file__).resolve())
+    sources=[]
+    for name,expected in EXPECTED_SOURCES.items():
+        raw=inputs[ROOT/name]
+        if sha(raw) != expected:
+            raise RuntimeError('Frozen reviewed source changed: '+name)
+        ast.parse(raw,filename=name)
+        sources.append({'path':name,'bytes':len(raw),'sha256':sha(raw),'copied':False})
+
+    results = {
+        'new_pure_recovery':unittest_result(inputs[SETUP/LOGS[0]],LOGS[0],18,0),
+        'existing_pure_regressions':unittest_result(inputs[SETUP/LOGS[1]],LOGS[1],168,1),
+        'real_dds_paused_clock':unittest_result(inputs[SETUP/LOGS[2]],LOGS[2],1,0,
+            'test_failed_navigation_recovery_times_out_with_paused_ros_clock'),
+        'real_ros_startup':unittest_result(inputs[SETUP/LOGS[3]],LOGS[3],1,0,
+            'test_construct_spin_and_destroy_with_autonomy_disabled'),
+    }
+    dds=inputs[SETUP/'navigation-recovery-dds.log'].decode('utf-8')
+    if 'navigation_recovery_started' not in dds or 'navigation_recovery_timeout' not in dds:
+        raise RuntimeError('Paused-clock DDS log lacks the recovery/timeout evidence')
+    build=inputs[SETUP/'navigation-recovery-build.log'].decode('utf-8')
+    if (not re.search(r'^Starting >>> limo_maze_mission\s*$',build,re.M)
+            or not re.search(r'^Finished <<< limo_maze_mission \[[^\]]+\]\s*$',build,re.M)
+            or len(re.findall(r'^Summary:',build,re.M)) != 1
+            or not re.search(r'^Summary: 1 package finished \[[^\]]+\]\s*$',build,re.M)):
+        raise RuntimeError('Build log is not the reviewed successful one-package build')
+    launch=inputs[SETUP/'navigation-recovery-launch-args.log'].decode('utf-8')
+    for name,value in (('navigation_failure_cooldown_s','0.0'),('navigation_recovery_timeout_s','3.0')):
+        if not re.search(r"'"+re.escape(name)+r"':\s*no description given\s*\(default: '"+
+                         re.escape(value)+r"'\)",launch):
+            raise RuntimeError('Installed launch argument/default missing: '+name)
+
+    installed=[]
+    for source,target in (
+            ('src/limo_maze_mission/limo_maze_mission/node.py',
+             'install/limo_maze_mission/lib/python3.12/site-packages/limo_maze_mission/node.py'),
+            ('src/limo_maze_mission/launch/mission.launch.py',
+             'install/limo_maze_mission/share/limo_maze_mission/launch/mission.launch.py')):
+        raw=checked_bytes(ROOT/target)
+        inputs[ROOT/target]=raw
+        if raw != inputs[ROOT/source]:
+            raise RuntimeError('Installed/source bytes differ: '+source)
+        installed.append({'source':source,'installed':target,'bytes':len(raw),
+                          'sha256':sha(raw),'equal_at_archive':True})
+
+    report = {
+        'schema_version':1,'created_utc':datetime.now(timezone.utc).isoformat(),
+        'kind':'navigation_recovery_validation','results':results,
+        'build':{'package':'limo_maze_mission','packages_finished':1,
+                 'log':'navigation-recovery-build.log','status':'passed',
+                 'installed_source_equality_at_archive':True},
+        'launch_defaults':{'navigation_failure_cooldown_s':0.0,'navigation_recovery_timeout_s':3.0},
+        'external_root_exec_receipts':SESSION_RECEIPTS,
+        'external_receipt_scope':'Root reported these exec handles closed; this offline archiver does not inspect or control processes.',
+        'pure_regression_skip_preserved':True,
+        'real_startup_result_does_not_rewrite_pure_regression_skip':True,
+        'full_gazebo_mission_validated_by_this_archive':False,
+        'limitations':[
+            'Pure regression remains 168 run / 167 pass / 1 skipped. Real ROS startup is a separate 1/1 result.',
+            'The real DDS case validates paused-ROS-clock recovery timeout; it is not a complete Gazebo navigation run.',
+            'Source SHA256 values bind the reviewed frozen working files; log files do not independently attest imported bytes at test execution.',
+            'Installed/source equality is freshly checked during archive creation, in addition to root-reported build-time cmp.',
+            'No Git operation, source commit assumption, ROS node, simulator or test is performed by this script.']}
+    bindings={'schema_version':1,'source_files':sources,'installed_files':installed,
+              'source_commit':None,'source_commit_note':'Not inferred; exact reviewed source bytes are bound by SHA256.',
+              'raw_bytes_policy':'Archive-local .gitattributes disables text conversion, including shell/script snapshots.'}
+    readme = """# Navigation recovery validation — 2026-11-03
+
+The mission gains a bounded wall-clock wait after failed navigation before another navigation request. This archive records the code-level validation; it does not claim a completed Gazebo maze mission.
+
+| Check | Recorded result |
+|---|---|
+| New pure recovery tests | 18/18 passed |
+| Existing pure regressions | 168 run: 167 passed, 1 ROS startup test skipped |
+| Real DDS, paused ROS clock | 1/1 passed; recovery reaches its wall-clock timeout |
+| Separate real ROS startup | 1/1 passed; autonomy disabled |
+| Build | `limo_maze_mission`: one package finished |
+| Installation | Node and launch bytes equal the six-file source binding where applicable |
+
+The pure regression log retains its original skip. The separate ROS startup result does not replace or edit it. Exact test durations, root completion receipts and limitations are in `results.json`.
+
+`source-binding.json` hashes all six reviewed source/test files without duplicating the full node. The installed launch defaults remain cooldown `0.0` s and recovery timeout `3.0` s. A future run29 is planned to override the cooldown to `1.0` s; this archive contains no run29 result.
+
+Raw logs and the launch-argument receipt are under `validation/`. Original shell wrappers and this archiver are frozen under `runner/` as `.txt`; restore their original filenames before reuse in the repository. They are evidence, not automatically executed. The original verify wrapper also exports the existing run28 annotated map, so its full invocation needs that prior run's files.
+
+`manifest.json` records copied-input hashes and excludes itself. `SHA256SUMS` covers every archived file except itself; verify from this directory with `sha256sum -c SHA256SUMS`. Archive-local `.gitattributes` preserves raw bytes through Git. No source, log or prior experiment is overwritten.
+""".encode('utf-8')
+    payloads={'.gitattributes':b'* -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol\n',
+              'README.md':readme,'results.json':json_bytes(report),'source-binding.json':json_bytes(bindings)}
+    records=[]
+    for path,raw in inputs.items():
+        if path.parent != SETUP:
+            continue
+        name=path.name
+        relative=('validation/'+name if name in LOGS else 'runner/'+name+'.txt')
+        payloads[relative]=raw
+        records.append({'source':path.relative_to(ROOT).as_posix(),'archive':relative,
+                        'bytes':len(raw),'sha256':sha(raw)})
+    payloads['manifest.json']=json_bytes({'schema_version':1,'raw_inputs':records,
+        'source_files_without_copies':'source-binding.json',
+        'self_reference_policy':'Manifest excludes itself, verification.json and SHA256SUMS; SHA256SUMS excludes only itself.'})
+    # Check source stability again BEFORE creating the destination.
+    for path,raw in inputs.items():
+        if checked_bytes(path) != raw:
+            raise RuntimeError('Input changed before archive creation: '+str(path))
+    DEST.mkdir(parents=True)
+    for name,raw in payloads.items():
+        path=DEST/name
+        path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open('xb') as stream:
+            stream.write(raw)
+    for path,raw in inputs.items():
+        if checked_bytes(path) != raw:
+            raise RuntimeError('Input changed while archiving; preserve partial archive for inspection: '+str(path))
+    for name,raw in payloads.items():
+        if (DEST/name).read_bytes() != raw:
+            raise RuntimeError('Archive byte verification failed: '+name)
+    verification={'all_input_bytes_stable':True,'all_payload_bytes_verified':True,
+                  'raw_input_copies':len(records),'source_bindings':len(sources),
+                  'installed_source_equalities':len(installed)}
+    with (DEST/'verification.json').open('xb') as stream:
+        stream.write(json_bytes(verification))
+    files=sorted(path for path in DEST.rglob('*') if path.is_file())
+    checksum=''.join(sha(path.read_bytes())+'  '+path.relative_to(DEST).as_posix()+'\n' for path in files)
+    with (DEST/'SHA256SUMS').open('xb') as stream:
+        stream.write(checksum.encode('ascii'))
+    for line in checksum.splitlines():
+        expected,name=line.split('  ',1)
+        if sha((DEST/name).read_bytes()) != expected:
+            raise RuntimeError('Final SHA256 mismatch: '+name)
+    print(json.dumps({'archive':str(DEST),'files':len(files)+1,
+        'bytes':sum(path.stat().st_size for path in DEST.rglob('*') if path.is_file()),
+        'sha256sums_sha256':sha((DEST/'SHA256SUMS').read_bytes()),
+        'verified':True,'executed_tests_or_ros':False},indent=2))
+
+
+if __name__ == '__main__':
+    main()

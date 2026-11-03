@@ -93,7 +93,7 @@ adapter.__dict__.update({name: globals()[name] for name in (
     'ObservationQueue', 'ObservationPolicy')})
 adapter.__dict__.update({name: getattr(math, name) for name in ('atan2', 'cos', 'hypot', 'isfinite', 'sin')})
 adapter.__dict__.update(Node=FakeNode, time=TIME, ActionClient=lambda *a: Nav(),
-    Buffer=lambda **kw: S(), TransformListener=lambda *a: S(), Duration=lambda **kw: S(**kw),
+    Buffer=lambda **kw: S(), TransformListener=lambda *a: S(), Duration=lambda **kw: S(**kw), Time=lambda **kw: S(**kw),
     QoSProfile=lambda **kw: S(), DurabilityPolicy=S(TRANSIENT_LOCAL=1), ReliabilityPolicy=S(RELIABLE=1),
     OccupancyGrid=S, String=S, Odometry=S, Marker=S, MarkerArray=S, qos_profile_sensor_data=None,
     Clock=lambda **kw: S(), ClockType=S(STEADY_TIME=1), JumpThreshold=lambda **kw: S(),

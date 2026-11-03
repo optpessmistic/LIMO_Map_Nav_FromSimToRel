@@ -595,7 +595,7 @@ class AdapterCallbackTests(unittest.TestCase):
                 last_clock=None, home=(1., 2., 0.), canceling=False, phase='exploring',
                 grid=object(), map_received=1000., started=0., mission_timed_out=False,
                 seconds=lambda: 1000., get_pose=lambda: (1., 2., 0.), publish_status=lambda: None,
-                result_written=False, map_complete=True, visual_complete=True,
+                result_written=False, map_complete=True, visual_complete=True, navigation_recovery=None,
                 failures=SimpleNamespace(entries=[]), targets=SimpleNamespace(confirmed=lambda: [], targets=[]),
                 coordinates_valid=True, map_epoch='test-epoch', prior_filled_cells=0,
                 sources=set(), events=[], get_logger=lambda: SimpleNamespace(info=lambda _: None, error=self.fail),
@@ -763,7 +763,7 @@ class ShutdownTests(unittest.TestCase):
         tree = ast.parse(path.read_text(encoding='utf-8'))
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MissionNode')
         names = ('cancel_to', 'on_goal_response', 'issue_cancel', 'on_cancel_response',
-                 'on_goal_result', 'block', 'bounded_observation_enabled')
+                 'on_goal_result', 'block', 'bounded_observation_enabled', 'begin_navigation_recovery')
         methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in names]
         cleanup = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'shutdown_mission')
         clock = SimpleNamespace(now=0., steps=0)
@@ -830,7 +830,7 @@ class ShutdownTests(unittest.TestCase):
                         angular=SimpleNamespace(x=0., y=0., z=angular)))))
         namespace['rclpy'] = SimpleNamespace(ok=lambda: True, spin_once=spin_once)
         with tempfile.TemporaryDirectory(prefix='limo-shutdown-', dir=Path(__file__).parent) as directory:
-            node.cfg = {'cancel_timeout_s': 2., 'output_dir': directory}
+            node.cfg = {'cancel_timeout_s': 2., 'output_dir': directory, 'navigation_failure_cooldown_s': 0.}
             evidence = namespace['shutdown_mission'](node, 'operator_sigint')
             audit = json.loads((Path(directory)/'shutdown_test.json').read_text())
             self.assertEqual(audit, evidence)
@@ -1006,6 +1006,8 @@ class RosStartupTests(unittest.TestCase):
                 assert node.cfg['goal_arrival_margin_m'] == .05
                 assert node.planner.goal_arrival_margin_m == .05
                 assert node.cfg['frontier_fallback_standoff_m'] == .8
+                assert node.cfg['navigation_failure_cooldown_s'] == 0.
+                assert node.cfg['navigation_recovery_timeout_s'] == 3.
                 assert node.planner.frontier_fallback_standoff_m == .8
                 rclpy.spin_once(node, timeout_sec=0.6)
                 assert node.phase == 'waiting'
@@ -1033,6 +1035,8 @@ class RosStartupTests(unittest.TestCase):
                 with mission(('initial_clearance_radius_m:=0.3',
                               'frontier_min_translation_m:=0.32',
                               'frontier_fallback_standoff_m:=0.9',
+                              'navigation_failure_cooldown_s:=0.5',
+                              'navigation_recovery_timeout_s:=3.0',
                               'goal_arrival_margin_m:=0.08',
                               'initial_clearance_source:=independently_verified_test_fixture',
                               'output_dir:='+directory)) as node:
@@ -1041,6 +1045,8 @@ class RosStartupTests(unittest.TestCase):
                     assert node.planner.frontier_min_translation_m == .32
                     assert node.get_parameter('frontier_fallback_standoff_m').value == .9
                     assert node.planner.frontier_fallback_standoff_m == .9
+                    assert node.get_parameter('navigation_failure_cooldown_s').value == .5
+                    assert node.get_parameter('navigation_recovery_timeout_s').value == 3.
                     assert node.cfg['goal_arrival_margin_m'] == .08
                     assert node.planner.goal_arrival_margin_m == .08
                     assert node.cfg['initial_clearance_margin_m'] == .05

@@ -118,7 +118,7 @@ class ObservationActionDDSTests(unittest.TestCase):
         # Deliberately keep execute_goal suspended: ACK alone is not terminal.
         return CancelResponse.ACCEPT
 
-    def create_mission(self, *, stage_timeout=30.):
+    def create_mission(self, *, stage_timeout=30., navigation_cooldown=0.):
         from geometry_msgs.msg import TransformStamped
         from nav2_msgs.action import NavigateToPose
         from nav_msgs.msg import OccupancyGrid, Odometry
@@ -162,6 +162,8 @@ class ObservationActionDDSTests(unittest.TestCase):
                   "observation_stage_timeout_s": stage_timeout,
                   "inspection_timeout_s": 8., "mission_timeout_s": 60.,
                   "return_timeout_s": 12., "cancel_timeout_s": 4.,
+                  "navigation_failure_cooldown_s": navigation_cooldown,
+                  "navigation_recovery_timeout_s": 3.,
                   "home_frontier_return_reserve_s": 1.,
                   "output_dir": self.output.name}
         self.mission = mission_module.MissionNode(
@@ -314,6 +316,32 @@ class ObservationActionDDSTests(unittest.TestCase):
         self.assertFalse(result["mission_success"])
         self.assertEqual(self.mission.coverage.frames, 0)
         return result
+
+    def test_failed_navigation_recovery_times_out_with_paused_ros_clock(self):
+        self.create_mission(navigation_cooldown=.25)
+        entry = self.goal_entry(0, kind="observation_queue")
+        entry["gate"].set_result("abort")
+        self.wait_until(lambda: self.mission.navigation_recovery is not None and
+                        self.mission.phase == "observation_select", "failed goal enters recovery", pulse=False)
+        node = self.mission
+        recovery = dict(node.navigation_recovery)
+        clock_ns = node.get_clock().now().nanoseconds
+        started, stage_deadline = node.started, node.observation_deadline_wall
+        self.assertAlmostEqual(recovery["deadline_wall"]-recovery["started_wall"], 3.)
+        self.assertIsNone(node.goal_handle)
+        self.assertFalse(node.send_pending)
+        # Keep spinning DDS and the actual STEADY_TIME timer, but publish no
+        # advancing /clock or TF. No sleep, forced tick, or replaced deadline.
+        self.wait_until(lambda: node.phase == "blocked", "wall recovery timeout", timeout=4., pulse=False)
+        self.assertEqual(node.reason, "navigation_recovery_timeout")
+        self.assertGreaterEqual(time.monotonic(), recovery["deadline_wall"])
+        self.assertEqual(node.get_clock().now().nanoseconds, clock_ns)
+        self.assertEqual((node.started, node.observation_deadline_wall), (started, stage_deadline))
+        self.assertEqual(len(self.server_goals), 1)
+        self.assertEqual(node.observation_queue.dispatches, 1)
+        self.assertEqual(node.return_attempts, 0)
+        self.assertIsNone(node.observation_active)
+        self.assertFalse(node.send_pending)
 
     def test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return(self):
         self.create_mission()

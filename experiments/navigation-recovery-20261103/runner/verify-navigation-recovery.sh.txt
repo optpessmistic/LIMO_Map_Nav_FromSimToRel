@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -eo pipefail
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+test ! -e outputs/setup/navigation-recovery-tests.log
+env -u PYTHONPATH -u PYTHONHOME -u PYTHONUSERBASE /usr/bin/python3 -B -m unittest discover -s tests -p 'test_navigation_recovery.py' -v 2>&1 | tee outputs/setup/navigation-recovery-tests.log
+test ! -e outputs/setup/navigation-recovery-regressions.log
+env -u PYTHONHOME -u PYTHONUSERBASE PYTHONPATH="$PWD/tests" /usr/bin/python3 -B -m unittest test_base_tf_age test_ros_mission_core test_observation_adapter test_observation_continuation test_observation_repairs test_observation_final_repairs test_mission_inspection test_frame_retention_node -v 2>&1 | tee outputs/setup/navigation-recovery-regressions.log
+env -u PYTHONPATH -u PYTHONHOME -u PYTHONUSERBASE /usr/bin/python3 -B tools/export_annotated_map.py outputs/ros_smoke/run28-startup-timing/snapshot-map.yaml outputs/ros_smoke/run28-startup-timing/mission/mission_20261102_233856.json --map-epoch c190e755-9ef1-45cf-9264-c6e14407cd8d --output outputs/setup/run28-annotated-map.svg

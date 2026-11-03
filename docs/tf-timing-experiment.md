@@ -99,4 +99,6 @@ observer 的缓存不能代表任务节点私有缓存；两项参数同时改�
 
 `ControllerTFError` 会使 Nav2 停止并终止当前 FollowPath；`failure_tolerance` 的等待仅处理 `NoValidControl`，不能用它恢复 TF 错误。任务收到失败后可在同一 tick 选择下一目标，这解释了短时间内耗尽多个候选和返航重试的放大路径。后续修复应在已确认导航终止后作有限、非阻塞的恢复等待，并检查 TF 时间继续推进；保留取消、任务和返航总期限。不能将所有 ABORTED 状态都猜成 TF 故障。
 
+已实现默认关闭的[导航恢复等待](navigation-recovery.md)，18 项新测试、167 项旧回归及一个真实 ROS 暂停时钟用例通过；其中纯 Python 旧回归另有 1 项 ROS 启动检查跳过。新 Gazebo 对照结果另行记录，不把测试通过当作故障已消除。
+
 SLAM 在扫描回调入口更新 `scan_header`，早于扫描筛选；`restamp_tf=false` 时发布 `scan_header.stamp + transform_timeout`。如果扫描交付或回调停滞，单独缩短 TF 发布周期只会重复旧时间戳。耗时扫描优化与 TF 发布使用不同互斥锁，当前证据不支持“优化一直占住发布锁”的归因；暂不改变 `restamp_tf`。

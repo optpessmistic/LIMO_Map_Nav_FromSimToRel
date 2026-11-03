@@ -1,0 +1,15 @@
+test_failed_navigation_recovery_times_out_with_paused_ros_clock (test_observation_ros.ObservationActionDDSTests.test_failed_navigation_recovery_times_out_with_paused_ros_clock) ... [INFO] [1793692769.640759348] [limo_maze_mission]: Mission loaded; autonomous=True
+[INFO] [1793692770.313180838] [limo_maze_mission]: home_recorded {"pose": [1.55, 1.55, 0.0], "map_epoch": "observation-action-dds-epoch"}
+[INFO] [1793692770.334066788] [limo_maze_mission]: observation_queue_frozen {"queue": {"epoch": "observation-action-dds-epoch", "invalidated": false, "invalid_reason": null, "active_action_id": null, "active_dispatch_id": null, "cancel_required": false, "planned_stations": 1, "planned_views": 2, "dispatches": 0, "dispatch_budget": 2, "pending_views": 2, "state_counts": {"pending": 2}, "all_planned_actions_completed": false, "visual_coverage_claimed": false, "mission_success_claimed": false, "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."}}
+[INFO] [1793692770.416170443] [limo_maze_mission]: goal_sent {"token": 1, "goal": {"x": 1.5500000230967999, "y": 1.5500000230967999, "yaw": 0.0, "kind": "observation_queue", "anchor": [1.5500000230967999, 1.5500000230967999]}}
+[INFO] [1793692770.458078997] [limo_maze_mission]: goal_terminal {"token": 1, "success": false, "detail": "6:", "status": 6, "error_code": 0, "error_msg": ""}
+[INFO] [1793692770.469382263] [limo_maze_mission]: navigation_recovery_started {"token": 1, "detail": "6:", "started_wall": 119.873854215, "not_before_wall": 120.123854215, "deadline_wall": 122.873854215, "failed_map_odom_stamp_ns": 10300000000, "latest_map_odom_stamp_ns": 10300000000}
+[INFO] [1793692770.515167228] [limo_maze_mission]: observation_action_finished {"record": {"epoch": "observation-action-dds-epoch", "action_id": "observation-0001", "dispatch_id": 1, "station_id": 0, "heading_index": 0, "goal": {"x": 1.5500000230967999, "y": 1.5500000230967999, "yaw": 0.0, "kind": "observation_queue", "anchor": [1.5500000230967999, 1.5500000230967999]}, "nav_token": 1, "nav_goal_uuid": [57, 118, 156, 109, 28, 9, 78, 117, 138, 153, 127, 11, 205, 252, 199, 183], "inspection_request_id": "goal-1", "nav_terminal_status": 6, "selected_wall": 119.816515836, "dispatched_wall": 119.818718565, "outcome": "navigation_failed", "reason": "6:", "finished_wall": 119.917179655, "inspection": null}}
+[INFO] [1793692773.634151164] [limo_maze_mission]: cancel_requested {"next_phase": "blocked", "reason": "navigation_recovery_timeout"}
+[INFO] [1793692773.715357010] [limo_maze_mission]: Saved mission evidence: /tmp/limo-inspection-dds-jd409e4r/mission_20261102_235933.json
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 17.679s
+
+OK
