@@ -1,0 +1,94 @@
+{
+  "run": "run28-startup-timing",
+  "code_head": "e8e72e89914a20c6be28d7a5f98b67d524861a4d",
+  "token": "run28-035f9119db91479d9f8a73d24b78c888",
+  "epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+  "world_sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+  "nav2_sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+  "profile": {
+    "max_jobs": 96,
+    "file_bytes": 268435456,
+    "consumer_samples": 96,
+    "consumer_metadata_bytes": 4194304,
+    "stations": 3,
+    "headings": 4,
+    "max_dispatches": 12,
+    "observation_wall_s": 360
+  },
+  "unchanged": [
+    "Nav2 XY .03m",
+    "mission XY .05m",
+    "yaw .26rad",
+    "stationarity .5s",
+    "inspection12s",
+    "writer5s",
+    "request10s",
+    "shutdown8s"
+  ],
+  "recorded_inputs": "rosbag metadata/TF/odom/map/actions and source-exact accepted RGB-D; continuous raw image topics omitted",
+  "planned_active_wall_budget_s": 1800,
+  "change": "Only motion collector startup gate 30 to 60 wall seconds, with parent/environment/collector startup timing diagnostics.",
+  "cleanup_reporting_change": "Unreadable unrelated process environments remain explicitly uncertain; owned groups and writer exit remain mandatory",
+  "raster_export": "Separate immutable captured OccupancyGrid PGM/YAML; save_map service not attempted, serialize_map remains separate",
+  "primary_frontier_standoff_m": 0.55,
+  "fallback_frontier_standoff_m": 0.8,
+  "budgets": "All original mission900/return240/goal120/inspection12/writer5/request10/shutdown8 and observation360 bounds unchanged",
+  "previous_attempt": {
+    "run": "run27-writer-pipe",
+    "status": "orchestration_failed",
+    "errors": [
+      "TimeoutError: motion readiness not observed",
+      "Retention closure audit: RuntimeError: No terminal mission result for retained-frame audit"
+    ],
+    "original_all_owned_groups_empty": false,
+    "original_orchestration_sha256": "707b13570c983cd4e29d466f96cbe193e61d622009fa0573c879f45630b490e8",
+    "later_scoped_recheck_sha256": "7c4e210283f27dbd664d6c7873e6016388ad00923a13feb06383c588969dea38",
+    "later_scoped_groups_empty": true,
+    "later_scoped_group_count": 12,
+    "scope": "Later recorded-group inspection, not original-deadline closure or global process absence; original false is unchanged.",
+    "root_exec_completion": {
+      "session_id": 77575,
+      "exit_code": 1,
+      "source": "Root confirmation supplied as explicit prepare arguments."
+    }
+  },
+  "startup_change": "Motion collector outer readiness budget is 60 s, still bounded by the original global 1800 s deadline. Other startup waits unchanged.",
+  "tf_profile": {
+    "FollowPath.transform_tolerance": 0.5,
+    "tf_max_age_s": 1.5,
+    "slam_transform_timeout": 0.2,
+    "slam_restamp_tf": false
+  },
+  "comparison_scope": "Same simulator, TF/Nav2 values, /mnt/c output and strict raw-frame retention. Only motion collector startup allowance changes; mission900/return240/goal120/observation360/inspection12/writer5/request10/shutdown8 stay unchanged.",
+  "startup_fix": "Write epoch as explicit ASCII+LF; assert exact UUID bytes before starting ROS.",
+  "writer_profile": {
+    "requested_pipe_bytes": 1048576,
+    "max_bytes_per_poll": 1048576,
+    "worker_wall_seconds": 5.0,
+    "request_wall_seconds": 10.0,
+    "shutdown_wall_seconds": 8.0
+  },
+  "motion_startup_ready_budget_s": 60,
+  "collector_execution": "Normal /usr/bin/python3 -B executes scripts/capture_motion_evidence.py directly from source; same PID after a stdlib-only -S -B timing wrapper.",
+  "collector_source_sha256_at_preparation": "6c70c44c9ae4768fe7f6be7e35860e4344787c74aca1dc4d8a9e70fdf7af2000",
+  "prepared_helper_sha256": {
+    "outputs/setup/run28-env.sh": "2973415fde1caf7d2aaab6430d5f27bc42accf60ddcaa621a3c13df6c2b2a2ce",
+    "outputs/setup/run28-process.py": "4b3e32c8228d3cc0492862a38b85e87a4b831acc31a3ad103b7e657dbf7ff329",
+    "outputs/setup/run28-param-gate.py": "87de9e0d6fc873e40913d3705a9ec77932a39274e3c2baab0a931d3f41365ee3",
+    "outputs/setup/run28-preflight.py": "df577020d22acf110dda5186a8f335f1778ffc59713618e5f4a0c0eb85302d6f",
+    "outputs/setup/run28-save.py": "c38b87fe05bca1b85c594b8ab310fb80cacb4e3710cc7bc3caf14a2ec67ad9fd",
+    "outputs/setup/run28-provenance.py": "c732dde166ee72308bb76abad9638d079ca5e6c29da1c071ad245f57da1d8c03",
+    "outputs/setup/run28-installed-check.py": "25223f942623e01d94c90fb720c4c5bbc4416f36742d5fee6dbc123a648d7432",
+    "outputs/setup/start-run28.sh": "2dd2825b280eb76d5a9602afaa232e25cd948b01a75fd5a71b0064a1b46f3289"
+  },
+  "startup_timing": {
+    "clock": "CLOCK_MONOTONIC",
+    "environment_variable": "LIMO_MOTION_ENV_READY_MONOTONIC",
+    "environment_timestamp_scope": "Wrapper entry after ROS environment setup, including lightweight wrapper startup; not the exact final source-return boundary.",
+    "launch_file_pattern": "launch-timing-<component>.json",
+    "motion_wait_file": "motion-startup-wait.json",
+    "ownership_order": "Persist process identity, record completion, then release one byte; record before/after gate writes separately.",
+    "readiness_observation_scope": "Parent log-read observation time, distinct from the child marker-emission timestamp.",
+    "data_use": "Diagnostics only; no new world/pose input enters planning or control."
+  }
+}

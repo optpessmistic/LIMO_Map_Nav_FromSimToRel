@@ -17,7 +17,7 @@
 | RPP `FollowPath.transform_tolerance` | 0.1 s | 0.5 s | 等待请求时刻的 TF 可用 |
 | 任务 `tf_max_age_s` | 1.0 s | 1.5 s | 最新机器人位姿 TF 的最大允许年龄 |
 
-RPP 将该参数传给 TF 变换调用的等待期限，参见 [Nav2 1.3.13 源码](https://github.com/ros-navigation/navigation2/blob/1.3.13/nav2_regulated_pure_pursuit_controller/src/path_handler.cpp)。增大任务年龄上限本身不能修复 RPP 的未来外推错误。SLAM 的 `transform_timeout` 同时影响发布 TF 的时间戳前移，见 [SLAM Toolbox 2.8.5 源码](https://github.com/SteveMacenski/slam_toolbox/blob/2.8.5/src/slam_toolbox_common.cpp)，本轮保持其 0.2 s 和 `restamp_tf=false`。
+RPP 将该参数传给指定时间戳 TF 变换调用的等待期限，参见 [Nav2 1.3.13 源码](https://github.com/ros-navigation/navigation2/blob/1.3.13/nav2_regulated_pure_pursuit_controller/src/path_handler.cpp)。C++ Buffer 使用所绑定的 ROS 时钟判断等待截止时间，轮询休眠使用墙钟；启用仿真时间时，0.5 秒不是固定的 0.5 秒墙钟。[tf2 Buffer 源码](https://github.com/ros2/geometry2/blob/jazzy/tf2_ros/src/buffer.cpp)。增大任务年龄上限本身不能修复 RPP 的未来外推错误。SLAM 的 `transform_timeout` 同时影响发布 TF 的时间戳前移，见 [SLAM Toolbox 2.8.5 源码](https://github.com/SteveMacenski/slam_toolbox/blob/2.8.5/src/slam_toolbox_common.cpp)，本轮保持其 0.2 s 和 `restamp_tf=false`。
 
 通用任务默认值仍为 1.0 s，实验必须明确传入 1.5 s。未来时间戳检查、定位跳变、障碍避碰、任务/取消期限及完整探索验收不变。两项同时调整属于组合容差试验，不能单独归因其中某一项。
 
@@ -74,3 +74,29 @@ observer 的缓存不能代表任务节点私有缓存；两项参数同时改�
 原严格审计因 producer fault 在枚举前返回失败 0/0，这不等于没有接受帧。档案分别保留原审计和实际 18 帧清单，逐项列出缺失的 3 帧文件；部分文件压缩包的哈希核对不替代严格审计。自有进程组和 writer 已确认退出，原 fault 保留。见 [run26 完整档案](../experiments/run26/README.md)。
 
 后续已保持原期限完成文件系统与输入管道的隔离对照，结果支持优先改善输入传输余量，详见 [writer 管道对照](writer-pipe-timing.md)。实车当前不可访问，以上结果均为仿真结果。
+
+## run28：容差增加后仍复现，快速重试放大影响
+
+运行版本 `e8e72e8`；collector 启动计时的 13 项测试和 [CI](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/41596459218) 通过。运动观察器在外层 60 wall 秒预算内，于 17.215 秒被确认就绪；初始环视、路径/处理帧预检及运行参数检查通过。709.667 wall 秒后结束，全部自有进程组与 writer 退出，地图导出和终态后 30 sim 秒停车采样通过。原始失败、脚本、源代码、参数、评分与哈希见 [run28 档案](../experiments/run28/README.md)。
+
+| 项目 | 结果 |
+|---|---|
+| 探索导航 | 下发 12 个，1 成功、11 失败 |
+| 返航导航 | 下发 4 个，全部失败；最终原因 `return_navigation_failed` |
+| 导航外推日志 | 5 行；另有 `tf_help` 的旧变换错误，行数不等于独立故障数 |
+| 任务自身 `base_tf_age_rejected` | 未记录；不能据此认为 Nav2 的独立缓存正常 |
+| 停车观察/留存 | 1 个窗口、3 组 RGB-D，producer 全部 stored，三个 writer 均使用 1 MiB 管道且没有 fault |
+| 严格留存审计 | 失败：`consumer_disabled_or_faulted`；原审计 0/0 是提前拒绝，实际接受数为 3 |
+| 目标评分 | TP=2、FP=0、FN=0；两目标 XY 误差 5.24/24.02 mm |
+| 地图评分 | 起点连通真值自由区中 raw-free 90.4596%，unknown 0.1876%，occupied/intermediate 9.3528%，图外 0 |
+| 实际返航 | 最后原生位置距起点约 1.171 m；未通过 |
+
+目标与地图评分只在运行结束后读取世界真值。坐标变换冻结于初始 Spin 后、首次自主 goal 前的首个合格观测（120.899 sim s；首 goal 132.3 s），后续 23 个样本仅核验，不拟合目标或末端位置。因此不能评价初始 Spin 期间的漂移。目标按可见表面测点对盒中心作 XY 匹配，阈值 0.20 m，无高度或表面至中心校正。地图主分母为完整的起点四连通真值自由区 7.0364 m²；1 cm 评分的 false-free 为 0.0847 m²，占真值障碍 0.5513%、占预测自由区 1.3132%。5 mm 复算的 raw-free 为 90.4614%。安全中心子集的 100% 不能替代完整主分母。
+
+本轮原始 bag SHA256 为 `b099a1585a7868f6c978bfc117a4ef145ee3fe31837fcf0a503fd08de1769b33`。离线解码 `/clock`、`map→odom`、`odom→base_footprint`、`/odom` 与 `/scan` 未见时间戳倒退，四个关键节点参数均为 `use_sim_time=true`。记录时间减 header 时间最大分别约为 0.120、0.125、0.112、0.112、0.171 sim 秒。`map→odom` 相邻变更时间戳的记录间隔最大 1.508 sim 秒。录包时间也是记录器的 ROS 时间，不能据此重建 Nav2 私有 TF 缓存或断定调度根因。
+
+源码核查发现之前遗漏的一处独立限制：`controller_server::isGoalReached()` 调用 `nav_2d_utils::transformPose()`，使用 **local_costmap 的 `transform_tolerance`**。该函数先尝试精确转换，外推失败后取 latest，并比较输入姿态时间与 latest 的差；它不受 `FollowPath.transform_tolerance` 控制。本配置没有显式设置 local_costmap 参数，上游默认 0.3 秒；本轮未单独回读该默认值，所以这是配置/源码推断。日志中 153.600−153.075=0.525 秒与此拒绝条件一致。输入姿态时间也不能直接当作日志产生时的现在。[ControllerServer](https://github.com/ros-navigation/navigation2/blob/1.3.13/nav2_controller/src/controller_server.cpp)、[tf_help](https://github.com/ros-navigation/navigation2/blob/1.3.13/nav2_dwb_controller/nav_2d_utils/src/tf_help.cpp)、[Costmap2DROS](https://github.com/ros-navigation/navigation2/blob/1.3.13/nav2_costmap_2d/src/costmap_2d_ros.cpp)。
+
+`ControllerTFError` 会使 Nav2 停止并终止当前 FollowPath；`failure_tolerance` 的等待仅处理 `NoValidControl`，不能用它恢复 TF 错误。任务收到失败后可在同一 tick 选择下一目标，这解释了短时间内耗尽多个候选和返航重试的放大路径。后续修复应在已确认导航终止后作有限、非阻塞的恢复等待，并检查 TF 时间继续推进；保留取消、任务和返航总期限。不能将所有 ABORTED 状态都猜成 TF 故障。
+
+SLAM 在扫描回调入口更新 `scan_header`，早于扫描筛选；`restamp_tf=false` 时发布 `scan_header.stamp + transform_timeout`。如果扫描交付或回调停滞，单独缩短 TF 发布周期只会重复旧时间戳。耗时扫描优化与 TF 发布使用不同互斥锁，当前证据不支持“优化一直占住发布锁”的归因；暂不改变 `restamp_tf`。

@@ -1,0 +1,875 @@
+{
+  "schema_version": 1,
+  "role": "draft_offline_simulation_geometric_map_measurement",
+  "created_at_utc": "2026-11-03T07:44:36.609279+00:00",
+  "run": "run28-startup-timing",
+  "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+  "original_mission": {
+    "status": "blocked",
+    "reason": "return_navigation_failed",
+    "mission_success": false,
+    "map_complete": false,
+    "visual_coverage_complete": false,
+    "coordinates_valid": true,
+    "mission_timed_out": false
+  },
+  "original_orchestration_status": "terminal_observed",
+  "global_process_absence_verified": false,
+  "raw_map_geometry": {
+    "frame": "map",
+    "stamp_s": 227.875,
+    "width": 84,
+    "height": 52,
+    "resolution": 0.05000000074505806,
+    "origin_xy_yaw": [
+      -0.47205882765767293,
+      -2.088830912945243,
+      0.0
+    ]
+  },
+  "snapshot_scope": {
+    "schema": "immutable_occupancy_grid_capture",
+    "capture_ros_s": 228.4,
+    "source_document_passed": true,
+    "source_document_errors": [],
+    "temporal_scope": "The explicitly supplied captured map; closed run does not establish this is its latest/final map."
+  },
+  "fixed_map_to_world": {
+    "x": -0.0005941376424976873,
+    "y": 0.0018368649520369563,
+    "yaw": 0.02093291536801993
+  },
+  "alignment_scope": {
+    "status": "sufficient_initial_se2_alignment",
+    "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+    "calibration_phase": "post_initial_survey_before_first_autonomous_goal",
+    "calibration_rule": "Earliest complete same-epoch pre-goal observer TF with native bracketing; that one frame defines the gauge, subsequent <=2 sim seconds only validate.",
+    "reference_stamp_ns": 120899000000,
+    "source_inputs_verified": [
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\orchestration.json",
+        "bytes": 12262,
+        "sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json",
+        "bytes": 294,
+        "sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json",
+        "bytes": 32513,
+        "sha256": "01379e5bb9ecbf64a92067f19b523ba1c16066ccd416593bf42db76a12534718"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\preparation.json",
+        "bytes": 5305,
+        "sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json",
+        "bytes": 130629,
+        "sha256": "4f600dd1f5210b0f79a73d04d2b6d5b0c775ef9efd6a8f5ba080d097bcc6d9b9"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world",
+        "bytes": 11269,
+        "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\navigation.log",
+        "bytes": 94023,
+        "sha256": "297bb35c4e448ba2b280dda98fabc4f9c488d58640a242dd14861ed98b4506f0"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json",
+        "bytes": 1240,
+        "sha256": "969913017faadf2f2c111497fd0ec3e29feb625daf5fa31c4e8ad4f25fa0d263"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf",
+        "bytes": 11652,
+        "sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-robot-expanded.sdf",
+        "bytes": 18544,
+        "sha256": "136b1a550805e9964b20bcd97b079e63f3155ec0c7a66b3f34d82cdba3fcd0e7"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json",
+        "bytes": 7319,
+        "sha256": "a9a60dc2034b1143fdf080a195cfca79917e47cd1e485c06b5cf3e277c7484d9"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json",
+        "bytes": 4332,
+        "sha256": "90178557fc6c510cdf9cee43ca5be17841bb37d4b56b00cc35a56961a9f80849"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json",
+        "bytes": 4333,
+        "sha256": "e0e9c85818e09b51086dd9bf391f66c51e4792301b21749fa5806315f5eea670"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\observer.json",
+        "bytes": 15439965,
+        "sha256": "8cedcb4d4007aff8a29214064d27a4ec7a89882cca4e99ec8535998d87cb73aa"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py",
+        "bytes": 16971,
+        "sha256": "70aa5512f9afa57fd05fed644245ef18885a3f43a277c3f0b6e6b5105cea6c39"
+      }
+    ],
+    "epoch_evidence": {
+      "initial_navigation_epoch_line": "[map_session.py-1] [INFO] [1793691083.673109951] [limo_map_session]: Fresh SLAM map epoch: c190e755-9ef1-45cf-9264-c6e14407cd8d",
+      "survey_map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+      "observer_rows_embed_epoch": true,
+      "association": "Same closed run, acknowledged spawn SHA and native identity, startup/survey/observer/mission epoch."
+    },
+    "limitations": [
+      "Post-survey gauge cannot measure SLAM drift incurred during initial Spin; it must not be described as run14 pre-Spin alignment.",
+      "Native brackets contain XY/yaw only; the validated root at native model origin removes the need to invent native roll/pitch for a displaced sensor.",
+      "Endpoint stationarity and short validation are sampled evidence, not continuous stationarity proof.",
+      "Expanded SDF reference transforms are checked against the actually submitted URDF and live static TF; complete geometry equivalence is outside this planar alignment.",
+      "No target prediction, target coordinates, final pose or final map registration is used."
+    ],
+    "validation_scope": "Consumes the separately validated frozen alignment; verifies declared no-fit flags, epoch, direction and immutable source hashes. Does not reconstruct native/model frame calibration."
+  },
+  "alignment_refitted": false,
+  "ros_or_gazebo_connections_opened": false,
+  "ground_truth_sent_to_planner": false,
+  "inputs": {
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\orchestration.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\orchestration.json",
+      "bytes": 12262,
+      "sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json",
+      "bytes": 32513,
+      "sha256": "01379e5bb9ecbf64a92067f19b523ba1c16066ccd416593bf42db76a12534718"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json",
+      "bytes": 294,
+      "sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\preparation.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\preparation.json",
+      "bytes": 5305,
+      "sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world",
+      "bytes": 11269,
+      "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\final-save.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\final-save.json",
+      "bytes": 104271,
+      "sha256": "ca6cd57622a50ef431a2e85c48d727cb28c4939f9e07e2ffc0c296bb0ed91612"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-independent-alignment.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-independent-alignment.json",
+      "bytes": 105014,
+      "sha256": "146184ecf7e21618691c3b3e938edf26fde4e5b94e80e6938744d93cfa81b3fb"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json",
+      "bytes": 130629,
+      "sha256": "4f600dd1f5210b0f79a73d04d2b6d5b0c775ef9efd6a8f5ba080d097bcc6d9b9"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\navigation.log": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\navigation.log",
+      "bytes": 94023,
+      "sha256": "297bb35c4e448ba2b280dda98fabc4f9c488d58640a242dd14861ed98b4506f0"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json",
+      "bytes": 1240,
+      "sha256": "969913017faadf2f2c111497fd0ec3e29feb625daf5fa31c4e8ad4f25fa0d263"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf",
+      "bytes": 11652,
+      "sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-robot-expanded.sdf": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-robot-expanded.sdf",
+      "bytes": 18544,
+      "sha256": "136b1a550805e9964b20bcd97b079e63f3155ec0c7a66b3f34d82cdba3fcd0e7"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json",
+      "bytes": 7319,
+      "sha256": "a9a60dc2034b1143fdf080a195cfca79917e47cd1e485c06b5cf3e277c7484d9"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json",
+      "bytes": 4332,
+      "sha256": "90178557fc6c510cdf9cee43ca5be17841bb37d4b56b00cc35a56961a9f80849"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json",
+      "bytes": 4333,
+      "sha256": "e0e9c85818e09b51086dd9bf391f66c51e4792301b21749fa5806315f5eea670"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\observer.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\observer.json",
+      "bytes": 15439965,
+      "sha256": "8cedcb4d4007aff8a29214064d27a4ec7a89882cca4e99ec8535998d87cb73aa"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py",
+      "bytes": 16971,
+      "sha256": "70aa5512f9afa57fd05fed644245ef18885a3f43a277c3f0b6e6b5105cea6c39"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.metadata.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.metadata.json",
+      "bytes": 1383,
+      "sha256": "226282a376b5cae5401fc55e40ccf5977cfd1812d6278aeedb4d37f52e524d22"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-geometric-coverage.py": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-geometric-coverage.py",
+      "bytes": 26372,
+      "sha256": "5b47b1d719001607cd177f69aae774312b2eade0da13df1c4e794e170446bd87"
+    }
+  },
+  "execution": {
+    "python": "C:\\Users\\Admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+    "argv": [
+      "outputs/setup/run28-geometric-coverage.py",
+      "--run-dir",
+      "outputs/ros_smoke/run28-startup-timing",
+      "--snapshot",
+      "outputs/ros_smoke/run28-startup-timing/final-save.json",
+      "--alignment",
+      "outputs/setup/run28-independent-alignment.json",
+      "--world",
+      "worlds/smoke_maze.world",
+      "--metadata",
+      "worlds/smoke_maze.metadata.json",
+      "--output",
+      "outputs/setup/run28-geometric-coverage.json"
+    ],
+    "cwd": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel"
+  },
+  "domain": {
+    "source": "Floor collision-box XY extent with closed perimeter walls",
+    "bounds_xy": [
+      -1.2,
+      -2.8,
+      4.4,
+      1.2
+    ],
+    "area_m2": 22.400000000000002,
+    "spawn_world_xy": [
+      0.0,
+      0.0
+    ],
+    "floor_excluded_as_support": true,
+    "wall_count": 24,
+    "target_obstacle_count": 2
+  },
+  "rules": [
+    "1 cm is primary; 5 mm is a discretization sensitivity measurement.",
+    "Truth obstacles are XY projections of static above-floor wall and target collision boxes; visuals must match.",
+    "Any positive-area truth-cell/obstacle overlap blocks the cell; boundary-only contact has zero area; epsilon=1e-12 m.",
+    "Primary denominator is the four-neighbour truth-free component containing simulator spawn, independent of the predicted map.",
+    "R=.25 safe centres require exact AABB distance >.25+1e-12 m; their own spawn-connected subset is separate.",
+    "Inverse frozen map-to-world, then inverse map origin, then floor select an unmodified raw OccupancyGrid cell.",
+    "Raw 0 is free; -1 unknown; 1..100 occupied/intermediate; outside is separate and also combined with unknown.",
+    "False-free reports both truth-obstacle and predicted-free denominators over the entire floor domain; zero denominators are null."
+  ],
+  "trials": [
+    {
+      "resolution_m": 0.01,
+      "grid_shape_yx": [
+        400,
+        560
+      ],
+      "truth_start_connected_free": {
+        "sample_count": 70364,
+        "sample_area_m2": 7.0364,
+        "counts": {
+          "raw_free": 63651,
+          "raw_unknown_inside_map": 132,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 6581,
+          "raw_unknown_or_outside": 132
+        },
+        "fractions": {
+          "raw_free": 0.9045961002785515,
+          "raw_unknown_inside_map": 0.0018759592973679722,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0935279404240805,
+          "raw_unknown_or_outside": 0.0018759592973679722
+        },
+        "areas_m2": {
+          "raw_free": 6.3651,
+          "raw_unknown_inside_map": 0.0132,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.6581,
+          "raw_unknown_or_outside": 0.0132
+        }
+      },
+      "truth_free_disconnected_from_spawn": {
+        "sample_count": 0,
+        "sample_area_m2": 0.0,
+        "counts": {
+          "raw_free": 0,
+          "raw_unknown_inside_map": 0,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 0,
+          "raw_unknown_or_outside": 0
+        },
+        "fractions": {
+          "raw_free": null,
+          "raw_unknown_inside_map": null,
+          "outside_raw_map": null,
+          "raw_occupied_or_intermediate": null,
+          "raw_unknown_or_outside": null
+        },
+        "areas_m2": {
+          "raw_free": 0.0,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        }
+      },
+      "truth_R025_safe_centres_in_free_component": {
+        "sample_count": 25288,
+        "sample_area_m2": 2.5288,
+        "counts": {
+          "raw_free": 25288,
+          "raw_unknown_inside_map": 0,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 0,
+          "raw_unknown_or_outside": 0
+        },
+        "fractions": {
+          "raw_free": 1.0,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        },
+        "areas_m2": {
+          "raw_free": 2.5288,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        }
+      },
+      "truth_R025_safe_centres_reachable_from_spawn_4connected": {
+        "sample_count": 25288,
+        "sample_area_m2": 2.5288,
+        "counts": {
+          "raw_free": 25288,
+          "raw_unknown_inside_map": 0,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 0,
+          "raw_unknown_or_outside": 0
+        },
+        "fractions": {
+          "raw_free": 1.0,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        },
+        "areas_m2": {
+          "raw_free": 2.5288,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        }
+      },
+      "false_free": {
+        "definition": "Raw 0 at an evaluation-cell centre whose truth cell has positive-area obstacle overlap.",
+        "count": 847,
+        "area_m2": 0.0847,
+        "fraction_of_truth_obstacle_cells_in_floor_domain": 0.0055130308000729,
+        "fraction_of_raw_free_samples_in_floor_domain": 0.013132190145430865,
+        "truth_obstacle_count": 153636,
+        "raw_free_sample_count": 64498
+      },
+      "domain_sample_count": 224000,
+      "all_truth_free_connected_to_spawn": true,
+      "all_R025_centres_connected_to_spawn": true
+    },
+    {
+      "resolution_m": 0.005,
+      "grid_shape_yx": [
+        800,
+        1120
+      ],
+      "truth_start_connected_free": {
+        "sample_count": 281456,
+        "sample_area_m2": 7.0364,
+        "counts": {
+          "raw_free": 254609,
+          "raw_unknown_inside_map": 519,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 26328,
+          "raw_unknown_or_outside": 519
+        },
+        "fractions": {
+          "raw_free": 0.904613865044625,
+          "raw_unknown_inside_map": 0.0018439827184355637,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.09354215223693935,
+          "raw_unknown_or_outside": 0.0018439827184355637
+        },
+        "areas_m2": {
+          "raw_free": 6.365225000000001,
+          "raw_unknown_inside_map": 0.012975,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.6582,
+          "raw_unknown_or_outside": 0.012975
+        }
+      },
+      "truth_free_disconnected_from_spawn": {
+        "sample_count": 0,
+        "sample_area_m2": 0.0,
+        "counts": {
+          "raw_free": 0,
+          "raw_unknown_inside_map": 0,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 0,
+          "raw_unknown_or_outside": 0
+        },
+        "fractions": {
+          "raw_free": null,
+          "raw_unknown_inside_map": null,
+          "outside_raw_map": null,
+          "raw_occupied_or_intermediate": null,
+          "raw_unknown_or_outside": null
+        },
+        "areas_m2": {
+          "raw_free": 0.0,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        }
+      },
+      "truth_R025_safe_centres_in_free_component": {
+        "sample_count": 101208,
+        "sample_area_m2": 2.5302000000000002,
+        "counts": {
+          "raw_free": 101208,
+          "raw_unknown_inside_map": 0,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 0,
+          "raw_unknown_or_outside": 0
+        },
+        "fractions": {
+          "raw_free": 1.0,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        },
+        "areas_m2": {
+          "raw_free": 2.5302000000000002,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        }
+      },
+      "truth_R025_safe_centres_reachable_from_spawn_4connected": {
+        "sample_count": 101208,
+        "sample_area_m2": 2.5302000000000002,
+        "counts": {
+          "raw_free": 101208,
+          "raw_unknown_inside_map": 0,
+          "outside_raw_map": 0,
+          "raw_occupied_or_intermediate": 0,
+          "raw_unknown_or_outside": 0
+        },
+        "fractions": {
+          "raw_free": 1.0,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        },
+        "areas_m2": {
+          "raw_free": 2.5302000000000002,
+          "raw_unknown_inside_map": 0.0,
+          "outside_raw_map": 0.0,
+          "raw_occupied_or_intermediate": 0.0,
+          "raw_unknown_or_outside": 0.0
+        }
+      },
+      "false_free": {
+        "definition": "Raw 0 at an evaluation-cell centre whose truth cell has positive-area obstacle overlap.",
+        "count": 3388,
+        "area_m2": 0.0847,
+        "fraction_of_truth_obstacle_cells_in_floor_domain": 0.0055130308000729,
+        "fraction_of_raw_free_samples_in_floor_domain": 0.01313193564266251,
+        "truth_obstacle_count": 614544,
+        "raw_free_sample_count": 257997
+      },
+      "domain_sample_count": 896000,
+      "all_truth_free_connected_to_spawn": true,
+      "all_R025_centres_connected_to_spawn": true
+    }
+  ],
+  "obstacle_boxes": [
+    {
+      "name": "wall_0_0",
+      "min_xyz": [
+        -1.2000000000000002,
+        0.4,
+        0.0
+      ],
+      "max_xyz": [
+        -0.4,
+        1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_1_0",
+      "min_xyz": [
+        -0.4,
+        0.4,
+        0.0
+      ],
+      "max_xyz": [
+        0.4,
+        1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_2_0",
+      "min_xyz": [
+        0.4,
+        0.4,
+        0.0
+      ],
+      "max_xyz": [
+        1.2000000000000002,
+        1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_3_0",
+      "min_xyz": [
+        1.2000000000000002,
+        0.4,
+        0.0
+      ],
+      "max_xyz": [
+        2.0,
+        1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_4_0",
+      "min_xyz": [
+        2.0000000000000004,
+        0.4,
+        0.0
+      ],
+      "max_xyz": [
+        2.8000000000000003,
+        1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_5_0",
+      "min_xyz": [
+        2.8000000000000003,
+        0.4,
+        0.0
+      ],
+      "max_xyz": [
+        3.6,
+        1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_6_0",
+      "min_xyz": [
+        3.6,
+        0.4,
+        0.0
+      ],
+      "max_xyz": [
+        4.4,
+        1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_0_1",
+      "min_xyz": [
+        -1.2000000000000002,
+        -0.4,
+        0.0
+      ],
+      "max_xyz": [
+        -0.4,
+        0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_6_1",
+      "min_xyz": [
+        3.6,
+        -0.4,
+        0.0
+      ],
+      "max_xyz": [
+        4.4,
+        0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_0_2",
+      "min_xyz": [
+        -1.2000000000000002,
+        -1.2000000000000002,
+        0.0
+      ],
+      "max_xyz": [
+        -0.4,
+        -0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_1_2",
+      "min_xyz": [
+        -0.4,
+        -1.2000000000000002,
+        0.0
+      ],
+      "max_xyz": [
+        0.4,
+        -0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_2_2",
+      "min_xyz": [
+        0.4,
+        -1.2000000000000002,
+        0.0
+      ],
+      "max_xyz": [
+        1.2000000000000002,
+        -0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_4_2",
+      "min_xyz": [
+        2.0000000000000004,
+        -1.2000000000000002,
+        0.0
+      ],
+      "max_xyz": [
+        2.8000000000000003,
+        -0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_5_2",
+      "min_xyz": [
+        2.8000000000000003,
+        -1.2000000000000002,
+        0.0
+      ],
+      "max_xyz": [
+        3.6,
+        -0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_6_2",
+      "min_xyz": [
+        3.6,
+        -1.2000000000000002,
+        0.0
+      ],
+      "max_xyz": [
+        4.4,
+        -0.4,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_0_3",
+      "min_xyz": [
+        -1.2000000000000002,
+        -2.0,
+        0.0
+      ],
+      "max_xyz": [
+        -0.4,
+        -1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_6_3",
+      "min_xyz": [
+        3.6,
+        -2.0,
+        0.0
+      ],
+      "max_xyz": [
+        4.4,
+        -1.2000000000000002,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_0_4",
+      "min_xyz": [
+        -1.2000000000000002,
+        -2.8000000000000003,
+        0.0
+      ],
+      "max_xyz": [
+        -0.4,
+        -2.0000000000000004,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_1_4",
+      "min_xyz": [
+        -0.4,
+        -2.8000000000000003,
+        0.0
+      ],
+      "max_xyz": [
+        0.4,
+        -2.0000000000000004,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_2_4",
+      "min_xyz": [
+        0.4,
+        -2.8000000000000003,
+        0.0
+      ],
+      "max_xyz": [
+        1.2000000000000002,
+        -2.0000000000000004,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_3_4",
+      "min_xyz": [
+        1.2000000000000002,
+        -2.8000000000000003,
+        0.0
+      ],
+      "max_xyz": [
+        2.0,
+        -2.0000000000000004,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_4_4",
+      "min_xyz": [
+        2.0000000000000004,
+        -2.8000000000000003,
+        0.0
+      ],
+      "max_xyz": [
+        2.8000000000000003,
+        -2.0000000000000004,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_5_4",
+      "min_xyz": [
+        2.8000000000000003,
+        -2.8000000000000003,
+        0.0
+      ],
+      "max_xyz": [
+        3.6,
+        -2.0000000000000004,
+        0.6
+      ]
+    },
+    {
+      "name": "wall_6_4",
+      "min_xyz": [
+        3.6,
+        -2.8000000000000003,
+        0.0
+      ],
+      "max_xyz": [
+        4.4,
+        -2.0000000000000004,
+        0.6
+      ]
+    },
+    {
+      "name": "target_surrogate_0",
+      "min_xyz": [
+        3.57,
+        -0.03,
+        0.0
+      ],
+      "max_xyz": [
+        3.6,
+        0.03,
+        0.2
+      ]
+    },
+    {
+      "name": "target_surrogate_1",
+      "min_xyz": [
+        -0.4,
+        -1.6300000000000001,
+        0.0
+      ],
+      "max_xyz": [
+        -0.37,
+        -1.57,
+        0.2
+      ]
+    }
+  ],
+  "limitations": [
+    "No generic pass, task verdict, threshold decision, or benchmark success is inferred.",
+    "Geometric snapshot agreement does not prove traversed area, complete visual coverage, target detection, return home or collision-free execution.",
+    "Prepared SDF/hash evidence does not independently attest every live spawned entity. Frozen alignment derivation is separately validated by its producer.",
+    "Fixed alignment retains subsequent SLAM drift/deformation; rasterization, sensor noise and SLAM error are not separated.",
+    "R=.25 measures centre labels, not the whole disk or controller traversability; it cannot replace the full truth-free denominator.",
+    "Only the declared static axis-aligned box geometry is supported. No history of observed/unobserved map cells is reconstructed.",
+    "Original mission flags and unrelated map-service failures are preserved; no physical LIMO or formal-object validation."
+  ]
+}

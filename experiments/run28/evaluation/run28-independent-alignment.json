@@ -1,0 +1,3394 @@
+{
+  "schema_version": 1,
+  "status": "sufficient_initial_se2_alignment",
+  "offline_only": true,
+  "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+  "calibration_phase": "post_initial_survey_before_first_autonomous_goal",
+  "transform_direction": "world_xy = R(map_to_world.yaw) @ map_xy + [map_to_world.x, map_to_world.y]",
+  "map_to_world": {
+    "x": -0.0005941376424976873,
+    "y": 0.0018368649520369563,
+    "yaw": 0.02093291536801993
+  },
+  "reference_stamp_ns": 120899000000,
+  "reference": {
+    "stamp_ns": 120899000000,
+    "observer_tf_index": 3,
+    "map_to_world": {
+      "x": -0.0005941376424976873,
+      "y": 0.0018368649520369563,
+      "yaw": 0.02093291536801993
+    },
+    "map_to_base_footprint_xyz": [
+      0.0005461517944935904,
+      -0.0018490661317964998,
+      -0.15000000000000008
+    ],
+    "map_to_base_footprint_yaw": -0.051134064539320595,
+    "native_model_bracket": {
+      "before_index": 9,
+      "after_index": 10,
+      "before": {
+        "sim_s": 120.894,
+        "x": -9.401983788628173e-06,
+        "y": -3.6436185380629364e-07,
+        "z": -0.005000002831897228,
+        "yaw": -0.030201149171300665,
+        "id": 114,
+        "receipt_wall_elapsed_s": 8.07128879000004
+      },
+      "after": {
+        "sim_s": 120.918,
+        "x": -9.401983788628173e-06,
+        "y": -3.6436185380629364e-07,
+        "z": -0.005000002831897228,
+        "yaw": -0.030201149171300665,
+        "id": 114,
+        "receipt_wall_elapsed_s": 8.226982329000066
+      },
+      "gap_s": 0.024
+    },
+    "source_tf_row": {
+      "wall_s": 8.097981362000041,
+      "ros_s": 120.9,
+      "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+      "active_goal_token": null,
+      "transforms": {
+        "map_to_base_link": {
+          "parent": "map",
+          "child": "base_link",
+          "stamp_ns": 120899000000,
+          "xyz": [
+            0.0005461517944935904,
+            -0.0018490661317964998,
+            -8.326672684688674e-17
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            -0.025564246946989617,
+            0.9996731812337637
+          ],
+          "yaw": -0.051134064539320595
+        },
+        "map_to_odom": {
+          "parent": "map",
+          "child": "odom",
+          "stamp_ns": 120899000000,
+          "xyz": [
+            0.0005461517944900482,
+            -0.001849066131797245,
+            -0.15000000000000002
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            -0.010469808712577933,
+            0.9999451900506957
+          ],
+          "yaw": -0.020939999999999948
+        },
+        "odom_to_base_link": {
+          "parent": "odom",
+          "child": "base_link",
+          "stamp_ns": 120899000000,
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.14999999999999997
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            -0.015096458789298687,
+            0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063
+        }
+      },
+      "tf_errors": {},
+      "reference_stamp_ns": 120899000000,
+      "reference_stamp_advanced": true,
+      "tf_age_ros_s": 0.0010000000000047748,
+      "same_stamp_chain_complete": true,
+      "latest_odom": {
+        "sequence": 30,
+        "receipt_wall_s": 8.077709108000022,
+        "receipt_ros_s": 120.9,
+        "stamp_ns": 120899000000,
+        "parent": "odom",
+        "child": "base_footprint",
+        "xyz": [
+          3.525869186311294e-15,
+          8.189664643058408e-16,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          -0.0,
+          0.0,
+          0.015096458789298687,
+          -0.9998860419727955
+        ],
+        "yaw": -0.03019406453932063,
+        "twist_linear_xyz_angular_xyz": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receipt_age_wall_s": 0.02027225400001953,
+        "new_message_since_previous_sample": true,
+        "messages_since_previous_sample": 10,
+        "header_age_ros_s": 0.0010000000000047748,
+        "stamp_minus_tf_reference_s": 0.0
+      }
+    }
+  },
+  "validation_frames": [
+    {
+      "stamp_ns": 120899000000,
+      "observer_tf_index": 3,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369563,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317964998,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 9,
+        "after_index": 10,
+        "before": {
+          "sim_s": 120.894,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.07128879000004
+        },
+        "after": {
+          "sim_s": 120.918,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.226982329000066
+        },
+        "gap_s": 0.024
+      },
+      "source_tf_row": {
+        "wall_s": 8.097981362000041,
+        "ros_s": 120.9,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 120899000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317964998,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 120899000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.001849066131797245,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 120899000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 120899000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0010000000000047748,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 30,
+          "receipt_wall_s": 8.077709108000022,
+          "receipt_ros_s": 120.9,
+          "stamp_ns": 120899000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.02027225400001953,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.0010000000000047748,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 120979000000,
+      "observer_tf_index": 4,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 11,
+        "after_index": 12,
+        "before": {
+          "sim_s": 120.952,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.260562447999973
+        },
+        "after": {
+          "sim_s": 120.986,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.29433511500008
+        },
+        "gap_s": 0.034
+      },
+      "source_tf_row": {
+        "wall_s": 8.298141932000021,
+        "ros_s": 120.99,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 120979000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 120979000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 120979000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 120979000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.010999999999981469,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 39,
+          "receipt_wall_s": 8.297664325000028,
+          "receipt_ros_s": 120.989,
+          "stamp_ns": 120989000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.0004776069999934407,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 9,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.01
+        }
+      }
+    },
+    {
+      "stamp_ns": 121075000000,
+      "observer_tf_index": 5,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 14,
+        "after_index": 15,
+        "before": {
+          "sim_s": 121.053,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.370748993000007
+        },
+        "after": {
+          "sim_s": 121.087,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.405761396999992
+        },
+        "gap_s": 0.034
+      },
+      "source_tf_row": {
+        "wall_s": 8.518202399000074,
+        "ros_s": 121.1,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121075000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121075000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121075000000,
+            "xyz": [
+              3.5258691863112935e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121075000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.024999999999991473,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 50,
+          "receipt_wall_s": 8.419184572000063,
+          "receipt_ros_s": 121.099,
+          "stamp_ns": 121099000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.0990178270000115,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 11,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.024
+        }
+      }
+    },
+    {
+      "stamp_ns": 121199000000,
+      "observer_tf_index": 6,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 18,
+        "after_index": 19,
+        "before": {
+          "sim_s": 121.178,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.658197178000023
+        },
+        "after": {
+          "sim_s": 121.201,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.74438262800004
+        },
+        "gap_s": 0.023000000000000003
+      },
+      "source_tf_row": {
+        "wall_s": 8.73766514700003,
+        "ros_s": 121.2,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121199000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121199000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121199000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121199000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.000999999999990564,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 60,
+          "receipt_wall_s": 8.678950666999981,
+          "receipt_ros_s": 121.199,
+          "stamp_ns": 121199000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.05871448000004875,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 121299000000,
+      "observer_tf_index": 7,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 21,
+        "after_index": 22,
+        "before": {
+          "sim_s": 121.268,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.850463190000028
+        },
+        "after": {
+          "sim_s": 121.301,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 8.967733889999977
+        },
+        "gap_s": 0.033
+      },
+      "source_tf_row": {
+        "wall_s": 8.937782332999973,
+        "ros_s": 121.3,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121299000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121299000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121299000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121299000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.000999999999990564,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 70,
+          "receipt_wall_s": 8.88175671099998,
+          "receipt_ros_s": 121.299,
+          "stamp_ns": 121299000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.056025621999992836,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 121399000000,
+      "observer_tf_index": 8,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369563,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317964998,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 25,
+        "after_index": 26,
+        "before": {
+          "sim_s": 121.393,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.08203623999998
+        },
+        "after": {
+          "sim_s": 121.419,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.214118988999985
+        },
+        "gap_s": 0.026000000000000002
+      },
+      "source_tf_row": {
+        "wall_s": 9.15801152000006,
+        "ros_s": 121.4,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121399000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317964998,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121399000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.001849066131797245,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121399000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121399000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0010000000000047748,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 80,
+          "receipt_wall_s": 9.087863196000058,
+          "receipt_ros_s": 121.399,
+          "stamp_ns": 121399000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.0701483240000016,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.0010000000000047748,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 121549000000,
+      "observer_tf_index": 9,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 29,
+        "after_index": 30,
+        "before": {
+          "sim_s": 121.518,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.32109084199999
+        },
+        "after": {
+          "sim_s": 121.552,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.354578779999997
+        },
+        "gap_s": 0.034
+      },
+      "source_tf_row": {
+        "wall_s": 9.359264388000042,
+        "ros_s": 121.557,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121549000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121549000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121549000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121549000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.007999999999995566,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 95,
+          "receipt_wall_s": 9.351975351000078,
+          "receipt_ros_s": 121.549,
+          "stamp_ns": 121549000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.0072890369999640825,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 15,
+          "header_age_ros_s": 0.007999999999995566,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 121619000000,
+      "observer_tf_index": 10,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 32,
+        "after_index": 33,
+        "before": {
+          "sim_s": 121.618,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.552663971000015
+        },
+        "after": {
+          "sim_s": 121.643,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.630997524999998
+        },
+        "gap_s": 0.025
+      },
+      "source_tf_row": {
+        "wall_s": 9.577713172000017,
+        "ros_s": 121.625,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121619000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121619000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121619000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121619000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0059999999999860165,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 102,
+          "receipt_wall_s": 9.553902945000004,
+          "receipt_ros_s": 121.619,
+          "stamp_ns": 121619000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.023810227000012674,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 7,
+          "header_age_ros_s": 0.0059999999999860165,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 121719000000,
+      "observer_tf_index": 11,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 35,
+        "after_index": 36,
+        "before": {
+          "sim_s": 121.701,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.757379120999985
+        },
+        "after": {
+          "sim_s": 121.736,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.791682003000005
+        },
+        "gap_s": 0.035
+      },
+      "source_tf_row": {
+        "wall_s": 9.778316582999992,
+        "ros_s": 121.724,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121719000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121719000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121719000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121719000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0049999999999954525,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 112,
+          "receipt_wall_s": 9.774661406000064,
+          "receipt_ros_s": 121.719,
+          "stamp_ns": 121719000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.0036551769999277894,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.0049999999999954525,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 121799000000,
+      "observer_tf_index": 12,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 37,
+        "after_index": 38,
+        "before": {
+          "sim_s": 121.768,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.859262918000013
+        },
+        "after": {
+          "sim_s": 121.801,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 9.987823080999988
+        },
+        "gap_s": 0.033
+      },
+      "source_tf_row": {
+        "wall_s": 9.986812246,
+        "ros_s": 121.801,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121799000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121799000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121799000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121799000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.001999999999995339,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 120,
+          "receipt_wall_s": 9.890986914999985,
+          "receipt_ros_s": 121.799,
+          "stamp_ns": 121799000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.09582533100001456,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 8,
+          "header_age_ros_s": 0.001999999999995339,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 121899000000,
+      "observer_tf_index": 13,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369563,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317964998,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 41,
+        "after_index": 42,
+        "before": {
+          "sim_s": 121.894,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.107944048000036
+        },
+        "after": {
+          "sim_s": 121.919,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.256194355000048
+        },
+        "gap_s": 0.025
+      },
+      "source_tf_row": {
+        "wall_s": 10.198529424000071,
+        "ros_s": 121.9,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 121899000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317964998,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 121899000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.001849066131797245,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 121899000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 121899000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0010000000000047748,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 130,
+          "receipt_wall_s": 10.113298406000013,
+          "receipt_ros_s": 121.899,
+          "stamp_ns": 121899000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.08523101800005861,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.0010000000000047748,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122039000000,
+      "observer_tf_index": 14,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369568,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965003,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 45,
+        "after_index": 46,
+        "before": {
+          "sim_s": 122.019,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.376479911000047
+        },
+        "after": {
+          "sim_s": 122.053,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.408540428000038
+        },
+        "gap_s": 0.034
+      },
+      "source_tf_row": {
+        "wall_s": 10.398670960999993,
+        "ros_s": 122.044,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122039000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965003,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122039000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972453,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122039000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122039000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0049999999999954525,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 144,
+          "receipt_wall_s": 10.394193789000042,
+          "receipt_ros_s": 122.039,
+          "stamp_ns": 122039000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.004477171999951679,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 14,
+          "header_age_ros_s": 0.0049999999999954525,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122075000000,
+      "observer_tf_index": 15,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 46,
+        "after_index": 47,
+        "before": {
+          "sim_s": 122.053,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.408540428000038
+        },
+        "after": {
+          "sim_s": 122.086,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.442338118000066
+        },
+        "gap_s": 0.033
+      },
+      "source_tf_row": {
+        "wall_s": 10.618228528000031,
+        "ros_s": 122.1,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122075000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122075000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122075000000,
+            "xyz": [
+              3.5258691863112935e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122075000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.024999999999991473,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 150,
+          "receipt_wall_s": 10.456165132000024,
+          "receipt_ros_s": 122.099,
+          "stamp_ns": 122099000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.16206339600000774,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 6,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.024
+        }
+      }
+    },
+    {
+      "stamp_ns": 122179000000,
+      "observer_tf_index": 16,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 50,
+        "after_index": 51,
+        "before": {
+          "sim_s": 122.178,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.807540700000004
+        },
+        "after": {
+          "sim_s": 122.201,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.949729583000021
+        },
+        "gap_s": 0.023000000000000003
+      },
+      "source_tf_row": {
+        "wall_s": 10.818646805000071,
+        "ros_s": 122.189,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122179000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122179000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122179000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122179000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.009999999999990905,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 159,
+          "receipt_wall_s": 10.818442022,
+          "receipt_ros_s": 122.189,
+          "stamp_ns": 122189000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.00020478300007198413,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 9,
+          "header_age_ros_s": -1.4210854715202004e-14,
+          "stamp_minus_tf_reference_s": 0.01
+        }
+      }
+    },
+    {
+      "stamp_ns": 122249000000,
+      "observer_tf_index": 17,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 52,
+        "after_index": 53,
+        "before": {
+          "sim_s": 122.236,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 10.984237463999989
+        },
+        "after": {
+          "sim_s": 122.269,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.077788148000081
+        },
+        "gap_s": 0.033
+      },
+      "source_tf_row": {
+        "wall_s": 11.038594543000045,
+        "ros_s": 122.25,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122249000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122249000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122249000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122249000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.000999999999990564,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 165,
+          "receipt_wall_s": 10.997211790000051,
+          "receipt_ros_s": 122.249,
+          "stamp_ns": 122249000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.0413827529999935,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 6,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122299000000,
+      "observer_tf_index": 18,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 53,
+        "after_index": 54,
+        "before": {
+          "sim_s": 122.269,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.077788148000081
+        },
+        "after": {
+          "sim_s": 122.301,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.232501962000015
+        },
+        "gap_s": 0.032
+      },
+      "source_tf_row": {
+        "wall_s": 11.23940500499998,
+        "ros_s": 122.309,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122299000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122299000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122299000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122299000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.009999999999990905,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 170,
+          "receipt_wall_s": 11.109180655000046,
+          "receipt_ros_s": 122.3,
+          "stamp_ns": 122299000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.13022434999993493,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 5,
+          "header_age_ros_s": 0.009999999999990905,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122399000000,
+      "observer_tf_index": 19,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369563,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317964998,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 57,
+        "after_index": 58,
+        "before": {
+          "sim_s": 122.394,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.363299611000002
+        },
+        "after": {
+          "sim_s": 122.418,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.535001448999992
+        },
+        "gap_s": 0.024
+      },
+      "source_tf_row": {
+        "wall_s": 11.458461656000054,
+        "ros_s": 122.4,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122399000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317964998,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122399000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.001849066131797245,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122399000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122399000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0010000000000047748,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 180,
+          "receipt_wall_s": 11.368606373000034,
+          "receipt_ros_s": 122.399,
+          "stamp_ns": 122399000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.08985528300001988,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.0010000000000047748,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122499000000,
+      "observer_tf_index": 20,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 60,
+        "after_index": 61,
+        "before": {
+          "sim_s": 122.486,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.60259342200004
+        },
+        "after": {
+          "sim_s": 122.519,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.67000331500003
+        },
+        "gap_s": 0.033
+      },
+      "source_tf_row": {
+        "wall_s": 11.658771759000047,
+        "ros_s": 122.509,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122499000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122499000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122499000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122499000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.009999999999990905,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 190,
+          "receipt_wall_s": 11.615835290000064,
+          "receipt_ros_s": 122.499,
+          "stamp_ns": 122499000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.042936468999982935,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.009999999999990905,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122575000000,
+      "observer_tf_index": 21,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 62,
+        "after_index": 63,
+        "before": {
+          "sim_s": 122.553,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.702703887999974
+        },
+        "after": {
+          "sim_s": 122.587,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 11.736337948000028
+        },
+        "gap_s": 0.034
+      },
+      "source_tf_row": {
+        "wall_s": 11.878554989999998,
+        "ros_s": 122.6,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122575000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122575000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122575000000,
+            "xyz": [
+              3.5258691863112935e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122575000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.024999999999991473,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 200,
+          "receipt_wall_s": 11.77654708,
+          "receipt_ros_s": 122.6,
+          "stamp_ns": 122599000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.10200790999999754,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 10,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.024
+        }
+      }
+    },
+    {
+      "stamp_ns": 122679000000,
+      "observer_tf_index": 22,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 66,
+        "after_index": 67,
+        "before": {
+          "sim_s": 122.677,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.073450496000078
+        },
+        "after": {
+          "sim_s": 122.701,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.201453905999983
+        },
+        "gap_s": 0.024
+      },
+      "source_tf_row": {
+        "wall_s": 12.07972074899999,
+        "ros_s": 122.683,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122679000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122679000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122679000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122679000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0040000000000048885,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 208,
+          "receipt_wall_s": 12.075851957000054,
+          "receipt_ros_s": 122.679,
+          "stamp_ns": 122679000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.0038687919999347287,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 8,
+          "header_age_ros_s": 0.0040000000000048885,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122749000000,
+      "observer_tf_index": 23,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 68,
+        "after_index": 69,
+        "before": {
+          "sim_s": 122.736,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.235643824000022
+        },
+        "after": {
+          "sim_s": 122.769,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.323530376000008
+        },
+        "gap_s": 0.033
+      },
+      "source_tf_row": {
+        "wall_s": 12.298562701000037,
+        "ros_s": 122.75,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122749000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122749000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122749000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122749000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.000999999999990564,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 215,
+          "receipt_wall_s": 12.248973594000063,
+          "receipt_ros_s": 122.749,
+          "stamp_ns": 122749000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.04958910699997432,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 7,
+          "header_age_ros_s": 0.000999999999990564,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122829000000,
+      "observer_tf_index": 24,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369565,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317965,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 70,
+        "after_index": 71,
+        "before": {
+          "sim_s": 122.801,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.468082111000058
+        },
+        "after": {
+          "sim_s": 122.836,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.503126381000015
+        },
+        "gap_s": 0.035
+      },
+      "source_tf_row": {
+        "wall_s": 12.499004152999987,
+        "ros_s": 122.833,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122829000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317965,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122829000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.0018490661317972451,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122829000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122829000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.003999999999990678,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 223,
+          "receipt_wall_s": 12.496273682000037,
+          "receipt_ros_s": 122.829,
+          "stamp_ns": 122829000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.00273047099994983,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 8,
+          "header_age_ros_s": 0.003999999999990678,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    },
+    {
+      "stamp_ns": 122899000000,
+      "observer_tf_index": 25,
+      "map_to_world": {
+        "x": -0.0005941376424976873,
+        "y": 0.0018368649520369563,
+        "yaw": 0.02093291536801993
+      },
+      "map_to_base_footprint_xyz": [
+        0.0005461517944935904,
+        -0.0018490661317964998,
+        -0.15000000000000008
+      ],
+      "map_to_base_footprint_yaw": -0.051134064539320595,
+      "native_model_bracket": {
+        "before_index": 73,
+        "after_index": 74,
+        "before": {
+          "sim_s": 122.894,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.594099024999991
+        },
+        "after": {
+          "sim_s": 122.919,
+          "x": -9.401983788628173e-06,
+          "y": -3.6436185380629364e-07,
+          "z": -0.005000002831897228,
+          "yaw": -0.030201149171300665,
+          "id": 114,
+          "receipt_wall_elapsed_s": 12.745413926000083
+        },
+        "gap_s": 0.025
+      },
+      "source_tf_row": {
+        "wall_s": 12.717848208000078,
+        "ros_s": 122.9,
+        "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+        "active_goal_token": null,
+        "transforms": {
+          "map_to_base_link": {
+            "parent": "map",
+            "child": "base_link",
+            "stamp_ns": 122899000000,
+            "xyz": [
+              0.0005461517944935904,
+              -0.0018490661317964998,
+              -8.326672684688674e-17
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.025564246946989617,
+              0.9996731812337637
+            ],
+            "yaw": -0.051134064539320595
+          },
+          "map_to_odom": {
+            "parent": "map",
+            "child": "odom",
+            "stamp_ns": 122899000000,
+            "xyz": [
+              0.0005461517944900482,
+              -0.001849066131797245,
+              -0.15000000000000002
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.010469808712577933,
+              0.9999451900506957
+            ],
+            "yaw": -0.020939999999999948
+          },
+          "odom_to_base_link": {
+            "parent": "odom",
+            "child": "base_link",
+            "stamp_ns": 122899000000,
+            "xyz": [
+              3.525869186311294e-15,
+              8.189664643058408e-16,
+              0.14999999999999997
+            ],
+            "quaternion_xyzw": [
+              0.0,
+              0.0,
+              -0.015096458789298687,
+              0.9998860419727955
+            ],
+            "yaw": -0.03019406453932063
+          }
+        },
+        "tf_errors": {},
+        "reference_stamp_ns": 122899000000,
+        "reference_stamp_advanced": true,
+        "tf_age_ros_s": 0.0010000000000047748,
+        "same_stamp_chain_complete": true,
+        "latest_odom": {
+          "sequence": 230,
+          "receipt_wall_s": 12.599275764000026,
+          "receipt_ros_s": 122.9,
+          "stamp_ns": 122899000000,
+          "parent": "odom",
+          "child": "base_footprint",
+          "xyz": [
+            3.525869186311294e-15,
+            8.189664643058408e-16,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            -0.0,
+            0.0,
+            0.015096458789298687,
+            -0.9998860419727955
+          ],
+          "yaw": -0.03019406453932063,
+          "twist_linear_xyz_angular_xyz": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "receipt_age_wall_s": 0.11857244400005129,
+          "new_message_since_previous_sample": true,
+          "messages_since_previous_sample": 7,
+          "header_age_ros_s": 0.0010000000000047748,
+          "stamp_minus_tf_reference_s": 0.0
+        }
+      }
+    }
+  ],
+  "calibration_rule": "Earliest complete same-epoch pre-goal observer TF with native bracketing; that one frame defines the gauge, subsequent <=2 sim seconds only validate.",
+  "validation_window": {
+    "first_stamp_ns": 120899000000,
+    "last_stamp_ns": 122899000000,
+    "frame_count": 23,
+    "first_goal_sim_s": 132.3,
+    "all_calibration_samples_before_first_goal": true,
+    "map_to_world_max_xy_deviation_m": 4.336808689942018e-19,
+    "map_to_world_max_yaw_deviation_rad": 0.0,
+    "native_world_xy_span_m": 0.0,
+    "native_world_yaw_span_rad": 0.0
+  },
+  "model_reference": {
+    "native_entity": "limo",
+    "native_id": 114,
+    "urdf_root": "base_footprint",
+    "sdf_canonical_root_identity_verified": true,
+    "runtime_static_tf_matches_submitted_urdf": true,
+    "base_footprint_to_base_link_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.15
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "epoch_evidence": {
+    "initial_navigation_epoch_line": "[map_session.py-1] [INFO] [1793691083.673109951] [limo_map_session]: Fresh SLAM map epoch: c190e755-9ef1-45cf-9264-c6e14407cd8d",
+    "survey_map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+    "observer_rows_embed_epoch": true,
+    "association": "Same closed run, acknowledged spawn SHA and native identity, startup/survey/observer/mission epoch."
+  },
+  "inputs": {
+    "outputs\\ros_smoke\\run28-startup-timing\\orchestration.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\orchestration.json",
+      "sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1",
+      "bytes": 12262
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json",
+      "sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08",
+      "bytes": 294
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json",
+      "sha256": "01379e5bb9ecbf64a92067f19b523ba1c16066ccd416593bf42db76a12534718",
+      "bytes": 32513
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\preparation.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\preparation.json",
+      "sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4",
+      "bytes": 5305
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json",
+      "sha256": "4f600dd1f5210b0f79a73d04d2b6d5b0c775ef9efd6a8f5ba080d097bcc6d9b9",
+      "bytes": 130629
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world",
+      "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+      "bytes": 11269
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\navigation.log": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\navigation.log",
+      "sha256": "297bb35c4e448ba2b280dda98fabc4f9c488d58640a242dd14861ed98b4506f0",
+      "bytes": 94023
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json",
+      "sha256": "969913017faadf2f2c111497fd0ec3e29feb625daf5fa31c4e8ad4f25fa0d263",
+      "bytes": 1240
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf",
+      "sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502",
+      "bytes": 11652
+    },
+    "outputs\\setup\\run28-robot-expanded.sdf": {
+      "path": "outputs\\setup\\run28-robot-expanded.sdf",
+      "sha256": "136b1a550805e9964b20bcd97b079e63f3155ec0c7a66b3f34d82cdba3fcd0e7",
+      "bytes": 18544
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json",
+      "sha256": "a9a60dc2034b1143fdf080a195cfca79917e47cd1e485c06b5cf3e277c7484d9",
+      "bytes": 7319
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json",
+      "sha256": "90178557fc6c510cdf9cee43ca5be17841bb37d4b56b00cc35a56961a9f80849",
+      "bytes": 4332
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json",
+      "sha256": "e0e9c85818e09b51086dd9bf391f66c51e4792301b21749fa5806315f5eea670",
+      "bytes": 4333
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\observer.json": {
+      "path": "outputs\\ros_smoke\\run28-startup-timing\\observer.json",
+      "sha256": "8cedcb4d4007aff8a29214064d27a4ec7a89882cca4e99ec8535998d87cb73aa",
+      "bytes": 15439965
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py",
+      "sha256": "70aa5512f9afa57fd05fed644245ef18885a3f43a277c3f0b6e6b5105cea6c39",
+      "bytes": 16971
+    }
+  },
+  "used_target_positions_for_alignment": false,
+  "used_final_mission_pose": false,
+  "used_final_slam_drift_to_correct_alignment": false,
+  "limitations": [
+    "Post-survey gauge cannot measure SLAM drift incurred during initial Spin; it must not be described as run14 pre-Spin alignment.",
+    "Native brackets contain XY/yaw only; the validated root at native model origin removes the need to invent native roll/pitch for a displaced sensor.",
+    "Endpoint stationarity and short validation are sampled evidence, not continuous stationarity proof.",
+    "Expanded SDF reference transforms are checked against the actually submitted URDF and live static TF; complete geometry equivalence is outside this planar alignment.",
+    "No target prediction, target coordinates, final pose or final map registration is used."
+  ]
+}

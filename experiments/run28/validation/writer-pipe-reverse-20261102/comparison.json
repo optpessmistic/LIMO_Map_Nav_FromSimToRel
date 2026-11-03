@@ -1,0 +1,312 @@
+{
+  "variants": [
+    {
+      "variant": "drvfs-large-pipe",
+      "output": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/writer-pipe-reverse-20261102/drvfs-large-pipe",
+      "pipe_probes": [
+        {
+          "pid": 839,
+          "operation_id": "2a6e0902ba72406a8cb37beb0283e6dc",
+          "requested_bytes": 1048576,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 1048576
+        },
+        {
+          "pid": 843,
+          "operation_id": "4d19073c83b84edd882ab5635c441863",
+          "requested_bytes": 1048576,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 1048576
+        },
+        {
+          "pid": 844,
+          "operation_id": "c8a4946eadfa4809a46a51a9e6565175",
+          "requested_bytes": 1048576,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 1048576
+        },
+        {
+          "pid": 845,
+          "operation_id": "363ebe5de1f14dfbb33ea3b4af1bf8b7",
+          "requested_bytes": 1048576,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 1048576
+        },
+        {
+          "pid": 846,
+          "operation_id": "1e263488b9af4c80b87c84ce8f7346df",
+          "requested_bytes": 1048576,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 1048576
+        },
+        {
+          "pid": 847,
+          "operation_id": "2a83978eac584aa69caa6ba2993a56ff",
+          "requested_bytes": 1048576,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 1048576
+        }
+      ],
+      "transfer": [
+        {
+          "operation_id": "2a6e0902ba72406a8cb37beb0283e6dc",
+          "job_id": null,
+          "wire_bytes": 1010,
+          "input_drain_s": 0.09137491199999204,
+          "total_s": 0.7442352490000133,
+          "max_tick_gap_s": 0.050350108999992926
+        },
+        {
+          "operation_id": "4d19073c83b84edd882ab5635c441863",
+          "job_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+          "wire_bytes": 2158058,
+          "input_drain_s": 0.8483265499999959,
+          "total_s": 1.0541988060000165,
+          "max_tick_gap_s": 0.05764276299998983
+        },
+        {
+          "operation_id": "c8a4946eadfa4809a46a51a9e6565175",
+          "job_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+          "wire_bytes": 2159829,
+          "input_drain_s": 1.8208158080000203,
+          "total_s": 2.026648018000003,
+          "max_tick_gap_s": 0.05229589000001056
+        },
+        {
+          "operation_id": "363ebe5de1f14dfbb33ea3b4af1bf8b7",
+          "job_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+          "wire_bytes": 2161008,
+          "input_drain_s": 0.7374442629999862,
+          "total_s": 0.9425575530000003,
+          "max_tick_gap_s": 0.052015883999985135
+        },
+        {
+          "operation_id": "1e263488b9af4c80b87c84ce8f7346df",
+          "job_id": null,
+          "wire_bytes": 5445,
+          "input_drain_s": 0.07107030599999575,
+          "total_s": 0.7873355300000071,
+          "max_tick_gap_s": 0.051687472999986994
+        },
+        {
+          "operation_id": "2a83978eac584aa69caa6ba2993a56ff",
+          "job_id": null,
+          "wire_bytes": 5643,
+          "input_drain_s": 0.031289077000025145,
+          "total_s": 0.6152761240000189,
+          "max_tick_gap_s": 0.010561282999987043
+        }
+      ],
+      "errors": [],
+      "all_durable_elapsed_s": 4.815091095000014,
+      "would_meet_original_consumer_deadline": true,
+      "all_owned_helpers_closed": true,
+      "elapsed_wall_s": 6.221140735000006,
+      "source_bytes_verification": {
+        "passed": true,
+        "frames": [
+          {
+            "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+            "errors": [],
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "fb780a82d0727f146da684ec6147ba75c1ee5e30ddf6a1086626fd09a7179fb6"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1364,
+                "sha256": "8c724805cac687d31ab75e2999c7dbf7cb27fbba74b228c1ab5ec1ee0517e3ec"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "4ee4b93c8a5fbf839b0721a96fb5b308a02bf26b38264b47172b2b6beec7ead2"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "verified": true
+          },
+          {
+            "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+            "errors": [],
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "9c960625f4235e546252e56d4fa3a248d7817baf46aaf3967a6f5d7041c2dec6"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1365,
+                "sha256": "caaebc8ef845df737a7adae42dfa7f893f2ad844192a64d487441a70d9255375"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "cd6cea962477cea2a768f92f7a309a63ce3cfca36f5094e2231b634cc651efcf"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "verified": true
+          },
+          {
+            "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+            "errors": [],
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "b6e6eb9a412486276389a49f36a0fa2451f9adbb2ecf6a13ebe89b89f9a4a410"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1364,
+                "sha256": "c0b43d12143f28147eacfdc013cd3d15d0ef4657f529971aac20de509ead9b4f"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "e24ff64434cd6810f609570081163ce57b82a4fc6e97219b1dc1fb0c94fbc234"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "verified": true
+          }
+        ],
+        "scope": "reopened benchmark files; source bytes and request identities only; not run21 mission success"
+      }
+    },
+    {
+      "variant": "drvfs-default",
+      "output": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/writer-pipe-reverse-20261102/drvfs-default",
+      "pipe_probes": [
+        {
+          "pid": 848,
+          "operation_id": "ce2ffca361794a668065c9a5cca48e47",
+          "requested_bytes": null,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 65536
+        },
+        {
+          "pid": 849,
+          "operation_id": "c2e9ab57bdba406cb1099c91e5d025b6",
+          "requested_bytes": null,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 65536
+        },
+        {
+          "pid": 850,
+          "operation_id": "f8fe873b3fb14b228ac27d0c0ae14393",
+          "requested_bytes": null,
+          "resize_error": null,
+          "initial_bytes": 65536,
+          "actual_bytes": 65536
+        }
+      ],
+      "transfer": [
+        {
+          "operation_id": "ce2ffca361794a668065c9a5cca48e47",
+          "job_id": null,
+          "wire_bytes": 1010,
+          "input_drain_s": 0.07844960799999967,
+          "total_s": 0.6950884739999879,
+          "max_tick_gap_s": 0.051460093999992296
+        },
+        {
+          "operation_id": "c2e9ab57bdba406cb1099c91e5d025b6",
+          "job_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+          "wire_bytes": 2158060,
+          "input_drain_s": null,
+          "total_s": 5.038404432000021,
+          "max_tick_gap_s": 0.056982867999977316
+        },
+        {
+          "operation_id": "f8fe873b3fb14b228ac27d0c0ae14393",
+          "job_id": null,
+          "wire_bytes": 2575,
+          "input_drain_s": 0.037564607999996724,
+          "total_s": 0.5837939030000143,
+          "max_tick_gap_s": 0.011065557000023318
+        }
+      ],
+      "errors": [
+        "RuntimeError: Producer fault: writer_wall_timeout"
+      ],
+      "all_durable_elapsed_s": null,
+      "would_meet_original_consumer_deadline": null,
+      "all_owned_helpers_closed": true,
+      "elapsed_wall_s": 6.350135580999989,
+      "source_bytes_verification": {
+        "passed": false,
+        "frames": [
+          {
+            "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+            "errors": [
+              "AssertionError: "
+            ],
+            "files": {},
+            "verified": false
+          },
+          {
+            "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+            "errors": [
+              "AssertionError: "
+            ],
+            "files": {},
+            "verified": false
+          },
+          {
+            "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+            "errors": [
+              "AssertionError: "
+            ],
+            "files": {},
+            "verified": false
+          }
+        ],
+        "scope": "reopened benchmark files; source bytes and request identities only; not run21 mission success"
+      }
+    }
+  ],
+  "modules_unchanged": true,
+  "limitations": [
+    "One fixed-order attempt per cell; cache/order effects not separated.",
+    "No concurrent simulator/ROS/image-processing load.",
+    "Failed original window pixels do not exist, so these are preceding stored bytes.",
+    "This benchmark does not repair or reclassify run26."
+  ]
+}

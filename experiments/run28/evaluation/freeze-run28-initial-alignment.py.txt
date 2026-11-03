@@ -1,0 +1,270 @@
+#!/usr/bin/env python3
+"""DRAFT, offline only: freeze a pre-first-goal SE2 from a CLOSED run.
+
+The observer starts AFTER the initial Spin. This is a post-survey/pre-autonomy
+gauge, not run14's pre-Spin gauge. No target, final pose or map fitting is used.
+The URDF actually embedded in the acknowledged spawn request binds the root
+reference point; a supplied expanded SDF must independently show the same
+canonical root and fixed base_link transform. Create that SDF offline from the
+saved spawn/robot.urdf after closure (gz sdf -p); this script starts no commands.
+
+python3 -B outputs/setup/freeze-run28-initial-alignment.py \
+  --run-dir outputs/ros_smoke/run28-startup-timing \
+  --model-sdf outputs/setup/run28-robot-expanded.sdf \
+  --output outputs/setup/run28-independent-alignment.json
+
+Only the first common eligible TF/native stamp defines the transform. Up to
+2 sim seconds afterward, strictly before the first autonomous goal, validate
+it without averaging/refitting. At least 3 distinct stamps over >=.2 sim s are
+required. Endpoint-stationary native brackets are <=.1 s; validation variation
+must stay within 1 mm/.001 rad. Missing evidence refuses output, never identity.
+Normal mission status may be done or blocked; mission_success is not changed.
+"""
+import argparse
+import bisect
+import hashlib
+import json
+import math
+from pathlib import Path
+import sys
+import xml.etree.ElementTree as ET
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools'))
+from evaluate_targets import load_json
+
+
+def require(condition, reason):
+    if not condition:
+        raise ValueError(reason)
+
+
+def sha(path):
+    require(path.is_file() and not path.is_symlink(), 'Missing/unsafe input: ' + str(path))
+    raw = path.read_bytes()
+    return {'path': str(path), 'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)}
+
+
+def wrap(value):
+    return math.atan2(math.sin(value), math.cos(value))
+
+
+def matrix(xyz, q):
+    xyz, q = np.asarray(xyz, float), np.asarray(q, float)
+    require(xyz.shape == (3,) and q.shape == (4,) and np.isfinite(xyz).all() and np.isfinite(q).all()
+            and abs(float(q @ q) - 1) <= 1e-6, 'Invalid pose geometry')
+    x, y, z, w = q
+    value = np.eye(4)
+    value[:3, :3] = [[1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w)],
+                     [2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w)],
+                     [2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y)]]
+    value[:3, 3] = xyz
+    return value
+
+
+def xyzrpy(values):
+    require(len(values) == 6 and all(math.isfinite(v) for v in values), 'Invalid XYZ/RPY')
+    r, p, y = (v / 2 for v in values[3:])
+    cr, sr, cp, sp, cy, sy = math.cos(r), math.sin(r), math.cos(p), math.sin(p), math.cos(y), math.sin(y)
+    return matrix(values[:3], [sr*cp*cy-cr*sp*sy, cr*sp*cy+sr*cp*sy,
+                               cr*cp*sy-sr*sp*cy, cr*cp*cy+sr*sp*sy])
+
+
+def sdf_pose(element):
+    pose = element.find('pose')
+    require(pose is None or not pose.attrib, 'SDF pose attributes are unsupported')
+    return xyzrpy([float(v) for v in (pose.text if pose is not None else '0 0 0 0 0 0').split()])
+
+
+def reference_model(urdf_path, sdf_path, runtime, spawn):
+    """Verify model origin == base_footprint, rather than assume base_link==model."""
+    require(spawn.get('success') is True and spawn.get('create_outcome') == 'positive_reply'
+            and spawn.get('request_attempts') == 1 and spawn.get('input', {}).get('name') == 'limo',
+            'No acknowledged single spawn of limo')
+    require(spawn['input'].get('model_sha256') == sha(urdf_path)['sha256'], 'Saved URDF differs from submitted model')
+    robot = ET.parse(urdf_path).getroot()
+    require(robot.tag == 'robot', 'Expanded URDF required')
+    links = {e.get('name') for e in robot.findall('link')}
+    children = {e.find('child').get('link') for e in robot.findall('joint')}
+    require(links - children == {'base_footprint'}, 'URDF native root is not unique base_footprint')
+    joints = [e for e in robot.findall('joint') if e.find('parent').get('link') == 'base_footprint'
+              and e.find('child').get('link') == 'base_link']
+    require(len(joints) == 1 and joints[0].get('type') == 'fixed', 'Expected fixed root-to-base_link joint')
+    origin = joints[0].find('origin')
+    require(origin is not None, 'Explicit fixed-joint origin required')
+    root_base = xyzrpy([float(v) for v in (origin.get('xyz', '0 0 0') + ' ' + origin.get('rpy', '0 0 0')).split()])
+    root = ET.parse(sdf_path).getroot()
+    models = root.findall('model')
+    require(len(models) == 1 and models[0].get('name') == 'limo', 'Expanded standalone limo SDF required')
+    model = models[0]
+    require(np.max(np.abs(sdf_pose(model) - np.eye(4))) <= 1e-9, 'Nonidentity SDF model-local pose')
+    native_root = model.find('link')
+    require(native_root is not None and native_root.get('name') == 'base_footprint'
+            and model.get('canonical_link', 'base_footprint') == 'base_footprint'
+            and np.max(np.abs(sdf_pose(native_root) - np.eye(4))) <= 1e-9,
+            'SDF canonical root does not coincide with native model origin')
+    frames = {f.get('name'): f for f in model.findall('frame')}
+    def frame_pose(name, seen=()):
+        if name == 'base_footprint':
+            return np.eye(4)
+        require(name in frames and name not in seen, 'Unsupported/cyclic SDF fixed frame chain')
+        f = frames[name]
+        return frame_pose(f.get('attached_to'), (*seen, name)) @ sdf_pose(f)
+    require(np.max(np.abs(frame_pose('base_link') - root_base)) <= 1e-9,
+            'SDF and submitted URDF root-to-base_link transforms differ')
+    require(runtime.get('passed') is True, 'Runtime sensor/TF precheck failed')
+    tf = runtime['tf_chain']['base_footprint->base_link']
+    runtime_root_base = matrix(tf['xyz'], tf['quaternion_xyzw'])
+    require(np.max(np.abs(runtime_root_base - root_base)) <= 1e-9, 'Live static TF differs from submitted model')
+    return root_base
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--run-dir', type=Path, required=True)
+    parser.add_argument('--model-sdf', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), 'Refuse overwriting a frozen alignment')
+    run, inputs = args.run_dir, {}
+    def read(name):
+        path = run / name
+        inputs[str(path)] = sha(path)
+        return load_json(path)
+    orchestration = read('orchestration.json')
+    require(orchestration.get('all_owned_groups_empty') is True
+            and type(orchestration.get('elapsed_wall_s')) in (int, float) and orchestration['elapsed_wall_s'] > 0,
+            'Run is not confirmed closed')
+    shutdown = read('retention-shutdown.json')
+    require(shutdown.get('writer') is None and shutdown.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown', {}).get('final_checkpoint_persisted') is True, 'Writer closure unconfirmed')
+    name = str((orchestration.get('terminal') or {}).get('path', '')).replace('\\', '/').rsplit('/', 1)[-1]
+    require(name.startswith('mission_') and name.endswith('.json'), 'Normal terminal mission missing')
+    mission = read(Path('mission') / name)
+    require(mission.get('status') in ('done', 'blocked') and mission.get('coordinates_valid') is True, 'Invalid terminal mission coordinates')
+    epoch = mission.get('map_epoch')
+    require(isinstance(epoch, str) and epoch, 'Missing map epoch')
+    goals = [e for e in mission['events'] if e.get('event') == 'goal_sent']
+    require(goals, 'No autonomous goal; no target experiment to align')
+    first_goal = min(float(e['stamp']) for e in goals)
+    preparation = read('preparation.json')
+    survey = read('initial-survey.json')
+    require(survey.get('map_epoch') == epoch and survey.get('success') is True, 'Survey epoch/success mismatch')
+    world_path = ROOT / 'worlds/smoke_maze.world'
+    inputs[str(world_path)] = sha(world_path)
+    require(inputs[str(world_path)]['sha256'] == preparation.get('world_sha256'), 'Prepared world hash mismatch')
+    navigation_log = run / 'navigation.log'
+    inputs[str(navigation_log)] = sha(navigation_log)
+    log = navigation_log.read_text(encoding='utf-8')
+    epoch_lines = [line for line in log.splitlines() if 'Fresh SLAM map epoch:' in line]
+    require(len(epoch_lines) == 1 and epoch_lines[0].endswith(epoch), 'Startup epoch is not unique/current')
+    spawn = read('spawn/result/report.json')
+    urdf_path = run / 'spawn/robot.urdf'
+    inputs[str(urdf_path)], inputs[str(args.model_sdf)] = sha(urdf_path), sha(args.model_sdf)
+    root_base = reference_model(urdf_path, args.model_sdf, read('sim-runtime.json'), spawn)
+    early, before = read('native-scene-early.json'), read('native-scene-before-motion.json')
+    require(early.get('passed') is True and before.get('passed') is True
+            and early.get('target_models') == before.get('target_models')
+            and early.get('unique_instance_verified_in_snapshot') is True
+            and len(early.get('target_models', [])) == 1, 'Native model identity is not uniquely bound')
+    native_id = early['target_models'][0]['id']
+    observer = read('observer.json')
+    require(observer.get('world_entity') == 'limo', 'Observer native entity mismatch')
+    native = observer['world_samples']
+    native_stamps = [round(float(v['sim_s']) * 1e9) for v in native]
+    require(len(native_stamps) >= 2 and all(a < b for a, b in zip(native_stamps, native_stamps[1:])),
+            'Missing/nonmonotonic native samples')
+    eligible = []
+    for index, row in enumerate(observer['continuous_tf_samples']):
+        ns = row.get('reference_stamp_ns')
+        if (row.get('map_epoch') != epoch or row.get('same_stamp_chain_complete') is not True
+                or type(ns) is not int or ns <= 0 or ns * 1e-9 >= first_goal
+                or float(row.get('ros_s', first_goal)) >= first_goal or row.get('active_goal_token') is not None):
+            continue
+        if native_stamps[0] <= ns <= native_stamps[-1]:
+            eligible.append((ns, index, row))
+    require(eligible, 'No same-epoch full TF/native reference before first autonomous goal')
+    eligible.sort(key=lambda item: (item[0], item[1]))
+    first_ns = eligible[0][0]
+    selected, seen = [], set()
+    for ns, index, row in eligible:
+        if ns <= first_ns + 2_000_000_000 and ns not in seen:
+            selected.append((ns, index, row)); seen.add(ns)
+    require(len(selected) >= 3 and selected[-1][0] - first_ns >= 200_000_000,
+            'Need >=3 pre-goal validation stamps spanning .2 sim s; no later/post-goal fallback')
+    rows = []
+    for ns, index, row in selected:
+        hi = bisect.bisect_left(native_stamps, ns)
+        lo = hi if native_stamps[hi] == ns else hi - 1
+        left, right = native[lo], native[hi]
+        require(left['id'] == right['id'] == native_id and native_stamps[hi] - native_stamps[lo] <= 100_000_000,
+                'Native reference identity/bracket gap mismatch')
+        require(math.hypot(left['x']-right['x'], left['y']-right['y']) <= 1e-9 and
+                abs(wrap(left['yaw']-right['yaw'])) <= 1e-9, 'Native bracket endpoints are moving; interpolation is unsupported')
+        matrices = {}
+        for key, parent, child in (('map_to_base_link', 'map', 'base_link'),
+                                    ('map_to_odom', 'map', 'odom'), ('odom_to_base_link', 'odom', 'base_link')):
+            tf = row['transforms'][key]
+            require(tf.get('stamp_ns') == ns and tf.get('parent') == parent and tf.get('child') == child,
+                    'Full TF chain does not share exact reference stamp/frames')
+            matrices[key] = matrix(tf['xyz'], tf['quaternion_xyzw'])
+        require(np.max(np.abs(matrices['map_to_odom'] @ matrices['odom_to_base_link'] - matrices['map_to_base_link'])) <= 1e-6,
+                'Same-stamp TF chain fails composition check')
+        map_root = matrices['map_to_base_link'] @ np.linalg.inv(root_base)
+        require(max(abs(map_root[2, 0]), abs(map_root[2, 1]), abs(map_root[0, 2]), abs(map_root[1, 2]), abs(map_root[2, 2]-1)) <= 1e-6,
+                'Map-to-root orientation is not planar')
+        map_yaw = math.atan2(map_root[1, 0], map_root[0, 0])
+        angle = wrap(left['yaw'] - map_yaw)
+        c, s = math.cos(angle), math.sin(angle)
+        x, y = map_root[:2, 3]
+        transform = {'x': float(left['x'] - (c*x-s*y)), 'y': float(left['y'] - (s*x+c*y)), 'yaw': angle}
+        rows.append({'stamp_ns': ns, 'observer_tf_index': index, 'map_to_world': transform,
+            'map_to_base_footprint_xyz': map_root[:3, 3].tolist(), 'map_to_base_footprint_yaw': map_yaw,
+            'native_model_bracket': {'before_index': lo, 'after_index': hi, 'before': left, 'after': right,
+                                     'gap_s': (native_stamps[hi]-native_stamps[lo])*1e-9},
+            'source_tf_row': row})
+    frozen = rows[0]['map_to_world']
+    max_xy = max(math.hypot(r['map_to_world']['x']-frozen['x'], r['map_to_world']['y']-frozen['y']) for r in rows)
+    max_yaw = max(abs(wrap(r['map_to_world']['yaw']-frozen['yaw'])) for r in rows)
+    base = rows[0]['native_model_bracket']['before']
+    native_xy = max(math.hypot(r['native_model_bracket']['before']['x']-base['x'], r['native_model_bracket']['before']['y']-base['y']) for r in rows)
+    native_yaw = max(abs(wrap(r['native_model_bracket']['before']['yaw']-base['yaw'])) for r in rows)
+    require(max_xy <= .001 and max_yaw <= .001 and native_xy <= .001 and native_yaw <= .001,
+            'Pre-goal independent validation exceeds 1 mm/.001 rad variation')
+    inputs[str(Path(__file__))] = sha(Path(__file__))
+    for source, recorded in inputs.items():
+        require(sha(Path(source)) == recorded, 'Input changed during offline alignment: ' + source)
+    result = {'schema_version': 1, 'status': 'sufficient_initial_se2_alignment', 'offline_only': True,
+        'map_epoch': epoch, 'calibration_phase': 'post_initial_survey_before_first_autonomous_goal',
+        'transform_direction': 'world_xy = R(map_to_world.yaw) @ map_xy + [map_to_world.x, map_to_world.y]',
+        'map_to_world': frozen, 'reference_stamp_ns': first_ns, 'reference': rows[0], 'validation_frames': rows,
+        'calibration_rule': 'Earliest complete same-epoch pre-goal observer TF with native bracketing; that one frame defines the gauge, subsequent <=2 sim seconds only validate.',
+        'validation_window': {'first_stamp_ns': first_ns, 'last_stamp_ns': rows[-1]['stamp_ns'], 'frame_count': len(rows),
+            'first_goal_sim_s': first_goal, 'all_calibration_samples_before_first_goal': True,
+            'map_to_world_max_xy_deviation_m': max_xy, 'map_to_world_max_yaw_deviation_rad': max_yaw,
+            'native_world_xy_span_m': native_xy, 'native_world_yaw_span_rad': native_yaw},
+        'model_reference': {'native_entity': 'limo', 'native_id': native_id, 'urdf_root': 'base_footprint',
+            'sdf_canonical_root_identity_verified': True, 'runtime_static_tf_matches_submitted_urdf': True,
+            'base_footprint_to_base_link_matrix': root_base.tolist()},
+        'epoch_evidence': {'initial_navigation_epoch_line': epoch_lines[0], 'survey_map_epoch': survey['map_epoch'],
+            'observer_rows_embed_epoch': True, 'association': 'Same closed run, acknowledged spawn SHA and native identity, startup/survey/observer/mission epoch.'},
+        'inputs': inputs, 'used_target_positions_for_alignment': False, 'used_final_mission_pose': False,
+        'used_final_slam_drift_to_correct_alignment': False,
+        'limitations': ['Post-survey gauge cannot measure SLAM drift incurred during initial Spin; it must not be described as run14 pre-Spin alignment.',
+            'Native brackets contain XY/yaw only; the validated root at native model origin removes the need to invent native roll/pitch for a displaced sensor.',
+            'Endpoint stationarity and short validation are sampled evidence, not continuous stationarity proof.',
+            'Expanded SDF reference transforms are checked against the actually submitted URDF and live static TF; complete geometry equivalence is outside this planar alignment.',
+            'No target prediction, target coordinates, final pose or final map registration is used.']}
+    with args.output.open('x', encoding='utf-8') as stream:
+        json.dump(result, stream, ensure_ascii=False, indent=2, allow_nan=False)
+        stream.write('\n')
+    print(json.dumps({'output': str(args.output), 'map_epoch': epoch, 'map_to_world': frozen,
+                      'validation_window': result['validation_window']}, ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (ValueError, KeyError, IndexError, TypeError, OSError, ET.ParseError) as exc:
+        raise SystemExit('REFUSED: ' + str(exc))

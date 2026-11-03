@@ -1,0 +1,470 @@
+{
+  "schema_version": 1,
+  "role": "draft_offline_run28_target_evaluation",
+  "run": "run28-startup-timing",
+  "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+  "original_mission": {
+    "schema_version": 1,
+    "status": "blocked",
+    "reason": "return_navigation_failed",
+    "mission_success": false,
+    "failures": [
+      {
+        "anchor": [
+          1.2416592461559335,
+          -0.4552590893847577
+        ],
+        "kind": "frontier",
+        "attempts": 1,
+        "last_time": 608.360106247,
+        "reason": "6:"
+      },
+      {
+        "anchor": [
+          1.1074950211232109,
+          -1.213830899906727
+        ],
+        "kind": "frontier",
+        "attempts": 1,
+        "last_time": 673.97479762,
+        "reason": "6:"
+      },
+      {
+        "anchor": [
+          0.6074950136726303,
+          -1.163830899161669
+        ],
+        "kind": "frontier",
+        "attempts": 1,
+        "last_time": 674.154453024,
+        "reason": "6:"
+      },
+      {
+        "anchor": [
+          0.15749500696710772,
+          -1.163830899161669
+        ],
+        "kind": "frontier",
+        "attempts": 1,
+        "last_time": 674.254212116,
+        "reason": "6:"
+      },
+      {
+        "anchor": [
+          -0.2925049997384148,
+          -1.163830899161669
+        ],
+        "kind": "frontier",
+        "attempts": 1,
+        "last_time": 706.561187898,
+        "reason": "6:"
+      }
+    ],
+    "map_complete": false,
+    "visual_coverage_complete": false,
+    "returned_pose_verified": false,
+    "coordinates_valid": true,
+    "target_definition_verified": false,
+    "mission_timed_out": false
+  },
+  "target_evaluation": {
+    "schema_version": 1,
+    "role": "offline_target_evaluation_only",
+    "mission_status": "blocked",
+    "reported_mission_success": false,
+    "map_frame": "map",
+    "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+    "alignment": {
+      "direction": "map_to_world",
+      "x_m": -0.0005941376424976873,
+      "y_m": 0.0018368649520369563,
+      "yaw_rad": 0.02093291536801993,
+      "source": "outputs\\setup\\run28-independent-alignment.json; sha256=146184ecf7e21618691c3b3e938edf26fde4e5b94e80e6938744d93cfa81b3fb",
+      "estimated_from_targets": false
+    },
+    "appearance_to_class": {
+      "red_box_surrogate": "red_object"
+    },
+    "distance_metric": "planar_xy_euclidean_m",
+    "max_distance_m": 0.2,
+    "prediction_count": 2,
+    "ground_truth_count": 2,
+    "TP": 2,
+    "FP": 0,
+    "FN": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "zero_target_case": false,
+    "target_inventory_exact": true,
+    "position_error_m": {
+      "mean": 0.014630165105051277,
+      "median": 0.014630165105051277,
+      "rmse": 0.017385960848243783,
+      "max": 0.0240232425355639
+    },
+    "matches": [
+      {
+        "prediction_uid": 1,
+        "truth_index": 0,
+        "class_id": "red_object",
+        "distance_m": 0.005237087674538655
+      },
+      {
+        "prediction_uid": 2,
+        "truth_index": 1,
+        "class_id": "red_object",
+        "distance_m": 0.0240232425355639
+      }
+    ],
+    "unmatched_prediction_uids": [],
+    "unmatched_truth_indices": [],
+    "transformed_predictions": [
+      {
+        "uid": 1,
+        "class_id": "red_object",
+        "map_xyz": [
+          3.5814946099372436,
+          -0.07280160068342799,
+          -0.04221489944163582
+        ],
+        "world_x": 3.5816396573075626,
+        "world_y": 0.004016862494558113
+      },
+      {
+        "uid": 2,
+        "class_id": "red_object",
+        "map_xyz": [
+          -0.395969678628455,
+          -1.5835224148627811,
+          -0.044481074242592684
+        ],
+        "world_x": -0.3633317451378904,
+        "world_y": -1.5896268175976132
+      }
+    ],
+    "limitations": [
+      "Target matching does not assess map coverage, visual coverage, autonomy, or return home.",
+      "Zero-truth recall and zero-prediction precision are undefined (null).",
+      "Alignment provenance is supplied by the evaluator, not verified by this program.",
+      "Error is planar; no surface-to-centre correction or target-height validation is applied."
+    ]
+  },
+  "target_evaluation_unverified_reason": null,
+  "alignment": {
+    "status": "sufficient_initial_se2_alignment",
+    "map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+    "calibration_phase": "post_initial_survey_before_first_autonomous_goal",
+    "calibration_rule": "Earliest complete same-epoch pre-goal observer TF with native bracketing; that one frame defines the gauge, subsequent <=2 sim seconds only validate.",
+    "reference_stamp_ns": 120899000000,
+    "source_inputs_verified": [
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\orchestration.json",
+        "bytes": 12262,
+        "sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json",
+        "bytes": 294,
+        "sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json",
+        "bytes": 32513,
+        "sha256": "01379e5bb9ecbf64a92067f19b523ba1c16066ccd416593bf42db76a12534718"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\preparation.json",
+        "bytes": 5305,
+        "sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json",
+        "bytes": 130629,
+        "sha256": "4f600dd1f5210b0f79a73d04d2b6d5b0c775ef9efd6a8f5ba080d097bcc6d9b9"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world",
+        "bytes": 11269,
+        "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\navigation.log",
+        "bytes": 94023,
+        "sha256": "297bb35c4e448ba2b280dda98fabc4f9c488d58640a242dd14861ed98b4506f0"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json",
+        "bytes": 1240,
+        "sha256": "969913017faadf2f2c111497fd0ec3e29feb625daf5fa31c4e8ad4f25fa0d263"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf",
+        "bytes": 11652,
+        "sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-robot-expanded.sdf",
+        "bytes": 18544,
+        "sha256": "136b1a550805e9964b20bcd97b079e63f3155ec0c7a66b3f34d82cdba3fcd0e7"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json",
+        "bytes": 7319,
+        "sha256": "a9a60dc2034b1143fdf080a195cfca79917e47cd1e485c06b5cf3e277c7484d9"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json",
+        "bytes": 4332,
+        "sha256": "90178557fc6c510cdf9cee43ca5be17841bb37d4b56b00cc35a56961a9f80849"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json",
+        "bytes": 4333,
+        "sha256": "e0e9c85818e09b51086dd9bf391f66c51e4792301b21749fa5806315f5eea670"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\observer.json",
+        "bytes": 15439965,
+        "sha256": "8cedcb4d4007aff8a29214064d27a4ec7a89882cca4e99ec8535998d87cb73aa"
+      },
+      {
+        "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py",
+        "bytes": 16971,
+        "sha256": "70aa5512f9afa57fd05fed644245ef18885a3f43a277c3f0b6e6b5105cea6c39"
+      }
+    ],
+    "epoch_evidence": {
+      "initial_navigation_epoch_line": "[map_session.py-1] [INFO] [1793691083.673109951] [limo_map_session]: Fresh SLAM map epoch: c190e755-9ef1-45cf-9264-c6e14407cd8d",
+      "survey_map_epoch": "c190e755-9ef1-45cf-9264-c6e14407cd8d",
+      "observer_rows_embed_epoch": true,
+      "association": "Same closed run, acknowledged spawn SHA and native identity, startup/survey/observer/mission epoch."
+    },
+    "limitations": [
+      "Post-survey gauge cannot measure SLAM drift incurred during initial Spin; it must not be described as run14 pre-Spin alignment.",
+      "Native brackets contain XY/yaw only; the validated root at native model origin removes the need to invent native roll/pitch for a displaced sensor.",
+      "Endpoint stationarity and short validation are sampled evidence, not continuous stationarity proof.",
+      "Expanded SDF reference transforms are checked against the actually submitted URDF and live static TF; complete geometry equivalence is outside this planar alignment.",
+      "No target prediction, target coordinates, final pose or final map registration is used."
+    ],
+    "validation_scope": "Consumes the separately validated frozen alignment; verifies declared no-fit flags, epoch, direction and immutable source hashes. Does not reconstruct native/model frame calibration."
+  },
+  "raw_alignment_checks": {
+    "phase": "post_initial_survey_before_first_autonomous_goal",
+    "reference_stamp_ns": 120899000000,
+    "first_goal_sim_s": 132.3,
+    "validation_frame_count": 23,
+    "last_validation_stamp_ns": 122899000000,
+    "raw_observer_identity": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\observer.json",
+      "bytes": 15439965,
+      "sha256": "8cedcb4d4007aff8a29214064d27a4ec7a89882cca4e99ec8535998d87cb73aa"
+    },
+    "model_reference": {
+      "native_entity": "limo",
+      "native_id": 114,
+      "urdf_root": "base_footprint",
+      "sdf_canonical_root_identity_verified": true,
+      "runtime_static_tf_matches_submitted_urdf": true,
+      "base_footprint_to_base_link_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.15
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "max_map_to_world_xy_variation_m": 4.336808689942018e-19,
+    "max_map_to_world_yaw_variation_rad": 0.0,
+    "native_world_xy_span_m": 0.0,
+    "native_world_yaw_span_rad": 0.0,
+    "scope": "Exact raw observer/native association and explicit root/base planar reconstruction; submitted URDF/SDF derivation remains separately validated by the frozen alignment producer."
+  },
+  "truth": {
+    "world": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world",
+      "bytes": 11269,
+      "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811"
+    },
+    "metadata": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.metadata.json",
+      "bytes": 1383,
+      "sha256": "226282a376b5cae5401fc55e40ccf5977cfd1812d6278aeedb4d37f52e524d22"
+    },
+    "validated_target_box_count": 2,
+    "domain_bounds_xy": [
+      -1.2,
+      -2.8,
+      4.4,
+      1.2
+    ],
+    "metadata_spawn_world_xy": [
+      0.0,
+      0.0
+    ],
+    "scope": "Prepared static world hash and matching collision/visual box centres/sizes; no independent attestation of all live spawned geometry."
+  },
+  "created_at_utc": "2026-11-03T07:44:32.863700+00:00",
+  "metric_definition": {
+    "prediction_reference": "RGB-D visible surface point in map transformed by fixed post-survey gauge",
+    "truth_reference": "Wall-mounted red surrogate box centre",
+    "distance_metric": "planar_xy_euclidean_m",
+    "max_distance_m": 0.2,
+    "appearance_to_class": {
+      "red_box_surrogate": "red_object"
+    },
+    "surface_to_centre_correction_applied": false,
+    "z_evaluated": false,
+    "matching": "Maximum-cardinality, then minimum-total-distance, one-to-one same-class matches"
+  },
+  "original_orchestration_status": "terminal_observed",
+  "original_orchestration_errors": [
+    "Retained-frame offline audit failed"
+  ],
+  "global_process_absence_verified": false,
+  "inputs": {
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\orchestration.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\orchestration.json",
+      "bytes": 12262,
+      "sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json",
+      "bytes": 32513,
+      "sha256": "01379e5bb9ecbf64a92067f19b523ba1c16066ccd416593bf42db76a12534718"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json",
+      "bytes": 294,
+      "sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-target-evaluation.py": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-target-evaluation.py",
+      "bytes": 18502,
+      "sha256": "59b511d7a1886e050f77b9ee90c3f6703f4cfcf70170e2d7bbb22436baadb981"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-geometric-coverage.py": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-geometric-coverage.py",
+      "bytes": 26372,
+      "sha256": "5b47b1d719001607cd177f69aae774312b2eade0da13df1c4e794e170446bd87"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\tools\\evaluate_targets.py": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\tools\\evaluate_targets.py",
+      "bytes": 15475,
+      "sha256": "1b37c05b99946f272ad7b0a289c56333380b3a6cf34385e30ccbb50402df6ae9"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\preparation.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\preparation.json",
+      "bytes": 5305,
+      "sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.world",
+      "bytes": 11269,
+      "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-independent-alignment.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-independent-alignment.json",
+      "bytes": 105014,
+      "sha256": "146184ecf7e21618691c3b3e938edf26fde4e5b94e80e6938744d93cfa81b3fb"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json",
+      "bytes": 130629,
+      "sha256": "4f600dd1f5210b0f79a73d04d2b6d5b0c775ef9efd6a8f5ba080d097bcc6d9b9"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\navigation.log": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\navigation.log",
+      "bytes": 94023,
+      "sha256": "297bb35c4e448ba2b280dda98fabc4f9c488d58640a242dd14861ed98b4506f0"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json",
+      "bytes": 1240,
+      "sha256": "969913017faadf2f2c111497fd0ec3e29feb625daf5fa31c4e8ad4f25fa0d263"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf",
+      "bytes": 11652,
+      "sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-robot-expanded.sdf": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run28-robot-expanded.sdf",
+      "bytes": 18544,
+      "sha256": "136b1a550805e9964b20bcd97b079e63f3155ec0c7a66b3f34d82cdba3fcd0e7"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json",
+      "bytes": 7319,
+      "sha256": "a9a60dc2034b1143fdf080a195cfca79917e47cd1e485c06b5cf3e277c7484d9"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json",
+      "bytes": 4332,
+      "sha256": "90178557fc6c510cdf9cee43ca5be17841bb37d4b56b00cc35a56961a9f80849"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json",
+      "bytes": 4333,
+      "sha256": "e0e9c85818e09b51086dd9bf391f66c51e4792301b21749fa5806315f5eea670"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\observer.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run28-startup-timing\\observer.json",
+      "bytes": 15439965,
+      "sha256": "8cedcb4d4007aff8a29214064d27a4ec7a89882cca4e99ec8535998d87cb73aa"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\freeze-run28-initial-alignment.py",
+      "bytes": 16971,
+      "sha256": "70aa5512f9afa57fd05fed644245ef18885a3f43a277c3f0b6e6b5105cea6c39"
+    },
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.metadata.json": {
+      "path": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\worlds\\smoke_maze.metadata.json",
+      "bytes": 1383,
+      "sha256": "226282a376b5cae5401fc55e40ccf5977cfd1812d6278aeedb4d37f52e524d22"
+    }
+  },
+  "alignment_prefix_inputs": [],
+  "execution": {
+    "python": "C:\\Users\\Admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+    "argv": [
+      "outputs/setup/run28-target-evaluation.py",
+      "--run-dir",
+      "outputs/ros_smoke/run28-startup-timing",
+      "--alignment",
+      "outputs/setup/run28-independent-alignment.json",
+      "--world",
+      "worlds/smoke_maze.world",
+      "--metadata",
+      "worlds/smoke_maze.metadata.json",
+      "--output",
+      "outputs/setup/run28-target-evaluation.json"
+    ],
+    "cwd": "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel"
+  },
+  "limits": [
+    "Original mission_success, failures and other mission flags are unchanged; no overall benchmark verdict is inferred.",
+    "Null target_evaluation means missing/invalid evidence, not zero targets or a failed detector.",
+    "Post-survey alignment cannot measure SLAM drift during initial Spin and cannot be compared as the same gauge as run14 pre-Spin alignment.",
+    "No target position, terminal pose or final map is used to fit an alignment; world truth is offline only.",
+    "Target scoring does not validate full exploration, visual coverage, autonomy, collision-free operation, return home, formal items or physical LIMO."
+  ]
+}

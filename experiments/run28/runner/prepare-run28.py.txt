@@ -1,0 +1,271 @@
+"""Prepare, but do not launch, one fresh run28 with startup timing evidence.
+
+This file is inert on import. Execute main only after root review. The explicit
+arguments carry root's external confirmation that run27 exec 77575 ended with
+exit 1; the later scoped closure check never replaces run27's original false.
+"""
+import argparse
+import ast
+import hashlib
+import json
+import math
+from pathlib import Path
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT / 'outputs/setup'
+OLD = ROOT / 'outputs/ros_smoke/run27-writer-pipe'
+OUT = ROOT / 'outputs/ros_smoke/run28-startup-timing'
+NAMES = ('env.sh', 'process.py', 'param-gate.py', 'preflight.py', 'save.py',
+         'provenance.py', 'installed-check.py')
+TIMING_ENV = 'LIMO_MOTION_ENV_READY_MONOTONIC'
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+def replace_once(source, old, new):
+    if source.count(old) != 1:
+        raise RuntimeError('Expected exactly one frozen template anchor: ' + old[:100])
+    return source.replace(old, new, 1)
+
+
+MOTION_WAIT = '''def wait_motion_startup(seconds):
+    # Parent observations share CLOCK_MONOTONIC with the diagnostic collector.
+    # Observation time is not the exact time the child emitted its marker.
+    started=time.monotonic()
+    until=min(deadline,started+seconds)
+    evidence={'clock':'CLOCK_MONOTONIC','requested_budget_s':seconds,
+        'wait_started_monotonic_s':started,'wait_deadline_monotonic_s':until,
+        'global_deadline_monotonic_s':deadline,'status':'waiting',
+        'marker_observed_monotonic_s':None,'last_log_read_completed_monotonic_s':None,
+        'scope':'Parent observation of the collector dual-stream readiness marker; not child emission time or motion verification.'}
+    path=OUT/'motion-startup-wait.json'
+    write(path,evidence)
+    expected='READY: native Gazebo limo world pose and ROS odom received;'
+    while time.monotonic()<until:
+        content=(OUT/'motion.log').read_text(errors='replace')
+        observed=time.monotonic()
+        evidence['last_log_read_completed_monotonic_s']=observed
+        if any(line.startswith(expected) for line in content.splitlines()):
+            evidence['marker_observed_monotonic_s']=observed
+            if observed<=until:
+                evidence['status']='observed_within_budget'
+                write(path,evidence)
+                return
+            # A blocking log read may finish after the deadline; never promote
+            # such a late observation to an in-budget readiness result.
+            break
+        if jobs['motion'][0].poll() is not None:
+            evidence['status']='process_exited_before_observation'
+            evidence['process_returncode']=jobs['motion'][0].returncode
+            evidence['wait_finished_monotonic_s']=time.monotonic()
+            write(path,evidence)
+            raise RuntimeError('motion exited before readiness')
+        time.sleep(.2)
+    evidence['status']='deadline_exceeded'
+    evidence['wait_finished_monotonic_s']=time.monotonic()
+    write(path,evidence)
+    raise TimeoutError('motion readiness not observed')
+
+
+'''
+
+
+def render_helpers(previous, token):
+    """Pure rendering from frozen run27 files; creates no files/processes."""
+    helpers = {}
+    for name in NAMES:
+        value = (SETUP / ('run27-' + name)).read_text(encoding='utf-8')
+        value = value.replace(previous['token'], token)
+        value = value.replace('run27-writer-pipe', 'run28-startup-timing')
+        value = value.replace('run27', 'run28').replace('Run27', 'Run28').replace('RUN27', 'RUN28')
+        helpers[name] = value
+
+    old_motion = ('  motion) exec /usr/bin/python3 scripts/capture_motion_evidence.py '
+                  '--duration 70 --motion-wait 90 --output "$run_dir/initial-motion.json" ;;')
+    new_motion = '''  motion)
+    # Same PID through both execs. The timestamp is the wrapper-entry observation
+    # after ROS environment setup, including this -S wrapper's own startup cost.
+    # It is not the exact instant the final source command returned.
+    exec /usr/bin/python3 -S -B -c 'import os,sys,time; observed=time.monotonic(); os.environ["LIMO_MOTION_ENV_READY_MONOTONIC"]=str(observed); print("MOTION_ENV_CLOCK clock=CLOCK_MONOTONIC seconds="+str(observed)+" scope=wrapper_entry_after_environment_including_wrapper_startup",flush=True); os.execv("/usr/bin/python3",["/usr/bin/python3","-B",*sys.argv[1:]])' scripts/capture_motion_evidence.py --duration 70 --motion-wait 90 --output "$run_dir/initial-motion.json"
+    ;;'''
+    helpers['env.sh'] = replace_once(helpers['env.sh'], old_motion, new_motion)
+
+    process = helpers['process.py']
+    process = replace_once(process, 'def start(name,mode,*args):\n', '''def start(name,mode,*args):
+    launch_timing={'clock':'CLOCK_MONOTONIC','start_entered_monotonic_s':time.monotonic(),
+        'scope':'Parent samples around process creation, identity persistence and one-byte gate release; exact child scheduling is not inferred.'}
+''')
+    process = replace_once(process,
+        "            process=subprocess.Popen(['/usr/bin/python3','-c',bootstrap,str(gate_read),*command],",
+        "            launch_timing['popen_started_monotonic_s']=time.monotonic()\n"
+        "            process=subprocess.Popen(['/usr/bin/python3','-c',bootstrap,str(gate_read),*command],")
+    process = replace_once(process, '        jobs[name]=(process,None)\n',
+        "        launch_timing['popen_returned_monotonic_s']=time.monotonic()\n"
+        '        jobs[name]=(process,None)\n')
+    process = replace_once(process,
+        "        write(OUT/('process-'+name+'.json'),dict(owner,name=name,mode=mode,args=list(map(str,args))))\n"
+        "        os.write(gate_write,b'1')\n",
+        "        launch_timing['identity_write_started_monotonic_s']=time.monotonic()\n"
+        "        write(OUT/('process-'+name+'.json'),dict(owner,name=name,mode=mode,args=list(map(str,args))))\n"
+        "        launch_timing['identity_write_completed_monotonic_s']=time.monotonic()\n"
+        "        launch_timing['gate_write_started_monotonic_s']=time.monotonic()\n"
+        "        released=os.write(gate_write,b'1')\n"
+        "        launch_timing['gate_write_completed_monotonic_s']=time.monotonic()\n"
+        "        launch_timing['gate_bytes_written']=released\n"
+        "        launch_timing['identity_persisted_before_gate_write']=True\n"
+        "        write(OUT/('launch-timing-'+name+'.json'),dict(launch_timing,name=name,owner=owner))\n"
+        "        if released!=1:raise RuntimeError('Launch gate did not release exactly one byte')\n")
+    process = replace_once(process, 'def latest_tail():\n', MOTION_WAIT + 'def latest_tail():\n')
+    process = replace_once(process, "    wait_ready('motion','READY:',30)\n", '    wait_motion_startup(60)\n')
+    process = replace_once(process, "          'native_terminal_tail_verified':False,\n",
+        "          'native_terminal_tail_verified':False,\n"
+        "          'supervisor_began_monotonic_s':began,'global_deadline_monotonic_s':deadline,\n"
+        "          'timing_clock':'CLOCK_MONOTONIC','motion_startup_ready_budget_s':60,\n")
+    helpers['process.py'] = process
+    for name, value in helpers.items():
+        if name.endswith('.py'):
+            ast.parse(value, filename='run28-' + name)
+    # Every helper except these two must differ only in run identifiers/paths.
+    if "wait_ready('observer','READY:',25)" not in process or 'deadline = began+1800' not in process:
+        raise RuntimeError('Unexpected unchanged observer/global budget template')
+    if not all(fragment in helpers['env.sh'] for fragment in (
+            '--duration 70 --motion-wait 90', '-p mission_timeout_s:=900.0',
+            '-p return_timeout_s:=240.0', '-p goal_timeout_s:=120.0',
+            '-p observation_stage_timeout_s:=360.0', '-p tf_max_age_s:=1.5',
+            '-p require_retained_inspection:=true', '-p retention_max_jobs:=96')):
+        raise RuntimeError('An unchanged runtime budget/profile fragment is missing')
+    return helpers
+
+
+def render_start():
+    start = (SETUP / 'start-run27.sh').read_text(encoding='utf-8')
+    start = start.replace('run27-writer-pipe', 'run28-startup-timing').replace('run27', 'run28')
+    start = replace_once(start, 'import hashlib, json, subprocess, yaml\n',
+                         'import ast, hashlib, json, subprocess, yaml\n')
+    start = replace_once(start, "assert report['code_head'] is None\n", '''assert report['code_head'] is None
+# Core source/install equality is still required by the original shell cmp
+# checks and run28-installed-check before any simulator is launched. The
+# collector is explicitly executed from source; no install copy/build needed.
+collector = root/'scripts/capture_motion_evidence.py'
+collector_raw = collector.read_bytes()
+ast.parse(collector_raw, filename=str(collector))
+assert hashlib.sha256(collector_raw).hexdigest() == report['collector_source_sha256_at_preparation']
+assert 'LIMO_MOTION_ENV_READY_MONOTONIC' in collector_raw.decode('utf-8')
+for name, expected in report['prepared_helper_sha256'].items():
+    assert hashlib.sha256((root/name).read_bytes()).hexdigest() == expected
+assert report['motion_startup_ready_budget_s'] == 60
+assert report['planned_active_wall_budget_s'] == 1800
+assert report['previous_attempt']['original_all_owned_groups_empty'] is False
+assert report['previous_attempt']['later_scoped_groups_empty'] is True
+''')
+    # Validate the embedded Python without running bash, git, YAML imports or ROS.
+    embedded = start.split("<<'PY'\n", 1)[1].split('\nPY\n', 1)[0]
+    ast.parse(embedded, filename='start-run28.sh:embedded-python')
+    return start
+
+
+def previous_run_evidence():
+    closed = read(OLD / 'orchestration.json')
+    elapsed = closed.get('elapsed_wall_s')
+    if not (closed.get('status') == 'orchestration_failed' and closed.get('terminal') is None
+            and type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed > 0
+            and closed.get('all_owned_groups_empty') is False
+            and 'TimeoutError: motion readiness not observed' in closed.get('errors', [])):
+        raise RuntimeError('Previous failure is not the reviewed original run27 result')
+    recheck = read(OLD / 'closure-recheck.json')
+    expected = {path.name: read(path) for path in OLD.glob('process-*.json')}
+    nested = (closed.get('recorder_inner_recheck') or {}).get('owner')
+    if nested is None:
+        raise RuntimeError('Previous nested recorder identity unavailable')
+    expected['nested_recorder'] = nested
+    rows = recheck.get('checks') or []
+    if not (len(expected) == len(rows) == 12
+            and recheck.get('read_only') is True
+            and recheck.get('original_orchestration_sha256') == sha((OLD / 'orchestration.json').read_bytes())
+            and recheck.get('original_all_owned_groups_empty') is False
+            and recheck.get('all_recorded_groups_empty_at_recheck') is True
+            and {row.get('file') for row in rows} == set(expected)
+            and all(row.get('owner') == expected[row['file']] and row.get('remaining') == []
+                    and row.get('ownership_errors') == [] and row.get('remaining_check_complete') is True
+                    for row in rows)):
+        raise RuntimeError('Later scoped check does not verify the exact twelve recorded groups')
+    writer = read(OLD / 'retention-shutdown.json')
+    if not (writer.get('writer') is None and writer.get('fault') is None
+            and writer.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and writer.get('shutdown', {}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Previous producer shutdown receipt is not closed')
+    return closed, recheck, read(OLD / 'preparation.json')
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-previous-root-session', type=int, choices=[77575], required=True)
+    parser.add_argument('--confirmed-previous-root-exit-code', type=int, choices=[1], required=True)
+    args = parser.parse_args(argv)
+    targets = [SETUP / ('run28-' + name) for name in NAMES] + [SETUP / 'start-run28.sh']
+    if OUT.exists() or OUT.is_symlink() or any(path.exists() or path.is_symlink() for path in targets):
+        raise RuntimeError('Refuse existing run28 output or helper; no restart or overwrite')
+    closed, recheck, previous = previous_run_evidence()
+    nav = (ROOT / 'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml').read_bytes()
+    if nav != (OLD / 'nav2-rpp-03m.yaml').read_bytes():
+        raise RuntimeError('TF/Nav2 experimental profile changed from run27')
+    collector = ROOT / 'scripts/capture_motion_evidence.py'
+    collector_raw = collector.read_bytes()
+    ast.parse(collector_raw, filename=str(collector))
+    if TIMING_ENV not in collector_raw.decode('utf-8'):
+        raise RuntimeError('Reviewed source collector timing support is not present yet')
+    token, epoch = 'run28-' + uuid.uuid4().hex, str(uuid.uuid4())
+    helpers, start = render_helpers(previous, token), render_start()
+    helper_payloads = {SETUP / ('run28-' + name): value.encode('utf-8') for name, value in helpers.items()}
+    helper_payloads[SETUP / 'start-run28.sh'] = start.encode('utf-8')
+    report = {**previous, 'run': OUT.name, 'code_head': None, 'token': token, 'epoch': epoch,
+        'nav2_sha256': sha(nav),
+        'previous_attempt': {'run': OLD.name, 'status': closed['status'], 'errors': closed['errors'],
+            'original_all_owned_groups_empty': closed['all_owned_groups_empty'],
+            'original_orchestration_sha256': sha((OLD / 'orchestration.json').read_bytes()),
+            'later_scoped_recheck_sha256': sha((OLD / 'closure-recheck.json').read_bytes()),
+            'later_scoped_groups_empty': recheck['all_recorded_groups_empty_at_recheck'],
+            'later_scoped_group_count': len(recheck['checks']),
+            'scope': 'Later recorded-group inspection, not original-deadline closure or global process absence; original false is unchanged.',
+            'root_exec_completion': {'session_id': args.confirmed_previous_root_session,
+                'exit_code': args.confirmed_previous_root_exit_code, 'source': 'Root confirmation supplied as explicit prepare arguments.'}},
+        'change': 'Only motion collector startup gate 30 to 60 wall seconds, with parent/environment/collector startup timing diagnostics.',
+        'startup_change': 'Motion collector outer readiness budget is 60 s, still bounded by the original global 1800 s deadline. Other startup waits unchanged.',
+        'motion_startup_ready_budget_s': 60,
+        'planned_active_wall_budget_s': 1800,
+        'collector_execution': 'Normal /usr/bin/python3 -B executes scripts/capture_motion_evidence.py directly from source; same PID after a stdlib-only -S -B timing wrapper.',
+        'collector_source_sha256_at_preparation': sha(collector_raw),
+        'prepared_helper_sha256': {path.relative_to(ROOT).as_posix(): sha(payload) for path, payload in helper_payloads.items()},
+        'startup_timing': {'clock': 'CLOCK_MONOTONIC', 'environment_variable': TIMING_ENV,
+            'environment_timestamp_scope': 'Wrapper entry after ROS environment setup, including lightweight wrapper startup; not the exact final source-return boundary.',
+            'launch_file_pattern': 'launch-timing-<component>.json', 'motion_wait_file': 'motion-startup-wait.json',
+            'ownership_order': 'Persist process identity, record completion, then release one byte; record before/after gate writes separately.',
+            'readiness_observation_scope': 'Parent log-read observation time, distinct from the child marker-emission timestamp.',
+            'data_use': 'Diagnostics only; no new world/pose input enters planning or control.'},
+        'comparison_scope': 'Same simulator, TF/Nav2 values, /mnt/c output and strict raw-frame retention. Only motion collector startup allowance changes; mission900/return240/goal120/observation360/inspection12/writer5/request10/shutdown8 stay unchanged.'}
+    # All checks/rendering precede writes. Exclusive creation prevents accidental
+    # reuse. If interrupted partway, preserve partial preparation for inspection.
+    OUT.mkdir(parents=True)
+    (OUT / 'mission').mkdir()
+    with (OUT / 'epoch.txt').open('xb') as stream:
+        stream.write((epoch + '\n').encode('ascii'))
+    with (OUT / 'nav2-rpp-03m.yaml').open('xb') as stream:
+        stream.write(nav)
+    for path, payload in helper_payloads.items():
+        with path.open('xb') as stream:
+            stream.write(payload)
+    with (OUT / 'preparation.json').open('xb') as stream:
+        stream.write((json.dumps(report, indent=2, allow_nan=False) + '\n').encode('utf-8'))
+    print(json.dumps({'prepared': str(OUT), 'epoch': epoch, 'token': token,
+                      'launched': False, 'motion_startup_ready_budget_s': 60}, indent=2))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,451 @@
+#!/usr/bin/env python3
+"""DRAFT: offline geometric map measurements for one closed simulation run.
+
+Only explicit files are read; no ROS/Gazebo imports, commands, discovery or
+control. Run only after the experiment owner confirms closure. Required CLI:
+  --run-dir --snapshot --alignment --world --metadata --output
+
+The alignment producer owns its independently validated native/model/frame
+derivation. This consumer requires a sufficient same-epoch, no-fit report and
+rehashes every declared input; it does not assume model/base origin identity or
+recreate that derivation. Missing calibration refuses measurement.
+
+Supported snapshots are (1) the observer's map_data plus map.origin=[x,y,yaw]
+format, with ros_s (legacy ros_now also accepted); and (2) the valid immutable
+OccupancyGrid capture accepted by tools/export_occupancy_map.py, optionally in
+document.snapshot, with map.data, origin XYZ/quaternion, and epoch.raw.
+Raw labels are evaluated without PGM classification or unknown-cell filling.
+
+No generic pass or benchmark verdict is produced. The supplied snapshot's
+timestamp is reported; closure does not imply it is the latest/final map.
+"""
+from collections import deque
+from datetime import datetime, timezone
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+import sys
+import xml.etree.ElementTree as ET
+
+import numpy as np
+
+
+ROOT = Path(__file__).resolve().parents[2]
+MAX_JSON_BYTES = 64 * 1024 * 1024
+MAX_CELLS = 4_000_000
+SOURCES = {}
+
+
+def require(condition, reason):
+    if not condition:
+        raise ValueError(reason)
+
+
+def finite(value, name):
+    require(type(value) in (int, float) and math.isfinite(value), 'Finite number required: ' + name)
+    return float(value)
+
+
+def integer(value, name, low=0, high=2**63 - 1):
+    require(type(value) is int and low <= value <= high, 'Invalid integer: ' + name)
+    return value
+
+
+def vector(value, size, name):
+    require(type(value) is list and len(value) == size, 'Invalid vector: ' + name)
+    return [finite(v, name) for v in value]
+
+
+def source_path(path):
+    path = Path(path)
+    require(path.is_file() and not path.is_symlink(), 'Missing/unsafe input: ' + str(path))
+    return path.resolve(strict=True)
+
+
+def fingerprint(path, prefix_bytes=None):
+    path = source_path(path)
+    digest, count = hashlib.sha256(), 0
+    with path.open('rb') as stream:
+        while prefix_bytes is None or count < prefix_bytes:
+            block = stream.read(min(1024 * 1024, prefix_bytes - count) if prefix_bytes is not None else 1024 * 1024)
+            if not block:
+                break
+            digest.update(block)
+            count += len(block)
+    if prefix_bytes is not None:
+        require(count == prefix_bytes, 'Incomplete immutable prefix: ' + str(path))
+    return {'path': str(path), 'bytes': count, 'sha256': digest.hexdigest()}
+
+
+def remember(path):
+    item = fingerprint(path)
+    previous = SOURCES.get(item['path'])
+    require(previous is None or previous == item, 'Input changed while reading: ' + item['path'])
+    SOURCES[item['path']] = item
+    return item
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        require(key not in result, 'Duplicate JSON key: ' + key)
+        result[key] = value
+    return result
+
+
+def validate_numbers(value):
+    if type(value) is float:
+        require(math.isfinite(value), 'Nonfinite JSON number')
+    elif isinstance(value, dict):
+        for child in value.values():
+            validate_numbers(child)
+    elif isinstance(value, list):
+        for child in value:
+            validate_numbers(child)
+
+
+def load(path):
+    path = source_path(path)
+    with path.open('rb') as stream:
+        raw = stream.read(MAX_JSON_BYTES + 1)
+    require(len(raw) <= MAX_JSON_BYTES, 'JSON input exceeds size limit')
+    digest = {'path': str(path), 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+    previous = SOURCES.get(str(path))
+    require(previous is None or previous == digest, 'Input changed while reading: ' + str(path))
+    SOURCES[str(path)] = digest
+    value = json.loads(raw.decode('utf-8-sig'), object_pairs_hook=unique_object)
+    require(isinstance(value, dict), 'JSON object required: ' + str(path))
+    validate_numbers(value)
+    return value
+
+
+def closed_mission(run):
+    orchestration = load(run / 'orchestration.json')
+    require(orchestration.get('status') in ('terminal_observed', 'orchestration_failed')
+            and orchestration.get('all_owned_groups_empty') is True
+            and finite(orchestration.get('elapsed_wall_s'), 'elapsed_wall_s') > 0,
+            'Owned run closure not confirmed')
+    terminal = orchestration.get('terminal') or {}
+    name = str(terminal.get('path', '')).replace('\\', '/').rsplit('/', 1)[-1]
+    require(name.startswith('mission_') and name.endswith('.json'),
+            'No normal supervisor terminal mission; startup failure cannot be scored')
+    mission = load(run / 'mission' / name)
+    require(mission.get('status') in ('done', 'blocked') and type(mission.get('mission_success')) is bool,
+            'Normal saved terminal mission required')
+    epoch = mission.get('map_epoch')
+    require(isinstance(epoch, str) and bool(epoch.strip()) and mission.get('coordinates_valid') is True,
+            'Valid terminal map epoch/coordinates required')
+    shutdown = load(run / 'retention-shutdown.json')
+    require(shutdown.get('writer') is None and shutdown.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown', {}).get('final_checkpoint_persisted') is True,
+            'Writer closure and final checkpoint not confirmed')
+    return mission, orchestration
+
+
+def normalize_snapshot(document, epoch):
+    snapshot = document.get('snapshot', document)
+    require(isinstance(snapshot, dict) and isinstance(snapshot.get('map'), dict), 'Missing map snapshot')
+    grid = snapshot['map']
+    width = integer(grid.get('width'), 'map.width', 1, MAX_CELLS)
+    height = integer(grid.get('height'), 'map.height', 1, MAX_CELLS)
+    require(width * height <= MAX_CELLS, 'Map cell count limit')
+    resolution = finite(grid.get('resolution'), 'map.resolution')
+    require(resolution > 0 and math.isfinite(resolution * max(width, height)), 'Invalid map extent')
+    if isinstance(grid.get('origin'), dict) and 'data' in grid:
+        schema = 'immutable_occupancy_grid_capture'
+        require(snapshot.get('valid') is True and snapshot.get('errors', []) == [], 'Snapshot is not valid')
+        require(isinstance(snapshot.get('epoch'), dict) and snapshot['epoch'].get('raw') == epoch,
+                'Captured snapshot epoch differs from terminal mission')
+        require(grid.get('frame_id') == 'map', 'Map frame must be map')
+        origin = grid['origin']
+        require(origin.get('valid_geometry') is True, 'Invalid origin geometry')
+        xyz = vector(origin.get('xyz'), 3, 'origin.xyz')
+        qx, qy, qz, qw = vector(origin.get('quaternion_xyzw'), 4, 'origin.quaternion_xyzw')
+        require(abs(qx*qx+qy*qy+qz*qz+qw*qw-1) <= 1e-6, 'Non-unit origin quaternion')
+        require(abs(xyz[2]) <= 1e-9 and abs(qx) <= 1e-9 and abs(qy) <= 1e-9, 'Nonplanar origin')
+        origin_xy_yaw = [xyz[0], xyz[1], math.atan2(2*qz*qw, qw*qw-qz*qz)]
+        stamp = integer(grid.get('stamp_ns'), 'map.stamp_ns') * 1e-9
+        capture = snapshot.get('captured_ros_ns')
+        capture = None if capture is None else integer(capture, 'captured_ros_ns') * 1e-9
+        data = grid['data']
+    elif isinstance(grid.get('origin'), list) and 'map_data' in snapshot:
+        schema = 'observer_map_data_snapshot'
+        require(snapshot.get('map_epoch') == epoch, 'Observer snapshot epoch differs from terminal mission')
+        require(grid.get('frame') == 'map', 'Map frame must be map')
+        origin_xy_yaw = vector(grid['origin'], 3, 'origin_xy_yaw')
+        stamp = finite(grid.get('stamp'), 'map.stamp')
+        require(stamp >= 0, 'Negative map stamp')
+        capture = snapshot.get('ros_s', snapshot.get('ros_now'))
+        capture = None if capture is None else finite(capture, 'snapshot ROS time')
+        data = snapshot['map_data']
+    else:
+        raise ValueError('Unsupported explicit snapshot schema')
+    require(type(data) is list and len(data) == width * height, 'Occupancy data length mismatch')
+    require(all(type(v) is int and -1 <= v <= 100 for v in data), 'Illegal raw occupancy value')
+    require(capture is None or capture >= stamp, 'Map stamp is after snapshot capture')
+    normalized = {'frame': 'map', 'stamp_s': stamp, 'width': width, 'height': height,
+                  'resolution': resolution, 'origin_xy_yaw': origin_xy_yaw}
+    return normalized, np.array(data, dtype=np.int16).reshape(height, width), {
+        'schema': schema, 'capture_ros_s': capture,
+        'source_document_passed': document.get('passed'), 'source_document_errors': document.get('errors'),
+        'temporal_scope': 'The explicitly supplied captured map; closed run does not establish this is its latest/final map.'}
+
+
+def checked_alignment(path, epoch, world_sha):
+    alignment = load(path)
+    require(alignment.get('schema_version') == 1 and alignment.get('status') == 'sufficient_initial_se2_alignment'
+            and alignment.get('map_epoch') == epoch, 'Sufficient same-epoch frozen alignment required')
+    for key in ('used_target_positions_for_alignment', 'used_final_mission_pose',
+                'used_final_slam_drift_to_correct_alignment'):
+        require(alignment.get(key) is False, 'Missing no-fit provenance: ' + key)
+    direction = 'world_xy = R(map_to_world.yaw) @ map_xy + [map_to_world.x, map_to_world.y]'
+    require(alignment.get('transform_direction') == direction, 'Explicit map-to-world direction required')
+    transform = {k: finite(alignment['map_to_world'][k], 'map_to_world.' + k) for k in ('x', 'y', 'yaw')}
+    manifest = alignment.get('inputs')
+    require(isinstance(manifest, dict) and bool(manifest), 'Alignment input manifest required')
+    checked, prefixes, world_bound = [], [], False
+    for name, expected in manifest.items():
+        require(isinstance(expected, dict), 'Invalid alignment manifest entry')
+        source = Path(str(expected.get('path', name)).replace('\\', '/'))
+        source = source if source.is_absolute() else ROOT / source
+        if 'prefix_bytes' in expected:
+            count = integer(expected['prefix_bytes'], 'prefix_bytes', 1)
+            actual = fingerprint(source, count)
+            require(actual['sha256'] == expected.get('prefix_sha256'), 'Alignment prefix hash mismatch')
+            prefixes.append({'path': actual['path'], 'prefix_bytes': count, 'prefix_sha256': actual['sha256']})
+            checked.append(prefixes[-1])
+        else:
+            actual = remember(source)
+            require(actual['bytes'] == expected.get('bytes') and actual['sha256'] == expected.get('sha256'),
+                    'Alignment source hash mismatch: ' + str(source))
+            checked.append(actual)
+            world_bound = world_bound or actual['sha256'] == world_sha
+    require(world_bound, 'Prepared world is absent from verified alignment inputs')
+    return transform, {'status': alignment['status'], 'map_epoch': epoch,
+        'calibration_phase': alignment.get('calibration_phase'), 'calibration_rule': alignment.get('calibration_rule'),
+        'reference_stamp_ns': alignment.get('reference_stamp_ns'), 'source_inputs_verified': checked,
+        'epoch_evidence': alignment.get('epoch_evidence'), 'limitations': alignment.get('limitations', []),
+        'validation_scope': 'Consumes the separately validated frozen alignment; verifies declared no-fit flags, epoch, direction and immutable source hashes. Does not reconstruct native/model frame calibration.'}, prefixes
+
+
+def pose(element):
+    if element is None:
+        return np.zeros(3)
+    require(not element.attrib, 'Unsupported pose attributes')
+    values = np.array([float(v) for v in (element.text or '').split()])
+    require(values.shape == (6,) and np.isfinite(values).all() and not np.any(values[3:] != 0),
+            'Only finite axis-aligned XYZ/RPY-zero geometry supported')
+    return values[:3]
+
+
+def truth_geometry(path, metadata):
+    require(metadata.get('role') == 'simulator_and_offline_evaluator_only', 'Unexpected metadata role')
+    root = ET.parse(path).getroot()
+    worlds = root.findall('world')
+    require(len(worlds) == 1, 'Exactly one world required')
+    world = worlds[0]
+    require(not world.findall('.//include') and not world.findall('.//frame') and not world.findall('.//model/model'),
+            'Unsupported included/nested/relative geometry')
+    boxes, floor, names = [], None, set()
+    for model in world.findall('model'):
+        name = model.get('name')
+        require(isinstance(name, str) and name not in names, 'Missing/duplicate model name')
+        names.add(name)
+        require(model.findtext('static') == 'true' and not model.findall('.//plugin') and not model.findall('joint'),
+                'Only static models without joints/plugins are supported')
+        links = model.findall('link')
+        require(len(links) == 1, 'Single-link geometry required')
+        link = links[0]
+        base = pose(model.find('pose')) + pose(link.find('pose'))
+        collisions, visuals = link.findall('collision'), link.findall('visual')
+        require(len(collisions) == len(visuals) == 1, 'One collision and one visual required')
+        geometry = []
+        for part in (collisions[0], visuals[0]):
+            shape = part.find('geometry')
+            require(shape is not None and len(shape) == 1 and shape[0].tag == 'box', 'Only box geometry supported')
+            size = np.array([float(v) for v in (shape.findtext('box/size') or '').split()])
+            require(size.shape == (3,) and np.isfinite(size).all() and np.all(size > 0), 'Invalid box dimensions')
+            geometry.append((base + pose(part.find('pose')), size))
+        require(np.array_equal(geometry[0][0], geometry[1][0]) and np.array_equal(geometry[0][1], geometry[1][1]),
+                'Collision and visual geometry differ')
+        center, size = geometry[0]
+        low, high = center-size/2, center+size/2
+        entry = {'name': name, 'min_xyz': low.tolist(), 'max_xyz': high.tolist()}
+        if name == 'floor':
+            require(floor is None and abs(high[2]) < 1e-12 and low[2] < 0, 'Invalid floor support')
+            floor = entry
+        else:
+            require(name.startswith(('wall_', 'target_surrogate_')) and low[2] >= -1e-12 and high[2] > 0,
+                    'Unsupported above-floor obstacle')
+            boxes.append(entry)
+    require(floor is not None, 'Missing floor bounds')
+    targets = {b['name']: b for b in boxes if b['name'].startswith('target_surrogate_')}
+    expected = metadata.get('targets_ground_truth')
+    require(isinstance(expected, list) and set(targets) == {'target_surrogate_' + str(i) for i in range(len(expected))},
+            'Metadata/world target inventory mismatch')
+    for i, target in enumerate(expected):
+        box = targets['target_surrogate_' + str(i)]
+        low, high = np.array(box['min_xyz']), np.array(box['max_xyz'])
+        xyz = [finite(target[k], 'target.' + k) for k in ('x', 'y', 'z')]
+        size = vector(target['size_xyz'], 3, 'target.size_xyz')
+        require(np.allclose((low+high)/2, xyz, atol=1e-12, rtol=0)
+                and np.allclose(high-low, size, atol=1e-12, rtol=0), 'Metadata/world target geometry mismatch')
+    spawn = [finite(metadata['robot_spawn'][k], 'robot_spawn.' + k) for k in ('x', 'y')]
+    bounds = [round(v, 12) for v in floor['min_xyz'][:2] + floor['max_xyz'][:2]]
+    return boxes, bounds, spawn
+
+
+def component(mask, start):
+    height, width = mask.shape
+    sx, sy = start
+    require(0 <= sx < width and 0 <= sy < height and bool(mask[sy, sx]), 'Spawn not in requested truth-free/safe set')
+    found = np.zeros_like(mask)
+    found[sy, sx] = True
+    queue = deque([(sx, sy)])
+    while queue:
+        x, y = queue.popleft()
+        for nx, ny in ((x-1, y), (x+1, y), (x, y-1), (x, y+1)):
+            if 0 <= nx < width and 0 <= ny < height and mask[ny, nx] and not found[ny, nx]:
+                found[ny, nx] = True
+                queue.append((nx, ny))
+    return found
+
+
+def ratio(numerator, denominator):
+    return numerator / denominator if denominator else None
+
+
+def describe(mask, values, resolution):
+    count = int(mask.sum())
+    selectors = {'raw_free': values == 0, 'raw_unknown_inside_map': values == -1,
+                 'outside_raw_map': values == -2, 'raw_occupied_or_intermediate': values > 0}
+    counts = {key: int(np.count_nonzero(mask & selector)) for key, selector in selectors.items()}
+    require(sum(counts.values()) == count, 'Incomplete occupancy partition')
+    counts['raw_unknown_or_outside'] = counts['raw_unknown_inside_map'] + counts['outside_raw_map']
+    return {'sample_count': count, 'sample_area_m2': count * resolution**2, 'counts': counts,
+            'fractions': {key: ratio(value, count) for key, value in counts.items()},
+            'areas_m2': {key: value * resolution**2 for key, value in counts.items()}}
+
+
+def measure(raw, values, transform, boxes, bounds, spawn):
+    xmin, ymin, xmax, ymax = bounds
+    c, s = math.cos(transform['yaw']), math.sin(transform['yaw'])
+    ox, oy, origin_yaw = raw['origin_xy_yaw']
+    co, so = math.cos(origin_yaw), math.sin(origin_yaw)
+    trials = []
+    for resolution in (.01, .005):
+        width, height = round((xmax-xmin)/resolution), round((ymax-ymin)/resolution)
+        require(width > 0 and height > 0 and width * height <= MAX_CELLS
+                and abs(width*resolution-(xmax-xmin)) <= 1e-10
+                and abs(height*resolution-(ymax-ymin)) <= 1e-10, 'Nonintegral or excessive evaluation domain')
+        X, Y = np.meshgrid(xmin+(np.arange(width)+.5)*resolution, ymin+(np.arange(height)+.5)*resolution)
+        occupied = np.zeros(X.shape, dtype=bool)
+        clearance = np.full(X.shape, math.inf)
+        for box in boxes:
+            bx0, by0 = box['min_xyz'][:2]
+            bx1, by1 = box['max_xyz'][:2]
+            occupied |= ((X+resolution/2 > bx0+1e-12) & (X-resolution/2 < bx1-1e-12)
+                         & (Y+resolution/2 > by0+1e-12) & (Y-resolution/2 < by1-1e-12))
+            dx = np.maximum(np.maximum(bx0-X, X-bx1), 0)
+            dy = np.maximum(np.maximum(by0-Y, Y-by1), 0)
+            clearance = np.minimum(clearance, np.hypot(dx, dy))
+        free = ~occupied
+        require(not free[0].any() and not free[-1].any() and not free[:, 0].any() and not free[:, -1].any(),
+                'Evaluation domain lacks a fully occupied perimeter')
+        start = (math.floor((spawn[0]-xmin)/resolution), math.floor((spawn[1]-ymin)/resolution))
+        connected = component(free, start)
+        safe = connected & (clearance > .25+1e-12)
+        safe_connected = component(safe, start)
+        dx, dy = X-transform['x'], Y-transform['y']
+        map_x, map_y = c*dx+s*dy, -s*dx+c*dy
+        dx, dy = map_x-ox, map_y-oy
+        fx, fy = np.floor((co*dx+so*dy)/raw['resolution']), np.floor((-so*dx+co*dy)/raw['resolution'])
+        require(np.isfinite(fx).all() and np.isfinite(fy).all(), 'Nonfinite transformed map indices')
+        inside = (fx >= 0) & (fy >= 0) & (fx < raw['width']) & (fy < raw['height'])
+        sampled = np.full(X.shape, -2, dtype=np.int16)
+        sampled[inside] = values[fy[inside].astype(np.int64), fx[inside].astype(np.int64)]
+        raw_free = sampled == 0
+        false_count = int((occupied & raw_free).sum())
+        occupied_count, raw_free_count = int(occupied.sum()), int(raw_free.sum())
+        trials.append({'resolution_m': resolution, 'grid_shape_yx': [height, width],
+            'truth_start_connected_free': describe(connected, sampled, resolution),
+            'truth_free_disconnected_from_spawn': describe(free & ~connected, sampled, resolution),
+            'truth_R025_safe_centres_in_free_component': describe(safe, sampled, resolution),
+            'truth_R025_safe_centres_reachable_from_spawn_4connected': describe(safe_connected, sampled, resolution),
+            'false_free': {'definition': 'Raw 0 at an evaluation-cell centre whose truth cell has positive-area obstacle overlap.',
+                'count': false_count, 'area_m2': false_count*resolution**2,
+                'fraction_of_truth_obstacle_cells_in_floor_domain': ratio(false_count, occupied_count),
+                'fraction_of_raw_free_samples_in_floor_domain': ratio(false_count, raw_free_count),
+                'truth_obstacle_count': occupied_count, 'raw_free_sample_count': raw_free_count},
+            'domain_sample_count': width*height,
+            'all_truth_free_connected_to_spawn': bool(np.array_equal(free, connected)),
+            'all_R025_centres_connected_to_spawn': bool(np.array_equal(safe, safe_connected))})
+    return trials
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    for name in ('run-dir', 'snapshot', 'alignment', 'world', 'metadata', 'output'):
+        parser.add_argument('--' + name, type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), 'Refuse existing output')
+    run = args.run_dir.resolve(strict=True)
+    require(run.is_dir(), 'Run directory required')
+    mission, orchestration = closed_mission(run)
+    preparation = load(run / 'preparation.json')
+    world_identity = remember(args.world)
+    require(world_identity['sha256'] == preparation.get('world_sha256'), 'World differs from run preparation')
+    raw, values, snapshot_scope = normalize_snapshot(load(args.snapshot), mission['map_epoch'])
+    transform, alignment_scope, prefixes = checked_alignment(args.alignment, mission['map_epoch'], world_identity['sha256'])
+    boxes, bounds, spawn = truth_geometry(args.world, load(args.metadata))
+    trials = measure(raw, values, transform, boxes, bounds, spawn)
+    remember(Path(__file__))
+    for item in list(SOURCES.values()):
+        require(fingerprint(item['path']) == item, 'Input changed during offline measurement: ' + item['path'])
+    for item in prefixes:
+        require(fingerprint(item['path'], item['prefix_bytes'])['sha256'] == item['prefix_sha256'],
+                'Alignment prefix changed during measurement')
+    report = {'schema_version': 1, 'role': 'draft_offline_simulation_geometric_map_measurement',
+        'created_at_utc': datetime.now(timezone.utc).isoformat(), 'run': run.name, 'map_epoch': mission['map_epoch'],
+        'original_mission': {key: mission.get(key) for key in ('status', 'reason', 'mission_success', 'map_complete',
+            'visual_coverage_complete', 'coordinates_valid', 'mission_timed_out')},
+        'original_orchestration_status': orchestration.get('status'),
+        'global_process_absence_verified': orchestration.get('all_run_token_processes_absent'),
+        'raw_map_geometry': raw, 'snapshot_scope': snapshot_scope,
+        'fixed_map_to_world': transform, 'alignment_scope': alignment_scope,
+        'alignment_refitted': False, 'ros_or_gazebo_connections_opened': False, 'ground_truth_sent_to_planner': False,
+        'inputs': SOURCES, 'execution': {'python': sys.executable, 'argv': sys.argv, 'cwd': str(Path.cwd())},
+        'domain': {'source': 'Floor collision-box XY extent with closed perimeter walls', 'bounds_xy': bounds,
+            'area_m2': (bounds[2]-bounds[0])*(bounds[3]-bounds[1]), 'spawn_world_xy': spawn,
+            'floor_excluded_as_support': True, 'wall_count': sum(b['name'].startswith('wall_') for b in boxes),
+            'target_obstacle_count': sum(b['name'].startswith('target_surrogate_') for b in boxes)},
+        'rules': ['1 cm is primary; 5 mm is a discretization sensitivity measurement.',
+            'Truth obstacles are XY projections of static above-floor wall and target collision boxes; visuals must match.',
+            'Any positive-area truth-cell/obstacle overlap blocks the cell; boundary-only contact has zero area; epsilon=1e-12 m.',
+            'Primary denominator is the four-neighbour truth-free component containing simulator spawn, independent of the predicted map.',
+            'R=.25 safe centres require exact AABB distance >.25+1e-12 m; their own spawn-connected subset is separate.',
+            'Inverse frozen map-to-world, then inverse map origin, then floor select an unmodified raw OccupancyGrid cell.',
+            'Raw 0 is free; -1 unknown; 1..100 occupied/intermediate; outside is separate and also combined with unknown.',
+            'False-free reports both truth-obstacle and predicted-free denominators over the entire floor domain; zero denominators are null.'],
+        'trials': trials, 'obstacle_boxes': boxes,
+        'limitations': ['No generic pass, task verdict, threshold decision, or benchmark success is inferred.',
+            'Geometric snapshot agreement does not prove traversed area, complete visual coverage, target detection, return home or collision-free execution.',
+            'Prepared SDF/hash evidence does not independently attest every live spawned entity. Frozen alignment derivation is separately validated by its producer.',
+            'Fixed alignment retains subsequent SLAM drift/deformation; rasterization, sensor noise and SLAM error are not separated.',
+            'R=.25 measures centre labels, not the whole disk or controller traversability; it cannot replace the full truth-free denominator.',
+            'Only the declared static axis-aligned box geometry is supported. No history of observed/unobserved map cells is reconstructed.',
+            'Original mission flags and unrelated map-service failures are preserved; no physical LIMO or formal-object validation.']}
+    encoded = json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False) + '\n'
+    with args.output.open('x', encoding='utf-8') as stream:
+        stream.write(encoded)
+    print(json.dumps({'output': str(args.output), 'run': run.name, 'map_epoch': mission['map_epoch'],
+                      'resolution_m': [trial['resolution_m'] for trial in trials]}, ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (ValueError, TypeError, KeyError, OSError, ET.ParseError, OverflowError) as exc:
+        raise SystemExit('REFUSED: ' + str(exc))

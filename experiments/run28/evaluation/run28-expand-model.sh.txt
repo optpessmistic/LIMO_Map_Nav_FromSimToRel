@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -eo pipefail
+set -C
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source /opt/ros/jazzy/setup.bash
+gz sdf -p outputs/ros_smoke/run28-startup-timing/spawn/robot.urdf > outputs/setup/run28-robot-expanded.sdf
+test -s outputs/setup/run28-robot-expanded.sdf
+printf '%s\n' 'Saved offline SDF conversion of the recorded URDF; no simulator launched.'

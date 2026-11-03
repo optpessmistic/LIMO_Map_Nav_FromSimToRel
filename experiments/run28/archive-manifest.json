@@ -1,0 +1,1567 @@
+{
+  "schema_version": 1,
+  "role": "byte_exact_selected_run28_archive",
+  "source_run": "outputs\\ros_smoke\\run28-startup-timing",
+  "runtime_head": "e8e72e89914a20c6be28d7a5f98b67d524861a4d",
+  "run_outcome": "mission_not_successful",
+  "original_retention_audit_passed": false,
+  "validation_provenance": {
+    "code_head": "e8e72e89914a20c6be28d7a5f98b67d524861a4d",
+    "ci_head_sha": "e8e72e89914a20c6be28d7a5f98b67d524861a4d",
+    "ci_receipt_available": true,
+    "scope": "Available receipts preserved verbatim; archive creation does not execute validation or turn missing evidence into success."
+  },
+  "previous_attempt": {
+    "run": "run27-writer-pipe",
+    "status": "orchestration_failed",
+    "errors": [
+      "TimeoutError: motion readiness not observed",
+      "Retention closure audit: RuntimeError: No terminal mission result for retained-frame audit"
+    ],
+    "original_all_owned_groups_empty": false,
+    "original_orchestration_sha256": "707b13570c983cd4e29d466f96cbe193e61d622009fa0573c879f45630b490e8",
+    "later_scoped_recheck_sha256": "7c4e210283f27dbd664d6c7873e6016388ad00923a13feb06383c588969dea38",
+    "later_scoped_groups_empty": true,
+    "later_scoped_group_count": 12,
+    "scope": "Later recorded-group inspection, not original-deadline closure or global process absence; original false is unchanged.",
+    "root_exec_completion": {
+      "session_id": 77575,
+      "exit_code": 1,
+      "source": "Root confirmation supplied as explicit prepare arguments."
+    }
+  },
+  "collector_source_binding": {
+    "source": "scripts/capture_motion_evidence.py",
+    "source_sha256_at_archive": "6c70c44c9ae4768fe7f6be7e35860e4344787c74aca1dc4d8a9e70fdf7af2000",
+    "recorded_hashes": [
+      {
+        "source": "preparation.json:collector_source_sha256_at_preparation",
+        "sha256": "6c70c44c9ae4768fe7f6be7e35860e4344787c74aca1dc4d8a9e70fdf7af2000"
+      },
+      {
+        "source": "runner-inputs.json:scripts/capture_motion_evidence.py",
+        "sha256": "6c70c44c9ae4768fe7f6be7e35860e4344787c74aca1dc4d8a9e70fdf7af2000"
+      },
+      {
+        "source": "provenance-live.json:static_input_files_at_capture:scripts/capture_motion_evidence.py",
+        "sha256": "6c70c44c9ae4768fe7f6be7e35860e4344787c74aca1dc4d8a9e70fdf7af2000"
+      }
+    ],
+    "all_available_recorded_hashes_agree": true,
+    "matches_required_preparation_hash": true,
+    "unavailable_optional_hashes": [],
+    "scope": "Copied source bytes match the required preparation hash and every available runtime/provenance collector hash. Missing optional hashes remain unavailable, not independently verified."
+  },
+  "startup_timing_scope": "Same-run declared CLOCK_MONOTONIC diagnostics only, not ROS simulation time. Missing/negative/invalid intervals have no duration. Main entry excludes top-level imports; environment wrapper time includes its startup. Parent readiness observation is not a child timestamp or motion verification.",
+  "copied": [
+    {
+      "source": "experiments\\run22\\.gitattributes",
+      "archive": ".gitattributes",
+      "source_bytes": 57,
+      "source_sha256": "cd31350619929786e8452bdb2dc2f7d6fd37626ff04b228b5fbc4e0b10f470c8",
+      "archive_bytes": 57,
+      "archive_sha256": "cd31350619929786e8452bdb2dc2f7d6fd37626ff04b228b5fbc4e0b10f470c8",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\epoch.txt",
+      "archive": "epoch.txt",
+      "source_bytes": 37,
+      "source_sha256": "9202630ff880e41ebbd185a2a09ceb8807766cb255b216c01773bd51a48796c7",
+      "archive_bytes": 37,
+      "archive_sha256": "9202630ff880e41ebbd185a2a09ceb8807766cb255b216c01773bd51a48796c7",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\orchestration.json",
+      "archive": "orchestration.json",
+      "source_bytes": 12262,
+      "source_sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1",
+      "archive_bytes": 12262,
+      "archive_sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\retention-shutdown.json",
+      "archive": "retention-shutdown.json",
+      "source_bytes": 294,
+      "source_sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08",
+      "archive_bytes": 294,
+      "archive_sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\run-token-final-processes.json",
+      "archive": "run-token-final-processes.json",
+      "source_bytes": 194,
+      "source_sha256": "f5c2e22ac10990c7d1d7c58486c31cb1a35a1c87d9c5248f9b0f4ecd612bd5d4",
+      "archive_bytes": 194,
+      "archive_sha256": "f5c2e22ac10990c7d1d7c58486c31cb1a35a1c87d9c5248f9b0f4ecd612bd5d4",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\preparation.json",
+      "archive": "preparation.json",
+      "source_bytes": 5305,
+      "source_sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4",
+      "archive_bytes": 5305,
+      "archive_sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\mission\\mission_20261102_233856.json",
+      "archive": "mission/mission_20261102_233856.json",
+      "source_bytes": 32513,
+      "source_sha256": "01379e5bb9ecbf64a92067f19b523ba1c16066ccd416593bf42db76a12534718",
+      "archive_bytes": 32513,
+      "archive_sha256": "01379e5bb9ecbf64a92067f19b523ba1c16066ccd416593bf42db76a12534718",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\retention-audit.json",
+      "archive": "retention-audit.json",
+      "source_bytes": 312,
+      "source_sha256": "e70d72e4e04ed6c35faab5e88e38df4172efb67b92d7de8026e585b5261f62b2",
+      "archive_bytes": 312,
+      "archive_sha256": "e70d72e4e04ed6c35faab5e88e38df4172efb67b92d7de8026e585b5261f62b2",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\retained\\checkpoint.json",
+      "archive": "retained-checkpoint.json",
+      "source_bytes": 14956,
+      "source_sha256": "6ce0307e7c7fdf18dca1ceaa89e0494ff99b70f19d93bfce4884e7ea66e8b2ae",
+      "archive_bytes": 14956,
+      "archive_sha256": "6ce0307e7c7fdf18dca1ceaa89e0494ff99b70f19d93bfce4884e7ea66e8b2ae",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\final-save.json",
+      "archive": "final-save.json",
+      "source_bytes": 104271,
+      "source_sha256": "ca6cd57622a50ef431a2e85c48d727cb28c4939f9e07e2ffc0c296bb0ed91612",
+      "archive_bytes": 104271,
+      "archive_sha256": "ca6cd57622a50ef431a2e85c48d727cb28c4939f9e07e2ffc0c296bb0ed91612",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\final-map.reservation.json",
+      "archive": "final-map.reservation.json",
+      "source_bytes": 343,
+      "source_sha256": "e611ff93b02885c26367fc5f6b53d75f0b9f24f10223ae0647af6aa16e9a8c26",
+      "archive_bytes": 343,
+      "archive_sha256": "e611ff93b02885c26367fc5f6b53d75f0b9f24f10223ae0647af6aa16e9a8c26",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\parameter-gate.json",
+      "archive": "parameter-gate.json",
+      "source_bytes": 1536,
+      "source_sha256": "8d8cd544c6ad75b84e808210311a22d01fded500d8c511afa8226edbcd7bdc2a",
+      "archive_bytes": 1536,
+      "archive_sha256": "8d8cd544c6ad75b84e808210311a22d01fded500d8c511afa8226edbcd7bdc2a",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\parameters-early.json",
+      "archive": "parameters-early.json",
+      "source_bytes": 41890,
+      "source_sha256": "140138eb7339d50beddb5a2eacc294ef4e076a279225e5d2761c56b867a8687f",
+      "archive_bytes": 41890,
+      "archive_sha256": "140138eb7339d50beddb5a2eacc294ef4e076a279225e5d2761c56b867a8687f",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\preflight.json",
+      "archive": "preflight.json",
+      "source_bytes": 42714,
+      "source_sha256": "d23cd60a214737caeed16e31859106ff16b8ca335492cd6233dc2e28b3d339ec",
+      "archive_bytes": 42714,
+      "archive_sha256": "d23cd60a214737caeed16e31859106ff16b8ca335492cd6233dc2e28b3d339ec",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\installed-check.json",
+      "archive": "installed-check.json",
+      "source_bytes": 5520,
+      "source_sha256": "43bdfcfcf6a957bd7798621ebb13b5a310f9a83680a615e4b6d0a7e695d76cec",
+      "archive_bytes": 5520,
+      "archive_sha256": "43bdfcfcf6a957bd7798621ebb13b5a310f9a83680a615e4b6d0a7e695d76cec",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\runner-inputs.json",
+      "archive": "runner-inputs.json",
+      "source_bytes": 1619,
+      "source_sha256": "e9503ea84ce9b44b0675851bfe0caea8c7d706224ec5edc23ea2c05abac2ec7e",
+      "archive_bytes": 1619,
+      "archive_sha256": "e9503ea84ce9b44b0675851bfe0caea8c7d706224ec5edc23ea2c05abac2ec7e",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\provenance-live.json",
+      "archive": "provenance-live.json",
+      "source_bytes": 126650,
+      "source_sha256": "fcdaec8736a2e9cc76598bca4257062dcde31afd094d0e30e64f3100cce506e9",
+      "archive_bytes": 126650,
+      "archive_sha256": "fcdaec8736a2e9cc76598bca4257062dcde31afd094d0e30e64f3100cce506e9",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\native-scene-early.json",
+      "archive": "native-scene-early.json",
+      "source_bytes": 4332,
+      "source_sha256": "90178557fc6c510cdf9cee43ca5be17841bb37d4b56b00cc35a56961a9f80849",
+      "archive_bytes": 4332,
+      "archive_sha256": "90178557fc6c510cdf9cee43ca5be17841bb37d4b56b00cc35a56961a9f80849",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\native-scene-before-motion.json",
+      "archive": "native-scene-before-motion.json",
+      "source_bytes": 4333,
+      "source_sha256": "e0e9c85818e09b51086dd9bf391f66c51e4792301b21749fa5806315f5eea670",
+      "archive_bytes": 4333,
+      "archive_sha256": "e0e9c85818e09b51086dd9bf391f66c51e4792301b21749fa5806315f5eea670",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\native-scene-terminal.json",
+      "archive": "native-scene-terminal.json",
+      "source_bytes": 4333,
+      "source_sha256": "962679a72cd5f068999d467a35bc6ec698ffada54a8a0150b7fa7026624e6961",
+      "archive_bytes": 4333,
+      "archive_sha256": "962679a72cd5f068999d467a35bc6ec698ffada54a8a0150b7fa7026624e6961",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\nav2-rpp-03m.yaml",
+      "archive": "nav2-rpp-03m.yaml",
+      "source_bytes": 10779,
+      "source_sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+      "archive_bytes": 10779,
+      "archive_sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\mission.log",
+      "archive": "mission.log",
+      "source_bytes": 14625,
+      "source_sha256": "b73010cb538bec68dc078b72da625e52760f789888e7c8da58f5ae443d0c9dbc",
+      "archive_bytes": 14625,
+      "archive_sha256": "b73010cb538bec68dc078b72da625e52760f789888e7c8da58f5ae443d0c9dbc",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\sim.log",
+      "archive": "sim.log",
+      "source_bytes": 13064,
+      "source_sha256": "3697eb9de259e4fd4e0dddd41c2a6a096216c72bc006f548e13584bfeb4955f8",
+      "archive_bytes": 13064,
+      "archive_sha256": "3697eb9de259e4fd4e0dddd41c2a6a096216c72bc006f548e13584bfeb4955f8",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\perception.log",
+      "archive": "perception.log",
+      "source_bytes": 504,
+      "source_sha256": "d653d629c6d338050adc66a9b295c9038bd3305d67454a8447d0069534f9d2c8",
+      "archive_bytes": 504,
+      "archive_sha256": "d653d629c6d338050adc66a9b295c9038bd3305d67454a8447d0069534f9d2c8",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\navigation.log",
+      "archive": "navigation.log",
+      "source_bytes": 94023,
+      "source_sha256": "297bb35c4e448ba2b280dda98fabc4f9c488d58640a242dd14861ed98b4506f0",
+      "archive_bytes": 94023,
+      "archive_sha256": "297bb35c4e448ba2b280dda98fabc4f9c488d58640a242dd14861ed98b4506f0",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\observer.log",
+      "archive": "observer.log",
+      "source_bytes": 44403,
+      "source_sha256": "bde2fc2b0d8db2aafe0ea6a5560adba26cf293a1d6af5fa6f86ebe9e1459af29",
+      "archive_bytes": 44403,
+      "archive_sha256": "bde2fc2b0d8db2aafe0ea6a5560adba26cf293a1d6af5fa6f86ebe9e1459af29",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\save-early.log",
+      "archive": "save-early.log",
+      "source_bytes": 250,
+      "source_sha256": "e17f6f73769ffc41ef04e56dc9303a40040cdaad70c1662232d705eef68ab173",
+      "archive_bytes": 250,
+      "archive_sha256": "e17f6f73769ffc41ef04e56dc9303a40040cdaad70c1662232d705eef68ab173",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-save-early.json",
+      "archive": "process-save-early.json",
+      "source_bytes": 246,
+      "source_sha256": "32bbb04153c13d28849d14f37679bbfe0b63276036a1614bea0546b41a8c1176",
+      "archive_bytes": 246,
+      "archive_sha256": "32bbb04153c13d28849d14f37679bbfe0b63276036a1614bea0546b41a8c1176",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\save-final.log",
+      "archive": "save-final.log",
+      "source_bytes": 234,
+      "source_sha256": "26361591878330b8e078083d5ca63f7cb0f76c3893398ace78d77747705f55df",
+      "archive_bytes": 234,
+      "archive_sha256": "26361591878330b8e078083d5ca63f7cb0f76c3893398ace78d77747705f55df",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\snapshot-raster.log",
+      "archive": "snapshot-raster.log",
+      "source_bytes": 3880,
+      "source_sha256": "71a4f77aaffedf41d61d81ad770ee4b79cef29cdb7065dd298a26823264b5323",
+      "archive_bytes": 3880,
+      "archive_sha256": "71a4f77aaffedf41d61d81ad770ee4b79cef29cdb7065dd298a26823264b5323",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\motion-startup-wait.json",
+      "archive": "motion-startup-wait.json",
+      "source_bytes": 471,
+      "source_sha256": "09449144ad94866183f21127b4a08dbb6726e2f1cc473d7e54222b08ca6756d7",
+      "archive_bytes": 471,
+      "archive_sha256": "09449144ad94866183f21127b4a08dbb6726e2f1cc473d7e54222b08ca6756d7",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\motion.log",
+      "archive": "motion.log",
+      "source_bytes": 3047,
+      "source_sha256": "45624e569d109cccc9c5c5432a7caba27c63cfaef4d254b2144b640ed56d44f8",
+      "archive_bytes": 3047,
+      "archive_sha256": "45624e569d109cccc9c5c5432a7caba27c63cfaef4d254b2144b640ed56d44f8",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-installed-check.json",
+      "archive": "launch-timing-installed-check.json",
+      "source_bytes": 780,
+      "source_sha256": "430c72abb03cd2ccb5082b5468ec403fbef8e03adf8898e13f1a1542425c41bf",
+      "archive_bytes": 780,
+      "archive_sha256": "430c72abb03cd2ccb5082b5468ec403fbef8e03adf8898e13f1a1542425c41bf",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-mission.json",
+      "archive": "launch-timing-mission.json",
+      "source_bytes": 774,
+      "source_sha256": "d9cd650277b1bbd9c4e3e10093440b4c99c8ad852ba8a8c928a4d41e5edf147a",
+      "archive_bytes": 774,
+      "archive_sha256": "d9cd650277b1bbd9c4e3e10093440b4c99c8ad852ba8a8c928a4d41e5edf147a",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-motion.json",
+      "archive": "launch-timing-motion.json",
+      "source_bytes": 774,
+      "source_sha256": "09671d32d962d3e096591fdba44469667650fc5815529f5dca3f8b9a5bc10363",
+      "archive_bytes": 774,
+      "archive_sha256": "09671d32d962d3e096591fdba44469667650fc5815529f5dca3f8b9a5bc10363",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-native-before-motion.json",
+      "archive": "launch-timing-native-before-motion.json",
+      "source_bytes": 789,
+      "source_sha256": "143f381291c9c78956436cd2cb2f192618726b12edc5107062f0bd1eda7ae4c6",
+      "archive_bytes": 789,
+      "archive_sha256": "143f381291c9c78956436cd2cb2f192618726b12edc5107062f0bd1eda7ae4c6",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-native-early.json",
+      "archive": "launch-timing-native-early.json",
+      "source_bytes": 779,
+      "source_sha256": "8333ab3270485658b68db6acd681b0e44d65f27d50d5390ea28227c2eb382343",
+      "archive_bytes": 779,
+      "archive_sha256": "8333ab3270485658b68db6acd681b0e44d65f27d50d5390ea28227c2eb382343",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-native-terminal.json",
+      "archive": "launch-timing-native-terminal.json",
+      "source_bytes": 784,
+      "source_sha256": "0e58146fb7e1bb4fd0c801527011ab2e2857e554d52cb0ac2caf9e79d0ea6178",
+      "archive_bytes": 784,
+      "archive_sha256": "0e58146fb7e1bb4fd0c801527011ab2e2857e554d52cb0ac2caf9e79d0ea6178",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-nav-check.json",
+      "archive": "launch-timing-nav-check.json",
+      "source_bytes": 778,
+      "source_sha256": "7e10b84dffb6067371917d4e60c411dfe76e7bd4a7e9c365bdc0a83012ccd873",
+      "archive_bytes": 778,
+      "archive_sha256": "7e10b84dffb6067371917d4e60c411dfe76e7bd4a7e9c365bdc0a83012ccd873",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-navigation.json",
+      "archive": "launch-timing-navigation.json",
+      "source_bytes": 778,
+      "source_sha256": "9ce7528bf072b41a485b7249f5dc8b9f99c04a86f35e42d6eb4a8bcc0be5841e",
+      "archive_bytes": 778,
+      "archive_sha256": "9ce7528bf072b41a485b7249f5dc8b9f99c04a86f35e42d6eb4a8bcc0be5841e",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-observer.json",
+      "archive": "launch-timing-observer.json",
+      "source_bytes": 777,
+      "source_sha256": "f436b60d90275774ab68481c5ca847d371d3998b5c56cf65ef16a2e13fa823cd",
+      "archive_bytes": 777,
+      "archive_sha256": "f436b60d90275774ab68481c5ca847d371d3998b5c56cf65ef16a2e13fa823cd",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-parameter-gate.json",
+      "archive": "launch-timing-parameter-gate.json",
+      "source_bytes": 780,
+      "source_sha256": "89eb51d32460929ce3cd4123e5c35ceaa42c65a9cbc9b86722b83dd14ab980dc",
+      "archive_bytes": 780,
+      "archive_sha256": "89eb51d32460929ce3cd4123e5c35ceaa42c65a9cbc9b86722b83dd14ab980dc",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-perception.json",
+      "archive": "launch-timing-perception.json",
+      "source_bytes": 779,
+      "source_sha256": "c7c7488674b721fd6ead0203f4575f3af556293d58282bdae0817da5d6bcc57d",
+      "archive_bytes": 779,
+      "archive_sha256": "c7c7488674b721fd6ead0203f4575f3af556293d58282bdae0817da5d6bcc57d",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-preflight.json",
+      "archive": "launch-timing-preflight.json",
+      "source_bytes": 777,
+      "source_sha256": "cd55bc0337c1be38af0bfb6d41741d37e89911585ec3808a9da9d1d578842e76",
+      "archive_bytes": 777,
+      "archive_sha256": "cd55bc0337c1be38af0bfb6d41741d37e89911585ec3808a9da9d1d578842e76",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-provenance.json",
+      "archive": "launch-timing-provenance.json",
+      "source_bytes": 778,
+      "source_sha256": "f021e977d67f68df78def043409619d90fe93ec554841735085a59982bee26ce",
+      "archive_bytes": 778,
+      "archive_sha256": "f021e977d67f68df78def043409619d90fe93ec554841735085a59982bee26ce",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-recorder.json",
+      "archive": "launch-timing-recorder.json",
+      "source_bytes": 776,
+      "source_sha256": "5278dd83b7520513ba10b332c5e480e90a4777e421e0deed62097d54397c400c",
+      "archive_bytes": 776,
+      "archive_sha256": "5278dd83b7520513ba10b332c5e480e90a4777e421e0deed62097d54397c400c",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-save-early.json",
+      "archive": "launch-timing-save-early.json",
+      "source_bytes": 778,
+      "source_sha256": "17998b918bf35cc8beed6ebcd3fafb6447eec7c460b406b7f220f1a69d50779e",
+      "archive_bytes": 778,
+      "archive_sha256": "17998b918bf35cc8beed6ebcd3fafb6447eec7c460b406b7f220f1a69d50779e",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-save-final.json",
+      "archive": "launch-timing-save-final.json",
+      "source_bytes": 778,
+      "source_sha256": "cfd4589fae4625c33abec968178e9d66bc52c5acfcd9ff9db5e61d867fc30104",
+      "archive_bytes": 778,
+      "archive_sha256": "cfd4589fae4625c33abec968178e9d66bc52c5acfcd9ff9db5e61d867fc30104",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-sim-check.json",
+      "archive": "launch-timing-sim-check.json",
+      "source_bytes": 773,
+      "source_sha256": "5f0cac76783f89e1cfd38c5f4fb332967e7cefb005248fdd33092d0f0ff31cf3",
+      "archive_bytes": 773,
+      "archive_sha256": "5f0cac76783f89e1cfd38c5f4fb332967e7cefb005248fdd33092d0f0ff31cf3",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-sim.json",
+      "archive": "launch-timing-sim.json",
+      "source_bytes": 769,
+      "source_sha256": "08fad6aaa3944b4d4c75f5be60be6430745c5da821bfad096aa77fefb3aef306",
+      "archive_bytes": 769,
+      "archive_sha256": "08fad6aaa3944b4d4c75f5be60be6430745c5da821bfad096aa77fefb3aef306",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-snapshot-raster.json",
+      "archive": "launch-timing-snapshot-raster.json",
+      "source_bytes": 782,
+      "source_sha256": "edec65f74a6edbd98cecacfc421144309109ddcadec24cad319151b4a6d1ac8d",
+      "archive_bytes": 782,
+      "archive_sha256": "edec65f74a6edbd98cecacfc421144309109ddcadec24cad319151b4a6d1ac8d",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\launch-timing-survey.json",
+      "archive": "launch-timing-survey.json",
+      "source_bytes": 774,
+      "source_sha256": "ee96d39e0f620b5d0a47b9cc6275be296cb8d258d319fa608279d2ad8c3873ce",
+      "archive_bytes": 774,
+      "archive_sha256": "ee96d39e0f620b5d0a47b9cc6275be296cb8d258d319fa608279d2ad8c3873ce",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\snapshot-map.pgm",
+      "archive": "snapshot-map.pgm",
+      "source_bytes": 4381,
+      "source_sha256": "42afeea5975b2dbf344f6b14d323904bb8b0b5a02a286d2c4a6c579ad1ae4579",
+      "archive_bytes": 4381,
+      "archive_sha256": "42afeea5975b2dbf344f6b14d323904bb8b0b5a02a286d2c4a6c579ad1ae4579",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\snapshot-map.yaml",
+      "archive": "snapshot-map.yaml",
+      "source_bytes": 181,
+      "source_sha256": "f12677f293f38f0830658821ba2f1504053b42350c20e3f462b110f9c16dcede",
+      "archive_bytes": 181,
+      "archive_sha256": "f12677f293f38f0830658821ba2f1504053b42350c20e3f462b110f9c16dcede",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\snapshot-map.provenance.json",
+      "archive": "snapshot-map.provenance.json",
+      "source_bytes": 3880,
+      "source_sha256": "71a4f77aaffedf41d61d81ad770ee4b79cef29cdb7065dd298a26823264b5323",
+      "archive_bytes": 3880,
+      "archive_sha256": "71a4f77aaffedf41d61d81ad770ee4b79cef29cdb7065dd298a26823264b5323",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\snapshot-map.reservation.json",
+      "archive": "snapshot-map.reservation.json",
+      "source_bytes": 314,
+      "source_sha256": "9c6f09848e67ffc65500966e32322ae06b407359a82cceada71a549af1ae5502",
+      "archive_bytes": 314,
+      "archive_sha256": "9c6f09848e67ffc65500966e32322ae06b407359a82cceada71a549af1ae5502",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\observer.json",
+      "archive": "observer.json.gz",
+      "source_bytes": 15439965,
+      "source_sha256": "8cedcb4d4007aff8a29214064d27a4ec7a89882cca4e99ec8535998d87cb73aa",
+      "archive_bytes": 973259,
+      "archive_sha256": "21aefd372519f0dab965a47a557b05e93c6232eec928e886b62a82da5121ffc9",
+      "encoding": "gzip",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\initial-survey.json",
+      "archive": "initial-survey.json.gz",
+      "source_bytes": 130629,
+      "source_sha256": "4f600dd1f5210b0f79a73d04d2b6d5b0c775ef9efd6a8f5ba080d097bcc6d9b9",
+      "archive_bytes": 20011,
+      "archive_sha256": "1ba5dda110b54f399f616ad8b99242436301a147aafa2fc4e06473602299780d",
+      "encoding": "gzip",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\initial-motion.json",
+      "archive": "initial-motion.json.gz",
+      "source_bytes": 1008579,
+      "source_sha256": "a215378d1a07a030923ef5f5836f12e7bd3ff5cd1c1fdbcd2d621ace18d83843",
+      "archive_bytes": 111618,
+      "archive_sha256": "92181ddc56e854197815fd00b0ae7b531c07f5410f05cfba929f4dfa48094b38",
+      "encoding": "gzip",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\recording\\supervisor.json",
+      "archive": "recording/supervisor.json",
+      "source_bytes": 3370,
+      "source_sha256": "1cd34501f3f468b254715251a080ac9872cbbb9271993456f726c97683333442",
+      "archive_bytes": 3370,
+      "archive_sha256": "1cd34501f3f468b254715251a080ac9872cbbb9271993456f726c97683333442",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\recording\\recorder.log",
+      "archive": "recording/recorder.log",
+      "source_bytes": 3737,
+      "source_sha256": "a37b85e8feaa1f2641e7e246398ed833b1c37866743606085e2c7f3dfa622191",
+      "archive_bytes": 3737,
+      "archive_sha256": "a37b85e8feaa1f2641e7e246398ed833b1c37866743606085e2c7f3dfa622191",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\recording\\bag\\metadata.yaml",
+      "archive": "recording/bag/metadata.yaml",
+      "source_bytes": 34075,
+      "source_sha256": "d7cad195a5532256fb2cad0127c1d9e559bc85123fba7f1f99ffadb5d64a7e88",
+      "archive_bytes": 34075,
+      "archive_sha256": "d7cad195a5532256fb2cad0127c1d9e559bc85123fba7f1f99ffadb5d64a7e88",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-installed-check.json",
+      "archive": "process-identities/process-installed-check.json",
+      "source_bytes": 234,
+      "source_sha256": "f947f5d9b98a541722519a02601230eb19771942ec45a10c002fec188fd15568",
+      "archive_bytes": 234,
+      "archive_sha256": "f947f5d9b98a541722519a02601230eb19771942ec45a10c002fec188fd15568",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-mission.json",
+      "archive": "process-identities/process-mission.json",
+      "source_bytes": 182,
+      "source_sha256": "af7c1fb79889be6d7f540fc4edeaba7564bb4beb22deb0f9758e8b31c7bf5453",
+      "archive_bytes": 182,
+      "archive_sha256": "af7c1fb79889be6d7f540fc4edeaba7564bb4beb22deb0f9758e8b31c7bf5453",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-motion.json",
+      "archive": "process-identities/process-motion.json",
+      "source_bytes": 180,
+      "source_sha256": "85ae5eb2a074ff74f905a5a5b205e65eade4ef060ce4c9c88eabd7e8e06e5f07",
+      "archive_bytes": 180,
+      "archive_sha256": "85ae5eb2a074ff74f905a5a5b205e65eade4ef060ce4c9c88eabd7e8e06e5f07",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-native-before-motion.json",
+      "archive": "process-identities/process-native-before-motion.json",
+      "source_bytes": 223,
+      "source_sha256": "fd6d5816e089f4d31f0ccf40bfc726c843192a8e5b3b8afb8f93df3be72a3dc3",
+      "archive_bytes": 223,
+      "archive_sha256": "fd6d5816e089f4d31f0ccf40bfc726c843192a8e5b3b8afb8f93df3be72a3dc3",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-native-early.json",
+      "archive": "process-identities/process-native-early.json",
+      "source_bytes": 207,
+      "source_sha256": "9660c5b8537ae5fccfd87e1a43e893710e6c1f074587a0ae3a9be986370e1304",
+      "archive_bytes": 207,
+      "archive_sha256": "9660c5b8537ae5fccfd87e1a43e893710e6c1f074587a0ae3a9be986370e1304",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-native-terminal.json",
+      "archive": "process-identities/process-native-terminal.json",
+      "source_bytes": 213,
+      "source_sha256": "dd1d825a17eb3c2e97a4b2360c2d0e17c8eec50ac4254ccb6acc92b2cca9d45f",
+      "archive_bytes": 213,
+      "archive_sha256": "dd1d825a17eb3c2e97a4b2360c2d0e17c8eec50ac4254ccb6acc92b2cca9d45f",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-nav-check.json",
+      "archive": "process-identities/process-nav-check.json",
+      "source_bytes": 186,
+      "source_sha256": "c5c71e39dc0ee6cf33afc459b90fcb2fc3d0f05c509bf1725ad5b85720da6381",
+      "archive_bytes": 186,
+      "archive_sha256": "c5c71e39dc0ee6cf33afc459b90fcb2fc3d0f05c509bf1725ad5b85720da6381",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-navigation.json",
+      "archive": "process-identities/process-navigation.json",
+      "source_bytes": 188,
+      "source_sha256": "2a261eead4fe0bbd4fd2d2630ad50bed446922a55ae142ddbfc94595b87db1ce",
+      "archive_bytes": 188,
+      "archive_sha256": "2a261eead4fe0bbd4fd2d2630ad50bed446922a55ae142ddbfc94595b87db1ce",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-observer.json",
+      "archive": "process-identities/process-observer.json",
+      "source_bytes": 184,
+      "source_sha256": "9def19925da90e25212f6aa29cf1c1b39fe2eb7462dc064d36e68033fbc46fbf",
+      "archive_bytes": 184,
+      "archive_sha256": "9def19925da90e25212f6aa29cf1c1b39fe2eb7462dc064d36e68033fbc46fbf",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-parameter-gate.json",
+      "archive": "process-identities/process-parameter-gate.json",
+      "source_bytes": 231,
+      "source_sha256": "71d69027423d29b039603cbe589b4e99656fc54b07667e054f655f1d011ccdbb",
+      "archive_bytes": 231,
+      "archive_sha256": "71d69027423d29b039603cbe589b4e99656fc54b07667e054f655f1d011ccdbb",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-perception.json",
+      "archive": "process-identities/process-perception.json",
+      "source_bytes": 188,
+      "source_sha256": "dd38938e457d47e71c20bd6e15a4fa70fb7f8fdffabdca5159e0751ee87bdf2c",
+      "archive_bytes": 188,
+      "archive_sha256": "dd38938e457d47e71c20bd6e15a4fa70fb7f8fdffabdca5159e0751ee87bdf2c",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-preflight.json",
+      "archive": "process-identities/process-preflight.json",
+      "source_bytes": 383,
+      "source_sha256": "04b3c1ec22eec5317a5c31edfa0172f2b731e2852eb0a207195503094d473a89",
+      "archive_bytes": 383,
+      "archive_sha256": "04b3c1ec22eec5317a5c31edfa0172f2b731e2852eb0a207195503094d473a89",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-provenance.json",
+      "archive": "process-identities/process-provenance.json",
+      "source_bytes": 391,
+      "source_sha256": "7993f5408ad4609edee67cdabb8cdf38cd4f2726b50ee875343eaf6dd0572c0d",
+      "archive_bytes": 391,
+      "archive_sha256": "7993f5408ad4609edee67cdabb8cdf38cd4f2726b50ee875343eaf6dd0572c0d",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-recorder.json",
+      "archive": "process-identities/process-recorder.json",
+      "source_bytes": 184,
+      "source_sha256": "63c4e464820c196cf8d45a1462ae22de9d5b6c4b3b84335b7e6e38da834d0a35",
+      "archive_bytes": 184,
+      "archive_sha256": "63c4e464820c196cf8d45a1462ae22de9d5b6c4b3b84335b7e6e38da834d0a35",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-save-final.json",
+      "archive": "process-identities/process-save-final.json",
+      "source_bytes": 236,
+      "source_sha256": "455a5cac43371c5f16e4093be29e2eb7835b081aa3b1dd8f003c13268b3705c9",
+      "archive_bytes": 236,
+      "archive_sha256": "455a5cac43371c5f16e4093be29e2eb7835b081aa3b1dd8f003c13268b3705c9",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-sim-check.json",
+      "archive": "process-identities/process-sim-check.json",
+      "source_bytes": 183,
+      "source_sha256": "08ffb217bc153da382e061dd9a272b08b9971dece3e96b74a2871cfc3473c61a",
+      "archive_bytes": 183,
+      "archive_sha256": "08ffb217bc153da382e061dd9a272b08b9971dece3e96b74a2871cfc3473c61a",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-sim.json",
+      "archive": "process-identities/process-sim.json",
+      "source_bytes": 171,
+      "source_sha256": "90ce857a2f577d129dcce89a2a626896b825d1c10762e9ef67decaa9c8897459",
+      "archive_bytes": 171,
+      "archive_sha256": "90ce857a2f577d129dcce89a2a626896b825d1c10762e9ef67decaa9c8897459",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-snapshot-raster.json",
+      "archive": "process-identities/process-snapshot-raster.json",
+      "source_bytes": 552,
+      "source_sha256": "5bb51e83e70ccdf76df4de15589cdead248659ce12c05b3733b626e60682658e",
+      "archive_bytes": 552,
+      "archive_sha256": "5bb51e83e70ccdf76df4de15589cdead248659ce12c05b3733b626e60682658e",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\process-survey.json",
+      "archive": "process-identities/process-survey.json",
+      "source_bytes": 180,
+      "source_sha256": "bd7b3488bfb2bad54ea5a11c1d6838b89683ff1f9313de94599e463a41dff226",
+      "archive_bytes": 180,
+      "archive_sha256": "bd7b3488bfb2bad54ea5a11c1d6838b89683ff1f9313de94599e463a41dff226",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\observer-snapshots\\0038-phase-blocked.json",
+      "archive": "observer-snapshots/0038-phase-blocked.json",
+      "source_bytes": 19473,
+      "source_sha256": "9f498d4cceb45268e5d22872727df543f3ccd04c2fcf316345a8e3861ee41e80",
+      "archive_bytes": 19473,
+      "archive_sha256": "9f498d4cceb45268e5d22872727df543f3ccd04c2fcf316345a8e3861ee41e80",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-outcome-review.json",
+      "archive": "run28-outcome-review.json",
+      "source_bytes": 72887,
+      "source_sha256": "7d032bdee80b5e869a73517d95840fb242fc2c44807b027204ba03fd00252a72",
+      "archive_bytes": 72887,
+      "archive_sha256": "7d032bdee80b5e869a73517d95840fb242fc2c44807b027204ba03fd00252a72",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-outcome-review.md",
+      "archive": "run28-outcome-review.md",
+      "source_bytes": 5783,
+      "source_sha256": "846314229d9e857526d8236960876382205b2511ff2240a4127317cbe88f94fb",
+      "archive_bytes": 5783,
+      "archive_sha256": "846314229d9e857526d8236960876382205b2511ff2240a4127317cbe88f94fb",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-independent-alignment.json",
+      "archive": "evaluation/run28-independent-alignment.json",
+      "source_bytes": 105014,
+      "source_sha256": "146184ecf7e21618691c3b3e938edf26fde4e5b94e80e6938744d93cfa81b3fb",
+      "archive_bytes": 105014,
+      "archive_sha256": "146184ecf7e21618691c3b3e938edf26fde4e5b94e80e6938744d93cfa81b3fb",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-geometric-coverage.json",
+      "archive": "evaluation/run28-geometric-coverage.json",
+      "source_bytes": 32462,
+      "source_sha256": "1101a079bf4028d761b1560d7c1437606295b517d22d670861ec8b2ff78b9a56",
+      "archive_bytes": 32462,
+      "archive_sha256": "1101a079bf4028d761b1560d7c1437606295b517d22d670861ec8b2ff78b9a56",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-target-evaluation.json",
+      "archive": "evaluation/run28-target-evaluation.json",
+      "source_bytes": 23597,
+      "source_sha256": "07e3996b3877c626d75b0e6da4099547e3323a2f0a9708a7a9828c43ff3da774",
+      "archive_bytes": 23597,
+      "archive_sha256": "07e3996b3877c626d75b0e6da4099547e3323a2f0a9708a7a9828c43ff3da774",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-clock-audit.json",
+      "archive": "evaluation/run28-clock-audit.json",
+      "source_bytes": 374332,
+      "source_sha256": "43bc46b10348e0f96a2825f2277177e9c1dbe5ea11c97b0f309fab325558e09a",
+      "archive_bytes": 374332,
+      "archive_sha256": "43bc46b10348e0f96a2825f2277177e9c1dbe5ea11c97b0f309fab325558e09a",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-robot-expanded.sdf",
+      "archive": "evaluation/run28-robot-expanded.sdf",
+      "source_bytes": 18544,
+      "source_sha256": "136b1a550805e9964b20bcd97b079e63f3155ec0c7a66b3f34d82cdba3fcd0e7",
+      "archive_bytes": 18544,
+      "archive_sha256": "136b1a550805e9964b20bcd97b079e63f3155ec0c7a66b3f34d82cdba3fcd0e7",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\freeze-run28-initial-alignment.py",
+      "archive": "evaluation/freeze-run28-initial-alignment.py.txt",
+      "source_bytes": 16971,
+      "source_sha256": "70aa5512f9afa57fd05fed644245ef18885a3f43a277c3f0b6e6b5105cea6c39",
+      "archive_bytes": 16971,
+      "archive_sha256": "70aa5512f9afa57fd05fed644245ef18885a3f43a277c3f0b6e6b5105cea6c39",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-geometric-coverage.py",
+      "archive": "evaluation/run28-geometric-coverage.py.txt",
+      "source_bytes": 26372,
+      "source_sha256": "5b47b1d719001607cd177f69aae774312b2eade0da13df1c4e794e170446bd87",
+      "archive_bytes": 26372,
+      "archive_sha256": "5b47b1d719001607cd177f69aae774312b2eade0da13df1c4e794e170446bd87",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-target-evaluation.py",
+      "archive": "evaluation/run28-target-evaluation.py.txt",
+      "source_bytes": 18502,
+      "source_sha256": "59b511d7a1886e050f77b9ee90c3f6703f4cfcf70170e2d7bbb22436baadb981",
+      "archive_bytes": 18502,
+      "archive_sha256": "59b511d7a1886e050f77b9ee90c3f6703f4cfcf70170e2d7bbb22436baadb981",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\audit-run28-clocks.py",
+      "archive": "evaluation/audit-run28-clocks.py.txt",
+      "source_bytes": 4537,
+      "source_sha256": "b839b9ca19b074c5306fd70175d369a439fb8988019c925c740505e0131ef3b3",
+      "archive_bytes": 4537,
+      "archive_sha256": "b839b9ca19b074c5306fd70175d369a439fb8988019c925c740505e0131ef3b3",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\audit-run28-clocks.sh",
+      "archive": "evaluation/audit-run28-clocks.sh.txt",
+      "source_bytes": 215,
+      "source_sha256": "fb9a95988466decd5fceca761580eba57b0e3c04effb6986ce7392243a18f942",
+      "archive_bytes": 215,
+      "archive_sha256": "fb9a95988466decd5fceca761580eba57b0e3c04effb6986ce7392243a18f942",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-expand-model.sh",
+      "archive": "evaluation/run28-expand-model.sh.txt",
+      "source_bytes": 405,
+      "source_sha256": "4afcd9b3a981d9347c1b594365b5e4c43e66e1c9b25ab116e28ae643f15c620e",
+      "archive_bytes": 405,
+      "archive_sha256": "4afcd9b3a981d9347c1b594365b5e4c43e66e1c9b25ab116e28ae643f15c620e",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\spawn\\robot.urdf",
+      "archive": "spawn/robot.urdf",
+      "source_bytes": 11652,
+      "source_sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502",
+      "archive_bytes": 11652,
+      "archive_sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\spawn\\result\\report.json",
+      "archive": "spawn/result/report.json",
+      "source_bytes": 1240,
+      "source_sha256": "969913017faadf2f2c111497fd0ec3e29feb625daf5fa31c4e8ad4f25fa0d263",
+      "archive_bytes": 1240,
+      "archive_sha256": "969913017faadf2f2c111497fd0ec3e29feb625daf5fa31c4e8ad4f25fa0d263",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\sim-runtime.json",
+      "archive": "sim-runtime.json",
+      "source_bytes": 7319,
+      "source_sha256": "a9a60dc2034b1143fdf080a195cfca79917e47cd1e485c06b5cf3e277c7484d9",
+      "archive_bytes": 7319,
+      "archive_sha256": "a9a60dc2034b1143fdf080a195cfca79917e47cd1e485c06b5cf3e277c7484d9",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "worlds\\smoke_maze.world",
+      "archive": "evaluation/worlds__smoke_maze.world.txt",
+      "source_bytes": 11269,
+      "source_sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+      "archive_bytes": 11269,
+      "archive_sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "worlds\\smoke_maze.metadata.json",
+      "archive": "evaluation/worlds__smoke_maze.metadata.json.txt",
+      "source_bytes": 1383,
+      "source_sha256": "226282a376b5cae5401fc55e40ccf5977cfd1812d6278aeedb4d37f52e524d22",
+      "archive_bytes": 1383,
+      "archive_sha256": "226282a376b5cae5401fc55e40ccf5977cfd1812d6278aeedb4d37f52e524d22",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tools\\evaluate_targets.py",
+      "archive": "evaluation/tools__evaluate_targets.py.txt",
+      "source_bytes": 15475,
+      "source_sha256": "1b37c05b99946f272ad7b0a289c56333380b3a6cf34385e30ccbb50402df6ae9",
+      "archive_bytes": 15475,
+      "archive_sha256": "1b37c05b99946f272ad7b0a289c56333380b3a6cf34385e30ccbb50402df6ae9",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\start-run28.sh",
+      "archive": "runner/start-run28.sh.txt",
+      "source_bytes": 2488,
+      "source_sha256": "2dd2825b280eb76d5a9602afaa232e25cd948b01a75fd5a71b0064a1b46f3289",
+      "archive_bytes": 2488,
+      "archive_sha256": "2dd2825b280eb76d5a9602afaa232e25cd948b01a75fd5a71b0064a1b46f3289",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-env.sh",
+      "archive": "runner/run28-env.sh.txt",
+      "source_bytes": 4654,
+      "source_sha256": "2973415fde1caf7d2aaab6430d5f27bc42accf60ddcaa621a3c13df6c2b2a2ce",
+      "archive_bytes": 4654,
+      "archive_sha256": "2973415fde1caf7d2aaab6430d5f27bc42accf60ddcaa621a3c13df6c2b2a2ce",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-process.py",
+      "archive": "runner/run28-process.py.txt",
+      "source_bytes": 23295,
+      "source_sha256": "4b3e32c8228d3cc0492862a38b85e87a4b831acc31a3ad103b7e657dbf7ff329",
+      "archive_bytes": 23295,
+      "archive_sha256": "4b3e32c8228d3cc0492862a38b85e87a4b831acc31a3ad103b7e657dbf7ff329",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-param-gate.py",
+      "archive": "runner/run28-param-gate.py.txt",
+      "source_bytes": 2326,
+      "source_sha256": "87de9e0d6fc873e40913d3705a9ec77932a39274e3c2baab0a931d3f41365ee3",
+      "archive_bytes": 2326,
+      "archive_sha256": "87de9e0d6fc873e40913d3705a9ec77932a39274e3c2baab0a931d3f41365ee3",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-preflight.py",
+      "archive": "runner/run28-preflight.py.txt",
+      "source_bytes": 20117,
+      "source_sha256": "df577020d22acf110dda5186a8f335f1778ffc59713618e5f4a0c0eb85302d6f",
+      "archive_bytes": 20117,
+      "archive_sha256": "df577020d22acf110dda5186a8f335f1778ffc59713618e5f4a0c0eb85302d6f",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-save.py",
+      "archive": "runner/run28-save.py.txt",
+      "source_bytes": 20318,
+      "source_sha256": "c38b87fe05bca1b85c594b8ab310fb80cacb4e3710cc7bc3caf14a2ec67ad9fd",
+      "archive_bytes": 20318,
+      "archive_sha256": "c38b87fe05bca1b85c594b8ab310fb80cacb4e3710cc7bc3caf14a2ec67ad9fd",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-provenance.py",
+      "archive": "runner/run28-provenance.py.txt",
+      "source_bytes": 18920,
+      "source_sha256": "c732dde166ee72308bb76abad9638d079ca5e6c29da1c071ad245f57da1d8c03",
+      "archive_bytes": 18920,
+      "archive_sha256": "c732dde166ee72308bb76abad9638d079ca5e6c29da1c071ad245f57da1d8c03",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-installed-check.py",
+      "archive": "runner/run28-installed-check.py.txt",
+      "source_bytes": 1283,
+      "source_sha256": "25223f942623e01d94c90fb720c4c5bbc4416f36742d5fee6dbc123a648d7432",
+      "archive_bytes": 1283,
+      "archive_sha256": "25223f942623e01d94c90fb720c4c5bbc4416f36742d5fee6dbc123a648d7432",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-outcome-review.py",
+      "archive": "runner/run28-outcome-review.py.txt",
+      "source_bytes": 36336,
+      "source_sha256": "7194141e89888705ed269a708fe8f8f5b580ed793ce716db6de77faa1b809c94",
+      "archive_bytes": 36336,
+      "archive_sha256": "7194141e89888705ed269a708fe8f8f5b580ed793ce716db6de77faa1b809c94",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\archive-run28.py",
+      "archive": "runner/archive-run28.py.txt",
+      "source_bytes": 38025,
+      "source_sha256": "482149294e565bf6b06cd923498cf0c69720ca90f54fa52e2551b2f6024ccf3f",
+      "archive_bytes": 38025,
+      "archive_sha256": "482149294e565bf6b06cd923498cf0c69720ca90f54fa52e2551b2f6024ccf3f",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\prepare-run28.py",
+      "archive": "runner/prepare-run28.py.txt",
+      "source_bytes": 17048,
+      "source_sha256": "3b0c138bbe0ed52f080dc55bac02ad13c1e0c4406303abbb2a8ebe0626d53a3c",
+      "archive_bytes": 17048,
+      "archive_sha256": "3b0c138bbe0ed52f080dc55bac02ad13c1e0c4406303abbb2a8ebe0626d53a3c",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "scripts\\terminal_evidence.py",
+      "archive": "runner/scripts__terminal_evidence.py.txt",
+      "source_bytes": 2151,
+      "source_sha256": "f488ad6e77f9e58c1dd8d6e8a3366cbdede1f649a22505952cf088965492d898",
+      "archive_bytes": 2151,
+      "archive_sha256": "f488ad6e77f9e58c1dd8d6e8a3366cbdede1f649a22505952cf088965492d898",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tools\\export_occupancy_map.py",
+      "archive": "runner/tools__export_occupancy_map.py.txt",
+      "source_bytes": 13162,
+      "source_sha256": "238269daaad3e40a052fe19d477a34cbbfad5a9a96ac7a82b4d01a1e5dde5d66",
+      "archive_bytes": 13162,
+      "archive_sha256": "238269daaad3e40a052fe19d477a34cbbfad5a9a96ac7a82b4d01a1e5dde5d66",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tools\\audit_frame_retention.py",
+      "archive": "runner/tools__audit_frame_retention.py.txt",
+      "source_bytes": 9759,
+      "source_sha256": "25b86d8372316e1297086a439f4ef57d286369d575f91ccbe9adeee60106afc0",
+      "archive_bytes": 9759,
+      "archive_sha256": "25b86d8372316e1297086a439f4ef57d286369d575f91ccbe9adeee60106afc0",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "scripts\\capture_motion_evidence.py",
+      "archive": "runner/scripts__capture_motion_evidence.py.txt",
+      "source_bytes": 16281,
+      "source_sha256": "6c70c44c9ae4768fe7f6be7e35860e4344787c74aca1dc4d8a9e70fdf7af2000",
+      "archive_bytes": 16281,
+      "archive_sha256": "6c70c44c9ae4768fe7f6be7e35860e4344787c74aca1dc4d8a9e70fdf7af2000",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tools\\test_capture_motion_evidence.py",
+      "archive": "runner/tools__test_capture_motion_evidence.py.txt",
+      "source_bytes": 15599,
+      "source_sha256": "ab90672b7cc9cea2a23dfd7cb7220728dbb56bb32125003cf3f08ebcee6daf29",
+      "archive_bytes": 15599,
+      "archive_sha256": "ab90672b7cc9cea2a23dfd7cb7220728dbb56bb32125003cf3f08ebcee6daf29",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\verify-writer-pipe.sh",
+      "archive": "validation/verify-writer-pipe.sh",
+      "source_bytes": 995,
+      "source_sha256": "77c62148151f76013d685200da663a6c9732b42b7daff3524df7a59b5cbf9dbf",
+      "archive_bytes": 995,
+      "archive_sha256": "77c62148151f76013d685200da663a6c9732b42b7daff3524df7a59b5cbf9dbf",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-pipe-tests.log",
+      "archive": "validation/writer-pipe-tests.log",
+      "source_bytes": 8973,
+      "source_sha256": "4106a1ef4a959a30332f5c717cab763c5bbd3e2522fa4b7ab28a4453f13223a0",
+      "archive_bytes": 8973,
+      "archive_sha256": "4106a1ef4a959a30332f5c717cab763c5bbd3e2522fa4b7ab28a4453f13223a0",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-pipe-build.log",
+      "archive": "validation/writer-pipe-build.log",
+      "source_bytes": 116,
+      "source_sha256": "e57ad299db7f7084a2b3712d4dbd40e80a32f32ffea7b6a3d42979a76e65151b",
+      "archive_bytes": 116,
+      "archive_sha256": "e57ad299db7f7084a2b3712d4dbd40e80a32f32ffea7b6a3d42979a76e65151b",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-pipe-tests-02.log",
+      "archive": "validation/writer-pipe-tests-02.log",
+      "source_bytes": 13665,
+      "source_sha256": "c7f50c79a75e891e15855a104c63989b9ef8acfe308de61793b8f51bdd9fabf7",
+      "archive_bytes": 13665,
+      "archive_sha256": "c7f50c79a75e891e15855a104c63989b9ef8acfe308de61793b8f51bdd9fabf7",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-pipe-test-diagnosis.log",
+      "archive": "validation/writer-pipe-test-diagnosis.log",
+      "source_bytes": 7734,
+      "source_sha256": "ae8a08c4583eb1fd3baab22ae87a29ac245a8ba76b65b1f90800c47f724ce2e2",
+      "archive_bytes": 7734,
+      "archive_sha256": "ae8a08c4583eb1fd3baab22ae87a29ac245a8ba76b65b1f90800c47f724ce2e2",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\verify-writer-pipe-02.sh",
+      "archive": "validation/verify-writer-pipe-02.sh",
+      "source_bytes": 954,
+      "source_sha256": "3e2bfa9a32f7a66066f13f81297682884ef7bbb1a5dcaaaeeb0d923b10159204",
+      "archive_bytes": 954,
+      "archive_sha256": "3e2bfa9a32f7a66066f13f81297682884ef7bbb1a5dcaaaeeb0d923b10159204",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\diagnose-writer-pipe-tests.py",
+      "archive": "validation/diagnose-writer-pipe-tests.py",
+      "source_bytes": 1176,
+      "source_sha256": "ecf7b51838bee5e5960a7ae8349c3956acecdd74a9da1e047a02fb3372692a03",
+      "archive_bytes": 1176,
+      "archive_sha256": "ecf7b51838bee5e5960a7ae8349c3956acecdd74a9da1e047a02fb3372692a03",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-pipe-tests-03.log",
+      "archive": "validation/writer-pipe-tests-03.log",
+      "source_bytes": 13682,
+      "source_sha256": "9e7a08503080026f94c3876faf6c00f8001aab7872a5ac8773fd516071b2be0c",
+      "archive_bytes": 13682,
+      "archive_sha256": "9e7a08503080026f94c3876faf6c00f8001aab7872a5ac8773fd516071b2be0c",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\verify-writer-pipe-03.sh",
+      "archive": "validation/verify-writer-pipe-03.sh",
+      "source_bytes": 1101,
+      "source_sha256": "4b43905e9c2ea68037f1cc0b04566fe6f64156cf0ed9cd247338a38731a257fe",
+      "archive_bytes": 1101,
+      "archive_sha256": "4b43905e9c2ea68037f1cc0b04566fe6f64156cf0ed9cd247338a38731a257fe",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-code-ci.json",
+      "archive": "validation/run28-code-ci.json",
+      "source_bytes": 275,
+      "source_sha256": "45986d0584a3148ac15ef22c5358ca7aae4f2261075d271b938df5ffd8026f86",
+      "archive_bytes": 275,
+      "archive_sha256": "45986d0584a3148ac15ef22c5358ca7aae4f2261075d271b938df5ffd8026f86",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-timing-tests.log",
+      "archive": "validation/run28-timing-tests.log",
+      "source_bytes": 2549,
+      "source_sha256": "8d33bf84193029c36d4fe026f3778efa1255ed74f41ef20c7feab8dac85435c0",
+      "archive_bytes": 2549,
+      "archive_sha256": "8d33bf84193029c36d4fe026f3778efa1255ed74f41ef20c7feab8dac85435c0",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\run28-timing-tests-final.log",
+      "archive": "validation/run28-timing-tests-final.log",
+      "source_bytes": 2548,
+      "source_sha256": "0907675281cae58d34ef8dd62219189b258dd4526211b9105a1ac7a099af099b",
+      "archive_bytes": 2548,
+      "archive_sha256": "0907675281cae58d34ef8dd62219189b258dd4526211b9105a1ac7a099af099b",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\verify-run28-final.sh",
+      "archive": "validation/verify-run28-final.sh",
+      "source_bytes": 441,
+      "source_sha256": "efe2f0768b7b4c0f19e370c152082eac8e58ef023ea5f43404c10772b97fe64c",
+      "archive_bytes": 441,
+      "archive_sha256": "efe2f0768b7b4c0f19e370c152082eac8e58ef023ea5f43404c10772b97fe64c",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\verify-run28-timing.sh",
+      "archive": "validation/verify-run28-timing.sh",
+      "source_bytes": 357,
+      "source_sha256": "f75ee3b41ad472cc2aac4801e9f4419f684b12ef5f7e66db2c264a83b7d476fb",
+      "archive_bytes": 357,
+      "archive_sha256": "f75ee3b41ad472cc2aac4801e9f4419f684b12ef5f7e66db2c264a83b7d476fb",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-fs-pipe-20261102\\comparison.json",
+      "archive": "validation/writer-fs-pipe-20261102/comparison.json",
+      "source_bytes": 29762,
+      "source_sha256": "1a98c2c51841d395ec4665e3cd44678fac113a211c0e432052eba14cbab1cb44",
+      "archive_bytes": 29762,
+      "archive_sha256": "1a98c2c51841d395ec4665e3cd44678fac113a211c0e432052eba14cbab1cb44",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-fs-pipe-20261102\\inputs.json",
+      "archive": "validation/writer-fs-pipe-20261102/inputs.json",
+      "source_bytes": 4580,
+      "source_sha256": "712d7800ceadf81bbb7012444a2e22704f6fa69a95d7316d5ecd1e427758919f",
+      "archive_bytes": 4580,
+      "archive_sha256": "712d7800ceadf81bbb7012444a2e22704f6fa69a95d7316d5ecd1e427758919f",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-pipe-reverse-20261102\\comparison.json",
+      "archive": "validation/writer-pipe-reverse-20261102/comparison.json",
+      "source_bytes": 11257,
+      "source_sha256": "aa8c8b39e6cf32a02ba38debfc1026a6da88a0a6044395f33726b0ea34a49599",
+      "archive_bytes": 11257,
+      "archive_sha256": "aa8c8b39e6cf32a02ba38debfc1026a6da88a0a6044395f33726b0ea34a49599",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "outputs\\setup\\writer-pipe-reverse-20261102\\inputs.json",
+      "archive": "validation/writer-pipe-reverse-20261102/inputs.json",
+      "source_bytes": 4585,
+      "source_sha256": "987d2a306a975c35084906d32e75a17594d7589e10a2ac7e1334c8bdb52db10e",
+      "archive_bytes": 4585,
+      "archive_sha256": "987d2a306a975c35084906d32e75a17594d7589e10a2ac7e1334c8bdb52db10e",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tests\\test_retention_pipe.py",
+      "archive": "runner/tests__test_retention_pipe.py.txt",
+      "source_bytes": 10953,
+      "source_sha256": "46991cb06e03dca581d859e9f85b64b30cdab9fe0f170f52d923067d6695e7e5",
+      "archive_bytes": 10953,
+      "archive_sha256": "46991cb06e03dca581d859e9f85b64b30cdab9fe0f170f52d923067d6695e7e5",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tests\\test_frame_retention_owner_races.py",
+      "archive": "runner/tests__test_frame_retention_owner_races.py.txt",
+      "source_bytes": 5059,
+      "source_sha256": "3d55cbb3dcfff5b4bd4ccae037bd67f795ae50267f932a7a2631c31da73f5d12",
+      "archive_bytes": 5059,
+      "archive_sha256": "3d55cbb3dcfff5b4bd4ccae037bd67f795ae50267f932a7a2631c31da73f5d12",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "src\\limo_maze_perception\\limo_maze_perception\\retention_adapter.py",
+      "archive": "runner/src__limo_maze_perception__limo_maze_perception__retention_adapter.py.txt",
+      "source_bytes": 22420,
+      "source_sha256": "4f4abddc7b2f65f31cd4777d495f59ce106aaac2355024b7a29991b7bc3b8050",
+      "archive_bytes": 22420,
+      "archive_sha256": "4f4abddc7b2f65f31cd4777d495f59ce106aaac2355024b7a29991b7bc3b8050",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "src\\limo_maze_perception\\limo_maze_perception\\retention_worker.py",
+      "archive": "runner/src__limo_maze_perception__limo_maze_perception__retention_worker.py.txt",
+      "source_bytes": 3761,
+      "source_sha256": "c186dfb193fc926a6ae93e67ae9ca483934037bc7d2dea6a13e932ef740948d7",
+      "archive_bytes": 3761,
+      "archive_sha256": "c186dfb193fc926a6ae93e67ae9ca483934037bc7d2dea6a13e932ef740948d7",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "src\\limo_evidence_protocol\\limo_evidence_protocol\\retention.py",
+      "archive": "runner/src__limo_evidence_protocol__limo_evidence_protocol__retention.py.txt",
+      "source_bytes": 23567,
+      "source_sha256": "ac2a885da8afc8b69710ed6caa1a7967221ce55421aa18a1eefc06c2a7ea0d2c",
+      "archive_bytes": 23567,
+      "archive_sha256": "ac2a885da8afc8b69710ed6caa1a7967221ce55421aa18a1eefc06c2a7ea0d2c",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tests\\test_base_tf_age.py",
+      "archive": "runner/tests__test_base_tf_age.py.txt",
+      "source_bytes": 6925,
+      "source_sha256": "1b4a494947cc7c475125e75ab2018cefe6c9018569894c1e5931d30881242cd7",
+      "archive_bytes": 6925,
+      "archive_sha256": "1b4a494947cc7c475125e75ab2018cefe6c9018569894c1e5931d30881242cd7",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "tests\\test_tf_experiment_config.py",
+      "archive": "runner/tests__test_tf_experiment_config.py.txt",
+      "source_bytes": 808,
+      "source_sha256": "92f8938d1cbbcf5dfe6cf0db141b3efb09924144ecae67db6bfadc8d2a2a8c77",
+      "archive_bytes": 808,
+      "archive_sha256": "92f8938d1cbbcf5dfe6cf0db141b3efb09924144ecae67db6bfadc8d2a2a8c77",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "src\\limo_maze_mission\\limo_maze_mission\\node.py",
+      "archive": "runner/src__limo_maze_mission__limo_maze_mission__node.py.txt",
+      "source_bytes": 93302,
+      "source_sha256": "14f5da04f23d73a536fb16f4c821557d88274e970c8ac077f8ead1b3cc163d33",
+      "archive_bytes": 93302,
+      "archive_sha256": "14f5da04f23d73a536fb16f4c821557d88274e970c8ac077f8ead1b3cc163d33",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "src\\limo_maze_mission\\launch\\mission.launch.py",
+      "archive": "runner/src__limo_maze_mission__launch__mission.launch.py.txt",
+      "source_bytes": 3538,
+      "source_sha256": "66747dee1f34a221d7f604d76048b63f9f28b942d7a04a6d09645844d6e34c70",
+      "archive_bytes": 3538,
+      "archive_sha256": "66747dee1f34a221d7f604d76048b63f9f28b942d7a04a6d09645844d6e34c70",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    },
+    {
+      "source": "src\\limo_maze_bringup\\config\\nav2_rpp_tf_experimental.yaml",
+      "archive": "runner/src__limo_maze_bringup__config__nav2_rpp_tf_experimental.yaml.txt",
+      "source_bytes": 10779,
+      "source_sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+      "archive_bytes": 10779,
+      "archive_sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+      "encoding": "identity",
+      "original_bytes_verified": true
+    }
+  ],
+  "generated": [
+    {
+      "archive": "README.md",
+      "bytes": 4755,
+      "sha256": "ecccd8ef04f7d688ee4aaecf4ee1ec0ba0be47c066c7e37baa630354f405ac75"
+    },
+    {
+      "archive": "retained-partial-files.json",
+      "bytes": 8046,
+      "sha256": "64cfb4c6a8d09004027ddc3fad26d7e9d6c63f131c5ab3771028102f26703e84"
+    },
+    {
+      "archive": "retained-partial-files.tar.gz",
+      "bytes": 90564,
+      "sha256": "cb077240d6ac272c01753b5880b59d9dfab26a44a12f90e5312feefa80b304db"
+    },
+    {
+      "archive": "retention-audit-status.json",
+      "bytes": 472,
+      "sha256": "c7a49b1ba1bef64d8b8b03d9b36f911f3a1f5f90228a2c828addf21c3dc90a84"
+    }
+  ],
+  "excluded_large_files": [
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\final-map.data",
+      "bytes": 5497334,
+      "sha256": "d619943995e80190960efd72eeef4ff0729b30f5d0d008f361059093b9660999",
+      "archived": false
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\final-map.posegraph",
+      "bytes": 8856028,
+      "sha256": "d6f37a2f82212b7048e914decc5d70f695e48bfd4ab4733d65a52b60918015ae",
+      "archived": false
+    },
+    {
+      "source": "outputs\\ros_smoke\\run28-startup-timing\\recording\\bag\\bag_0.mcap",
+      "bytes": 18524823,
+      "sha256": "b099a1585a7868f6c978bfc117a4ef145ee3fe31837fcf0a503fd08de1769b33",
+      "archived": false
+    }
+  ],
+  "missing_optional": [
+    "outputs\\ros_smoke\\run28-startup-timing\\mission\\shutdown_20261102_233856.json",
+    "outputs\\ros_smoke\\run28-startup-timing\\run-token-process-recheck.json",
+    "outputs\\ros_smoke\\run28-startup-timing\\denied-process-context.json",
+    "outputs\\ros_smoke\\run28-startup-timing\\snapshot-map.failure.json",
+    "outputs\\setup\\run28-tests.log",
+    "outputs\\setup\\run28-build.log",
+    "outputs\\setup\\run28-launch-args.log"
+  ],
+  "pack_helper_source_sha256": "d43d4cb0232a0157ffabe5f8438a18b212799717a0a3e53c7d32675543233c94",
+  "global_process_absence_as_originally_reported": false,
+  "index_exclusions": [
+    "archive-manifest.json",
+    "archive-verification.json",
+    "SHA256SUMS"
+  ],
+  "scope": "Closed original bytes; extracted audit only when explicitly present. No new mission or service success claim."
+}

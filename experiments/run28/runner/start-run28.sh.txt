@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -eo pipefail
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+git diff --quiet
+git diff --cached --quiet
+cmp src/limo_sim_bringup/launch/sim.launch.py install/limo_sim_bringup/share/limo_sim_bringup/launch/sim.launch.py
+cmp src/limo_sim_bringup/scripts/spawn_once.py install/limo_sim_bringup/lib/limo_sim_bringup/spawn_once.py
+/usr/bin/python3 -B - <<'PY'
+from pathlib import Path
+import ast, hashlib, json, subprocess, yaml
+root = Path.cwd()
+out = root/'outputs/ros_smoke/run28-startup-timing'
+assert not (out/'orchestration.json').exists()
+raw_epoch = (out/'epoch.txt').read_bytes()
+assert raw_epoch == (str(__import__('uuid').UUID(raw_epoch.decode().strip()))+'\n').encode()
+old = yaml.safe_load((root/'outputs/ros_smoke/run24-startup-gate/nav2-rpp-03m.yaml').read_text())
+new = yaml.safe_load((out/'nav2-rpp-03m.yaml').read_text())
+new['controller_server']['ros__parameters']['FollowPath']['transform_tolerance'] = .1
+assert old == new
+assert (out/'nav2-rpp-03m.yaml').read_bytes() == (root/'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml').read_bytes()
+path = out/'preparation.json'
+report = json.loads(path.read_text())
+assert report['code_head'] is None
+# Core source/install equality is still required by the original shell cmp
+# checks and run28-installed-check before any simulator is launched. The
+# collector is explicitly executed from source; no install copy/build needed.
+collector = root/'scripts/capture_motion_evidence.py'
+collector_raw = collector.read_bytes()
+ast.parse(collector_raw, filename=str(collector))
+assert hashlib.sha256(collector_raw).hexdigest() == report['collector_source_sha256_at_preparation']
+assert 'LIMO_MOTION_ENV_READY_MONOTONIC' in collector_raw.decode('utf-8')
+for name, expected in report['prepared_helper_sha256'].items():
+    assert hashlib.sha256((root/name).read_bytes()).hexdigest() == expected
+assert report['motion_startup_ready_budget_s'] == 60
+assert report['planned_active_wall_budget_s'] == 1800
+assert report['previous_attempt']['original_all_owned_groups_empty'] is False
+assert report['previous_attempt']['later_scoped_groups_empty'] is True
+report['code_head'] = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+report['nav2_sha256'] = hashlib.sha256((out/'nav2-rpp-03m.yaml').read_bytes()).hexdigest()
+path.write_text(json.dumps(report,indent=2)+'\n')
+PY
+bash -n outputs/setup/run28-env.sh
+exec bash outputs/setup/run28-env.sh control
