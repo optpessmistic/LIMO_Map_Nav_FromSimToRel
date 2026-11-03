@@ -1,0 +1,25 @@
+import hashlib
+import importlib
+import json
+from pathlib import Path
+
+root = Path.cwd()
+names = ['limo_evidence_protocol.retention', 'limo_maze_mission.retention', 'limo_maze_mission.node',
+         'limo_maze_perception.node', 'limo_maze_perception.retention_adapter', 'limo_maze_perception.retention_worker']
+names += ['limo_maze_mission.core','limo_maze_mission.inspection','limo_maze_mission.observation','limo_maze_perception.evidence']
+rows = []
+for name in names:
+    module = importlib.import_module(name)
+    package, filename = name.split('.')
+    installed = Path(module.__file__).resolve()
+    source = root/'src'/package/package/(filename+'.py')
+    rows.append(dict(module=name, installed=str(installed), source=str(source),
+                     sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+                     equal=installed.read_bytes() == source.read_bytes(),
+                     current_workspace=installed.is_relative_to(root/'install')))
+passed = all(r['equal'] and r['current_workspace'] for r in rows)
+report = dict(passed=passed, modules=rows)
+with (root/'outputs/ros_smoke/run21-observation-retention/installed-check.json').open('x') as out:
+    json.dump(report, out, indent=2)
+print(json.dumps(report, indent=2))
+raise SystemExit(0 if passed else 1)

@@ -1,0 +1,107 @@
+{
+  "trial": "glx-120s",
+  "egl": false,
+  "motion_started": false,
+  "probe_timeout_s": 120,
+  "supervisor_active_budget_s": 180,
+  "errors": [],
+  "stops": {
+    "warm-probe": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0015918459999966217,
+      "exit_code": 0
+    },
+    "probe": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008664480000106778,
+      "exit_code": 0
+    },
+    "sim": {
+      "signals": [
+        {
+          "pid": 866,
+          "start_ticks": 12766,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 883,
+          "start_ticks": 13746,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 884,
+          "start_ticks": 13748,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 885,
+          "start_ticks": 13749,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.6136605730000042,
+      "exit_code": 0
+    }
+  },
+  "commands": {
+    "sim": [
+      "ros2",
+      "launch",
+      "limo_sim_bringup",
+      "sim.launch.py",
+      "world:=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/worlds/smoke_maze.world",
+      "headless:=true",
+      "headless_rendering:=false"
+    ],
+    "probe": [
+      "/usr/bin/python3",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+      "--timeout",
+      "120",
+      "--max-initial-sim-time",
+      "30",
+      "--output",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run17-rendering-check/glx-120s/sim-runtime.json"
+    ],
+    "warm-probe": [
+      "/usr/bin/python3",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/check_sim_runtime.py",
+      "--timeout",
+      "30",
+      "--output",
+      "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run17-rendering-check/glx-120s/sim-runtime-warm.json"
+    ]
+  },
+  "environment": {
+    "DISPLAY": ":0",
+    "WAYLAND_DISPLAY": "wayland-0",
+    "ROS_DOMAIN_ID": "73",
+    "GZ_PARTITION": "limo_maze_jazzy",
+    "LIBGL_ALWAYS_SOFTWARE": null,
+    "MESA_D3D12_DEFAULT_ADAPTER_NAME": null
+  },
+  "isolation_passed": true,
+  "probe_exit_code": 0,
+  "sensor_passed": true,
+  "warm_passed": true,
+  "all_owned_groups_empty": true,
+  "elapsed_wall_s": 73.40593747999999
+}

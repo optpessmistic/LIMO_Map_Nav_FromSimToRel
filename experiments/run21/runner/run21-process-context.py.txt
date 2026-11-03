@@ -1,0 +1,19 @@
+"""Only read identity/cgroup metadata for denied user service managers."""
+import json
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2]
+OUT=ROOT/'outputs/ros_smoke/run21-observation-retention'
+rows=[]
+for d in Path('/proc').iterdir():
+    if not d.name.isdigit(): continue
+    try:
+        comm=(d/'comm').read_text().strip()
+        if comm not in ('systemd','(sd-pam)'): continue
+        status=(d/'status').read_text().splitlines()
+        rows.append(dict(pid=d.name,comm=comm,
+                         identity=[s for s in status if s.startswith(('Name:','State:','PPid:','Uid:','Gid:'))],
+                         cmdline=(d/'cmdline').read_bytes().replace(b'\0',b' ').decode(errors='replace'),
+                         cgroup=(d/'cgroup').read_text()))
+    except (FileNotFoundError,ProcessLookupError): pass
+with (OUT/'denied-process-context.json').open('x') as f:json.dump(dict(processes=rows,signals_sent=[]),f,indent=2)
+print(json.dumps(rows),flush=True)

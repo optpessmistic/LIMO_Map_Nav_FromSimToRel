@@ -1,0 +1,366 @@
+#!/usr/bin/env python3
+"""Run22 parameter receipts and optional final SLAM exports; no motion commands.
+
+This records observed data. A successful export is not a successful mission.
+List/GetParameters snapshots are non-atomic. Client timeouts cannot cancel a
+server-side save; incomplete calls remain explicitly uncertain in the report.
+"""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run22-isolated-writer'
+NODES = ('controller_server', 'slam_toolbox', 'limo_maze_mission', 'red_rgbd_sim_baseline')
+
+
+def within_run(path):
+    path = Path(path).expanduser().resolve()
+    path.relative_to(RUN.resolve())
+    return path
+
+
+def json_value(value):
+    if isinstance(value, float):
+        return value if math.isfinite(value) else {'nonfinite': str(value)}
+    if isinstance(value, dict):
+        return {k: json_value(v) for k, v in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [json_value(v) for v in value]
+    return value
+
+
+def decode_parameter(value):
+    kind = int(value.type)
+    fields = {1: 'bool_value', 2: 'integer_value', 3: 'double_value', 4: 'string_value',
+              5: 'byte_array_value', 6: 'bool_array_value', 7: 'integer_array_value',
+              8: 'double_array_value', 9: 'string_array_value'}
+    if kind == 0:
+        return dict(type=0, value=None, set=False)
+    if kind not in fields:
+        raise ValueError('Unknown parameter type')
+    raw = getattr(value, fields[kind])
+    if kind >= 5:
+        raw = list(raw)
+        if kind == 5:
+            raw = [v[0] if isinstance(v, bytes) else int(v) for v in raw]
+    return dict(type=kind, value=json_value(raw), set=True)
+
+
+def stamp_ns(stamp):
+    if stamp.sec < 0 or not 0 <= stamp.nanosec < 1_000_000_000:
+        raise ValueError('Invalid ROS stamp')
+    return stamp.sec * 1_000_000_000 + stamp.nanosec
+
+
+def pose(position, rotation):
+    values = [position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, rotation.w]
+    valid = all(math.isfinite(v) for v in values) and abs(sum(v*v for v in values[3:])-1) <= 1e-3
+    return dict(xyz=values[:3], quaternion_xyzw=values[3:], valid_geometry=valid)
+
+
+def file_record(path):
+    if not path.is_file():
+        return dict(path=str(path), exists=False)
+    h = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024*1024), b''):
+            h.update(chunk)
+    return dict(path=str(path), exists=True, bytes=path.stat().st_size, sha256=h.hexdigest())
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    mode = ap.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--parameters-only', action='store_true')
+    mode.add_argument('--final', action='store_true')
+    ap.add_argument('--output', type=Path)
+    ap.add_argument('--map-prefix', type=Path)
+    ap.add_argument('--timeout', type=float, default=45.)
+    args = ap.parse_args()
+    if not math.isfinite(args.timeout) or not 5 <= args.timeout <= 45:
+        ap.error('timeout must be within [5,45] wall seconds')
+    if os.environ.get('ROS_DOMAIN_ID') != '73' or os.environ.get('ROS_AUTOMATIC_DISCOVERY_RANGE') != 'LOCALHOST':
+        ap.error('Run22 requires ROS domain 73 and LOCALHOST discovery')
+    try:
+        output = within_run(args.output or RUN / ('final-save.json' if args.final else 'parameters-early.json'))
+        prefix = within_run(args.map_prefix or RUN / 'final-map')
+    except ValueError:
+        ap.error('All evidence and service export paths must stay inside the run22 output directory')
+    if output.exists():
+        ap.error('Refuse existing report')
+    if args.final and (prefix.name in ('', '.', '..') or list(prefix.parent.glob(prefix.name+'*'))):
+        ap.error('Refuse existing map export prefix or related files')
+    if args.final and (output == prefix or output.name.startswith(prefix.name)):
+        ap.error('Report must use a separate name from the map export prefix')
+    output.parent.mkdir(parents=True, exist_ok=True)
+    # Reserve report ownership before starting ROS; never overwrite an earlier attempt.
+    report_stream = output.open('x', encoding='utf-8')
+    started, node, listener, ros = time.monotonic(), None, None, None
+    deadline = started + args.timeout
+    report = dict(schema_version=1, created_utc=datetime.now(timezone.utc).isoformat(),
+                  mode='final' if args.final else 'parameters-only', passed=False,
+                  motion_or_navigation_commands_published=False, parameters_modified=False,
+                  slam_map_modified=False, output=str(output), timeout_wall_s=args.timeout,
+                  environment={k: os.environ.get(k) for k in ('ROS_DISTRO', 'ROS_DOMAIN_ID',
+                      'ROS_AUTOMATIC_DISCOVERY_RANGE', 'GZ_PARTITION')},
+                  parameters={}, snapshot=None, exports={}, errors=[],
+                  script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                  limitations=[
+                      'Parameter List and Get requests, node receipts, map, TF and status are not an atomic transaction.',
+                      'No motion goals, velocity commands, parameter updates, map edits or reset requests are sent.',
+                      'Save services write new files; their result does not prove map accuracy or mission completion.',
+                      'A timed-out save request may still write later; removing the client Future does not cancel the server operation.',
+                      'Map snapshot and SLAM service exports may represent different map updates.',
+                      'The wall budget bounds waiting; local file serialization and cleanup add bounded data-processing overhead.'])
+    pending = []
+    try:
+        import rclpy
+        from rclpy.parameter import Parameter
+        from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
+        from rclpy.time import Time
+        from rcl_interfaces.srv import ListParameters, GetParameters
+        from nav_msgs.msg import OccupancyGrid
+        from std_msgs.msg import String
+        from tf2_ros import Buffer, TransformListener, TransformException
+        from slam_toolbox.srv import SaveMap, SerializePoseGraph
+        ros = rclpy
+        ros.init()
+        node = ros.create_node('run22_read_only_evidence_saver',
+                              parameter_overrides=[Parameter('use_sim_time', value=True)],
+                              enable_rosout=False, start_parameter_services=False)
+        buffer = Buffer(node=node)
+        listener = TransformListener(buffer, node)
+        latched = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
+                             durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        captured = {}
+
+        def receive(key, msg):
+            captured[key] = (msg, time.monotonic(), node.get_clock().now().nanoseconds)
+
+        subscriptions = []
+        if args.final:
+            for topic, typ, key in (('/map', OccupancyGrid, 'map'), ('/mission/map_epoch', String, 'epoch'),
+                                    ('/mission/status', String, 'status')):
+                subscriptions.append(node.create_subscription(typ, topic,
+                    lambda msg, key=key: receive(key, msg), latched))
+
+        jobs = {}
+        for name in NODES:
+            jobs[name] = dict(stage='list_wait', future=None,
+                list_client=node.create_client(ListParameters, '/'+name+'/list_parameters'),
+                get_client=node.create_client(GetParameters, '/'+name+'/get_parameters'))
+            report['parameters'][name] = dict(status='waiting', list_service='/'+name+'/list_parameters',
+                get_service='/'+name+'/get_parameters', listed_names=[], values={})
+        param_deadline = min(deadline-1, started+17)
+        while time.monotonic() < param_deadline and any(j['stage'] != 'done' for j in jobs.values()):
+            ros.spin_once(node, timeout_sec=min(.05, max(0., param_deadline-time.monotonic())))
+            now = time.monotonic()
+            for name, job in jobs.items():
+                item = report['parameters'][name]
+                if job['stage'] == 'done':
+                    continue
+                future = job['future']
+                if future is not None:
+                    if future.done():
+                        try:
+                            result = future.result()
+                            if job['stage'] == 'list_pending':
+                                names = sorted(result.result.names)
+                                if not names or len(names) > 4096 or len(set(names)) != len(names):
+                                    raise ValueError('Empty, duplicate or oversized parameter name list')
+                                item.update(listed_names=names, listed_prefixes=list(result.result.prefixes),
+                                            list_completed_wall_s=now-started)
+                                job['stage'] = 'get_wait'
+                            else:
+                                if len(result.values) != len(item['listed_names']):
+                                    raise ValueError('GetParameters response length mismatch')
+                                item['values'] = {key: decode_parameter(value)
+                                                  for key, value in zip(item['listed_names'], result.values)}
+                                item.update(status='received', get_completed_wall_s=now-started,
+                                            get_completed_ros_ns=node.get_clock().now().nanoseconds)
+                                job['stage'] = 'done'
+                        except Exception as exc:
+                            item.update(status='failed', error=type(exc).__name__+': '+str(exc)[:256])
+                            job['stage'] = 'done'
+                        job['client'].remove_pending_request(future)
+                        job['future'] = None
+                    elif now-job['sent'] >= 6:
+                        job['client'].remove_pending_request(future)
+                        future.cancel()
+                        job['future'] = None
+                        item.update(status='timed_out', failed_stage=job['stage'])
+                        job['stage'] = 'done'
+                if job['stage'] in ('list_wait', 'get_wait'):
+                    stage = job['stage'].split('_')[0]
+                    client = job[stage+'_client']
+                    if not client.service_is_ready():
+                        continue
+                    request = ListParameters.Request(prefixes=[], depth=0) if stage == 'list' else GetParameters.Request(names=item['listed_names'])
+                    job.update(client=client, future=client.call_async(request), sent=now, stage=stage+'_pending')
+                    item[stage+'_sent_wall_s'] = now-started
+                    item[stage+'_sent_ros_ns'] = node.get_clock().now().nanoseconds
+        for name, job in jobs.items():
+            if job['future'] is not None:
+                job['client'].remove_pending_request(job['future'])
+                job['future'].cancel()
+            if job['stage'] != 'done':
+                report['parameters'][name].update(status='budget_expired', failed_stage=job['stage'])
+            if report['parameters'][name]['status'] != 'received':
+                report['errors'].append('parameters_unavailable:'+name)
+        report['graph_nodes_at_capture'] = sorted('/'+name if namespace == '/' else namespace.rstrip('/')+'/'+name
+                                                  for name, namespace in node.get_node_names_and_namespaces())
+
+        if args.final:
+            snapshot_deadline = min(deadline-1, time.monotonic()+7)
+            transform = None
+            while time.monotonic() < snapshot_deadline:
+                ros.spin_once(node, timeout_sec=.05)
+                try:
+                    transform = buffer.lookup_transform('map', 'base_link', Time())
+                except TransformException:
+                    transform = None
+                if all(k in captured for k in ('map', 'epoch', 'status')) and transform is not None:
+                    break
+            now_ns, now_wall = node.get_clock().now().nanoseconds, time.monotonic()
+            snapshot = dict(captured_ros_ns=now_ns, captured_wall_s=now_wall-started, valid=False, errors=[])
+            for key in ('epoch', 'status'):
+                if key not in captured:
+                    snapshot['errors'].append('missing_'+key)
+                    continue
+                msg, wall, ros_ns = captured[key]
+                row = dict(raw=msg.data, receipt_ros_ns=ros_ns, receipt_wall_s=wall-started,
+                           receipt_age_wall_s=now_wall-wall)
+                if key == 'status':
+                    try:
+                        row['parsed'] = json.loads(msg.data)
+                    except (TypeError, ValueError):
+                        snapshot['errors'].append('invalid_status_json')
+                elif not msg.data.strip():
+                    snapshot['errors'].append('empty_epoch')
+                snapshot[key] = row
+            if 'map' not in captured:
+                snapshot['errors'].append('missing_map')
+            else:
+                msg, wall, ros_ns = captured['map']
+                map_stamp = stamp_ns(msg.header.stamp)
+                snapshot['map'] = dict(frame_id=msg.header.frame_id, stamp_ns=map_stamp,
+                    map_load_time_ns=stamp_ns(msg.info.map_load_time), width=msg.info.width, height=msg.info.height,
+                    resolution=msg.info.resolution, origin=pose(msg.info.origin.position, msg.info.origin.orientation),
+                    data=list(msg.data), receipt_ros_ns=ros_ns, receipt_wall_s=wall-started,
+                    source_age_ros_s=(now_ns-map_stamp)*1e-9, receipt_age_wall_s=now_wall-wall)
+                if (msg.header.frame_id != 'map' or not msg.info.resolution > 0 or
+                        len(msg.data) != msg.info.width*msg.info.height or not msg.data or
+                        not 0 <= now_ns-map_stamp <= 5_000_000_000 or now_wall-wall > 5 or
+                        not snapshot['map']['origin']['valid_geometry']):
+                    snapshot['errors'].append('invalid_or_stale_map')
+            if transform is None:
+                snapshot['errors'].append('missing_base_tf')
+            else:
+                reference = stamp_ns(transform.header.stamp)
+                snapshot['transforms'] = {}
+                for parent, child in (('map', 'base_link'), ('map', 'odom'), ('odom', 'base_link')):
+                    try:
+                        tf = buffer.lookup_transform(parent, child, Time(nanoseconds=reference))
+                        row = dict(parent=tf.header.frame_id, child=tf.child_frame_id,
+                                   stamp_ns=stamp_ns(tf.header.stamp), **pose(tf.transform.translation, tf.transform.rotation))
+                        snapshot['transforms'][parent+'->'+child] = row
+                        if not row['valid_geometry'] or row['stamp_ns'] != reference:
+                            snapshot['errors'].append('invalid_tf:'+parent+'->'+child)
+                    except TransformException:
+                        snapshot['errors'].append('sample_tf_unavailable:'+parent+'->'+child)
+                snapshot['tf_source_age_ros_s'] = (now_ns-reference)*1e-9
+                if not 0 <= now_ns-reference <= 1_000_000_000:
+                    snapshot['errors'].append('stale_or_future_tf')
+            snapshot['valid'] = not snapshot['errors']
+            report['snapshot'] = snapshot
+            if not snapshot['valid']:
+                report['errors'].append('final_snapshot_incomplete')
+
+            prefix.parent.mkdir(parents=True, exist_ok=True)
+            # Recheck immediately before either writer receives the filename.
+            if list(prefix.parent.glob(prefix.name+'*')):
+                raise FileExistsError('Map export prefix appeared during collection')
+            reservation = Path(str(prefix)+'.reservation.json')
+            with reservation.open('x', encoding='utf-8') as stream:
+                json.dump(dict(report=str(output), prefix=str(prefix), created_utc=report['created_utc']), stream)
+
+            def export(service, srv_type, request):
+                item = dict(service=service, requested_prefix=str(prefix), status='not_sent')
+                report['exports'][service] = item
+                client = node.create_client(srv_type, service)
+                limit = min(deadline-1, time.monotonic()+10)
+                while not client.service_is_ready() and time.monotonic() < limit:
+                    ros.spin_once(node, timeout_sec=.05)
+                if not client.service_is_ready() or time.monotonic() >= limit:
+                    item['status'] = 'unavailable_or_budget_expired'
+                    return
+                future = client.call_async(request)
+                pending.append((client, future))
+                item.update(status='pending', sent_wall_s=time.monotonic()-started,
+                            sent_ros_ns=node.get_clock().now().nanoseconds)
+                while not future.done() and time.monotonic() < limit:
+                    ros.spin_once(node, timeout_sec=.05)
+                if future.done():
+                    try:
+                        response = future.result()
+                        item.update(status='service_success' if response.result == 0 else 'service_failed',
+                                    result=int(response.result), completed_wall_s=time.monotonic()-started)
+                    except Exception as exc:
+                        item.update(status='response_error', error=type(exc).__name__)
+                else:
+                    item.update(status='timed_out_outcome_unknown', client_cancel_does_not_cancel_server=True)
+                client.remove_pending_request(future)
+                if not future.done():
+                    future.cancel()
+                pending.remove((client, future))
+
+            save_request = SaveMap.Request()
+            save_request.name.data = str(prefix)
+            export('/slam_toolbox/save_map', SaveMap, save_request)
+            graph_request = SerializePoseGraph.Request(filename=str(prefix))
+            export('/slam_toolbox/serialize_map', SerializePoseGraph, graph_request)
+            report['exported_files_at_capture'] = [file_record(Path(str(prefix)+suffix))
+                                                   for suffix in ('.yaml', '.pgm', '.posegraph', '.data')]
+            for service, item in report['exports'].items():
+                if item['status'] != 'service_success':
+                    report['errors'].append('export_incomplete:'+service)
+            if any(not item['exists'] or not item.get('bytes') for item in report['exported_files_at_capture']):
+                report['errors'].append('expected_export_files_missing_or_empty_at_capture')
+        report['passed'] = not report['errors']
+    except (Exception, KeyboardInterrupt) as exc:
+        report['errors'].append(type(exc).__name__+': '+str(exc)[:512])
+        report['passed'] = False
+    finally:
+        for client, future in pending:
+            try:
+                client.remove_pending_request(future)
+                if not future.done():
+                    future.cancel()
+            except Exception:
+                pass
+        if listener is not None:
+            listener.unregister()
+        if node is not None:
+            node.destroy_node()
+        if ros is not None and ros.ok():
+            ros.shutdown()
+        report['elapsed_wall_s'] = time.monotonic()-started
+        report['budget_exceeded'] = report['elapsed_wall_s'] > args.timeout
+        if report['budget_exceeded']:
+            report['errors'].append('total_wall_budget_exceeded')
+            report['passed'] = False
+        json.dump(json_value(report), report_stream, indent=2, allow_nan=False)
+        report_stream.write('\n')
+        report_stream.close()
+        print(json.dumps({k: report[k] for k in ('mode', 'passed', 'elapsed_wall_s', 'output', 'errors')}))
+    return 0 if report['passed'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

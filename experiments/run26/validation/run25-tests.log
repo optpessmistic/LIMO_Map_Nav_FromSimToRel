@@ -1,0 +1,26 @@
+test_default_one_second_bound_remains_inclusive (tests.test_base_tf_age.BaseTfAgeTests.test_default_one_second_bound_remains_inclusive) ... ok
+test_existing_event_logging_clock_does_not_change_recorded_age (tests.test_base_tf_age.BaseTfAgeTests.test_existing_event_logging_clock_does_not_change_recorded_age) ... ok
+test_first_rejection_records_exact_decision_sample_and_frames_once (tests.test_base_tf_age.BaseTfAgeTests.test_first_rejection_records_exact_decision_sample_and_frames_once) ... ok
+test_future_limit_unchanged_for_default_and_override (tests.test_base_tf_age.BaseTfAgeTests.test_future_limit_unchanged_for_default_and_override) ... ok
+test_one_point_five_override_accepts_one_point_two_and_boundary (tests.test_base_tf_age.BaseTfAgeTests.test_one_point_five_override_accepts_one_point_two_and_boundary) ... ok
+test_override_still_rejects_older_than_one_point_five (tests.test_base_tf_age.BaseTfAgeTests.test_override_still_rejects_older_than_one_point_five) ... ok
+test_only_rpp_wait_differs_from_run24 (tests.test_tf_experiment_config.TfExperimentConfigTests.test_only_rpp_wait_differs_from_run24) ... ok
+test_frame_retention_node (unittest.loader._FailedTest.test_frame_retention_node) ... ERROR
+
+======================================================================
+ERROR: test_frame_retention_node (unittest.loader._FailedTest.test_frame_retention_node)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_frame_retention_node
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_frame_retention_node.py", line 17, in <module>
+    import test_observation_adapter as t
+ModuleNotFoundError: No module named 'test_observation_adapter'
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.036s
+
+FAILED (errors=1)

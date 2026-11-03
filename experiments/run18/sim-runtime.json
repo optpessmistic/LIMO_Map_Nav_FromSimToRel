@@ -1,0 +1,298 @@
+{
+  "passed": true,
+  "errors": [],
+  "checked_at_utc": "2026-10-31T09:16:49.897816+00:00",
+  "environment": {
+    "ROS_DISTRO": "jazzy",
+    "ROS_DOMAIN_ID": "73",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+    "GZ_PARTITION": "limo_maze_jazzy"
+  },
+  "wall_seconds": 41.06,
+  "counts": {
+    "/imu": 76,
+    "/clock": 374,
+    "/camera/color/camera_info": 7,
+    "/camera/depth/camera_info": 7,
+    "/scan": 6,
+    "/odom": 74,
+    "/joint_states": 34,
+    "/camera/color/image_raw": 3,
+    "/camera/depth/image_raw": 3
+  },
+  "shared_rgb_depth_stamps": 2,
+  "ros_publisher_counts": {
+    "/clock": 1,
+    "/odom": 1,
+    "/scan": 1,
+    "/imu": 1,
+    "/joint_states": 1,
+    "/camera/color/image_raw": 1,
+    "/camera/depth/image_raw": 1,
+    "/camera/color/camera_info": 1,
+    "/camera/depth/camera_info": 1
+  },
+  "first_clock_seconds": 0.002,
+  "max_initial_sim_time": 30.0,
+  "frames": {
+    "/odom": "odom",
+    "/scan": "laser_link",
+    "/imu": "imu_link",
+    "/camera/color/image_raw": "camera_optical_frame",
+    "/camera/depth/image_raw": "camera_optical_frame",
+    "/camera/color/camera_info": "camera_optical_frame",
+    "/camera/depth/camera_info": "camera_optical_frame"
+  },
+  "images": {
+    "/camera/color/image_raw": {
+      "encoding": "rgb8",
+      "width": 640,
+      "height": 480
+    },
+    "/camera/depth/image_raw": {
+      "encoding": "32FC1",
+      "width": 640,
+      "height": 480
+    }
+  },
+  "depth_values_m": {
+    "finite_positive_count": 228885,
+    "minimum": 0.3344910740852356,
+    "maximum": 3.5187578201293945
+  },
+  "rgb_byte_range": [
+    25,
+    218
+  ],
+  "timestamps": {
+    "/odom": {
+      "sec": 0,
+      "nanosec": 370000000
+    },
+    "/scan": {
+      "sec": 0,
+      "nanosec": 250000000
+    },
+    "/imu": {
+      "sec": 0,
+      "nanosec": 370000000
+    },
+    "/camera/color/image_raw": {
+      "sec": 0,
+      "nanosec": 300000000
+    },
+    "/camera/depth/image_raw": {
+      "sec": 0,
+      "nanosec": 200000000
+    },
+    "/camera/color/camera_info": {
+      "sec": 0,
+      "nanosec": 300000000
+    },
+    "/camera/depth/camera_info": {
+      "sec": 0,
+      "nanosec": 300000000
+    }
+  },
+  "camera_info": {
+    "/camera/color/camera_info": {
+      "width": 640,
+      "height": 480,
+      "k": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "p": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distortion_model": "plumb_bob"
+    },
+    "/camera/depth/camera_info": {
+      "width": 640,
+      "height": 480,
+      "k": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "p": [
+        381.36115024798124,
+        0.0,
+        320.0,
+        0.0,
+        0.0,
+        381.36115024798124,
+        240.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "d": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "distortion_model": "plumb_bob"
+    }
+  },
+  "tf_chain": {
+    "odom->base_footprint": {
+      "xyz": [
+        6.699312005128444e-08,
+        -1.4230347350078172e-23,
+        0.0
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        7.052243361327175e-15,
+        1.0
+      ]
+    },
+    "base_footprint->base_link": {
+      "xyz": [
+        0.0,
+        0.0,
+        0.15
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "base_link->laser_link": {
+      "xyz": [
+        0.103,
+        0.0,
+        -0.034
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "base_link->camera_optical_frame": {
+      "xyz": [
+        0.084,
+        0.0,
+        0.03
+      ],
+      "quaternion_xyzw": [
+        -0.5,
+        0.4999999999999999,
+        -0.5,
+        0.5000000000000001
+      ]
+    }
+  },
+  "odom_to_camera_at_rgb_stamp": {
+    "stamp": {
+      "sec": 0,
+      "nanosec": 300000000
+    },
+    "xyz": [
+      0.08400006699312007,
+      1.184772156734267e-15,
+      0.18
+    ],
+    "quaternion_xyzw": [
+      -0.5000000000000036,
+      0.49999999999999634,
+      -0.49999999999999645,
+      0.5000000000000037
+    ]
+  },
+  "scan": {
+    "beams": 720,
+    "finite": 720,
+    "minimum_m": 0.3756447732448578,
+    "angle_min": -2.094395160675049,
+    "angle_max": 2.094395160675049,
+    "angle_increment": 0.005825855769217014,
+    "range_min": 0.05000000074505806,
+    "range_max": 8.0,
+    "fov_deg": 240.00000667860846,
+    "expected_fov_deg": 240.0,
+    "rear_abs_angle_over_120_deg": {
+      "beams": 0,
+      "finite": 0,
+      "negative_infinity": 0,
+      "positive_infinity": 0,
+      "nan": 0,
+      "minimum_m": null,
+      "finite_at_min_range": 0,
+      "finite_within_0_12_m": 0
+    },
+    "selected_beams": [
+      {
+        "index": 0,
+        "angle_deg": -120.00000333930423,
+        "range_m": 0.45355305075645447,
+        "nonfinite": null
+      },
+      {
+        "index": 90,
+        "angle_deg": -89.95827805277732,
+        "range_m": 0.38841375708580017,
+        "nonfinite": null
+      },
+      {
+        "index": 360,
+        "angle_deg": 0.1668978068033772,
+        "range_m": 3.4519643783569336,
+        "nonfinite": null
+      },
+      {
+        "index": 629,
+        "angle_deg": 89.958276718756,
+        "range_m": 0.4083434045314789,
+        "nonfinite": null
+      },
+      {
+        "index": 719,
+        "angle_deg": 120.0000020052829,
+        "range_m": 0.46105772256851196,
+        "nonfinite": null
+      }
+    ]
+  }
+}

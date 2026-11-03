@@ -1,0 +1,869 @@
+[INFO] [launch]: All log files can be found below /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/ros_logs/navigation/2026-10-31-05-48-48-839824-DESKTOP-LD99ITF-1138
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [map_session.py-1]: process started with pid [1200]
+[INFO] [async_slam_toolbox_node-2]: process started with pid [1201]
+[INFO] [controller_server-3]: process started with pid [1202]
+[INFO] [smoother_server-4]: process started with pid [1203]
+[INFO] [planner_server-5]: process started with pid [1204]
+[INFO] [behavior_server-6]: process started with pid [1205]
+[INFO] [bt_navigator-7]: process started with pid [1206]
+[INFO] [velocity_smoother-8]: process started with pid [1207]
+[INFO] [collision_monitor-9]: process started with pid [1208]
+[INFO] [lifecycle_manager-10]: process started with pid [1209]
+[bt_navigator-7] [INFO] [1793450931.806901704] [bt_navigator]: 
+[bt_navigator-7] 	bt_navigator lifecycle node launched. 
+[bt_navigator-7] 	Waiting on external lifecycle transitions to activate
+[bt_navigator-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[velocity_smoother-8] [INFO] [1793450931.840456074] [velocity_smoother]: 
+[velocity_smoother-8] 	velocity_smoother lifecycle node launched. 
+[velocity_smoother-8] 	Waiting on external lifecycle transitions to activate
+[velocity_smoother-8] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[lifecycle_manager-10] [INFO] [1793450931.859115492] [lifecycle_manager_navigation]: Creating
+[smoother_server-4] [INFO] [1793450931.862964130] [smoother_server]: 
+[smoother_server-4] 	smoother_server lifecycle node launched. 
+[smoother_server-4] 	Waiting on external lifecycle transitions to activate
+[smoother_server-4] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-3] [INFO] [1793450931.865008528] [controller_server]: 
+[controller_server-3] 	controller_server lifecycle node launched. 
+[controller_server-3] 	Waiting on external lifecycle transitions to activate
+[controller_server-3] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-5] [INFO] [1793450931.882947351] [planner_server]: 
+[planner_server-5] 	planner_server lifecycle node launched. 
+[planner_server-5] 	Waiting on external lifecycle transitions to activate
+[planner_server-5] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[behavior_server-6] [INFO] [1793450931.885271275] [behavior_server]: 
+[behavior_server-6] 	behavior_server lifecycle node launched. 
+[behavior_server-6] 	Waiting on external lifecycle transitions to activate
+[behavior_server-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[collision_monitor-9] [INFO] [1793450931.893703536] [collision_monitor]: 
+[collision_monitor-9] 	collision_monitor lifecycle node launched. 
+[collision_monitor-9] 	Waiting on external lifecycle transitions to activate
+[collision_monitor-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[lifecycle_manager-10] [INFO] [1793450931.918301136] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[async_slam_toolbox_node-2] [INFO] [1793450932.131411157] [slam_toolbox]: Node using stack size 40000000
+[lifecycle_manager-10] [INFO] [1793450932.156314754] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[lifecycle_manager-10] [INFO] [1793450932.156372060] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[bt_navigator-7] [INFO] [1793450932.447543523] [bt_navigator]: Creating
+[smoother_server-4] [INFO] [1793450932.447537487] [smoother_server]: Creating smoother server
+[planner_server-5] [INFO] [1793450932.447539658] [planner_server]: Creating
+[planner_server-5] [INFO] [1793450932.487943260] [global_costmap.global_costmap]: 
+[planner_server-5] 	global_costmap lifecycle node launched. 
+[planner_server-5] 	Waiting on external lifecycle transitions to activate
+[planner_server-5] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-5] [INFO] [1793450932.603872259] [global_costmap.global_costmap]: Creating Costmap
+[controller_server-3] [INFO] [1793450933.383215572] [controller_server]: Creating controller server
+[controller_server-3] [INFO] [1793450933.414776697] [local_costmap.local_costmap]: 
+[controller_server-3] 	local_costmap lifecycle node launched. 
+[controller_server-3] 	Waiting on external lifecycle transitions to activate
+[controller_server-3] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-3] [INFO] [1793450933.500583428] [local_costmap.local_costmap]: Creating Costmap
+[controller_server-3] [INFO] [1793450933.504477544] [controller_server]: Configuring controller interface
+[controller_server-3] [INFO] [1793450933.504520837] [controller_server]: getting progress checker plugins..
+[controller_server-3] [INFO] [1793450933.504720391] [controller_server]: getting goal checker plugins..
+[controller_server-3] [INFO] [1793450933.504926877] [controller_server]: Controller frequency set to 10.0000Hz
+[controller_server-3] [INFO] [1793450933.504974641] [local_costmap.local_costmap]: Configuring
+[controller_server-3] [INFO] [1793450933.515345716] [local_costmap.local_costmap]: Using plugin "voxel_layer"
+[controller_server-3] [INFO] [1793450933.610781325] [local_costmap.local_costmap]: Subscribed to Topics: scan
+[controller_server-3] [INFO] [1793450933.639582807] [local_costmap.local_costmap]: Initialized plugin "voxel_layer"
+[controller_server-3] [INFO] [1793450933.639641114] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[controller_server-3] [INFO] [1793450933.640609673] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[controller_server-3] [INFO] [1793450933.727998260] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[controller_server-3] [INFO] [1793450933.729173763] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[controller_server-3] [INFO] [1793450933.769485399] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[controller_server-3] [INFO] [1793450933.770325198] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[map_session.py-1] [INFO] [1793450933.800418294] [limo_map_session]: Fresh SLAM map epoch: 3f4297ec-2699-4489-85df-ae52050cda1e
+[controller_server-3] [INFO] [1793450933.813160471] [controller_server]: Created controller : FollowPath of type nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[controller_server-3] [INFO] [1793450933.820734470] [controller_server]: Controller Server has FollowPath  controllers available.
+[lifecycle_manager-10] [INFO] [1793450933.844205004] [lifecycle_manager_navigation]: [34m[1mConfiguring smoother_server[0m[0m
+[smoother_server-4] [INFO] [1793450933.844483481] [smoother_server]: Configuring smoother server
+[smoother_server-4] [INFO] [1793450933.915887560] [smoother_server]: Created smoother : simple_smoother of type nav2_smoother::SimpleSmoother
+[smoother_server-4] [INFO] [1793450933.916762366] [smoother_server]: Smoother Server has simple_smoother  smoothers available.
+[lifecycle_manager-10] [INFO] [1793450933.926051368] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[planner_server-5] [INFO] [1793450933.926333894] [planner_server]: Configuring
+[planner_server-5] [INFO] [1793450933.926363778] [global_costmap.global_costmap]: Configuring
+[planner_server-5] [INFO] [1793450933.937692749] [global_costmap.global_costmap]: Using plugin "static_layer"
+[planner_server-5] [INFO] [1793450933.978927338] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[planner_server-5] [INFO] [1793450933.981611781] [global_costmap.global_costmap]: Subscribing to updates
+[planner_server-5] [INFO] [1793450933.984719488] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[planner_server-5] [INFO] [1793450933.984766910] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[planner_server-5] [INFO] [1793450933.985908292] [global_costmap.global_costmap]: Subscribed to Topics: scan
+[planner_server-5] [INFO] [1793450933.989734363] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[planner_server-5] [INFO] [1793450933.989771681] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[planner_server-5] [INFO] [1793450933.990518297] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[planner_server-5] [INFO] [1793450934.061473428] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[planner_server-5] [INFO] [1793450934.061534774] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[planner_server-5] [INFO] [1793450934.062301841] [planner_server]: Planner Server has GridBased  planners available.
+[lifecycle_manager-10] [INFO] [1793450934.079068529] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[behavior_server-6] [INFO] [1793450934.079505169] [behavior_server]: Configuring
+[behavior_server-6] [INFO] [1793450934.091383635] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[async_slam_toolbox_node-2] [INFO] [1793450934.101806350] [slam_toolbox]: Configuring
+[behavior_server-6] [INFO] [1793450934.140956973] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[behavior_server-6] [INFO] [1793450934.195820350] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[async_slam_toolbox_node-2] [INFO] [1793450934.226441557] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+[async_slam_toolbox_node-2] [INFO] [1793450934.227644263] [slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.
+[behavior_server-6] [INFO] [1793450934.257065168] [behavior_server]: Creating behavior plugin assisted_teleop of type nav2_behaviors::AssistedTeleop
+[behavior_server-6] [INFO] [1793450934.342289325] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[INFO] [launch.user]: [LifecycleLaunch] Slamtoolbox node is activating.
+[async_slam_toolbox_node-2] [INFO] [1793450934.368194384] [slam_toolbox]: Activating
+[behavior_server-6] [INFO] [1793450934.415432419] [behavior_server]: Configuring spin
+[behavior_server-6] [INFO] [1793450934.428114449] [behavior_server]: Configuring backup
+[behavior_server-6] [INFO] [1793450934.435570233] [behavior_server]: Configuring drive_on_heading
+[behavior_server-6] [INFO] [1793450934.442273040] [behavior_server]: Configuring assisted_teleop
+[behavior_server-6] [INFO] [1793450934.453581612] [behavior_server]: Configuring wait
+[lifecycle_manager-10] [INFO] [1793450934.463019127] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[bt_navigator-7] [INFO] [1793450934.463377876] [bt_navigator]: Configuring
+[bt_navigator-7] [INFO] [1793450934.484963678] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[bt_navigator-7] [INFO] [1793450934.971987969] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[lifecycle_manager-10] [INFO] [1793450935.089490974] [lifecycle_manager_navigation]: [34m[1mConfiguring velocity_smoother[0m[0m
+[velocity_smoother-8] [INFO] [1793450935.089831948] [velocity_smoother]: Configuring velocity smoother
+[lifecycle_manager-10] [INFO] [1793450935.105654722] [lifecycle_manager_navigation]: [34m[1mConfiguring collision_monitor[0m[0m
+[collision_monitor-9] [INFO] [1793450935.106078627] [collision_monitor]: Configuring
+[collision_monitor-9] [INFO] [1793450935.127839683] [collision_monitor]: [scan]: Creating Scan
+[collision_monitor-9] [INFO] [1793450935.147155766] [collision_monitor]: [FootprintApproach]: Creating Polygon
+[collision_monitor-9] [INFO] [1793450935.149113449] [collision_monitor]: [FootprintApproach]: Polygon points are not defined. Using dynamic subscription instead.
+[collision_monitor-9] [INFO] [1793450935.150348461] [collision_monitor]: [FootprintApproach]: Making footprint subscriber on /local_costmap/published_footprint topic
+[lifecycle_manager-10] [INFO] [1793450935.165889235] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[controller_server-3] [INFO] [1793450935.166245520] [controller_server]: Activating
+[controller_server-3] [INFO] [1793450935.166278507] [local_costmap.local_costmap]: Activating
+[controller_server-3] [INFO] [1793450935.166286527] [local_costmap.local_costmap]: Checking transform
+[controller_server-3] [INFO] [1793450935.166465050] [local_costmap.local_costmap]: start
+[controller_server-3] [INFO] [1793450935.367842181] [controller_server]: Activating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[controller_server-3] [INFO] [1793450935.367906003] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[lifecycle_manager-10] [INFO] [1793450935.479048070] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[lifecycle_manager-10] [INFO] [1793450935.479111770] [lifecycle_manager_navigation]: [34m[1mActivating smoother_server[0m[0m
+[smoother_server-4] [INFO] [1793450935.479405961] [smoother_server]: Activating
+[smoother_server-4] [INFO] [1793450935.479437824] [smoother_server]: Creating bond (smoother_server) to lifecycle manager.
+[lifecycle_manager-10] [INFO] [1793450935.585427379] [lifecycle_manager_navigation]: Server smoother_server connected with bond.
+[lifecycle_manager-10] [INFO] [1793450935.585514014] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[planner_server-5] [INFO] [1793450935.585890567] [planner_server]: Activating
+[planner_server-5] [INFO] [1793450935.585930916] [global_costmap.global_costmap]: Activating
+[planner_server-5] [INFO] [1793450935.585937688] [global_costmap.global_costmap]: Checking transform
+[planner_server-5] [INFO] [1793450935.585983438] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[planner_server-5] [INFO] [1793450936.086038415] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[planner_server-5] [INFO] [1793450936.586020201] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[planner_server-5] [INFO] [1793450937.086026002] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[async_slam_toolbox_node-2] [INFO] [1793450937.432253468] [slam_toolbox]: Message Filter dropping message: frame 'laser_link' at time 18.250 for reason 'discarding message because the queue is full'
+[planner_server-5] [INFO] [1793450937.734634623] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[async_slam_toolbox_node-2] Info: clipped range threshold to be within minimum and maximum range!
+[async_slam_toolbox_node-2] Registering sensor: [Custom Described Lidar]
+[planner_server-5] [INFO] [1793450938.086241415] [global_costmap.global_costmap]: start
+[planner_server-5] [INFO] [1793450938.382774386] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 76 X 23 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793450939.088145276] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[planner_server-5] [INFO] [1793450939.089986108] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[lifecycle_manager-10] [INFO] [1793450939.197486620] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[lifecycle_manager-10] [INFO] [1793450939.197602718] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[behavior_server-6] [INFO] [1793450939.198200776] [behavior_server]: Activating
+[behavior_server-6] [INFO] [1793450939.198251018] [behavior_server]: Activating spin
+[behavior_server-6] [INFO] [1793450939.198267562] [behavior_server]: Activating backup
+[behavior_server-6] [INFO] [1793450939.198283139] [behavior_server]: Activating drive_on_heading
+[behavior_server-6] [INFO] [1793450939.198297915] [behavior_server]: Activating assisted_teleop
+[behavior_server-6] [INFO] [1793450939.198309162] [behavior_server]: Activating wait
+[behavior_server-6] [INFO] [1793450939.198332484] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[lifecycle_manager-10] [INFO] [1793450939.306066955] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[lifecycle_manager-10] [INFO] [1793450939.306134445] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[bt_navigator-7] [INFO] [1793450939.306567899] [bt_navigator]: Activating
+[bt_navigator-7] [INFO] [1793450939.422544844] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[lifecycle_manager-10] [INFO] [1793450939.533930329] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[lifecycle_manager-10] [INFO] [1793450939.534015415] [lifecycle_manager_navigation]: [34m[1mActivating velocity_smoother[0m[0m
+[velocity_smoother-8] [INFO] [1793450939.534500586] [velocity_smoother]: Activating
+[velocity_smoother-8] [INFO] [1793450939.534576793] [velocity_smoother]: Creating bond (velocity_smoother) to lifecycle manager.
+[lifecycle_manager-10] [INFO] [1793450939.642070523] [lifecycle_manager_navigation]: Server velocity_smoother connected with bond.
+[lifecycle_manager-10] [INFO] [1793450939.642131972] [lifecycle_manager_navigation]: [34m[1mActivating collision_monitor[0m[0m
+[collision_monitor-9] [INFO] [1793450939.642579618] [collision_monitor]: Activating
+[collision_monitor-9] [INFO] [1793450939.642646983] [collision_monitor]: Creating bond (collision_monitor) to lifecycle manager.
+[lifecycle_manager-10] [INFO] [1793450939.750035487] [lifecycle_manager_navigation]: Server collision_monitor connected with bond.
+[lifecycle_manager-10] [INFO] [1793450939.750089162] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[lifecycle_manager-10] [INFO] [1793450939.750096232] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[behavior_server-6] [INFO] [1793451004.456501745] [behavior_server]: Running spin
+[behavior_server-6] [INFO] [1793451004.456865442] [behavior_server]: Turning 6.38 for spin behavior.
+[planner_server-5] [INFO] [1793451007.086437185] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 78 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451008.086462319] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 80 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451009.086523330] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 82 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451010.086686559] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 82 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451012.090468905] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 82 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451019.086403616] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 82 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451020.086479391] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 82 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451028.086417081] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 82 X 24 at 0.050000 m/pix
+[planner_server-5] [INFO] [1793451031.086395097] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 24 at 0.050000 m/pix
+[behavior_server-6] [INFO] [1793451040.157321177] [behavior_server]: spin completed successfully
+[behavior_server-6] [INFO] [1793451041.612753746] [behavior_server]: Running spin
+[behavior_server-6] [INFO] [1793451041.612902165] [behavior_server]: Turning -0.12 for spin behavior.
+[behavior_server-6] [INFO] [1793451043.013277509] [behavior_server]: spin completed successfully
+[bt_navigator-7] [INFO] [1793451119.897412676] [bt_navigator]: Begin navigating from current location (-0.00, -0.00) to (0.24, 0.04)
+[controller_server-3] [INFO] [1793451119.919302361] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-3] [WARN] [1793451119.919445810] [controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded general_goal_checker . This warning will appear once.
+[controller_server-3] [WARN] [1793451119.919475601] [controller_server]: No progress checker was specified in parameter 'current_progress_checker'. Server will use only plugin loaded progress_checker . This warning will appear once.
+[controller_server-3] [WARN] [1793451120.532180195] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451121.032425323] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451121.575055386] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451121.975324633] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451122.759217745] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451123.059663771] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451123.972155797] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451124.072445558] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451125.072467988] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451125.175371844] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451126.075652081] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451126.086454295] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 25 at 0.050000 m/pix
+[controller_server-3] [WARN] [1793451126.398506142] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451127.098653710] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451127.500185713] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 58.8235 Hz.
+[controller_server-3] [INFO] [1793451128.200329054] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451128.501912204] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451129.202142907] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451129.554154422] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451130.254358184] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451130.717094620] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451131.217332135] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451131.859104574] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[planner_server-5] [INFO] [1793451132.086405187] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 26 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451132.259284065] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451132.961217371] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[planner_server-5] [INFO] [1793451133.086482612] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 26 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451133.261457334] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451134.086407031] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 26 at 0.050000 m/pix
+[controller_server-3] [WARN] [1793451134.113659260] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451134.313852326] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451135.086479703] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 27 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451135.313858046] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451136.437948545] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451136.438060768] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451137.438173887] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451137.622031466] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[controller_server-3] [INFO] [1793451138.422293860] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451138.654938991] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451139.455156945] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451139.718068082] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 30.3030 Hz.
+[controller_server-3] [INFO] [1793451140.518375104] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451140.820606742] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451141.520973974] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451141.953675898] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 500.0000 Hz.
+[controller_server-3] [INFO] [1793451142.553885675] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451143.176962043] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451143.577250591] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451144.361452742] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451144.561805546] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451145.561712177] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451146.661810626] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451146.961836458] [controller_server]: Reached the goal!
+[bt_navigator-7] [INFO] [1793451146.988245705] [bt_navigator]: Goal succeeded
+[bt_navigator-7] [INFO] [1793451156.052153950] [bt_navigator]: Begin navigating from current location (0.21, 0.03) to (1.59, -0.13)
+[controller_server-3] [INFO] [1793451156.063979065] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-3] [WARN] [1793451157.117965278] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 35.7143 Hz.
+[controller_server-3] [INFO] [1793451157.118081538] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451158.141251858] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451158.141360500] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451159.241428576] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451160.253715775] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451160.253831169] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451161.253875813] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451161.496295437] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451162.296515397] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451162.659149497] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451163.259415380] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451164.359340526] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451164.701362984] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451165.401533669] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451165.713394124] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[planner_server-5] [INFO] [1793451166.086435263] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 27 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451166.413609619] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451166.815403147] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451167.415651353] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451167.978491802] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[planner_server-5] [INFO] [1793451168.086462668] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 27 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451168.478722827] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451169.121558134] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451169.421868699] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451170.195164717] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 38.4615 Hz.
+[controller_server-3] [INFO] [1793451170.495447384] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451171.495424028] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451172.297658374] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451172.497932224] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451173.521075703] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451173.621068270] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451174.086493554] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 27 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451174.621216913] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451174.734284037] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[planner_server-5] [INFO] [1793451175.086486732] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 27 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451175.634571328] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451175.777769143] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451176.678015203] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451177.086604269] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 29 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451177.678088587] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451177.801169336] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451178.701511945] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451178.855360693] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[planner_server-5] [INFO] [1793451179.086456980] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 31 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451179.655627020] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451179.919195207] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[planner_server-5] [INFO] [1793451180.086528242] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 34 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451180.719524294] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451181.052562417] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 58.8235 Hz.
+[controller_server-3] [INFO] [1793451181.752757011] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451182.075704584] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 142.8571 Hz.
+[planner_server-5] [INFO] [1793451182.086462392] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 52 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451182.775964046] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451183.098291006] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451183.798574235] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451184.100974773] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451184.801241273] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451185.901377122] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451186.395847988] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451186.896160745] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451187.638888115] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 111.1111 Hz.
+[controller_server-3] [INFO] [1793451187.939212377] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451188.662070153] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451188.962583435] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451189.815894011] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 166.6667 Hz.
+[controller_server-3] [INFO] [1793451189.916141372] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451190.979725004] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451190.979825724] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451192.032906962] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451192.033024616] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451193.033152633] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451193.175949033] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451194.076158913] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451195.076205217] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451195.318011068] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451196.118153074] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451196.320009491] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451197.120255522] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451197.452835767] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451198.153071936] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451198.775062158] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451199.198081627] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451199.919828918] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451200.220044337] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451201.052280168] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 333.3333 Hz.
+[controller_server-3] [INFO] [1793451201.252500606] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451202.094817141] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451202.295016184] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451203.137724364] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451203.337971874] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451204.242407014] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 35.7143 Hz.
+[controller_server-3] [INFO] [1793451204.342664442] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451205.342681123] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451205.475166328] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451206.375409740] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451206.518728880] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451207.419126027] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451208.419161240] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451208.572675103] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451209.172976172] [controller_server]: Reached the goal!
+[bt_navigator-7] [INFO] [1793451209.202926672] [bt_navigator]: Goal succeeded
+[bt_navigator-7] [INFO] [1793451216.507610476] [bt_navigator]: Begin navigating from current location (1.56, -0.11) to (1.58, -1.16)
+[controller_server-3] [INFO] [1793451216.518918579] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-3] [INFO] [1793451217.619313901] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451217.752855877] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 333.3333 Hz.
+[controller_server-3] [INFO] [1793451218.653150318] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451218.897283175] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 111.1111 Hz.
+[controller_server-3] [INFO] [1793451219.697589934] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451220.697554105] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451221.697556240] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451222.020581520] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451222.721103908] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451223.295422579] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451223.795633994] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451224.479670762] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 29.4118 Hz.
+[controller_server-3] [INFO] [1793451224.779992923] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451225.481778970] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451225.781973864] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451226.413909922] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451226.814170781] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451227.436014847] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451227.836249588] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451228.836234099] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451229.419236439] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 27.0270 Hz.
+[controller_server-3] [INFO] [1793451229.919462063] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451230.919490871] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451231.086434316] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 52 at 0.050000 m/pix
+[controller_server-3] [WARN] [1793451231.551696022] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451231.951900030] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451232.951884082] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451233.086459376] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 83 X 53 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451233.951890890] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451234.696932334] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 29.4118 Hz.
+[controller_server-3] [INFO] [1793451234.997170213] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451235.086439959] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 84 X 53 at 0.050000 m/pix
+[controller_server-3] [WARN] [1793451235.939870016] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451236.040334878] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451237.113632479] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451237.113756103] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451238.113949824] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451238.299177082] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[planner_server-5] [INFO] [1793451239.086468551] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 84 X 53 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451239.099412452] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451239.321511737] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451240.221747900] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451240.374854215] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 38.4615 Hz.
+[controller_server-3] [INFO] [1793451241.175076237] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451241.397912269] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451242.198143396] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451242.593116575] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451243.293386211] [controller_server]: Passing new path to controller.
+[planner_server-5] [INFO] [1793451244.086529626] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 84 X 53 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451244.293394296] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451244.695672707] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451245.295894175] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451245.718187955] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451246.318441235] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451246.861615181] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[planner_server-5] [INFO] [1793451247.086506832] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 84 X 53 at 0.050000 m/pix
+[controller_server-3] [INFO] [1793451247.361956203] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451247.962258748] [controller_server]: Reached the goal!
+[bt_navigator-7] [INFO] [1793451247.988171645] [bt_navigator]: Goal succeeded
+[bt_navigator-7] [INFO] [1793451255.542325170] [bt_navigator]: Begin navigating from current location (1.58, -1.13) to (1.41, -1.55)
+[controller_server-3] [INFO] [1793451255.543877067] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-3] [WARN] [1793451256.038374293] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 27.0270 Hz.
+[controller_server-3] [INFO] [1793451256.638704716] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451257.461574891] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451257.661856728] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451258.513874828] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451258.714040121] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451259.515690016] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451259.715950563] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451260.737860452] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451260.737972661] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451261.738037631] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451261.980268230] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451262.780469720] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451263.133075555] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451263.833308527] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451264.833304729] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451265.255100712] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 200.0000 Hz.
+[controller_server-3] [INFO] [1793451265.855344473] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451266.357318745] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451266.857682371] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451267.641625353] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451267.941910351] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451268.914890560] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 27.0270 Hz.
+[controller_server-3] [INFO] [1793451268.915042233] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451269.917222218] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451269.917318017] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451270.919303550] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451271.019532236] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451272.031920041] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 166.6667 Hz.
+[controller_server-3] [INFO] [1793451272.031999194] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451273.032095907] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451273.275198450] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451274.075446331] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451275.075458176] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451275.577760973] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[controller_server-3] [INFO] [1793451276.078043606] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451276.701070219] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451277.101354858] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451277.754292590] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451278.154784953] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451278.797307084] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451279.197641548] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451279.902098150] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 27.0270 Hz.
+[controller_server-3] [INFO] [1793451280.202540264] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451281.035323530] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451281.235588824] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451282.058183855] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451282.258474508] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451283.112201719] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451283.313162593] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451283.912526414] [controller_server]: Reached the goal!
+[bt_navigator-7] [INFO] [1793451283.933331048] [bt_navigator]: Goal succeeded
+[bt_navigator-7] [INFO] [1793451292.614458874] [bt_navigator]: Begin navigating from current location (1.42, -1.53) to (1.76, -1.60)
+[controller_server-3] [INFO] [1793451292.635871388] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-3] [INFO] [1793451293.736174902] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451294.278312004] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451294.778522943] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451295.380572220] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451295.780931706] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451296.392446665] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 250.0000 Hz.
+[controller_server-3] [INFO] [1793451296.792678582] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451297.455977032] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451297.756350624] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451298.719057284] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451298.819264544] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451299.841651069] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451299.841786867] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451300.841876417] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451301.954082797] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451301.954227292] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451302.954335338] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451303.056506184] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451303.956736767] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451304.140596641] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 27.7778 Hz.
+[controller_server-3] [INFO] [1793451305.040897571] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451306.040920283] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451306.453520294] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451307.053803483] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451307.456329921] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451308.056601345] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451308.458662286] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 66.6667 Hz.
+[controller_server-3] [INFO] [1793451309.058954651] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451309.612975646] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451310.113309209] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451310.876782852] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451311.177066608] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451311.999617872] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451312.199884369] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451313.133456232] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451313.233705666] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451314.236008432] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451314.236120599] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451315.236241978] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451316.236247417] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451316.379501180] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451317.279717766] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451317.654309798] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 166.6667 Hz.
+[controller_server-3] [INFO] [1793451318.354669564] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451318.797663057] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[controller_server-3] [INFO] [1793451319.397920968] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451319.800282484] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451320.400557614] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451320.834888699] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451321.435262561] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451321.898467901] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 58.8235 Hz.
+[controller_server-3] [INFO] [1793451322.398742312] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451322.399038209] [controller_server]: Reached the goal!
+[bt_navigator-7] [INFO] [1793451322.435081229] [bt_navigator]: Goal succeeded
+[bt_navigator-7] [INFO] [1793451329.470131154] [bt_navigator]: Begin navigating from current location (1.73, -1.59) to (-0.00, -0.00)
+[controller_server-3] [INFO] [1793451329.491531540] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-3] [WARN] [1793451330.393767415] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451330.594052962] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451331.416013054] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451331.616222879] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451332.538189724] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[controller_server-3] [INFO] [1793451332.638529603] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451333.638486883] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451334.701911014] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451334.702085326] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451335.702208604] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451335.877333077] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451336.677594680] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451337.141118279] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451337.741414252] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451338.315567267] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 58.8235 Hz.
+[controller_server-3] [INFO] [1793451338.815824004] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451339.379013338] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451339.779724450] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451340.481700138] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451340.781976076] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451341.556207768] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 37.0370 Hz.
+[controller_server-3] [INFO] [1793451341.856476370] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451342.856523510] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451343.062450521] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451343.862706159] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451344.237083508] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451344.937448640] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451345.339986428] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451345.940196205] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451346.452925733] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 200.0000 Hz.
+[controller_server-3] [INFO] [1793451346.953133008] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451347.596539729] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451347.999122279] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451348.799084474] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451349.099444248] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451350.022321111] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451350.122567183] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451351.122699692] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451352.122583092] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451352.275996252] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451353.176234284] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451354.176220838] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451354.279875425] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451355.180403599] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451355.495955654] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451356.296158027] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451356.497515172] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451357.297650010] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451358.297731273] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451358.499101142] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451359.299315910] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451359.541321373] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 58.8235 Hz.
+[controller_server-3] [INFO] [1793451360.341512769] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451360.714514965] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451361.414757584] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451361.979092156] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 33.3333 Hz.
+[controller_server-3] [INFO] [1793451362.379383132] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451363.141968221] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451363.442242074] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451364.153944927] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[controller_server-3] [INFO] [1793451364.454150837] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451365.176511315] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451365.476703853] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451366.240087234] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451366.540332801] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451367.313946420] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 40.0000 Hz.
+[controller_server-3] [INFO] [1793451367.514256526] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451368.416172846] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 166.6667 Hz.
+[controller_server-3] [INFO] [1793451368.516424427] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451369.479718741] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 38.4615 Hz.
+[controller_server-3] [INFO] [1793451369.579948274] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451370.492534173] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451370.592869986] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451371.515832223] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[controller_server-3] [INFO] [1793451371.616058703] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451372.600196160] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451372.700540415] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451373.700524592] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451373.855403676] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451374.655660230] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451375.755682123] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451376.157788810] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451376.758097149] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451377.180512209] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451377.780725976] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451378.212862156] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 47.6190 Hz.
+[controller_server-3] [INFO] [1793451378.813151520] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451379.236034193] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 58.8235 Hz.
+[controller_server-3] [INFO] [1793451379.836329267] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451380.441516825] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451380.841758618] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451381.841845659] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451382.841776255] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451383.554042966] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 111.1111 Hz.
+[controller_server-3] [INFO] [1793451383.854341183] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451384.578288274] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451384.878771406] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451385.831974540] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451385.932218902] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451386.955467660] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451386.955613264] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451387.955751113] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451388.118381822] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 32.2581 Hz.
+[controller_server-3] [INFO] [1793451389.018670447] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451389.120400782] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451390.020588901] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451390.152806052] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451391.052990604] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451391.195333933] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451392.095532564] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451392.278258880] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 33.3333 Hz.
+[controller_server-3] [INFO] [1793451393.178542202] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451393.441317763] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451394.141563094] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451394.614325264] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451395.214572697] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451395.757366177] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451396.157583192] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451396.899796467] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451397.200012192] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451397.993311424] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 31.2500 Hz.
+[controller_server-3] [INFO] [1793451398.293565911] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451399.198403885] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451399.298680874] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451400.395798968] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 37.0370 Hz.
+[controller_server-3] [INFO] [1793451400.395930995] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451401.296019659] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451402.296019781] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451403.396057530] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451403.539107330] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451404.439450240] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451404.573601581] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451405.373913153] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451405.737596002] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451406.437860299] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451406.921422728] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 24.3902 Hz.
+[controller_server-3] [INFO] [1793451407.421661623] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451407.995145235] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451408.495417075] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451409.097453142] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451409.497677237] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451410.497661989] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451411.512340264] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 27.7778 Hz.
+[controller_server-3] [INFO] [1793451411.512456024] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451412.655958041] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451412.656059243] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451413.699161697] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451413.699288287] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451414.599471608] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451414.753167297] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451415.653453085] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451415.838000573] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 38.4615 Hz.
+[controller_server-3] [INFO] [1793451416.738265373] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451416.892175599] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451417.692577754] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451418.077517320] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 125.0000 Hz.
+[controller_server-3] [INFO] [1793451418.777811919] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451419.221007633] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451419.721297750] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451420.315540288] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451420.408301692] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451420.753001053] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 12.8205 Hz.
+[controller_server-3] [WARN] [1793451421.076158290] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451421.776337530] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451422.776425673] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451423.515120174] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451423.815491654] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451424.819689354] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 27.0270 Hz.
+[controller_server-3] [INFO] [1793451424.920046679] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451425.920044752] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451426.397970899] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 32.2581 Hz.
+[controller_server-3] [INFO] [1793451426.898319793] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451427.641369623] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 43.4783 Hz.
+[controller_server-3] [INFO] [1793451427.941577122] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451428.654148815] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451428.954362347] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451429.756955283] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 55.5556 Hz.
+[controller_server-3] [INFO] [1793451429.957275775] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451430.979831473] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451431.080000848] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451432.092548538] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451432.092647786] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451433.176516005] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 28.5714 Hz.
+[controller_server-3] [INFO] [1793451433.176672565] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451434.076827950] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451434.299900700] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451435.100224679] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451435.474421788] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451436.174760925] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451436.758987632] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 41.6667 Hz.
+[controller_server-3] [INFO] [1793451437.159351072] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451438.032891020] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451438.233167906] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451439.135076790] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451439.235319926] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451440.198904929] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 76.9231 Hz.
+[controller_server-3] [INFO] [1793451440.198994278] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451441.232329845] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 250.0000 Hz.
+[controller_server-3] [INFO] [1793451441.232461519] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451442.332555619] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451443.332568159] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451443.496609878] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 90.9091 Hz.
+[controller_server-3] [INFO] [1793451444.396900047] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451444.640425705] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 100.0000 Hz.
+[controller_server-3] [INFO] [1793451445.340721587] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451446.440661184] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451446.754303773] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 83.3333 Hz.
+[controller_server-3] [INFO] [1793451447.454735592] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451447.819102431] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 62.5000 Hz.
+[controller_server-3] [INFO] [1793451448.419440459] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451449.114238645] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 142.8571 Hz.
+[controller_server-3] [INFO] [1793451449.514587852] [controller_server]: Passing new path to controller.
+[controller_server-3] [ERROR] [1793451449.529560825] [controller_server]: Failed to make progress
+[controller_server-3] [WARN] [1793451449.614841874] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[controller_server-3] [INFO] [1793451449.633674864] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[controller_server-3] [INFO] [1793451449.634614174] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-3] [WARN] [1793451449.765377250] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 13.3333 Hz.
+[controller_server-3] [WARN] [1793451450.360581874] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 45.4545 Hz.
+[controller_server-3] [INFO] [1793451450.560927157] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451451.473209918] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 50.0000 Hz.
+[controller_server-3] [INFO] [1793451451.573405524] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451452.537033476] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 71.4286 Hz.
+[controller_server-3] [INFO] [1793451452.537214725] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451453.600530483] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 28.5714 Hz.
+[controller_server-3] [INFO] [1793451453.600663846] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451454.653082520] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451454.653188648] [controller_server]: Passing new path to controller.
+[controller_server-3] [INFO] [1793451455.653231793] [controller_server]: Passing new path to controller.
+[controller_server-3] [WARN] [1793451455.895486878] [controller_server]: Control loop missed its desired rate of 10.0000 Hz. Current loop rate is 52.6316 Hz.
+[controller_server-3] [INFO] [1793451456.395708914] [controller_server]: Reached the goal!
+[bt_navigator-7] [INFO] [1793451456.423104219] [bt_navigator]: Goal succeeded
+[async_slam_toolbox_node-2] [INFO] [1793451491.035565619] [slam_toolbox]: SlamToolbox: Saving map as /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map.
+[planner_server-5] [INFO] [1793451492.146261777] [global_costmap.global_costmap]: Message Filter dropping message: frame 'laser_link' at time 271.625 for reason 'the timestamp on the message is earlier than all the data in the transform cache'
+[async_slam_toolbox_node-2] [INFO] [1793451493.696183451] [map_saver]: 
+[async_slam_toolbox_node-2] 	map_saver lifecycle node launched. 
+[async_slam_toolbox_node-2] 	Waiting on external lifecycle transitions to activate
+[async_slam_toolbox_node-2] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[async_slam_toolbox_node-2] [INFO] [1793451493.696927888] [map_saver]: Creating
+[async_slam_toolbox_node-2] [INFO] [1793451493.697010304] [map_saver]: Configuring
+[async_slam_toolbox_node-2] [INFO] [1793451493.701798596] [map_saver]: Saving map from 'map' topic to '/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map' file
+[async_slam_toolbox_node-2] [WARN] [1793451493.701892728] [map_saver]: Free threshold unspecified. Setting it to default value: 0.250000
+[async_slam_toolbox_node-2] [WARN] [1793451493.701905250] [map_saver]: Occupied threshold unspecified. Setting it to default value: 0.650000
+[async_slam_toolbox_node-2] [ERROR] [1793451495.706424512] [map_saver]: Failed to spin map subscription
+[async_slam_toolbox_node-2] [INFO] [1793451495.709125986] [map_saver]: Destroying
+[async_slam_toolbox_node-2] [ros2run]: Process exited with failure 1
+[async_slam_toolbox_node-2] Save To File /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map.posegraph 
+[async_slam_toolbox_node-2] Mapper <- Module
+[async_slam_toolbox_node-2] Mapper <- m_pSequentialScanMatcher
+[async_slam_toolbox_node-2] Mapper <- m_pGraph
+[async_slam_toolbox_node-2] MapperGraph <- Graph; Graph <- m_Edges; Graph <- m_Vertices
+[async_slam_toolbox_node-2] MapperGraph <- m_pMapper; MapperGraph <- m_pLoopScanMatcher; MapperGraph <- m_pTraversal
+[async_slam_toolbox_node-2] Mapper <- m_pMapperSensorManager
+[async_slam_toolbox_node-2] MapperSensorManager <- m_ScanManagers; MapperSensorManager <- m_Scans
+[async_slam_toolbox_node-2] Mapper <- m_Listeners
+[async_slam_toolbox_node-2] **Finished serializing Mapper**
+[async_slam_toolbox_node-2] Save To File
+[async_slam_toolbox_node-2] **Serializing Dataset**
+[async_slam_toolbox_node-2] Dataset <- m_SensorNameLookup
+[async_slam_toolbox_node-2] Dataset <- m_Data
+[async_slam_toolbox_node-2] Dataset <- m_Lasers
+[async_slam_toolbox_node-2] Dataset <- m_pDatasetInfo
+[async_slam_toolbox_node-2] **Finished serializing Dataset**
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [lifecycle_manager-10]: sending signal 'SIGINT' to process[lifecycle_manager-10]
+[INFO] [velocity_smoother-8]: process has finished cleanly [pid 1207]
+[INFO] [collision_monitor-9]: process has finished cleanly [pid 1208]
+[INFO] [smoother_server-4]: process has finished cleanly [pid 1203]
+[INFO] [behavior_server-6]: process has finished cleanly [pid 1205]
+[INFO] [async_slam_toolbox_node-2]: process has finished cleanly [pid 1201]
+[INFO] [lifecycle_manager-10]: process has finished cleanly [pid 1209]
+[INFO] [map_session.py-1]: process has finished cleanly [pid 1200]
+[INFO] [bt_navigator-7]: process has finished cleanly [pid 1206]
+[INFO] [controller_server-3]: process has finished cleanly [pid 1202]
+[INFO] [planner_server-5]: process has finished cleanly [pid 1204]
+[async_slam_toolbox_node-2] [INFO] [1793451504.235635903] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller_server-3] [INFO] [1793451504.235768554] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller_server-3] [INFO] [1793451504.235845200] [controller_server]: Running Nav2 LifecycleNode rcl preshutdown (controller_server)
+[controller_server-3] [INFO] [1793451504.235996725] [controller_server]: Deactivating
+[controller_server-3] [INFO] [1793451504.236024993] [controller_server]: Deactivating controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[controller_server-3] [INFO] [1793451504.236051376] [local_costmap.local_costmap]: Deactivating
+[controller_server-3] [INFO] [1793451504.359309358] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[controller_server-3] [INFO] [1793451504.369734481] [controller_server]: Cleaning up
+[controller_server-3] [INFO] [1793451504.369817172] [controller_server]: Cleaning up controller: FollowPath of type regulated_pure_pursuit_controller::RegulatedPurePursuitController
+[controller_server-3] [INFO] [1793451504.369946118] [local_costmap.local_costmap]: Cleaning up
+[controller_server-3] [INFO] [1793451504.393986182] [controller_server]: Destroying bond (controller_server) to lifecycle manager.
+[controller_server-3] [INFO] [1793451504.401190808] [local_costmap.local_costmap]: Destroying
+[controller_server-3] [INFO] [1793451504.411503346] [controller_server]: Destroying
+[smoother_server-4] [INFO] [1793451504.235877839] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[smoother_server-4] [INFO] [1793451504.236013539] [smoother_server]: Running Nav2 LifecycleNode rcl preshutdown (smoother_server)
+[smoother_server-4] [INFO] [1793451504.236140250] [smoother_server]: Deactivating
+[smoother_server-4] [INFO] [1793451504.236171125] [smoother_server]: Destroying bond (smoother_server) to lifecycle manager.
+[smoother_server-4] [INFO] [1793451504.246654049] [smoother_server]: Cleaning up
+[smoother_server-4] [INFO] [1793451504.257900669] [smoother_server]: Destroying bond (smoother_server) to lifecycle manager.
+[smoother_server-4] [INFO] [1793451504.263723043] [smoother_server]: Destroying
+[planner_server-5] [INFO] [1793451504.236033878] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[planner_server-5] [INFO] [1793451504.236116409] [planner_server]: Running Nav2 LifecycleNode rcl preshutdown (planner_server)
+[planner_server-5] [INFO] [1793451504.236212894] [planner_server]: Deactivating
+[planner_server-5] [INFO] [1793451504.236261417] [global_costmap.global_costmap]: Deactivating
+[planner_server-5] [INFO] [1793451504.679385621] [planner_server]: Deactivating plugin GridBased of type NavfnPlanner
+[planner_server-5] [INFO] [1793451504.679444369] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[planner_server-5] [INFO] [1793451504.689780059] [planner_server]: Cleaning up
+[planner_server-5] [INFO] [1793451504.695507581] [global_costmap.global_costmap]: Cleaning up
+[planner_server-5] [INFO] [1793451504.697998048] [planner_server]: Cleaning up plugin GridBased of type NavfnPlanner
+[planner_server-5] [INFO] [1793451504.698250963] [planner_server]: Destroying plugin GridBased of type NavfnPlanner
+[planner_server-5] [INFO] [1793451504.705802790] [planner_server]: Destroying bond (planner_server) to lifecycle manager.
+[planner_server-5] [INFO] [1793451504.709266195] [global_costmap.global_costmap]: Destroying
+[planner_server-5] [INFO] [1793451504.715489429] [planner_server]: Destroying
+[behavior_server-6] [INFO] [1793451504.236122759] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[behavior_server-6] [INFO] [1793451504.236202078] [behavior_server]: Running Nav2 LifecycleNode rcl preshutdown (behavior_server)
+[behavior_server-6] [INFO] [1793451504.236272212] [behavior_server]: Deactivating
+[behavior_server-6] [INFO] [1793451504.236349214] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[behavior_server-6] [INFO] [1793451504.246747600] [behavior_server]: Cleaning up
+[behavior_server-6] [INFO] [1793451504.249315408] [behavior_server]: Destroying bond (behavior_server) to lifecycle manager.
+[behavior_server-6] [INFO] [1793451504.290004134] [behavior_server]: Destroying
+[bt_navigator-7] [INFO] [1793451504.236349364] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[bt_navigator-7] [INFO] [1793451504.236429086] [bt_navigator]: Running Nav2 LifecycleNode rcl preshutdown (bt_navigator)
+[bt_navigator-7] [INFO] [1793451504.236493232] [bt_navigator]: Deactivating
+[bt_navigator-7] [INFO] [1793451504.236533263] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[bt_navigator-7] [INFO] [1793451504.246944660] [bt_navigator]: Cleaning up
+[bt_navigator-7] [INFO] [1793451504.366889219] [bt_navigator]: Completed Cleaning up
+[bt_navigator-7] [INFO] [1793451504.367004845] [bt_navigator]: Destroying bond (bt_navigator) to lifecycle manager.
+[bt_navigator-7] [INFO] [1793451504.371606933] [bt_navigator]: Destroying
+[velocity_smoother-8] [INFO] [1793451504.236493551] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[velocity_smoother-8] [INFO] [1793451504.236586017] [velocity_smoother]: Running Nav2 LifecycleNode rcl preshutdown (velocity_smoother)
+[velocity_smoother-8] [INFO] [1793451504.236646793] [velocity_smoother]: Deactivating
+[velocity_smoother-8] [INFO] [1793451504.236696880] [velocity_smoother]: Destroying bond (velocity_smoother) to lifecycle manager.
+[velocity_smoother-8] [INFO] [1793451504.247063735] [velocity_smoother]: Cleaning up
+[velocity_smoother-8] [INFO] [1793451504.247121746] [velocity_smoother]: Destroying bond (velocity_smoother) to lifecycle manager.
+[velocity_smoother-8] [INFO] [1793451504.255377282] [velocity_smoother]: Destroying
+[collision_monitor-9] [INFO] [1793451504.236621213] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[collision_monitor-9] [INFO] [1793451504.236744813] [collision_monitor]: Running Nav2 LifecycleNode rcl preshutdown (collision_monitor)
+[collision_monitor-9] [INFO] [1793451504.236922198] [collision_monitor]: Deactivating
+[collision_monitor-9] [INFO] [1793451504.236966161] [collision_monitor]: Destroying bond (collision_monitor) to lifecycle manager.
+[collision_monitor-9] [INFO] [1793451504.247437959] [collision_monitor]: Cleaning up
+[collision_monitor-9] [INFO] [1793451504.247507107] [collision_monitor]: [FootprintApproach]: Destroying Polygon
+[collision_monitor-9] [INFO] [1793451504.247524545] [collision_monitor]: [scan]: Destroying Scan
+[collision_monitor-9] [INFO] [1793451504.250522813] [collision_monitor]: Destroying bond (collision_monitor) to lifecycle manager.
+[collision_monitor-9] [INFO] [1793451504.260343905] [collision_monitor]: Destroying
+[lifecycle_manager-10] [INFO] [1793451504.236663388] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[lifecycle_manager-10] [INFO] [1793451504.236754823] [lifecycle_manager_navigation]: Running Nav2 LifecycleManager rcl preshutdown (lifecycle_manager_navigation)
+[lifecycle_manager-10] [INFO] [1793451504.236791150] [lifecycle_manager_navigation]: [34m[1mTerminating bond timer...[0m[0m
+[lifecycle_manager-10] [INFO] [1793451504.330706461] [lifecycle_manager_navigation]: Destroying lifecycle_manager_navigation
+[async_slam_toolbox_node-2] Unregistering sensor: Custom Described Lidar

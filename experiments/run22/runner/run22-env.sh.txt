@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -eo pipefail
+LIMO_RUN_ROOT=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+LIMO_RUNTIME_ROOT=/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+cd "$LIMO_RUN_ROOT"
+source /opt/ros/jazzy/setup.bash
+source "$LIMO_RUNTIME_ROOT/install/local_setup.bash"
+source "$LIMO_RUNTIME_ROOT/outputs/slam-boundary-ws/install/local_setup.bash"
+source "$LIMO_RUN_ROOT/install/local_setup.bash"
+export ROS_DOMAIN_ID=73 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST GZ_PARTITION=limo_maze_jazzy
+export LIMO_RUN22_ID=run22-4ae4dba710b64d8a84f975c7006ca8eb
+run_dir="$LIMO_RUN_ROOT/outputs/ros_smoke/run22-isolated-writer"
+mode="$1"
+shift
+export ROS_LOG_DIR="$run_dir/ros_logs/$mode"
+case "$mode" in
+  control) exec /usr/bin/python3 outputs/setup/run22-process.py "$@" ;;
+  sim) exec ros2 launch limo_sim_bringup sim.launch.py world:="$PWD/worlds/smoke_maze.world" headless:=true spawn_artifacts:="$run_dir/spawn" ;;
+  navigation) exec ros2 launch limo_maze_bringup mapping_navigation.launch.py map_epoch:="$(cat "$run_dir/epoch.txt")" nav_params:="$run_dir/nav2-rpp-03m.yaml" slam_params:="$PWD/src/limo_maze_bringup/config/slam_smoke_experimental.yaml" ;;
+  recorder) exec /usr/bin/python3 scripts/record_bounded.py --output "$run_dir/recording" --mission-dir "$run_dir/mission" --map-epoch "$(cat "$run_dir/epoch.txt")" --max-wall-seconds 1650 --post-terminal-wall-seconds 120 --max-bytes 2147483648 --min-free-bytes 4294967296 --qos-profile-overrides-path config/recording_qos.yaml --topics /scan /tf /tf_static /odom /clock /pose /map /plan /received_global_plan /lookahead_point /lookahead_collision_arc /is_rotating_to_heading /global_costmap/costmap_raw /local_costmap/costmap_raw /cmd_vel_nav /cmd_vel_smoothed /cmd_vel /rosout /mission/status /mission/map_epoch /mission/targets /mission/target_observations /mission/frame_processing /mission/frame_retention/request /mission/frame_retention/result /camera/color/camera_info /camera/depth/camera_info ;;
+  motion) exec /usr/bin/python3 scripts/capture_motion_evidence.py --duration 70 --motion-wait 90 --output "$run_dir/initial-motion.json" ;;
+  survey) exec /usr/bin/python3 scripts/initial_survey.py --execute --verified-clear-radius .30 --output "$run_dir/initial-survey.json" ;;
+  observer) exec /usr/bin/python3 scripts/observe_sim_mission.py --costmaps --seconds 1500 --output "$run_dir/observer.json" ;;
+  perception) exec ros2 run limo_maze_perception red_rgbd_detector --ros-args -p use_sim_time:=true -p enabled:=true -p depth_registered_to_color:=true -p publish_frame_processing:=true -p retention_enabled:=true -p retention_output_dir:="$run_dir/retained" -p retention_max_jobs:=96 -p retention_max_file_bytes:=268435456 ;;
+  mission) exec ros2 run limo_maze_mission mission --ros-args -p use_sim_time:=true -p autonomous:=true -p require_processed_inspection:=true -p require_retained_inspection:=true -p retention_max_total_samples:=96 -p retention_max_metadata_bytes:=4194304 -p post_mapping_observation_mode:=bounded_processed_frames -p observation_max_stations:=3 -p observation_headings_per_station:=4 -p observation_max_dispatches:=12 -p observation_stage_timeout_s:=360.0 -p initial_clearance_radius_m:=0.30 -p initial_clearance_source:=smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811 -p mission_timeout_s:=900.0 -p return_timeout_s:=240.0 -p goal_timeout_s:=120.0 -p output_dir:="$run_dir/mission" ;;
+  sim-check) exec /usr/bin/python3 scripts/check_sim_runtime.py --timeout 120 --max-initial-sim-time 30 --output "$run_dir/sim-runtime.json" ;;
+  native-check) exec /usr/bin/python3 src/limo_sim_bringup/scripts/inspect_scene_once.py --execute --world limo_maze --name limo --output "$run_dir/native-scene-$1.json" ;;
+  nav-check) exec /usr/bin/python3 scripts/check_navigation_runtime.py --output "$run_dir/navigation-runtime.json" ;;
+  python) exec /usr/bin/python3 "$@" ;;
+  ros2) exec ros2 "$@" ;;
+  *) printf 'Unknown run22 mode: %s\n' "$mode" >&2; exit 2 ;;
+esac

@@ -1,0 +1,40 @@
+"""Read-only follow-up of all run-token processes, including denied /proc entries."""
+import json
+import os
+from pathlib import Path
+import sys
+
+ROOT=Path(__file__).resolve().parents[2]
+OUT=ROOT/'outputs/ros_smoke/run21-observation-retention'
+sys.path.insert(0,str(ROOT/'scripts'))
+from record_bounded import TOKEN_KEY, proc_stat
+prep=json.loads((OUT/'preparation.json').read_text())
+owner_records=[json.loads(p.read_text()) for p in OUT.glob('process-*.json')]
+earliest_owned_start=min(p['start_ticks'] for p in owner_records)
+known_groups={p['pgid'] for p in owner_records}
+remaining, denied, errors=[], [], []
+for directory in Path('/proc').iterdir():
+    if not directory.name.isdigit(): continue
+    try:
+        if directory.stat().st_uid != os.getuid(): continue
+        row=proc_stat(int(directory.name))
+        row['comm']=(directory/'comm').read_text().strip()
+        if row['state']=='Z': continue
+        try: env=(directory/'environ').read_bytes().split(b'\0')
+        except PermissionError:
+            row['predates_first_owned_process']=row['start_ticks'] < earliest_owned_start
+            row['known_run_process_group']=row['pgid'] in known_groups
+            denied.append(row)
+            if not row['predates_first_owned_process'] or row['known_run_process_group']:
+                errors.append(dict(pid=row['pid'],error='unreadable_potential_run_process'))
+            continue
+        if (TOKEN_KEY+'='+prep['token']).encode() in env: remaining.append(row)
+    except (FileNotFoundError,ProcessLookupError): pass
+    except OSError as exc: errors.append(dict(pid=directory.name,error=type(exc).__name__))
+value=dict(remaining=remaining,errors=errors,unreadable_predating_processes=denied,
+           earliest_owned_start_ticks=earliest_owned_start,signals_sent=[],
+           passed=not remaining and not errors,
+           scope='Current absence; original final-check PermissionErrors preserved; no unknown process signaled')
+with (OUT/'run-token-process-recheck.json').open('x') as f: json.dump(value,f,indent=2)
+print(json.dumps(value),flush=True)
+raise SystemExit(0 if value['passed'] else 1)

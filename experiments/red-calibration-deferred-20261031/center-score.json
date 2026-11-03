@@ -1,0 +1,1946 @@
+{
+  "schema_version": 1,
+  "scope": "all_planned_cases_in_original_order",
+  "status": "all_planned_captures_eligible",
+  "batch_reported_status": "capture_batch_complete",
+  "batch_reported_errors": [],
+  "recorded_experiment_completed_all_cases": true,
+  "planned_case_count": 1,
+  "ran_case_count": 1,
+  "not_run_case_count": 0,
+  "eligible_case_count": 1,
+  "ran_but_ineligible_case_count": 0,
+  "planned_frame_slots": 6,
+  "all_planned_cases_have_eligible_capture": true,
+  "cases": [
+    {
+      "schema_version": 1,
+      "case_id": "02_center_0400mm",
+      "fixed_window_size": 6,
+      "status": "audited_control_observations",
+      "evidence_integrity_passed": true,
+      "fixed_collection_complete": true,
+      "eligible_for_control_count_comparison": true,
+      "capture_reported_passed": true,
+      "runner_reported_status": "captured",
+      "recognition_success": null,
+      "recognition_success_evaluated": false,
+      "control": {
+        "case": {
+          "id": "02_center_0400mm",
+          "kind": "single",
+          "range_m": 0.4,
+          "bearing_deg": 0.0,
+          "incidence_deg": 0.0
+        },
+        "declared_target_count": 1,
+        "world_sha256": "65d4e6e78864c288ec5833a7b40e3f5ab522af9f511cd8e79b339a556416f223",
+        "truth_sha256": "19a553ff4d1ff7fdfc2031e76668f660307678dad2ce87f19d7a2c89677ed47b",
+        "label_scope": "Only the standard thin red boxes are positive surrogate targets; the oversized red panel is a declared negative for this shape-defined fixture, which the current color-only detector may not distinguish.",
+        "truth_path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/offline_truth/02_center_0400mm.json",
+        "rendered_visibility_verified_by_scorer": false,
+        "truth_role": "Offline control description only; never sent to online strategy."
+      },
+      "frames": [
+        {
+          "sequence": 1,
+          "status": "saved",
+          "detection_count": 1,
+          "input_valid_when_saved": true,
+          "input_valid_at_collection_end": true,
+          "count_relation_to_declared_instances": "equal",
+          "audit_issues": [],
+          "artifact": "sample_001/sample.json",
+          "stamp_ns": 6000000000,
+          "processing_status": "processed",
+          "processing": {
+            "candidate_count": 1,
+            "detection_count": 1,
+            "empty_reason": null,
+            "rejection_counts": {
+              "insufficient_depth_inliers": 0,
+              "insufficient_valid_depth": 0,
+              "mixed_depth": 0,
+              "nonfinite_projection": 0,
+              "too_few_inner_pixels": 0
+            },
+            "total_pixels": 307200,
+            "unlocalized_candidate_count": 0,
+            "valid_depth_pixels": 284160
+          },
+          "detections_optical_frame": [
+            {
+              "class_id": "red_object",
+              "confidence": 0.95,
+              "position": [
+                -0.0005244374327453815,
+                0.07447011544984418,
+                0.40000012516975403
+              ]
+            }
+          ],
+          "input_metadata": {
+            "depth": {
+              "data_bytes": 1228800,
+              "data_sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07",
+              "encoding": "32FC1",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6000000000,
+              "step": 2560,
+              "width": 640
+            },
+            "depth_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6000000000
+            },
+            "rgb": {
+              "data_bytes": 921600,
+              "data_sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286",
+              "encoding": "rgb8",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6000000000,
+              "step": 1920,
+              "width": 640
+            },
+            "rgb_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6000000000
+            }
+          },
+          "reported_reasons": [],
+          "input_reasons": [],
+          "late_conflict": false,
+          "tf": {
+            "recorded_exact_lookup_consistent": true,
+            "audit_issues": [],
+            "reported_reasons": [],
+            "transforms": {
+              "base_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6000000000,
+                "returned_stamp_ns": 6000000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "base_footprint",
+                "translation_xyz_m": [
+                  0.084,
+                  0.0,
+                  0.18
+                ]
+              },
+              "reference_to_base": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6000000000,
+                "returned_stamp_ns": 6000000000,
+                "rotation_xyzw": [
+                  0.0,
+                  0.0,
+                  2.6833970479111674e-19,
+                  1.0
+                ],
+                "source_frame": "base_footprint",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  9.576826520231358e-20,
+                  3.1560218636640583e-38,
+                  0.0
+                ]
+              },
+              "reference_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6000000000,
+                "returned_stamp_ns": 6000000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  0.084,
+                  4.508107040490761e-20,
+                  0.18
+                ]
+              }
+            },
+            "scope": "Saved lookup values only; raw TF brackets and physical world pose not audited."
+          },
+          "mask": {
+            "width": 640,
+            "height": 480,
+            "red_pixels": 11078,
+            "red_fraction": 0.03606119791666667,
+            "bbox_xyxy_inclusive": [
+              291,
+              216,
+              348,
+              406
+            ],
+            "scope": "Observed algorithm mask; no ground-truth pixel mask or IoU."
+          }
+        },
+        {
+          "sequence": 2,
+          "status": "saved",
+          "detection_count": 1,
+          "input_valid_when_saved": true,
+          "input_valid_at_collection_end": true,
+          "count_relation_to_declared_instances": "equal",
+          "audit_issues": [],
+          "artifact": "sample_002/sample.json",
+          "stamp_ns": 6100000000,
+          "processing_status": "processed",
+          "processing": {
+            "candidate_count": 1,
+            "detection_count": 1,
+            "empty_reason": null,
+            "rejection_counts": {
+              "insufficient_depth_inliers": 0,
+              "insufficient_valid_depth": 0,
+              "mixed_depth": 0,
+              "nonfinite_projection": 0,
+              "too_few_inner_pixels": 0
+            },
+            "total_pixels": 307200,
+            "unlocalized_candidate_count": 0,
+            "valid_depth_pixels": 284160
+          },
+          "detections_optical_frame": [
+            {
+              "class_id": "red_object",
+              "confidence": 0.95,
+              "position": [
+                -0.0005244374327453815,
+                0.07447011544984418,
+                0.40000012516975403
+              ]
+            }
+          ],
+          "input_metadata": {
+            "depth": {
+              "data_bytes": 1228800,
+              "data_sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07",
+              "encoding": "32FC1",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6100000000,
+              "step": 2560,
+              "width": 640
+            },
+            "depth_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6100000000
+            },
+            "rgb": {
+              "data_bytes": 921600,
+              "data_sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286",
+              "encoding": "rgb8",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6100000000,
+              "step": 1920,
+              "width": 640
+            },
+            "rgb_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6100000000
+            }
+          },
+          "reported_reasons": [],
+          "input_reasons": [],
+          "late_conflict": false,
+          "tf": {
+            "recorded_exact_lookup_consistent": true,
+            "audit_issues": [],
+            "reported_reasons": [],
+            "transforms": {
+              "base_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6100000000,
+                "returned_stamp_ns": 6100000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "base_footprint",
+                "translation_xyz_m": [
+                  0.084,
+                  0.0,
+                  0.18
+                ]
+              },
+              "reference_to_base": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6100000000,
+                "returned_stamp_ns": 6100000000,
+                "rotation_xyzw": [
+                  0.0,
+                  0.0,
+                  2.7494997590547695e-19,
+                  1.0
+                ],
+                "source_frame": "base_footprint",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  9.84161911235152e-20,
+                  3.299869645151359e-38,
+                  0.0
+                ]
+              },
+              "reference_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6100000000,
+                "returned_stamp_ns": 6100000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  0.084,
+                  4.619159595212013e-20,
+                  0.18
+                ]
+              }
+            },
+            "scope": "Saved lookup values only; raw TF brackets and physical world pose not audited."
+          },
+          "mask": {
+            "width": 640,
+            "height": 480,
+            "red_pixels": 11078,
+            "red_fraction": 0.03606119791666667,
+            "bbox_xyxy_inclusive": [
+              291,
+              216,
+              348,
+              406
+            ],
+            "scope": "Observed algorithm mask; no ground-truth pixel mask or IoU."
+          }
+        },
+        {
+          "sequence": 3,
+          "status": "saved",
+          "detection_count": 1,
+          "input_valid_when_saved": true,
+          "input_valid_at_collection_end": true,
+          "count_relation_to_declared_instances": "equal",
+          "audit_issues": [],
+          "artifact": "sample_003/sample.json",
+          "stamp_ns": 6200000000,
+          "processing_status": "processed",
+          "processing": {
+            "candidate_count": 1,
+            "detection_count": 1,
+            "empty_reason": null,
+            "rejection_counts": {
+              "insufficient_depth_inliers": 0,
+              "insufficient_valid_depth": 0,
+              "mixed_depth": 0,
+              "nonfinite_projection": 0,
+              "too_few_inner_pixels": 0
+            },
+            "total_pixels": 307200,
+            "unlocalized_candidate_count": 0,
+            "valid_depth_pixels": 284160
+          },
+          "detections_optical_frame": [
+            {
+              "class_id": "red_object",
+              "confidence": 0.95,
+              "position": [
+                -0.0005244374327453815,
+                0.07447011544984418,
+                0.40000012516975403
+              ]
+            }
+          ],
+          "input_metadata": {
+            "depth": {
+              "data_bytes": 1228800,
+              "data_sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07",
+              "encoding": "32FC1",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6200000000,
+              "step": 2560,
+              "width": 640
+            },
+            "depth_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6200000000
+            },
+            "rgb": {
+              "data_bytes": 921600,
+              "data_sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286",
+              "encoding": "rgb8",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6200000000,
+              "step": 1920,
+              "width": 640
+            },
+            "rgb_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6200000000
+            }
+          },
+          "reported_reasons": [],
+          "input_reasons": [],
+          "late_conflict": false,
+          "tf": {
+            "recorded_exact_lookup_consistent": true,
+            "audit_issues": [],
+            "reported_reasons": [],
+            "transforms": {
+              "base_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6200000000,
+                "returned_stamp_ns": 6200000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "base_footprint",
+                "translation_xyz_m": [
+                  0.084,
+                  0.0,
+                  0.18
+                ]
+              },
+              "reference_to_base": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6200000000,
+                "returned_stamp_ns": 6200000000,
+                "rotation_xyzw": [
+                  0.0,
+                  0.0,
+                  2.813658449166387e-19,
+                  1.0
+                ],
+                "source_frame": "base_footprint",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  1.008658000928651e-19,
+                  3.436050553496386e-38,
+                  0.0
+                ]
+              },
+              "reference_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6200000000,
+                "returned_stamp_ns": 6200000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  0.084,
+                  4.72694619459953e-20,
+                  0.18
+                ]
+              }
+            },
+            "scope": "Saved lookup values only; raw TF brackets and physical world pose not audited."
+          },
+          "mask": {
+            "width": 640,
+            "height": 480,
+            "red_pixels": 11078,
+            "red_fraction": 0.03606119791666667,
+            "bbox_xyxy_inclusive": [
+              291,
+              216,
+              348,
+              406
+            ],
+            "scope": "Observed algorithm mask; no ground-truth pixel mask or IoU."
+          }
+        },
+        {
+          "sequence": 4,
+          "status": "saved",
+          "detection_count": 1,
+          "input_valid_when_saved": true,
+          "input_valid_at_collection_end": true,
+          "count_relation_to_declared_instances": "equal",
+          "audit_issues": [],
+          "artifact": "sample_004/sample.json",
+          "stamp_ns": 6500000000,
+          "processing_status": "processed",
+          "processing": {
+            "candidate_count": 1,
+            "detection_count": 1,
+            "empty_reason": null,
+            "rejection_counts": {
+              "insufficient_depth_inliers": 0,
+              "insufficient_valid_depth": 0,
+              "mixed_depth": 0,
+              "nonfinite_projection": 0,
+              "too_few_inner_pixels": 0
+            },
+            "total_pixels": 307200,
+            "unlocalized_candidate_count": 0,
+            "valid_depth_pixels": 284160
+          },
+          "detections_optical_frame": [
+            {
+              "class_id": "red_object",
+              "confidence": 0.95,
+              "position": [
+                -0.0005244374327453815,
+                0.07447011544984418,
+                0.40000012516975403
+              ]
+            }
+          ],
+          "input_metadata": {
+            "depth": {
+              "data_bytes": 1228800,
+              "data_sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07",
+              "encoding": "32FC1",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6500000000,
+              "step": 2560,
+              "width": 640
+            },
+            "depth_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6500000000
+            },
+            "rgb": {
+              "data_bytes": 921600,
+              "data_sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286",
+              "encoding": "rgb8",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6500000000,
+              "step": 1920,
+              "width": 640
+            },
+            "rgb_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6500000000
+            }
+          },
+          "reported_reasons": [],
+          "input_reasons": [],
+          "late_conflict": false,
+          "tf": {
+            "recorded_exact_lookup_consistent": true,
+            "audit_issues": [],
+            "reported_reasons": [],
+            "transforms": {
+              "base_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6500000000,
+                "returned_stamp_ns": 6500000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "base_footprint",
+                "translation_xyz_m": [
+                  0.084,
+                  0.0,
+                  0.18
+                ]
+              },
+              "reference_to_base": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6500000000,
+                "returned_stamp_ns": 6500000000,
+                "rotation_xyzw": [
+                  0.0,
+                  0.0,
+                  3.022871196800373e-19,
+                  1.0
+                ],
+                "source_frame": "base_footprint",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  1.0832968136662085e-19,
+                  3.872279797898263e-38,
+                  0.0
+                ]
+              },
+              "reference_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6500000000,
+                "returned_stamp_ns": 6500000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  0.084,
+                  5.0784236106246275e-20,
+                  0.18
+                ]
+              }
+            },
+            "scope": "Saved lookup values only; raw TF brackets and physical world pose not audited."
+          },
+          "mask": {
+            "width": 640,
+            "height": 480,
+            "red_pixels": 11078,
+            "red_fraction": 0.03606119791666667,
+            "bbox_xyxy_inclusive": [
+              291,
+              216,
+              348,
+              406
+            ],
+            "scope": "Observed algorithm mask; no ground-truth pixel mask or IoU."
+          }
+        },
+        {
+          "sequence": 5,
+          "status": "saved",
+          "detection_count": 1,
+          "input_valid_when_saved": true,
+          "input_valid_at_collection_end": true,
+          "count_relation_to_declared_instances": "equal",
+          "audit_issues": [],
+          "artifact": "sample_005/sample.json",
+          "stamp_ns": 6600000000,
+          "processing_status": "processed",
+          "processing": {
+            "candidate_count": 1,
+            "detection_count": 1,
+            "empty_reason": null,
+            "rejection_counts": {
+              "insufficient_depth_inliers": 0,
+              "insufficient_valid_depth": 0,
+              "mixed_depth": 0,
+              "nonfinite_projection": 0,
+              "too_few_inner_pixels": 0
+            },
+            "total_pixels": 307200,
+            "unlocalized_candidate_count": 0,
+            "valid_depth_pixels": 284160
+          },
+          "detections_optical_frame": [
+            {
+              "class_id": "red_object",
+              "confidence": 0.95,
+              "position": [
+                -0.0005244374327453815,
+                0.07447011544984418,
+                0.40000012516975403
+              ]
+            }
+          ],
+          "input_metadata": {
+            "depth": {
+              "data_bytes": 1228800,
+              "data_sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07",
+              "encoding": "32FC1",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6600000000,
+              "step": 2560,
+              "width": 640
+            },
+            "depth_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6600000000
+            },
+            "rgb": {
+              "data_bytes": 921600,
+              "data_sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286",
+              "encoding": "rgb8",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6600000000,
+              "step": 1920,
+              "width": 640
+            },
+            "rgb_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6600000000
+            }
+          },
+          "reported_reasons": [],
+          "input_reasons": [],
+          "late_conflict": false,
+          "tf": {
+            "recorded_exact_lookup_consistent": true,
+            "audit_issues": [],
+            "reported_reasons": [],
+            "transforms": {
+              "base_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6600000000,
+                "returned_stamp_ns": 6600000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "base_footprint",
+                "translation_xyz_m": [
+                  0.084,
+                  0.0,
+                  0.18
+                ]
+              },
+              "reference_to_base": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6600000000,
+                "returned_stamp_ns": 6600000000,
+                "rotation_xyzw": [
+                  0.0,
+                  0.0,
+                  3.100707604090523e-19,
+                  1.0
+                ],
+                "source_frame": "base_footprint",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  1.1024075267191897e-19,
+                  3.9893413777763635e-38,
+                  0.0
+                ]
+              },
+              "reference_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6600000000,
+                "returned_stamp_ns": 6600000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  0.084,
+                  5.209188774872079e-20,
+                  0.18
+                ]
+              }
+            },
+            "scope": "Saved lookup values only; raw TF brackets and physical world pose not audited."
+          },
+          "mask": {
+            "width": 640,
+            "height": 480,
+            "red_pixels": 11078,
+            "red_fraction": 0.03606119791666667,
+            "bbox_xyxy_inclusive": [
+              291,
+              216,
+              348,
+              406
+            ],
+            "scope": "Observed algorithm mask; no ground-truth pixel mask or IoU."
+          }
+        },
+        {
+          "sequence": 6,
+          "status": "saved",
+          "detection_count": 1,
+          "input_valid_when_saved": true,
+          "input_valid_at_collection_end": true,
+          "count_relation_to_declared_instances": "equal",
+          "audit_issues": [],
+          "artifact": "sample_006/sample.json",
+          "stamp_ns": 6700000000,
+          "processing_status": "processed",
+          "processing": {
+            "candidate_count": 1,
+            "detection_count": 1,
+            "empty_reason": null,
+            "rejection_counts": {
+              "insufficient_depth_inliers": 0,
+              "insufficient_valid_depth": 0,
+              "mixed_depth": 0,
+              "nonfinite_projection": 0,
+              "too_few_inner_pixels": 0
+            },
+            "total_pixels": 307200,
+            "unlocalized_candidate_count": 0,
+            "valid_depth_pixels": 284160
+          },
+          "detections_optical_frame": [
+            {
+              "class_id": "red_object",
+              "confidence": 0.95,
+              "position": [
+                -0.0005244374327453815,
+                0.07447011544984418,
+                0.40000012516975403
+              ]
+            }
+          ],
+          "input_metadata": {
+            "depth": {
+              "data_bytes": 1228800,
+              "data_sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07",
+              "encoding": "32FC1",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6700000000,
+              "step": 2560,
+              "width": 640
+            },
+            "depth_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6700000000
+            },
+            "rgb": {
+              "data_bytes": 921600,
+              "data_sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286",
+              "encoding": "rgb8",
+              "frame_id": "camera_optical_frame",
+              "height": 480,
+              "is_bigendian": 0,
+              "stamp_ns": 6700000000,
+              "step": 1920,
+              "width": 640
+            },
+            "rgb_info": {
+              "calibration": {
+                "binning_x": 0,
+                "binning_y": 0,
+                "d": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "distortion_model": "plumb_bob",
+                "height": 480,
+                "k": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "p": [
+                  381.36115024798124,
+                  0.0,
+                  320.0,
+                  0.0,
+                  0.0,
+                  381.36115024798124,
+                  240.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                "r": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "roi": {
+                  "do_rectify": false,
+                  "height": 0,
+                  "width": 0,
+                  "x_offset": 0,
+                  "y_offset": 0
+                },
+                "width": 640
+              },
+              "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+              "frame_id": "camera_optical_frame",
+              "stamp_ns": 6700000000
+            }
+          },
+          "reported_reasons": [],
+          "input_reasons": [],
+          "late_conflict": false,
+          "tf": {
+            "recorded_exact_lookup_consistent": true,
+            "audit_issues": [],
+            "reported_reasons": [],
+            "transforms": {
+              "base_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6700000000,
+                "returned_stamp_ns": 6700000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "base_footprint",
+                "translation_xyz_m": [
+                  0.084,
+                  0.0,
+                  0.18
+                ]
+              },
+              "reference_to_base": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6700000000,
+                "returned_stamp_ns": 6700000000,
+                "rotation_xyzw": [
+                  0.0,
+                  0.0,
+                  3.1739647952582714e-19,
+                  1.0
+                ],
+                "source_frame": "base_footprint",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  1.122006899173759e-19,
+                  4.112211013047266e-38,
+                  0.0
+                ]
+              },
+              "reference_to_camera": {
+                "lookup_policy": "requested integer acquisition stamp; never latest Time(0)",
+                "query_stamp_ns": 6700000000,
+                "returned_stamp_ns": 6700000000,
+                "rotation_xyzw": [
+                  -0.5,
+                  0.4999999999999999,
+                  -0.5,
+                  0.5000000000000001
+                ],
+                "source_frame": "camera_optical_frame",
+                "target_frame": "odom",
+                "translation_xyz_m": [
+                  0.084,
+                  5.3322608560338964e-20,
+                  0.18
+                ]
+              }
+            },
+            "scope": "Saved lookup values only; raw TF brackets and physical world pose not audited."
+          },
+          "mask": {
+            "width": 640,
+            "height": 480,
+            "red_pixels": 11078,
+            "red_fraction": 0.03606119791666667,
+            "bbox_xyxy_inclusive": [
+              291,
+              216,
+              348,
+              406
+            ],
+            "scope": "Observed algorithm mask; no ground-truth pixel mask or IoU."
+          }
+        }
+      ],
+      "summary": {
+        "detection_count_by_sequence": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "detection_count_histogram": {
+          "1": 6
+        },
+        "missing_or_ambiguous_frames": 0,
+        "input_valid_frames": 6,
+        "frames_with_nonzero_detections": 6,
+        "mask_red_pixels_by_sequence": [
+          11078,
+          11078,
+          11078,
+          11078,
+          11078,
+          11078
+        ]
+      },
+      "capture_errors": [],
+      "selected_sample_conflicts": [],
+      "audit_issues": [],
+      "sources": {
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/result.json": {
+          "bytes": 6547,
+          "sha256": "d22ef9192854794fad970e6435ca53e2228380cdb53aa4664a2f8f8ac809a537"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/manifest.json": {
+          "bytes": 19076,
+          "sha256": "f60de4f3cce553ed149206d82a43073654c82ca5c664458c653e14b910851a62"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/worlds/02_center_0400mm.sdf": {
+          "bytes": 5543,
+          "sha256": "65d4e6e78864c288ec5833a7b40e3f5ab522af9f511cd8e79b339a556416f223"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/offline_truth/02_center_0400mm.json": {
+          "bytes": 6925,
+          "sha256": "19a553ff4d1ff7fdfc2031e76668f660307678dad2ce87f19d7a2c89677ed47b"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/manifest.json": {
+          "bytes": 3310,
+          "sha256": "026152d353a5262d51bfee94669988aa28b961ee360e9df2412db02dca51f602"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/summary.json": {
+          "bytes": 5589,
+          "sha256": "8fea3a5c2dd1f8efc40a85374724cc626b5c326bddfff6c3cdccfe05f70a29e6"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/raw-checkpoint.json": {
+          "bytes": 13036,
+          "sha256": "57b2c38e9ea733a7ddb524cba5ab35331ec0fb285b54c26c473cbe58742fd39a"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/collection-checkpoint.json": {
+          "bytes": 4394,
+          "sha256": "2d1702e4031d6159372bd2f73679c8cc6b0d1240b41a6388c532207402102868"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/depth.data": {
+          "bytes": 1228800,
+          "sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/depth_m.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/depth_raw.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/raw.json": {
+          "bytes": 5421,
+          "sha256": "8c1bd289889ec8a1a2c4e4b34d1e6fd325799b4c8f74c86de844cf978a446fc4"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/red_mask.png": {
+          "bytes": 746,
+          "sha256": "6dd3d3ccbcc02b11006849eeaa85337fb6f14a9f8272f3442fe2a23199e0f635"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/rgb.data": {
+          "bytes": 921600,
+          "sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/rgb.png": {
+          "bytes": 3589,
+          "sha256": "b464936c913f2a9592dac96569af1dae7d6a411af4288423ccb81547033b5303"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_001/sample.json": {
+          "bytes": 7795,
+          "sha256": "3a8374025fd21f9aa1b19365333c690fc8acef1969e75a2a1b6d1cb6fd5dc3f0"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/depth.data": {
+          "bytes": 1228800,
+          "sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/depth_m.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/depth_raw.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/raw.json": {
+          "bytes": 5418,
+          "sha256": "6835f8c800eed9e5ae2255c46fd05debcd789f0fef6077c1d9af6103bb1eef1a"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/red_mask.png": {
+          "bytes": 746,
+          "sha256": "6dd3d3ccbcc02b11006849eeaa85337fb6f14a9f8272f3442fe2a23199e0f635"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/rgb.data": {
+          "bytes": 921600,
+          "sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/rgb.png": {
+          "bytes": 3589,
+          "sha256": "b464936c913f2a9592dac96569af1dae7d6a411af4288423ccb81547033b5303"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_002/sample.json": {
+          "bytes": 7792,
+          "sha256": "f49d8a48d46b017eaef1477a421494d8571dd4b4a1a55bfa95c12fd9bbbe106d"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/depth.data": {
+          "bytes": 1228800,
+          "sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/depth_m.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/depth_raw.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/raw.json": {
+          "bytes": 5419,
+          "sha256": "246564040ff7137195c09430798b2384780c00f2c6a0b7d7214ec9aa9462116c"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/red_mask.png": {
+          "bytes": 746,
+          "sha256": "6dd3d3ccbcc02b11006849eeaa85337fb6f14a9f8272f3442fe2a23199e0f635"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/rgb.data": {
+          "bytes": 921600,
+          "sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/rgb.png": {
+          "bytes": 3589,
+          "sha256": "b464936c913f2a9592dac96569af1dae7d6a411af4288423ccb81547033b5303"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_003/sample.json": {
+          "bytes": 7793,
+          "sha256": "2ee850ff56baf32fb42b3fc4e847504d827bdd8484edf363161918fe5d7cf866"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/depth.data": {
+          "bytes": 1228800,
+          "sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/depth_m.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/depth_raw.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/raw.json": {
+          "bytes": 5420,
+          "sha256": "f9a9faa05ce97febd2c79ef26fb65a9e50ef32321b4c7c4f1fbdedab919fe866"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/red_mask.png": {
+          "bytes": 746,
+          "sha256": "6dd3d3ccbcc02b11006849eeaa85337fb6f14a9f8272f3442fe2a23199e0f635"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/rgb.data": {
+          "bytes": 921600,
+          "sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/rgb.png": {
+          "bytes": 3589,
+          "sha256": "b464936c913f2a9592dac96569af1dae7d6a411af4288423ccb81547033b5303"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_004/sample.json": {
+          "bytes": 7794,
+          "sha256": "e6941b634e8efde7ccea55e298aba37e185e83bcb27382d76cf24da77257c1e5"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/depth.data": {
+          "bytes": 1228800,
+          "sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/depth_m.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/depth_raw.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/raw.json": {
+          "bytes": 5421,
+          "sha256": "50d914264c1f2805eb011d0f2da6a64adce1d8478aa6369d5b332788be2b23ce"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/red_mask.png": {
+          "bytes": 746,
+          "sha256": "6dd3d3ccbcc02b11006849eeaa85337fb6f14a9f8272f3442fe2a23199e0f635"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/rgb.data": {
+          "bytes": 921600,
+          "sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/rgb.png": {
+          "bytes": 3589,
+          "sha256": "b464936c913f2a9592dac96569af1dae7d6a411af4288423ccb81547033b5303"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_005/sample.json": {
+          "bytes": 7795,
+          "sha256": "f3ed420b2fc65ab9f98715ddbe0f2444dcc6cbf45c52dfbe009373afa8ae67e7"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/depth.data": {
+          "bytes": 1228800,
+          "sha256": "b646f7d11ba0ac218c7868b53748fa4a1c4607f1a2024177559bf453ac74ed07"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/depth_m.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/depth_raw.npy": {
+          "bytes": 1228928,
+          "sha256": "0e0ccde6d7dfaa29a42b20b7777448efb23e2f41bd74cde05ed6a00860258150"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/raw.json": {
+          "bytes": 5421,
+          "sha256": "e9dfb8663271f2e3a8d158d287ec7cba54139bbfa3a9d570c8aa21d4a7f48ce4"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/red_mask.png": {
+          "bytes": 746,
+          "sha256": "6dd3d3ccbcc02b11006849eeaa85337fb6f14a9f8272f3442fe2a23199e0f635"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/rgb.data": {
+          "bytes": 921600,
+          "sha256": "7228979ffff59e149a4c0c6be5dacf14dc9366315c0b27468d1a9c6d7c8fe286"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/rgb.png": {
+          "bytes": 3589,
+          "sha256": "b464936c913f2a9592dac96569af1dae7d6a411af4288423ccb81547033b5303"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/sample_006/sample.json": {
+          "bytes": 7795,
+          "sha256": "b51e242a1a46399a17918db1deb5f42b571dad3fa9d1179331486ac5d4e912e4"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/source/capture_core.py": {
+          "bytes": 22119,
+          "sha256": "f739ddbc6a727f23e24106228b5d75121c12c798fd99eab578f2552b052bec67"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/source/capture_red_samples.py": {
+          "bytes": 28107,
+          "sha256": "1e4acd7198b2dfb82a450acdb92ddc8f2a5d77319a0cde0f74b4c04fb622352c"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/source/core.py": {
+          "bytes": 10951,
+          "sha256": "01ca5d189b6a9df1a424046066e7e4f3e5e1b2b0d2ca75c8d4c7bffebb29693a"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/source/evidence.py": {
+          "bytes": 10174,
+          "sha256": "328d28a71205a2a7417e7e05ed3d620e9d36a93180fffc010b726a62970cb562"
+        },
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/capture/source/node.py": {
+          "bytes": 8933,
+          "sha256": "f99cc1e57e8a70f924a27b56aeef0cf384682b2e6cf8813d28a15ab9b83204c7"
+        }
+      },
+      "scorer_sha256": "09b22338a6ba5f9fc9d93a6716b5690606fe1d72c829618e135d7bbcda70ac41",
+      "limits": [
+        "Fixed original sequences 1..6, including rejects/missing; no successful-frame replacement.",
+        "Count equality does not prove class identity, object association or localization correctness.",
+        "Mask is saved algorithm output, not a verified ground-truth pixel mask.",
+        "No detector rerun; schema/hash checks do not authenticate an adversarially rewritten dataset.",
+        "Native settled pose not verified; no absolute world-position error is computed.",
+        "Six adjacent frames are not six independent scenes; no accuracy/recall/range/coverage inference."
+      ],
+      "world_position_error_computed": false,
+      "effective_range_claimed": false,
+      "accuracy_claimed": false,
+      "visual_coverage_claimed": false,
+      "execution_state": "ran"
+    }
+  ],
+  "sources": {
+    "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/plan.json": {
+      "bytes": 8671,
+      "sha256": "8c728b0f3246007ccbd60ce3749c445ddfba3b3cdc3341cb9149d79f05b54d32"
+    },
+    "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/batch.json": {
+      "bytes": 7605,
+      "sha256": "13b5049f17c110a3569b959159f58ef86e3830880cba9d9327a37b15684d4d1b"
+    },
+    "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/red-calibration-draft/integrated-example-v1/manifest.json": {
+      "bytes": 19076,
+      "sha256": "f60de4f3cce553ed149206d82a43073654c82ca5c664458c653e14b910851a62"
+    },
+    "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/red-calibration/deferred-center-01/02_center_0400mm/result.json": {
+      "bytes": 6547,
+      "sha256": "d22ef9192854794fad970e6435ca53e2228380cdb53aa4664a2f8f8ac809a537"
+    }
+  },
+  "scorer_sha256": "09b22338a6ba5f9fc9d93a6716b5690606fe1d72c829618e135d7bbcda70ac41",
+  "recognition_success_evaluated": false,
+  "world_position_error_computed": false,
+  "effective_range_claimed": false,
+  "accuracy_claimed": false,
+  "limits": [
+    "Planned denominator is retained; not_run cases are not negatives and have null observations.",
+    "Counts are descriptive controls only, with no identity/recall/accuracy/range estimate."
+  ]
+}

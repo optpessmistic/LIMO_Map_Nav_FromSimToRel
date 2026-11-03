@@ -1,0 +1,87 @@
+"""Archive closed calibration attempts, including rejected samples, unchanged."""
+import gzip
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import tarfile
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / 'experiments/red-calibration-20261031'
+
+
+def digest(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def archive(directory, name):
+    entries = []
+    paths = sorted(p for p in directory.rglob('*') if p.is_file() and not p.is_symlink())
+    links = [{'path': p.relative_to(directory).as_posix(), 'target': os.readlink(p)}
+             for p in directory.rglob('*') if p.is_symlink()]
+    assert sum(p.stat().st_size for p in paths) < 512 * 1024**2
+    output = OUT / (name + '.tar.gz')
+    with output.open('xb') as raw:
+        with gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as zipped:
+            with tarfile.open(fileobj=zipped, mode='w|') as tar:
+                for source in paths:
+                    rel = source.relative_to(directory).as_posix()
+                    entries.append({'path': rel, 'bytes': source.stat().st_size,
+                                    'sha256': digest(source)})
+                    tar.add(source, arcname=rel, recursive=False)
+    with tarfile.open(output, 'r:gz') as tar:
+        members = tar.getmembers()
+        assert [m.name for m in members] == [r['path'] for r in entries]
+        for member, row in zip(members, entries):
+            stream = tar.extractfile(member)
+            assert member.isfile() and stream is not None
+            with stream:
+                assert hashlib.file_digest(stream, 'sha256').hexdigest() == row['sha256']
+            assert member.size == row['bytes']
+            assert digest(directory / row['path']) == row['sha256']
+    return {'archive': output.name, 'bytes': output.stat().st_size,
+            'sha256': digest(output), 'source': str(directory.relative_to(ROOT)),
+            'file_count': len(entries), 'uncompressed_bytes': sum(r['bytes'] for r in entries),
+            'all_members_verified': True, 'symbolic_links_not_followed_or_archived': links,
+            'files': entries}
+
+
+def main():
+    batches = [('blank-01', ROOT / 'outputs/red-calibration/blank-01'),
+               ('batch-12-01', ROOT / 'outputs/red-calibration/batch-12-01')]
+    results = {}
+    for label, path in batches:
+        data = json.loads((path / 'batch.json').read_text())
+        assert data['status'] != 'running'
+        assert data['cases'] and all(c['all_owned_groups_empty'] for c in data['cases'])
+        assert all(c['source_unchanged'] for c in data['cases'])
+        results[label] = {k: data[k] for k in ('status', 'completed_all_cases', 'errors', 'elapsed_wall_s')}
+    OUT.mkdir(exist_ok=False)
+    packages = [archive(path, name) for name, path in batches]
+    for name, path in [('fixtures', ROOT/'outputs/setup/red-calibration-draft/integrated-example-v1'),
+                       ('capture-runtime-source', ROOT/'outputs/setup/red-capture-draft'),
+                       ('runner-runtime-source', ROOT/'outputs/setup/red-calibration-runner-draft')]:
+        # The draft directories include diagnostics, not secret or external files.
+        packages.append(archive(path, name))
+    report = {'schema_version': 1, 'batches': results, 'packages': packages,
+              'runtime_capture_count': 18, 'valid_frame_count': 17,
+              'full_twelve_case_batch_completed': False,
+              'effective_detection_range_claimed': False,
+              'note': 'All raw evidence is preserved, including case02 sample2 rejection; ten planned cases were not run.'}
+    (OUT/'archive-manifest.json').write_text(json.dumps(report, indent=2)+'\n')
+    for source, name in [(batches[0][1]/'batch.json', 'blank-01-batch.json'),
+                         (batches[1][1]/'batch.json', 'batch-12-01-batch.json'),
+                         (batches[1][1]/'02_center_0400mm/capture/sample_001/rgb.png', 'center-0400mm.png'),
+                         (batches[1][1]/'02_center_0400mm/capture/sample_002/sample.json', 'rejected-sample-002.json')]:
+        shutil.copyfile(source, OUT/name)
+        assert digest(source) == digest(OUT/name)
+    checks = sorted(p for p in OUT.iterdir() if p.is_file())
+    (OUT/'SHA256SUMS').write_text(''.join(digest(p)+'  '+p.name+'\n' for p in checks))
+    print(json.dumps({'archives': [{k: p[k] for k in ('archive', 'bytes', 'file_count', 'all_members_verified')} for p in packages],
+                      'output': str(OUT)}, indent=2))
+
+
+if __name__ == '__main__':
+    main()

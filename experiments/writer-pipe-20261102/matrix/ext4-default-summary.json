@@ -1,0 +1,171 @@
+{
+  "variant": "ext4-default",
+  "output": "/tmp/limo-writer-fs-pipe-20261102-fw8pncv0/ext4-default",
+  "pipe_probes": [
+    {
+      "pid": 967,
+      "operation_id": "fe13502d93234ba3b108f96dfac23660",
+      "requested_bytes": null,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 65536
+    },
+    {
+      "pid": 968,
+      "operation_id": "2cf6f7c139ad4cfea27a4f94e5891cae",
+      "requested_bytes": null,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 65536
+    },
+    {
+      "pid": 969,
+      "operation_id": "9bf054daf1474c21b5909f7d56292249",
+      "requested_bytes": null,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 65536
+    },
+    {
+      "pid": 970,
+      "operation_id": "894b132af9d04b64a4af2f8cc4c0e61e",
+      "requested_bytes": null,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 65536
+    },
+    {
+      "pid": 971,
+      "operation_id": "fd90214d53dd4f93a2d0168654dd9ddf",
+      "requested_bytes": null,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 65536
+    }
+  ],
+  "transfer": [
+    {
+      "operation_id": "fe13502d93234ba3b108f96dfac23660",
+      "job_id": null,
+      "wire_bytes": 1009,
+      "input_drain_s": 0.07404061500000125,
+      "total_s": 1.0972698049999963,
+      "max_tick_gap_s": 0.05455363800000157
+    },
+    {
+      "operation_id": "2cf6f7c139ad4cfea27a4f94e5891cae",
+      "job_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+      "wire_bytes": 2158056,
+      "input_drain_s": 2.5945285530000035,
+      "total_s": 3.2449521129999965,
+      "max_tick_gap_s": 0.0579627160000058
+    },
+    {
+      "operation_id": "9bf054daf1474c21b5909f7d56292249",
+      "job_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+      "wire_bytes": 2159823,
+      "input_drain_s": 3.397704774999994,
+      "total_s": 4.264079269999996,
+      "max_tick_gap_s": 0.0547852289999895
+    },
+    {
+      "operation_id": "894b132af9d04b64a4af2f8cc4c0e61e",
+      "job_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+      "wire_bytes": 2161001,
+      "input_drain_s": null,
+      "total_s": 3.492903771999991,
+      "max_tick_gap_s": 0.05488184299998977
+    },
+    {
+      "operation_id": "fd90214d53dd4f93a2d0168654dd9ddf",
+      "job_id": null,
+      "wire_bytes": 4881,
+      "input_drain_s": 0.209184374000003,
+      "total_s": 1.3154117640000038,
+      "max_tick_gap_s": 0.011222226000001001
+    }
+  ],
+  "errors": [
+    "RuntimeError: Request failed"
+  ],
+  "all_durable_elapsed_s": null,
+  "would_meet_original_consumer_deadline": null,
+  "all_owned_helpers_closed": true,
+  "elapsed_wall_s": 13.419407976000002,
+  "source_bytes_verification": {
+    "passed": false,
+    "frames": [
+      {
+        "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "fb780a82d0727f146da684ec6147ba75c1ee5e30ddf6a1086626fd09a7179fb6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "a1a46493b659b3d89537fa22156c7212a257680d054bd93f377b150518656f18"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "4ee4b93c8a5fbf839b0721a96fb5b308a02bf26b38264b47172b2b6beec7ead2"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      },
+      {
+        "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "9c960625f4235e546252e56d4fa3a248d7817baf46aaf3967a6f5d7041c2dec6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "5f87426633d94b273e8b3079b92d0908866a83bcaddafdea61f7537fbf83084f"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "cd6cea962477cea2a768f92f7a309a63ce3cfca36f5094e2231b634cc651efcf"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      },
+      {
+        "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+        "errors": [
+          "AssertionError: "
+        ],
+        "files": {},
+        "verified": false
+      }
+    ],
+    "scope": "reopened benchmark files; source bytes and request identities only; not run21 mission success"
+  }
+}

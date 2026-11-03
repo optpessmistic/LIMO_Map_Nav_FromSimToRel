@@ -6,6 +6,14 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
+最新 run26 使用独立 TF 容差配置，完成 6 个探索目标导航并标注 2 个红色替身，未记录 TF 过期或外推错误；随后图像留存超时阻断，完整探索和返航仍未完成。地图导出、终态静止及进程退出验证通过。详见 [时钟核查与 run25/26 实验](docs/tf-timing-experiment.md)。用户目前没有小车访问条件，继续推进仿真，实车验收暂缓。
+
+此前 run22 已通过五次停车观察，15 组实际接受的原始 RGB-D 在关闭后全部通过文件审计，并通过返航位姿检查、标注两个红色替身；地图覆盖和整轮收尾仍未通过，详见 [run22 记录](docs/run22-retention-verification.md)。留存回执超时的历史失败和单次性能对照保留在 [run21 记录](docs/run21-retention-deadline.md)。
+
+打开实时窗口见 [Gazebo / RViz](docs/visualization.md)，其中包含本机从零启动的三终端命令。已结束的实验不会因打开查看客户端自动重启。
+
+后续 [固定帧标定](docs/red-surrogate-calibration.md) 已完成新的 12 场景、72 组 RGB-D 采集及离线哈希审计；90 项采集/审计测试通过。大红色平板仍产生候选，相邻双目标的实际观测回放还暴露了地图融合合并问题，不能据此宣称识别或完整视觉搜索通过。原先在第二场景停止的失败批次保持不变；[新实验记录](experiments/red-calibration-deferred-20261031/README.md)保留完整输入和限制。
+
 当前已完成 WSL 环境与 ROS 集成。run14 首次在 Gazebo 物理仿真中完成四次自主探索、两个红色替身的地图标注和返航；独立实际返航误差约 6.4 cm，两目标平面标注误差约 4.6/1.8 cm。视觉搜索覆盖和正式物品类别尚未验证，因此完整 `mission_success` 仍为 false，实车实验尚未通过。通过本轮的 RPP 与小迷宫 SLAM 配置作为可选实验配置保存，详见 [run14 记录](docs/autonomous-run14.md)和[复现步骤](docs/rpp-smoke-reproduction.md)。
 
 ![run14 原始地图、实际轨迹与替身标注](docs/assets/run14-overview.png)
@@ -20,22 +28,33 @@
 | 探索、识别、返航设计 | [探索与感知方案](docs/exploration-perception.md) |
 | 实验矩阵与完成标准 | [实验验收](docs/experiment-plan.md) |
 | ROS2 / Gazebo 接入 | [Jazzy 仿真](docs/jazzy-simulation.md) |
+| 打开三维场景、地图和相机窗口 | [Gazebo / RViz 可视化](docs/visualization.md) |
+| 首次启动等待与传感器就绪 | [冷启动诊断](docs/simulation-startup-diagnosis.md) |
+| 防止重复生成模型与同戳状态冲突 | [单次生成和原生模型检查](docs/single-spawn-diagnosis.md) |
 | ROS2 任务管理 | [任务节点](docs/ros2-mission.md) |
 | RGB-D 仿真视觉替身 | [感知基线](docs/perception-baseline.md) |
+| 距离、角度、遮挡及相邻目标测试 | [红色替身标定场景](docs/red-surrogate-calibration.md) |
 | 有效空检测、拒收与采样帧证据 | [图像处理证据](docs/frame-processing-evidence.md) |
+| 到达后停稳并等待新处理帧 | [可选自主观察等待](docs/settled-inspection.md) |
+| 固定实际接受的 RGB-D 原帧并离线核对 | [源端原图留存](docs/frame-retention.md) |
+| 有限站位/朝向与到家后前沿复查 | [有界主动观察](docs/bounded-observation.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
 | 首次真实平移、扩图与目标标注 | [run10 自主实验](docs/first-autonomous-run.md) |
 | 两目标评分、到达裕量与返航停滞 | [run11 自主实验](docs/autonomous-run11.md) |
 | 末端旋转超时与 SLAM 定位跳变 | [run12 自主实验](docs/autonomous-run12.md) |
 | 预测路径、近目标停滞与净空保护 | [run13 自主实验](docs/autonomous-run13.md) |
 | 首次探索、替身标注和返航 | [run14 自主实验](docs/autonomous-run14.md) |
+| 新图像观察验证与到位超差诊断 | [run15 实验及保留的失败证据](docs/autonomous-run15.md) |
+| 更严格到位阈值、返航与缺图审计 | [run20 实验记录](docs/autonomous-run20.md) |
 | 可选 RPP 小迷宫配置与运行顺序 | [复现步骤](docs/rpp-smoke-reproduction.md) |
 | 车体真实运动与接触近似 | [物理验证](docs/physics-validation.md) |
 | 激光输入与时间对照 | [只读扫描诊断](docs/scan-alignment.md) |
 | 当前 SLAM 错位调查 | [旋转建图对照](docs/slam-rotation-investigation.md) |
 | 固定输入的真实 SLAM 对照 | [隔离回放](docs/slam-replay.md) |
 | 连续 TF、全局路径和速度链证据 | [仿真任务观察器](docs/mission-observer.md) |
+| 录包 wall deadline、终态及容量关闭 | [限时录包](docs/bounded-recording.md) |
 | 地图最大边界缺墙修补 | [边界补丁及独立构建](docs/slam-grid-boundary.md) |
+| 从捕获栅格生成可回读的 PGM/YAML | [独立地图导出](docs/occupancy-map-export.md) |
 | 完整搜索尚缺什么 | [验收差距](docs/acceptance-gaps.md) |
 | 分工与周报 | [周报模板](progress/weekly-template.md) |
 

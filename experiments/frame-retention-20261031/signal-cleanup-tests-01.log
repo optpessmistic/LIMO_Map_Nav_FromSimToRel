@@ -1,0 +1,16 @@
+test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) ... 
+  test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) (signal=<Signals.SIGTERM: 15>) ... FAIL
+test_missing_ready_assertion_still_flushes_worker_and_closes_pipes (test_frame_retention_adapter.AdapterTests.test_missing_ready_assertion_still_flushes_worker_and_closes_pipes) ... ok
+
+======================================================================
+FAIL: test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) (signal=<Signals.SIGTERM: 15>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_frame_retention_adapter.py", line 421, in test_real_signals_use_extracted_main_and_leave_no_owned_writer
+    self.assertTrue(report['shutdown']['owned_writer_exit_confirmed'])
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 2 tests in 7.630s
+
+FAILED (failures=1)

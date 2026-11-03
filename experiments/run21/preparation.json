@@ -1,0 +1,30 @@
+{
+  "run": "run21-observation-retention",
+  "code_head": "2d36634caf0665e6b0af88e7452575ae69c0d0dd",
+  "token": "run21-7fb780625749467395172a1a2f29093c",
+  "epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64",
+  "world_sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+  "nav2_sha256": "56d0e321819d2117c4f75eb5326a17a98a1eadc31d347f6d34e0cba107cb6638",
+  "profile": {
+    "max_jobs": 96,
+    "file_bytes": 268435456,
+    "consumer_samples": 96,
+    "consumer_metadata_bytes": 4194304,
+    "stations": 3,
+    "headings": 4,
+    "max_dispatches": 12,
+    "observation_wall_s": 360
+  },
+  "unchanged": [
+    "Nav2 XY .03m",
+    "mission XY .05m",
+    "yaw .26rad",
+    "stationarity .5s",
+    "inspection12s",
+    "writer5s",
+    "request10s",
+    "shutdown8s"
+  ],
+  "recorded_inputs": "rosbag metadata/TF/odom/map/actions and source-exact accepted RGB-D; continuous raw image topics omitted",
+  "planned_active_wall_budget_s": 1800
+}

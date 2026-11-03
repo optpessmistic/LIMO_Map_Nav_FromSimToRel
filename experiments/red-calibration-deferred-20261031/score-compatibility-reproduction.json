@@ -1,0 +1,76 @@
+{
+  "score_sha256": "4b2646d5f6b6ab99fb286e2f661a6b8121d105bd6206229436ebfa97879758d2",
+  "ros_imported": false,
+  "scenarios": {
+    "normal_schema3": {
+      "status": "audited_control_observations",
+      "fixed_collection_complete": true,
+      "eligible_for_control_count_comparison": true,
+      "evidence_integrity_passed": true,
+      "summary": {
+        "detection_count_by_sequence": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "detection_count_histogram": {
+          "0": 6
+        },
+        "missing_or_ambiguous_frames": 0,
+        "input_valid_frames": 6,
+        "frames_with_nonzero_detections": 0,
+        "mask_red_pixels_by_sequence": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "audit_issues": []
+    },
+    "rejected_calibration": {
+      "status": "incomplete_or_ineligible_evidence",
+      "fixed_collection_complete": true,
+      "eligible_for_control_count_comparison": false,
+      "evidence_integrity_passed": true,
+      "summary": {
+        "detection_count_by_sequence": [
+          0,
+          0,
+          null,
+          0,
+          0,
+          0
+        ],
+        "detection_count_histogram": {
+          "0": 5
+        },
+        "missing_or_ambiguous_frames": 0,
+        "input_valid_frames": 5,
+        "frames_with_nonzero_detections": 0,
+        "mask_red_pixels_by_sequence": [
+          0,
+          0,
+          null,
+          0,
+          0,
+          0
+        ]
+      },
+      "audit_issues": []
+    },
+    "collection_checkpoint_only": {
+      "exception": "FileNotFoundError",
+      "message": "[Errno 2] No such file or directory: '/tmp/tmpwhgtjn5k/closed-case/capture/raw-checkpoint.json'"
+    },
+    "early_batch": {
+      "exception": "FileNotFoundError",
+      "message": "[Errno 2] No such file or directory: '/tmp/tmpwhgtjn5k/batch/test_control/capture/raw-checkpoint.json'"
+    }
+  }
+}

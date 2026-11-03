@@ -1,0 +1,1390 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-31T09:56:45.218974+00:00",
+  "mode": "parameters-only",
+  "passed": true,
+  "motion_or_navigation_commands_published": false,
+  "parameters_modified": false,
+  "slam_map_modified": false,
+  "output": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/parameters-early.json",
+  "timeout_wall_s": 45.0,
+  "environment": {
+    "ROS_DISTRO": "jazzy",
+    "ROS_DOMAIN_ID": "73",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+    "GZ_PARTITION": "limo_maze_jazzy"
+  },
+  "parameters": {
+    "controller_server": {
+      "status": "received",
+      "list_service": "/controller_server/list_parameters",
+      "get_service": "/controller_server/get_parameters",
+      "listed_names": [
+        "/bond_disable_heartbeat_timeout",
+        "FollowPath.allow_reversing",
+        "FollowPath.approach_velocity_scaling_dist",
+        "FollowPath.cancel_deceleration",
+        "FollowPath.cost_scaling_dist",
+        "FollowPath.cost_scaling_gain",
+        "FollowPath.curvature_lookahead_dist",
+        "FollowPath.desired_linear_vel",
+        "FollowPath.inflation_cost_scaling_factor",
+        "FollowPath.interpolate_curvature_after_goal",
+        "FollowPath.lookahead_dist",
+        "FollowPath.lookahead_time",
+        "FollowPath.max_allowed_time_to_collision_up_to_carrot",
+        "FollowPath.max_angular_accel",
+        "FollowPath.max_lookahead_dist",
+        "FollowPath.max_robot_pose_search_dist",
+        "FollowPath.min_approach_linear_velocity",
+        "FollowPath.min_lookahead_dist",
+        "FollowPath.plugin",
+        "FollowPath.regulated_linear_scaling_min_radius",
+        "FollowPath.regulated_linear_scaling_min_speed",
+        "FollowPath.rotate_to_heading_angular_vel",
+        "FollowPath.rotate_to_heading_min_angle",
+        "FollowPath.stateful",
+        "FollowPath.transform_tolerance",
+        "FollowPath.use_cancel_deceleration",
+        "FollowPath.use_collision_detection",
+        "FollowPath.use_cost_regulated_linear_velocity_scaling",
+        "FollowPath.use_fixed_curvature_lookahead",
+        "FollowPath.use_regulated_linear_velocity_scaling",
+        "FollowPath.use_rotate_to_heading",
+        "FollowPath.use_velocity_scaled_lookahead_dist",
+        "action_server_result_timeout",
+        "autostart_node",
+        "bond_heartbeat_period",
+        "controller_frequency",
+        "controller_plugins",
+        "costmap_update_timeout",
+        "enable_stamped_cmd_vel",
+        "failure_tolerance",
+        "general_goal_checker.plugin",
+        "general_goal_checker.stateful",
+        "general_goal_checker.symmetric_yaw_tolerance",
+        "general_goal_checker.xy_goal_tolerance",
+        "general_goal_checker.yaw_goal_tolerance",
+        "goal_checker_plugins",
+        "min_theta_velocity_threshold",
+        "min_x_velocity_threshold",
+        "min_y_velocity_threshold",
+        "odom_topic",
+        "progress_checker.movement_time_allowance",
+        "progress_checker.plugin",
+        "progress_checker.required_movement_radius",
+        "progress_checker_plugins",
+        "publish_zero_velocity",
+        "qos_overrides./clock.subscription.depth",
+        "qos_overrides./clock.subscription.durability",
+        "qos_overrides./clock.subscription.history",
+        "qos_overrides./clock.subscription.reliability",
+        "speed_limit_topic",
+        "start_type_description_service",
+        "use_realtime_priority",
+        "use_sim_time"
+      ],
+      "values": {
+        "/bond_disable_heartbeat_timeout": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "FollowPath.allow_reversing": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "FollowPath.approach_velocity_scaling_dist": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "FollowPath.cancel_deceleration": {
+          "type": 3,
+          "value": 3.2,
+          "set": true
+        },
+        "FollowPath.cost_scaling_dist": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "FollowPath.cost_scaling_gain": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "FollowPath.curvature_lookahead_dist": {
+          "type": 3,
+          "value": 0.6,
+          "set": true
+        },
+        "FollowPath.desired_linear_vel": {
+          "type": 3,
+          "value": 0.15,
+          "set": true
+        },
+        "FollowPath.inflation_cost_scaling_factor": {
+          "type": 3,
+          "value": 4.0,
+          "set": true
+        },
+        "FollowPath.interpolate_curvature_after_goal": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "FollowPath.lookahead_dist": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "FollowPath.lookahead_time": {
+          "type": 3,
+          "value": 1.5,
+          "set": true
+        },
+        "FollowPath.max_allowed_time_to_collision_up_to_carrot": {
+          "type": 3,
+          "value": 1.2,
+          "set": true
+        },
+        "FollowPath.max_angular_accel": {
+          "type": 3,
+          "value": 0.6,
+          "set": true
+        },
+        "FollowPath.max_lookahead_dist": {
+          "type": 3,
+          "value": 0.9,
+          "set": true
+        },
+        "FollowPath.max_robot_pose_search_dist": {
+          "type": 3,
+          "value": 1.4875,
+          "set": true
+        },
+        "FollowPath.min_approach_linear_velocity": {
+          "type": 3,
+          "value": 0.02,
+          "set": true
+        },
+        "FollowPath.min_lookahead_dist": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "FollowPath.plugin": {
+          "type": 4,
+          "value": "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController",
+          "set": true
+        },
+        "FollowPath.regulated_linear_scaling_min_radius": {
+          "type": 3,
+          "value": 0.5,
+          "set": true
+        },
+        "FollowPath.regulated_linear_scaling_min_speed": {
+          "type": 3,
+          "value": 0.03,
+          "set": true
+        },
+        "FollowPath.rotate_to_heading_angular_vel": {
+          "type": 3,
+          "value": 0.4,
+          "set": true
+        },
+        "FollowPath.rotate_to_heading_min_angle": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "FollowPath.stateful": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "FollowPath.transform_tolerance": {
+          "type": 3,
+          "value": 0.1,
+          "set": true
+        },
+        "FollowPath.use_cancel_deceleration": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "FollowPath.use_collision_detection": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "FollowPath.use_cost_regulated_linear_velocity_scaling": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "FollowPath.use_fixed_curvature_lookahead": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "FollowPath.use_regulated_linear_velocity_scaling": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "FollowPath.use_rotate_to_heading": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "FollowPath.use_velocity_scaled_lookahead_dist": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "action_server_result_timeout": {
+          "type": 3,
+          "value": 10.0,
+          "set": true
+        },
+        "autostart_node": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "bond_heartbeat_period": {
+          "type": 3,
+          "value": 0.1,
+          "set": true
+        },
+        "controller_frequency": {
+          "type": 3,
+          "value": 10.0,
+          "set": true
+        },
+        "controller_plugins": {
+          "type": 9,
+          "value": [
+            "FollowPath"
+          ],
+          "set": true
+        },
+        "costmap_update_timeout": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "enable_stamped_cmd_vel": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "failure_tolerance": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "general_goal_checker.plugin": {
+          "type": 4,
+          "value": "nav2_controller::SimpleGoalChecker",
+          "set": true
+        },
+        "general_goal_checker.stateful": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "general_goal_checker.symmetric_yaw_tolerance": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "general_goal_checker.xy_goal_tolerance": {
+          "type": 3,
+          "value": 0.03,
+          "set": true
+        },
+        "general_goal_checker.yaw_goal_tolerance": {
+          "type": 3,
+          "value": 0.26,
+          "set": true
+        },
+        "goal_checker_plugins": {
+          "type": 9,
+          "value": [
+            "general_goal_checker"
+          ],
+          "set": true
+        },
+        "min_theta_velocity_threshold": {
+          "type": 3,
+          "value": 0.001,
+          "set": true
+        },
+        "min_x_velocity_threshold": {
+          "type": 3,
+          "value": 0.001,
+          "set": true
+        },
+        "min_y_velocity_threshold": {
+          "type": 3,
+          "value": 0.001,
+          "set": true
+        },
+        "odom_topic": {
+          "type": 4,
+          "value": "odom",
+          "set": true
+        },
+        "progress_checker.movement_time_allowance": {
+          "type": 3,
+          "value": 30.0,
+          "set": true
+        },
+        "progress_checker.plugin": {
+          "type": 4,
+          "value": "nav2_controller::SimpleProgressChecker",
+          "set": true
+        },
+        "progress_checker.required_movement_radius": {
+          "type": 3,
+          "value": 0.15,
+          "set": true
+        },
+        "progress_checker_plugins": {
+          "type": 9,
+          "value": [
+            "progress_checker"
+          ],
+          "set": true
+        },
+        "publish_zero_velocity": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "qos_overrides./clock.subscription.depth": {
+          "type": 2,
+          "value": 1,
+          "set": true
+        },
+        "qos_overrides./clock.subscription.durability": {
+          "type": 4,
+          "value": "volatile",
+          "set": true
+        },
+        "qos_overrides./clock.subscription.history": {
+          "type": 4,
+          "value": "keep_last",
+          "set": true
+        },
+        "qos_overrides./clock.subscription.reliability": {
+          "type": 4,
+          "value": "best_effort",
+          "set": true
+        },
+        "speed_limit_topic": {
+          "type": 4,
+          "value": "speed_limit",
+          "set": true
+        },
+        "start_type_description_service": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "use_realtime_priority": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "use_sim_time": {
+          "type": 1,
+          "value": true,
+          "set": true
+        }
+      },
+      "list_sent_wall_s": 3.182732897000051,
+      "list_sent_ros_ns": 0,
+      "listed_prefixes": [
+        "FollowPath",
+        "general_goal_checker",
+        "progress_checker",
+        "qos_overrides./clock.subscription"
+      ],
+      "list_completed_wall_s": 3.184432308000055,
+      "get_sent_wall_s": 3.184432308000055,
+      "get_sent_ros_ns": 0,
+      "get_completed_wall_s": 3.185788884000033,
+      "get_completed_ros_ns": 0
+    },
+    "slam_toolbox": {
+      "status": "received",
+      "list_service": "/slam_toolbox/list_parameters",
+      "get_service": "/slam_toolbox/get_parameters",
+      "listed_names": [
+        "/bond_disable_heartbeat_timeout",
+        "angle_variance_penalty",
+        "base_frame",
+        "ceres_dogleg_type",
+        "ceres_linear_solver",
+        "ceres_loss_function",
+        "ceres_preconditioner",
+        "ceres_trust_strategy",
+        "check_min_dist_and_heading_precisely",
+        "coarse_angle_resolution",
+        "coarse_search_angle_offset",
+        "correlation_search_space_dimension",
+        "correlation_search_space_resolution",
+        "correlation_search_space_smear_deviation",
+        "debug_logging",
+        "distance_variance_penalty",
+        "do_loop_closing",
+        "enable_interactive_mode",
+        "fine_search_angle_offset",
+        "interactive_mode",
+        "link_match_minimum_response_fine",
+        "link_scan_maximum_distance",
+        "loop_match_maximum_variance_coarse",
+        "loop_match_minimum_chain_size",
+        "loop_match_minimum_response_coarse",
+        "loop_match_minimum_response_fine",
+        "loop_search_maximum_distance",
+        "loop_search_space_dimension",
+        "loop_search_space_resolution",
+        "loop_search_space_smear_deviation",
+        "map_file_name",
+        "map_frame",
+        "map_name",
+        "map_start_at_dock",
+        "map_start_pose",
+        "map_update_interval",
+        "max_laser_range",
+        "min_pass_through",
+        "minimum_angle_penalty",
+        "minimum_distance_penalty",
+        "minimum_time_interval",
+        "minimum_travel_distance",
+        "minimum_travel_heading",
+        "mode",
+        "occupancy_threshold",
+        "odom_frame",
+        "paused_new_measurements",
+        "paused_processing",
+        "position_covariance_scale",
+        "qos_overrides./clock.subscription.depth",
+        "qos_overrides./clock.subscription.durability",
+        "qos_overrides./clock.subscription.history",
+        "qos_overrides./clock.subscription.reliability",
+        "qos_overrides./tf.publisher.depth",
+        "qos_overrides./tf.publisher.durability",
+        "qos_overrides./tf.publisher.history",
+        "qos_overrides./tf.publisher.reliability",
+        "resolution",
+        "restamp_tf",
+        "scan_buffer_maximum_scan_distance",
+        "scan_buffer_size",
+        "scan_queue_size",
+        "scan_topic",
+        "solver_plugin",
+        "stack_size_to_use",
+        "start_type_description_service",
+        "tf_buffer_duration",
+        "throttle_scans",
+        "transform_publish_period",
+        "transform_timeout",
+        "use_lifecycle_manager",
+        "use_map_saver",
+        "use_response_expansion",
+        "use_scan_barycenter",
+        "use_scan_matching",
+        "use_sim_time",
+        "yaw_covariance_scale"
+      ],
+      "values": {
+        "/bond_disable_heartbeat_timeout": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "angle_variance_penalty": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "base_frame": {
+          "type": 4,
+          "value": "base_link",
+          "set": true
+        },
+        "ceres_dogleg_type": {
+          "type": 4,
+          "value": "TRADITIONAL_DOGLEG",
+          "set": true
+        },
+        "ceres_linear_solver": {
+          "type": 4,
+          "value": "SPARSE_NORMAL_CHOLESKY",
+          "set": true
+        },
+        "ceres_loss_function": {
+          "type": 4,
+          "value": "None",
+          "set": true
+        },
+        "ceres_preconditioner": {
+          "type": 4,
+          "value": "SCHUR_JACOBI",
+          "set": true
+        },
+        "ceres_trust_strategy": {
+          "type": 4,
+          "value": "LEVENBERG_MARQUARDT",
+          "set": true
+        },
+        "check_min_dist_and_heading_precisely": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "coarse_angle_resolution": {
+          "type": 3,
+          "value": 0.0349,
+          "set": true
+        },
+        "coarse_search_angle_offset": {
+          "type": 3,
+          "value": 0.349,
+          "set": true
+        },
+        "correlation_search_space_dimension": {
+          "type": 3,
+          "value": 0.5,
+          "set": true
+        },
+        "correlation_search_space_resolution": {
+          "type": 3,
+          "value": 0.01,
+          "set": true
+        },
+        "correlation_search_space_smear_deviation": {
+          "type": 3,
+          "value": 0.01,
+          "set": true
+        },
+        "debug_logging": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "distance_variance_penalty": {
+          "type": 3,
+          "value": 0.05,
+          "set": true
+        },
+        "do_loop_closing": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "enable_interactive_mode": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "fine_search_angle_offset": {
+          "type": 3,
+          "value": 0.00349,
+          "set": true
+        },
+        "interactive_mode": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "link_match_minimum_response_fine": {
+          "type": 3,
+          "value": 0.1,
+          "set": true
+        },
+        "link_scan_maximum_distance": {
+          "type": 3,
+          "value": 1.5,
+          "set": true
+        },
+        "loop_match_maximum_variance_coarse": {
+          "type": 3,
+          "value": 3.0,
+          "set": true
+        },
+        "loop_match_minimum_chain_size": {
+          "type": 2,
+          "value": 10,
+          "set": true
+        },
+        "loop_match_minimum_response_coarse": {
+          "type": 3,
+          "value": 0.35,
+          "set": true
+        },
+        "loop_match_minimum_response_fine": {
+          "type": 3,
+          "value": 0.45,
+          "set": true
+        },
+        "loop_search_maximum_distance": {
+          "type": 3,
+          "value": 3.0,
+          "set": true
+        },
+        "loop_search_space_dimension": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "loop_search_space_resolution": {
+          "type": 3,
+          "value": 0.05,
+          "set": true
+        },
+        "loop_search_space_smear_deviation": {
+          "type": 3,
+          "value": 0.03,
+          "set": true
+        },
+        "map_file_name": {
+          "type": 4,
+          "value": "",
+          "set": true
+        },
+        "map_frame": {
+          "type": 4,
+          "value": "map",
+          "set": true
+        },
+        "map_name": {
+          "type": 4,
+          "value": "/map",
+          "set": true
+        },
+        "map_start_at_dock": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "map_start_pose": {
+          "type": 8,
+          "value": [],
+          "set": true
+        },
+        "map_update_interval": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "max_laser_range": {
+          "type": 3,
+          "value": 8.0,
+          "set": true
+        },
+        "min_pass_through": {
+          "type": 2,
+          "value": 2,
+          "set": true
+        },
+        "minimum_angle_penalty": {
+          "type": 3,
+          "value": 0.9,
+          "set": true
+        },
+        "minimum_distance_penalty": {
+          "type": 3,
+          "value": 0.5,
+          "set": true
+        },
+        "minimum_time_interval": {
+          "type": 3,
+          "value": 0.2,
+          "set": true
+        },
+        "minimum_travel_distance": {
+          "type": 3,
+          "value": 0.1,
+          "set": true
+        },
+        "minimum_travel_heading": {
+          "type": 3,
+          "value": 0.1,
+          "set": true
+        },
+        "mode": {
+          "type": 4,
+          "value": "mapping",
+          "set": true
+        },
+        "occupancy_threshold": {
+          "type": 3,
+          "value": 0.1,
+          "set": true
+        },
+        "odom_frame": {
+          "type": 4,
+          "value": "odom",
+          "set": true
+        },
+        "paused_new_measurements": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "paused_processing": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "position_covariance_scale": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "qos_overrides./clock.subscription.depth": {
+          "type": 2,
+          "value": 1,
+          "set": true
+        },
+        "qos_overrides./clock.subscription.durability": {
+          "type": 4,
+          "value": "volatile",
+          "set": true
+        },
+        "qos_overrides./clock.subscription.history": {
+          "type": 4,
+          "value": "keep_last",
+          "set": true
+        },
+        "qos_overrides./clock.subscription.reliability": {
+          "type": 4,
+          "value": "best_effort",
+          "set": true
+        },
+        "qos_overrides./tf.publisher.depth": {
+          "type": 2,
+          "value": 100,
+          "set": true
+        },
+        "qos_overrides./tf.publisher.durability": {
+          "type": 4,
+          "value": "volatile",
+          "set": true
+        },
+        "qos_overrides./tf.publisher.history": {
+          "type": 4,
+          "value": "keep_last",
+          "set": true
+        },
+        "qos_overrides./tf.publisher.reliability": {
+          "type": 4,
+          "value": "reliable",
+          "set": true
+        },
+        "resolution": {
+          "type": 3,
+          "value": 0.05,
+          "set": true
+        },
+        "restamp_tf": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "scan_buffer_maximum_scan_distance": {
+          "type": 3,
+          "value": 10.0,
+          "set": true
+        },
+        "scan_buffer_size": {
+          "type": 2,
+          "value": 10,
+          "set": true
+        },
+        "scan_queue_size": {
+          "type": 2,
+          "value": 1,
+          "set": true
+        },
+        "scan_topic": {
+          "type": 4,
+          "value": "/scan",
+          "set": true
+        },
+        "solver_plugin": {
+          "type": 4,
+          "value": "solver_plugins::CeresSolver",
+          "set": true
+        },
+        "stack_size_to_use": {
+          "type": 2,
+          "value": 40000000,
+          "set": true
+        },
+        "start_type_description_service": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "tf_buffer_duration": {
+          "type": 3,
+          "value": 30.0,
+          "set": true
+        },
+        "throttle_scans": {
+          "type": 2,
+          "value": 1,
+          "set": true
+        },
+        "transform_publish_period": {
+          "type": 3,
+          "value": 0.02,
+          "set": true
+        },
+        "transform_timeout": {
+          "type": 3,
+          "value": 0.2,
+          "set": true
+        },
+        "use_lifecycle_manager": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "use_map_saver": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "use_response_expansion": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "use_scan_barycenter": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "use_scan_matching": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "use_sim_time": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "yaw_covariance_scale": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        }
+      },
+      "list_sent_wall_s": 4.145191010000019,
+      "list_sent_ros_ns": 0,
+      "listed_prefixes": [
+        "qos_overrides./clock.subscription",
+        "qos_overrides./tf.publisher"
+      ],
+      "list_completed_wall_s": 4.146452704000012,
+      "get_sent_wall_s": 4.146452704000012,
+      "get_sent_ros_ns": 0,
+      "get_completed_wall_s": 4.147465622000027,
+      "get_completed_ros_ns": 0
+    },
+    "limo_maze_mission": {
+      "status": "received",
+      "list_service": "/limo_maze_mission/list_parameters",
+      "get_service": "/limo_maze_mission/get_parameters",
+      "listed_names": [
+        "autonomous",
+        "base_frame",
+        "camera_heading_offset_rad",
+        "cancel_timeout_s",
+        "coverage_max_range_m",
+        "detector_timeout_s",
+        "frame_processing_source",
+        "frame_processing_topic",
+        "frontier_min_translation_m",
+        "frontier_standoff_m",
+        "goal_arrival_margin_m",
+        "goal_timeout_s",
+        "home_position_tolerance_m",
+        "home_stable_s",
+        "home_yaw_tolerance_rad",
+        "initial_clearance_margin_m",
+        "initial_clearance_radius_m",
+        "initial_clearance_source",
+        "inspection_angular_stop_rad_s",
+        "inspection_linear_stop_m_s",
+        "inspection_min_span_s",
+        "inspection_odom_max_age_s",
+        "inspection_odom_topic",
+        "inspection_required_frames",
+        "inspection_settle_s",
+        "inspection_timeout_s",
+        "inspection_yaw_tolerance_rad",
+        "localization_jump_m",
+        "localization_jump_rad",
+        "map_frame",
+        "map_max_age_s",
+        "map_topic",
+        "max_goal_attempts",
+        "mission_timeout_s",
+        "navigation_action",
+        "observation_dwell_s",
+        "observation_max_age_s",
+        "observation_topic",
+        "odom_frame",
+        "output_dir",
+        "require_processed_inspection",
+        "return_timeout_s",
+        "robot_radius_m",
+        "start_type_description_service",
+        "startup_wait_s",
+        "target_confirmation_window_s",
+        "target_definition_verified",
+        "target_merge_radius_m",
+        "target_min_confidence",
+        "target_min_hits",
+        "tf_max_age_s",
+        "use_sim_time"
+      ],
+      "values": {
+        "autonomous": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "base_frame": {
+          "type": 4,
+          "value": "base_link",
+          "set": true
+        },
+        "camera_heading_offset_rad": {
+          "type": 3,
+          "value": 0.0,
+          "set": true
+        },
+        "cancel_timeout_s": {
+          "type": 3,
+          "value": 10.0,
+          "set": true
+        },
+        "coverage_max_range_m": {
+          "type": 3,
+          "value": 3.0,
+          "set": true
+        },
+        "detector_timeout_s": {
+          "type": 3,
+          "value": 5.0,
+          "set": true
+        },
+        "frame_processing_source": {
+          "type": 4,
+          "value": "red_rgbd_sim_baseline",
+          "set": true
+        },
+        "frame_processing_topic": {
+          "type": 4,
+          "value": "/mission/frame_processing",
+          "set": true
+        },
+        "frontier_min_translation_m": {
+          "type": 3,
+          "value": 0.2,
+          "set": true
+        },
+        "frontier_standoff_m": {
+          "type": 3,
+          "value": 0.55,
+          "set": true
+        },
+        "goal_arrival_margin_m": {
+          "type": 3,
+          "value": 0.05,
+          "set": true
+        },
+        "goal_timeout_s": {
+          "type": 3,
+          "value": 120.0,
+          "set": true
+        },
+        "home_position_tolerance_m": {
+          "type": 3,
+          "value": 0.15,
+          "set": true
+        },
+        "home_stable_s": {
+          "type": 3,
+          "value": 2.0,
+          "set": true
+        },
+        "home_yaw_tolerance_rad": {
+          "type": 3,
+          "value": 0.26,
+          "set": true
+        },
+        "initial_clearance_margin_m": {
+          "type": 3,
+          "value": 0.05,
+          "set": true
+        },
+        "initial_clearance_radius_m": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "initial_clearance_source": {
+          "type": 4,
+          "value": "smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+          "set": true
+        },
+        "inspection_angular_stop_rad_s": {
+          "type": 3,
+          "value": 0.02,
+          "set": true
+        },
+        "inspection_linear_stop_m_s": {
+          "type": 3,
+          "value": 0.005,
+          "set": true
+        },
+        "inspection_min_span_s": {
+          "type": 3,
+          "value": 0.2,
+          "set": true
+        },
+        "inspection_odom_max_age_s": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "inspection_odom_topic": {
+          "type": 4,
+          "value": "/odom",
+          "set": true
+        },
+        "inspection_required_frames": {
+          "type": 2,
+          "value": 3,
+          "set": true
+        },
+        "inspection_settle_s": {
+          "type": 3,
+          "value": 0.5,
+          "set": true
+        },
+        "inspection_timeout_s": {
+          "type": 3,
+          "value": 12.0,
+          "set": true
+        },
+        "inspection_yaw_tolerance_rad": {
+          "type": 3,
+          "value": 0.26,
+          "set": true
+        },
+        "localization_jump_m": {
+          "type": 3,
+          "value": 0.75,
+          "set": true
+        },
+        "localization_jump_rad": {
+          "type": 3,
+          "value": 0.7,
+          "set": true
+        },
+        "map_frame": {
+          "type": 4,
+          "value": "map",
+          "set": true
+        },
+        "map_max_age_s": {
+          "type": 3,
+          "value": 5.0,
+          "set": true
+        },
+        "map_topic": {
+          "type": 4,
+          "value": "/map",
+          "set": true
+        },
+        "max_goal_attempts": {
+          "type": 2,
+          "value": 2,
+          "set": true
+        },
+        "mission_timeout_s": {
+          "type": 3,
+          "value": 900.0,
+          "set": true
+        },
+        "navigation_action": {
+          "type": 4,
+          "value": "navigate_to_pose",
+          "set": true
+        },
+        "observation_dwell_s": {
+          "type": 3,
+          "value": 3.0,
+          "set": true
+        },
+        "observation_max_age_s": {
+          "type": 3,
+          "value": 1.5,
+          "set": true
+        },
+        "observation_topic": {
+          "type": 4,
+          "value": "/mission/target_observations",
+          "set": true
+        },
+        "odom_frame": {
+          "type": 4,
+          "value": "odom",
+          "set": true
+        },
+        "output_dir": {
+          "type": 4,
+          "value": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/mission",
+          "set": true
+        },
+        "require_processed_inspection": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "return_timeout_s": {
+          "type": 3,
+          "value": 240.0,
+          "set": true
+        },
+        "robot_radius_m": {
+          "type": 3,
+          "value": 0.25,
+          "set": true
+        },
+        "start_type_description_service": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "startup_wait_s": {
+          "type": 3,
+          "value": 60.0,
+          "set": true
+        },
+        "target_confirmation_window_s": {
+          "type": 3,
+          "value": 3.0,
+          "set": true
+        },
+        "target_definition_verified": {
+          "type": 1,
+          "value": false,
+          "set": true
+        },
+        "target_merge_radius_m": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "target_min_confidence": {
+          "type": 3,
+          "value": 0.7,
+          "set": true
+        },
+        "target_min_hits": {
+          "type": 2,
+          "value": 3,
+          "set": true
+        },
+        "tf_max_age_s": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "use_sim_time": {
+          "type": 1,
+          "value": true,
+          "set": true
+        }
+      },
+      "list_sent_wall_s": 5.425719378000053,
+      "list_sent_ros_ns": 99867000000,
+      "listed_prefixes": [],
+      "list_completed_wall_s": 5.719347109000012,
+      "get_sent_wall_s": 5.719347109000012,
+      "get_sent_ros_ns": 99946000000,
+      "get_completed_wall_s": 5.72199877700001,
+      "get_completed_ros_ns": 99948000000
+    },
+    "red_rgbd_sim_baseline": {
+      "status": "received",
+      "list_service": "/red_rgbd_sim_baseline/list_parameters",
+      "get_service": "/red_rgbd_sim_baseline/get_parameters",
+      "listed_names": [
+        "camera_info_max_age_seconds",
+        "camera_info_topic",
+        "color_topic",
+        "depth_registered_to_color",
+        "depth_topic",
+        "enabled",
+        "frame_processing_topic",
+        "max_depth_m",
+        "min_area_pixels",
+        "min_depth_m",
+        "min_depth_pixels",
+        "output_topic",
+        "publish_frame_processing",
+        "start_type_description_service",
+        "sync_slop_seconds",
+        "use_sim_time"
+      ],
+      "values": {
+        "camera_info_max_age_seconds": {
+          "type": 3,
+          "value": 2.0,
+          "set": true
+        },
+        "camera_info_topic": {
+          "type": 4,
+          "value": "/camera/color/camera_info",
+          "set": true
+        },
+        "color_topic": {
+          "type": 4,
+          "value": "/camera/color/image_raw",
+          "set": true
+        },
+        "depth_registered_to_color": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "depth_topic": {
+          "type": 4,
+          "value": "/camera/depth/image_raw",
+          "set": true
+        },
+        "enabled": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "frame_processing_topic": {
+          "type": 4,
+          "value": "/mission/frame_processing",
+          "set": true
+        },
+        "max_depth_m": {
+          "type": 3,
+          "value": 6.0,
+          "set": true
+        },
+        "min_area_pixels": {
+          "type": 2,
+          "value": 30,
+          "set": true
+        },
+        "min_depth_m": {
+          "type": 3,
+          "value": 0.15,
+          "set": true
+        },
+        "min_depth_pixels": {
+          "type": 2,
+          "value": 8,
+          "set": true
+        },
+        "output_topic": {
+          "type": 4,
+          "value": "/mission/target_observations",
+          "set": true
+        },
+        "publish_frame_processing": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "start_type_description_service": {
+          "type": 1,
+          "value": true,
+          "set": true
+        },
+        "sync_slop_seconds": {
+          "type": 3,
+          "value": 0.05,
+          "set": true
+        },
+        "use_sim_time": {
+          "type": 1,
+          "value": true,
+          "set": true
+        }
+      },
+      "list_sent_wall_s": 5.37274095500004,
+      "list_sent_ros_ns": 99814000000,
+      "listed_prefixes": [],
+      "list_completed_wall_s": 5.375879517000044,
+      "get_sent_wall_s": 5.375879517000044,
+      "get_sent_ros_ns": 99816000000,
+      "get_completed_wall_s": 5.378316782000013,
+      "get_completed_ros_ns": 99819000000
+    }
+  },
+  "snapshot": null,
+  "exports": {},
+  "errors": [],
+  "script_sha256": "6eef63ecfe0c07f9acda8a7a481ea5896cd4442e60fe2508fde44d9db4c72505",
+  "limitations": [
+    "Parameter List and Get requests, node receipts, map, TF and status are not an atomic transaction.",
+    "No motion goals, velocity commands, parameter updates, map edits or reset requests are sent.",
+    "Save services write new files; their result does not prove map accuracy or mission completion.",
+    "A timed-out save request may still write later; removing the client Future does not cancel the server operation.",
+    "Map snapshot and SLAM service exports may represent different map updates.",
+    "The wall budget bounds waiting; local file serialization and cleanup add bounded data-processing overhead."
+  ],
+  "graph_nodes_at_capture": [
+    "/behavior_server",
+    "/bt_navigator",
+    "/bt_navigator_navigate_through_poses_rclcpp_node",
+    "/bt_navigator_navigate_to_pose_rclcpp_node",
+    "/collision_monitor",
+    "/controller_server",
+    "/global_costmap/global_costmap",
+    "/launch_ros_1140",
+    "/lifecycle_manager_navigation",
+    "/limo_map_session",
+    "/limo_maze_mission",
+    "/limo_sim_bridge",
+    "/limo_sim_mission_observer",
+    "/limo_sim_state_publisher",
+    "/local_costmap/local_costmap",
+    "/planner_server",
+    "/red_rgbd_sim_baseline",
+    "/rosbag2_recorder",
+    "/run20_read_only_evidence_saver",
+    "/slam_toolbox",
+    "/smoother_server",
+    "/transform_listener_impl_5877f00e6510",
+    "/transform_listener_impl_5ae02e994bc0",
+    "/transform_listener_impl_5d343fec7f10",
+    "/velocity_smoother"
+  ],
+  "elapsed_wall_s": 5.751299757000027,
+  "budget_exceeded": false
+}

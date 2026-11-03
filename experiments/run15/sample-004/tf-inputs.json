@@ -1,0 +1,200 @@
+{
+  "static": [
+    {
+      "stamp_ns": 0,
+      "parent": "base_footprint",
+      "child": "base_link",
+      "translation": [
+        0.0,
+        0.0,
+        0.15
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "stamp_ns": 0,
+      "parent": "base_link",
+      "child": "camera_link",
+      "translation": [
+        0.084,
+        0.0,
+        0.03
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "stamp_ns": 0,
+      "parent": "camera_link",
+      "child": "camera_optical_frame",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_xyzw": [
+        0.5,
+        -0.4999999999999999,
+        0.5,
+        -0.5000000000000001
+      ]
+    },
+    {
+      "stamp_ns": 0,
+      "parent": "base_link",
+      "child": "imu_link",
+      "translation": [
+        0.0,
+        0.0,
+        -0.1
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "stamp_ns": 0,
+      "parent": "base_link",
+      "child": "laser_link",
+      "translation": [
+        0.103,
+        0.0,
+        -0.034
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    }
+  ],
+  "dynamic_brackets": [
+    {
+      "stamp_ns": 602325000000,
+      "parent": "map",
+      "child": "odom",
+      "translation": [
+        0.013321984058251694,
+        -0.009311955969436268,
+        -0.15000000000000002
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.0,
+        -0.013959546579895036,
+        0.9999025607824413
+      ]
+    },
+    {
+      "stamp_ns": 602450000000,
+      "parent": "map",
+      "child": "odom",
+      "translation": [
+        0.013321984058251694,
+        -0.009311955969436268,
+        -0.15000000000000002
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.0,
+        -0.013959546579895036,
+        0.9999025607824413
+      ]
+    },
+    {
+      "stamp_ns": 602400000000,
+      "parent": "odom",
+      "child": "base_footprint",
+      "translation": [
+        1.6058919504520903,
+        -1.182911390164552,
+        0.0
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.0,
+        -0.9961319287371483,
+        0.08787024838026226
+      ]
+    },
+    {
+      "stamp_ns": 602400000000,
+      "parent": "base_link",
+      "child": "front_left_wheel_link",
+      "translation": [
+        0.1,
+        0.065,
+        -0.1
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.17979671329818894,
+        0.0,
+        0.9837037876755224
+      ]
+    },
+    {
+      "stamp_ns": 602400000000,
+      "parent": "base_link",
+      "child": "front_right_wheel_link",
+      "translation": [
+        0.1,
+        -0.065,
+        -0.1
+      ],
+      "rotation_xyzw": [
+        0.9999997821530341,
+        4.04176992579787e-20,
+        0.0006600711206875171,
+        6.123232661808819e-17
+      ]
+    },
+    {
+      "stamp_ns": 602400000000,
+      "parent": "base_link",
+      "child": "rear_left_wheel_link",
+      "translation": [
+        -0.1,
+        0.065,
+        -0.1
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.1797967133000447,
+        0.0,
+        0.9837037876751831
+      ]
+    },
+    {
+      "stamp_ns": 602400000000,
+      "parent": "base_link",
+      "child": "rear_right_wheel_link",
+      "translation": [
+        -0.1,
+        -0.065,
+        -0.1
+      ],
+      "rotation_xyzw": [
+        0.999999782153022,
+        4.041770037309348e-20,
+        0.0006600711388987235,
+        6.123232661808745e-17
+      ]
+    }
+  ],
+  "static_conflicts": {},
+  "dynamic_bracket_conflicts": {}
+}

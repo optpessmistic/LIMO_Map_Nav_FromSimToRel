@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eo pipefail
+LIMO_CHECKOUT=/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+LIMO_RUNTIME=/mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+cd "$LIMO_CHECKOUT"
+source /opt/ros/jazzy/setup.bash
+source "$LIMO_RUNTIME/install/local_setup.bash"
+source "$LIMO_CHECKOUT/install/local_setup.bash"
+export ROS_DOMAIN_ID=73 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST GZ_PARTITION=limo_maze_jazzy
+cmp src/limo_sim_bringup/launch/sim.launch.py install/limo_sim_bringup/share/limo_sim_bringup/launch/sim.launch.py
+cmp src/limo_sim_bringup/scripts/spawn_once.py install/limo_sim_bringup/lib/limo_sim_bringup/spawn_once.py
+ros2 launch limo_sim_bringup sim.launch.py --show-args > outputs/setup/run19-launch-arguments.txt
+exec /usr/bin/python3 outputs/setup/run19-sensors.py

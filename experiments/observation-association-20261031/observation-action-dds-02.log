@@ -1,0 +1,33 @@
+test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return (test_observation_ros.ObservationActionDDSTests.test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return) ... [INFO] [1793445523.180140869] [limo_maze_mission]: Mission loaded; autonomous=True
+[INFO] [1793445523.860834978] [limo_maze_mission]: home_recorded {"pose": [1.55, 1.55, 0.0], "map_epoch": "observation-action-dds-epoch"}
+[INFO] [1793445523.879489636] [limo_maze_mission]: observation_queue_frozen {"queue": {"epoch": "observation-action-dds-epoch", "invalidated": false, "invalid_reason": null, "active_action_id": null, "active_dispatch_id": null, "cancel_required": false, "planned_stations": 1, "planned_views": 2, "dispatches": 0, "dispatch_budget": 2, "pending_views": 2, "state_counts": {"pending": 2}, "all_planned_actions_completed": false, "visual_coverage_claimed": false, "mission_success_claimed": false, "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."}}
+[INFO] [1793445524.010632174] [limo_maze_mission]: goal_sent {"token": 1, "goal": {"x": 1.5500000230967999, "y": 1.5500000230967999, "yaw": 0.0, "kind": "observation_queue", "anchor": [1.5500000230967999, 1.5500000230967999]}}
+[INFO] [1793445526.889759301] [limo_maze_mission]: cancel_requested {"next_phase": "returning", "reason": "bounded_observation_wall_timeout"}
+[INFO] [1793445527.274714237] [limo_maze_mission]: goal_terminal {"token": 1, "success": false, "detail": "5:"}
+[INFO] [1793445527.289389573] [limo_maze_mission]: observation_action_finished {"record": {"epoch": "observation-action-dds-epoch", "action_id": "observation-0001", "dispatch_id": 1, "station_id": 0, "heading_index": 0, "goal": {"x": 1.5500000230967999, "y": 1.5500000230967999, "yaw": 0.0, "kind": "observation_queue", "anchor": [1.5500000230967999, 1.5500000230967999]}, "nav_token": 1, "nav_goal_uuid": [108, 83, 184, 150, 83, 136, 66, 12, 163, 47, 249, 191, 89, 244, 216, 94], "inspection_request_id": "goal-1", "nav_terminal_status": 5, "selected_wall": 262.582495239, "dispatched_wall": 262.584278712, "outcome": "canceled", "reason": "bounded_observation_wall_timeout", "finished_wall": 265.911139168, "inspection": null}}
+[INFO] [1793445527.406470222] [limo_maze_mission]: goal_sent {"token": 2, "goal": {"x": 1.55, "y": 1.55, "yaw": 0.0, "kind": "home", "anchor": [1.55, 1.55]}}
+[INFO] [1793445527.616121384] [limo_maze_mission]: goal_terminal {"token": 2, "success": true, "detail": "4:"}
+[INFO] [1793445530.319649263] [limo_maze_mission]: Saved mission evidence: /tmp/limo-inspection-dds-ekrj76zz/mission_20261031_041850.json
+ok
+test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return (test_observation_ros.ObservationActionDDSTests.test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return) ... [INFO] [1793445530.964107604] [limo_maze_mission]: Mission loaded; autonomous=True
+[INFO] [1793445531.640624134] [limo_maze_mission]: home_recorded {"pose": [1.55, 1.55, 0.0], "map_epoch": "observation-action-dds-epoch"}
+[INFO] [1793445531.667831857] [limo_maze_mission]: observation_queue_frozen {"queue": {"epoch": "observation-action-dds-epoch", "invalidated": false, "invalid_reason": null, "active_action_id": null, "active_dispatch_id": null, "cancel_required": false, "planned_stations": 1, "planned_views": 2, "dispatches": 0, "dispatch_budget": 2, "pending_views": 2, "state_counts": {"pending": 2}, "all_planned_actions_completed": false, "visual_coverage_claimed": false, "mission_success_claimed": false, "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."}}
+[INFO] [1793445531.747322698] [limo_maze_mission]: goal_sent {"token": 1, "goal": {"x": 1.5500000230967999, "y": 1.5500000230967999, "yaw": 0.0, "kind": "observation_queue", "anchor": [1.5500000230967999, 1.5500000230967999]}}
+[INFO] [1793445532.001182968] [limo_maze_mission]: goal_terminal {"token": 1, "success": true, "detail": "4:"}
+[INFO] [1793445532.053815094] [limo_maze_mission]: inspection_settling {"token": 1, "timeout_s": 8.0, "evidence": {"request_id": "goal-1", "status": "waiting", "reason": null, "map_epoch": "observation-action-dds-epoch", "ready": true, "after_stamp_ns": 10500000000, "deadline_wall": 278.553687288, "expected_pose": [1.5500000230967999, 1.5500000230967999, 0.0], "required_frames": 3, "min_span_ns": 200000000, "accepted_frames": 0, "first_rgb_stamp_ns": null, "last_rgb_stamp_ns": null, "first_depth_stamp_ns": null, "last_depth_stamp_ns": null, "producer_identity": null, "reset_count": 0, "rejection_counts": {}, "last_evidence": null, "visual_coverage_claimed": false, "goal_token": 1, "sampling_after_stamp_ns": null, "conditions": null}}
+[INFO] [1793445534.012614865] [limo_maze_mission]: inspection_started {"token": 1}
+[INFO] [1793445534.067871441] [limo_maze_mission]: inspection_window_reset {"reason": "stationary_odometry_unavailable"}
+FAIL
+
+======================================================================
+FAIL: test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return (test_observation_ros.ObservationActionDDSTests.test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_observation_ros.py", line 270, in test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return
+    self.assertEqual(ledger.accepted_frames, ordinal+1)
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 2 tests in 22.230s
+
+FAILED (failures=1)

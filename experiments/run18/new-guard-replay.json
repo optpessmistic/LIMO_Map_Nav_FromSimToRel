@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-10-31T09:37:11.007658+00:00",
+  "evidence_scope": "Every saved odom.ndjson row in original file order; not a replay of all original bag records or live runtime checks.",
+  "source": "outputs/ros_smoke/run18-arrival-margin/odom-audit/odom.ndjson",
+  "source_sha256_before": "7ac9843011f438bfbb9472de3bcc33e6fad4dc006dd2ec8357c296514b92aa70",
+  "source_sha256_after": "7ac9843011f438bfbb9472de3bcc33e6fad4dc006dd2ec8357c296514b92aa70",
+  "historical_source_unchanged": true,
+  "helper": "scripts/odom_integrity.py",
+  "helper_sha256": "3fc14dd8aab56f4024d2b356031483db867dc6762c9f37648128f568c6e9a78d",
+  "source_rows": 690,
+  "source_unique_integer_stamps": 345,
+  "source_stamp_multiplicity_histogram": {
+    "2": 345
+  },
+  "source_frame_pairs": [
+    {
+      "parent": "odom",
+      "child": "base_footprint",
+      "messages": 690
+    }
+  ],
+  "receipt_time_regressions": 0,
+  "odom_integrity": {
+    "passed": false,
+    "errors": [
+      "odom: 345 messages with different pose at the same integer timestamp",
+      "odom: 345 messages with different twist at the same integer timestamp"
+    ],
+    "counts": {
+      "messages": 690,
+      "duplicate_messages": 345,
+      "identical_duplicate_messages": 0,
+      "conflicting_duplicate_messages": 345,
+      "pose_conflict_messages": 345,
+      "twist_conflict_messages": 345,
+      "backward_messages": 0,
+      "nonfinite_messages": 0,
+      "nonfinite_components": 0,
+      "invalid_stamp_messages": 0,
+      "invalid_payload_messages": 0
+    },
+    "unique_stamps": 345,
+    "valid_unique_stamps": 345,
+    "repeated_stamps": 345,
+    "conflicting_stamps": 345,
+    "first_received_stamp_ns": 6810000000,
+    "last_received_stamp_ns": 10250000000,
+    "minimum_valid_stamp_ns": 6810000000,
+    "maximum_valid_stamp_ns": 10250000000,
+    "valid_span_ns": 3440000000,
+    "valid_span_seconds": 3.44,
+    "minimum_unique_stamps": 50,
+    "minimum_span_ns": 1000000000,
+    "observation_sufficient": true,
+    "same_stamp_comparison": "exact numeric equality of all 7 pose and 6 twist components; first value retained",
+    "maximum_same_stamp_deltas": {
+      "position_delta_m": 1.3404297553892606e-07,
+      "quaternion_component_delta": 1.0456749702723635e-10,
+      "linear_twist_delta_m_s": 2.645992299361832e-12,
+      "angular_twist_delta_rad_s": 3.0880501025672067e-11
+    },
+    "delta_overflow": false,
+    "diagnostic_examples": [
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6810000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.3404215482907252e-07,
+          "quaternion_component_delta": 9.968297006226479e-11,
+          "linear_twist_delta_m_s": 2.645992299361832e-12,
+          "angular_twist_delta_rad_s": 3.0880501025672067e-11
+        },
+        "delta_overflow": false
+      },
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6820000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.340421808507634e-07,
+          "quaternion_component_delta": 9.98349100121606e-11,
+          "linear_twist_delta_m_s": 2.6021690887558345e-12,
+          "angular_twist_delta_rad_s": 3.038798997869087e-11
+        },
+        "delta_overflow": false
+      },
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6830000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.3404220643078686e-07,
+          "quaternion_component_delta": 9.998437871191225e-11,
+          "linear_twist_delta_m_s": 2.558002347394466e-12,
+          "angular_twist_delta_rad_s": 2.9893739950377745e-11
+        },
+        "delta_overflow": false
+      },
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6840000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.3404223160572355e-07,
+          "quaternion_component_delta": 1.0013141658329684e-10,
+          "linear_twist_delta_m_s": 2.51749367332577e-12,
+          "angular_twist_delta_rad_s": 2.940757427677475e-11
+        },
+        "delta_overflow": false
+      },
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6850000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.3404225635720592e-07,
+          "quaternion_component_delta": 1.0027605072327388e-10,
+          "linear_twist_delta_m_s": 2.4751482367659663e-12,
+          "angular_twist_delta_rad_s": 2.892682799559741e-11
+        },
+        "delta_overflow": false
+      },
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6860000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.3404228067829209e-07,
+          "quaternion_component_delta": 1.0041817116770178e-10,
+          "linear_twist_delta_m_s": 2.432108616670346e-12,
+          "angular_twist_delta_rad_s": 2.8424088885865482e-11
+        },
+        "delta_overflow": false
+      },
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6870000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.340423045688926e-07,
+          "quaternion_component_delta": 1.0055786963694271e-10,
+          "linear_twist_delta_m_s": 2.3890600544214318e-12,
+          "angular_twist_delta_rad_s": 2.793969384766647e-11
+        },
+        "delta_overflow": false
+      },
+      {
+        "kind": "conflicting_duplicate",
+        "stamp_ns": 6880000000,
+        "changed_fields": [
+          "x",
+          "y",
+          "qz",
+          "vx",
+          "wz"
+        ],
+        "deltas": {
+          "position_delta_m": 1.3404232804084173e-07,
+          "quaternion_component_delta": 1.0069520457191575e-10,
+          "linear_twist_delta_m_s": 2.34719491631384e-12,
+          "angular_twist_delta_rad_s": 2.746698699441871e-11
+        },
+        "delta_overflow": false
+      }
+    ],
+    "limits": "Received prefix only; identical duplicates do not advance observation. No whole-run, lossless-delivery, physical-motion or publisher-provenance claim."
+  },
+  "all_repeated_stamps_conflict": true,
+  "new_odom_guard_would_pass": false,
+  "live_runtime_checks_not_replayed": [
+    "/clock observation",
+    "ROS publisher cardinality",
+    "TF availability",
+    "other sensor validity"
+  ],
+  "ros_nodes_started": false
+}

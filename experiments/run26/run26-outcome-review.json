@@ -1,0 +1,2655 @@
+{
+  "schema_version": 1,
+  "role": "offline_run26_outcome_summary",
+  "run": "run26-tf-tolerance",
+  "runtime_head": "b23c983d724a1c45a92350436991589cad541bd6",
+  "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+  "previous_attempt": {
+    "run": "run25-tf-tolerance",
+    "status": "orchestration_failed",
+    "errors": [
+      "RuntimeError: Recorder exited before the survey",
+      "Retention closure audit: IndexError: list index out of range"
+    ]
+  },
+  "startup_context": "Run25 failed at recorder construction because its epoch contained CRLF, before motion; it did not evaluate the TF tolerance change. Run26 uses a fresh ASCII/LF UUID epoch and byte validation.",
+  "validation_provenance": {
+    "source_run": "run25-tf-tolerance",
+    "rebuilt_for_run26": false,
+    "code_head": "b23c983d724a1c45a92350436991589cad541bd6",
+    "scope": "Original run25 test/build/launch/CI receipts are preserved by the archive for the same code revision; no run26 rebuild or test execution is claimed."
+  },
+  "mission": {
+    "status": "blocked",
+    "reason": "frame_retention_failed",
+    "mission_success": false,
+    "returned_pose_verified": false,
+    "map_complete": false,
+    "visual_coverage_complete": false,
+    "mission_timed_out": false,
+    "target_definition_verified": false,
+    "coordinates_valid": true
+  },
+  "mission_evidence_source": "supervisor_terminal",
+  "mission_shutdown": {},
+  "supervisor_terminal_recorded": true,
+  "tf_diagnostics": {
+    "base_tf_age_rejected_event_count": 0,
+    "base_tf_age_rejected_events": [],
+    "navigation_extrapolation": {
+      "available": true,
+      "match_rule": "case-insensitive substring extrapolat; one count per matching log line",
+      "matched_line_count": 0,
+      "future_line_count": 0,
+      "past_line_count": 0,
+      "neither_future_nor_past_line_count": 0,
+      "examples_first_20": [],
+      "scope": "Log-line counts, not unique incidents or controller ticks; full original log archived. Missing lines or logs are not proof of no TF errors."
+    },
+    "scope": "Node logs only its first attempted age-rejection diagnostic; counts do not measure all rejected lookups and logger failure may omit an event. Decision now/age and event-emission stamp are distinct."
+  },
+  "navigation": {
+    "by_kind": {
+      "frontier": {
+        "sent": 6,
+        "terminal_success": 6,
+        "terminal_failure": 0,
+        "without_recorded_terminal": 0
+      }
+    },
+    "dispatches": [
+      {
+        "stamp": 117.125,
+        "event": "goal_sent",
+        "token": 1,
+        "goal": {
+          "x": 0.23159041886293708,
+          "y": 0.03421224120358213,
+          "yaw": -2.9441970937399127,
+          "kind": "frontier",
+          "anchor": [
+            -0.018409584862353223,
+            -0.015787759541475932
+          ]
+        },
+        "terminal": {
+          "stamp": 129.025,
+          "event": "goal_terminal",
+          "token": 1,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 133.125,
+        "event": "goal_sent",
+        "token": 2,
+        "goal": {
+          "x": 1.18159043301904,
+          "y": 0.016050083255589098,
+          "yaw": -1.3521273809209546,
+          "kind": "frontier",
+          "anchor": [
+            1.2815904345091562,
+            -0.43394992344993344
+          ]
+        },
+        "terminal": {
+          "stamp": 153.948,
+          "event": "goal_terminal",
+          "token": 2,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 157.9,
+        "event": "goal_sent",
+        "token": 3,
+        "goal": {
+          "x": 1.5815904389795046,
+          "y": -0.1702179912904236,
+          "yaw": -2.432966381462123,
+          "kind": "frontier",
+          "anchor": [
+            1.2315904337640982,
+            -0.47021799576077195
+          ]
+        },
+        "terminal": {
+          "stamp": 170.2,
+          "event": "goal_terminal",
+          "token": 3,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 174.3,
+        "event": "goal_sent",
+        "token": 4,
+        "goal": {
+          "x": 1.5815904389795046,
+          "y": -1.270218007681701,
+          "yaw": 3.141592653589793,
+          "kind": "frontier",
+          "anchor": [
+            1.18159043301904,
+            -1.270218007681701
+          ]
+        },
+        "terminal": {
+          "stamp": 189.7,
+          "event": "goal_terminal",
+          "token": 4,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 193.8,
+        "event": "goal_sent",
+        "token": 5,
+        "goal": {
+          "x": 2.3065430450758537,
+          "y": -1.633431013031979,
+          "yaw": 0.8519663271732721,
+          "kind": "frontier",
+          "anchor": [
+            2.65654305029126,
+            -1.2334310070715144
+          ]
+        },
+        "terminal": {
+          "stamp": 209.475,
+          "event": "goal_terminal",
+          "token": 5,
+          "success": true,
+          "detail": "4:"
+        }
+      },
+      {
+        "stamp": 212.533,
+        "event": "goal_sent",
+        "token": 6,
+        "goal": {
+          "x": 0.9510919457771763,
+          "y": -1.590316433478749,
+          "yaw": 2.289626326416521,
+          "kind": "frontier",
+          "anchor": [
+            0.6010919405617698,
+            -1.1903164275182845
+          ]
+        },
+        "terminal": {
+          "stamp": 232.067,
+          "event": "goal_terminal",
+          "token": 6,
+          "success": true,
+          "detail": "4:"
+        }
+      }
+    ],
+    "cancel_events": [
+      {
+        "stamp": 235.038,
+        "event": "cancel_requested",
+        "next_phase": "blocked",
+        "reason": "frame_retention_failed"
+      }
+    ],
+    "note": "Terminal failure includes cancellation; timeout classification uses explicit recorded reasons only."
+  },
+  "inspection": {
+    "completed": [
+      {
+        "stamp": 133.125,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-1",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "ready": true,
+          "after_stamp_ns": 129781000000,
+          "deadline_wall": 404.892273382,
+          "expected_pose": [
+            0.23159041886293708,
+            0.03421224120358213,
+            -2.9441970937399127
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 129800000000,
+          "last_rgb_stamp_ns": 130100000000,
+          "first_depth_stamp_ns": 129800000000,
+          "last_depth_stamp_ns": 130100000000,
+          "producer_identity": [
+            "79b52434-72b4-4ee7-811b-69437523dfcd",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {},
+          "last_evidence": {
+            "rgb_stamp_ns": 130100000000,
+            "depth_stamp_ns": 130100000000,
+            "processed_stamp_ns": 130125000000,
+            "sequence": 744,
+            "rgb_sha256": "26a37700f1768db35fb04dc2d0a26f120798b673e55970d6fd1506292849f7a6",
+            "depth_sha256": "987734e4b7e168c66ae258f9d641b7e6be8702abf53153ab899489fff41d1bbc",
+            "base_pose": [
+              0.21384630334683224,
+              0.014420113593373914,
+              -3.0901625881243904
+            ],
+            "camera_pose": [
+              0.12995737103056618,
+              0.010101892334923476,
+              0.029999999999999916,
+              -0.4869785940023611,
+              -0.5126907927625417,
+              0.5126907927625418,
+              0.4869785940023612
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 1,
+          "sampling_after_stamp_ns": 129781000000,
+          "conditions": {
+            "stamp_ns": 133125000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              0.21384630334683224,
+              0.014420113593373914,
+              -3.0901625881243904
+            ],
+            "distance_m": 0.026581609258802194,
+            "yaw_error_rad": 0.1459654943844777,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 7.5001283729999955,
+            "odom_stamp_ns": 133121000000,
+            "odom_wall_age_s": 0.03905451800000037,
+            "odom_ros_age_s": 0.004,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 361,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 1,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 3,
+            "window_count": 1,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 157.9,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-2",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "ready": true,
+          "after_stamp_ns": 154632000000,
+          "deadline_wall": 456.716627121,
+          "expected_pose": [
+            1.18159043301904,
+            0.016050083255589098,
+            -1.3521273809209546
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 154700000000,
+          "last_rgb_stamp_ns": 154900000000,
+          "first_depth_stamp_ns": 154700000000,
+          "last_depth_stamp_ns": 154900000000,
+          "producer_identity": [
+            "79b52434-72b4-4ee7-811b-69437523dfcd",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 154900000000,
+            "depth_stamp_ns": 154900000000,
+            "processed_stamp_ns": 155000000000,
+            "sequence": 939,
+            "rgb_sha256": "0960c4e259eb15b2eb2febd71a318b61af8c45dd5edf7b4c125fa222d9cf04c6",
+            "depth_sha256": "981b461204e61aeb95c8a7a127a55c4e755927b0d7a993cab1918a1c5397cfc2",
+            "base_pose": [
+              1.155547629069827,
+              0.00964420215462359,
+              -1.2787303893733948
+            ],
+            "camera_pose": [
+              1.1797338570385703,
+              -0.07079848785909974,
+              0.03,
+              0.10289427633262202,
+              -0.699580422752085,
+              0.6995804227520851,
+              -0.10289427633262209
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 2,
+          "sampling_after_stamp_ns": 154632000000,
+          "conditions": {
+            "stamp_ns": 157900000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.155547629069827,
+              0.00964420215462359,
+              -1.2787303893733948
+            ],
+            "distance_m": 0.026819078101546604,
+            "yaw_error_rad": 0.07339699154755985,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 7.100246508999987,
+            "odom_stamp_ns": 157891000000,
+            "odom_wall_age_s": 0.0731380720000061,
+            "odom_ros_age_s": 0.009,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 352,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 2,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 6,
+            "window_count": 2,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 174.3,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-3",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "ready": true,
+          "after_stamp_ns": 171067000000,
+          "deadline_wall": 490.532256965,
+          "expected_pose": [
+            1.5815904389795046,
+            -0.1702179912904236,
+            -2.432966381462123
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 171300000000,
+          "last_rgb_stamp_ns": 171500000000,
+          "first_depth_stamp_ns": 171300000000,
+          "last_depth_stamp_ns": 171500000000,
+          "producer_identity": [
+            "79b52434-72b4-4ee7-811b-69437523dfcd",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {},
+          "last_evidence": {
+            "rgb_stamp_ns": 171500000000,
+            "depth_stamp_ns": 171500000000,
+            "processed_stamp_ns": 171600000000,
+            "sequence": 1070,
+            "rgb_sha256": "89d324a2debeba9453ad96ad7c33dd783fb98af93d546889a558dbd2a5e187d8",
+            "depth_sha256": "a2baedf41ffcfa410e9067d6ed95251258ca094231fa1ce7ba7b97ec36b1bfc3",
+            "base_pose": [
+              1.5594739115960565,
+              -0.1515133901897144,
+              -2.3070714836229675
+            ],
+            "camera_pose": [
+              1.5030651764942007,
+              -0.21375529411471245,
+              0.03,
+              -0.25447247064949535,
+              -0.6597300672862665,
+              0.6597300672862665,
+              0.25447247064949546
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 3,
+          "sampling_after_stamp_ns": 171067000000,
+          "conditions": {
+            "stamp_ns": 174300000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.5594739115960565,
+              -0.1515133901897144,
+              -2.3070714836229675
+            ],
+            "distance_m": 0.02896554653099883,
+            "yaw_error_rad": 0.12589489783915564,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 7.8999558180000236,
+            "odom_stamp_ns": 174291000000,
+            "odom_wall_age_s": 0.08944694000001618,
+            "odom_ros_age_s": 0.009,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 359,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 3,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 9,
+            "window_count": 3,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 193.8,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-4",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "ready": true,
+          "after_stamp_ns": 190440000000,
+          "deadline_wall": 530.507701202,
+          "expected_pose": [
+            1.5815904389795046,
+            -1.270218007681701,
+            3.141592653589793
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 190500000000,
+          "last_rgb_stamp_ns": 190700000000,
+          "first_depth_stamp_ns": 190500000000,
+          "last_depth_stamp_ns": 190700000000,
+          "producer_identity": [
+            "79b52434-72b4-4ee7-811b-69437523dfcd",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {},
+          "last_evidence": {
+            "rgb_stamp_ns": 190700000000,
+            "depth_stamp_ns": 190700000000,
+            "processed_stamp_ns": 190750000000,
+            "sequence": 1227,
+            "rgb_sha256": "72c6dc7f5b900fd15299569c479199bfc463a590f8175be70cfe9e0fb6b04c91",
+            "depth_sha256": "b8106025eb938c50cf022d4698c9f0231e00b0d30989610d6c817de8564ab0d4",
+            "base_pose": [
+              1.5842289594564734,
+              -1.2426833090806453,
+              -2.9991417144853663
+            ],
+            "camera_pose": [
+              1.5010797945563614,
+              -1.2546087598651652,
+              0.030000000000000054,
+              -0.4631496377531061,
+              -0.5343149006430257,
+              0.5343149006430259,
+              0.4631496377531062
+            ],
+            "candidate_count": 1,
+            "detection_count": 1,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 4,
+          "sampling_after_stamp_ns": 190440000000,
+          "conditions": {
+            "stamp_ns": 193800000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.5842289594564734,
+              -1.2426833090806453,
+              -2.9991417144853663
+            ],
+            "distance_m": 0.027660828211721313,
+            "yaw_error_rad": 0.1424509391044264,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 7.69993471500004,
+            "odom_stamp_ns": 193791000000,
+            "odom_wall_age_s": 0.06892556600007538,
+            "odom_ros_age_s": 0.009,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 363,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 4,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 12,
+            "window_count": 4,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      {
+        "stamp": 212.533,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-5",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "ready": true,
+          "after_stamp_ns": 210336000000,
+          "deadline_wall": 572.017984416,
+          "expected_pose": [
+            2.3065430450758537,
+            -1.633431013031979,
+            0.8519663271732721
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 210400000000,
+          "last_rgb_stamp_ns": 210600000000,
+          "first_depth_stamp_ns": 210400000000,
+          "last_depth_stamp_ns": 210600000000,
+          "producer_identity": [
+            "79b52434-72b4-4ee7-811b-69437523dfcd",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 210600000000,
+            "depth_stamp_ns": 210600000000,
+            "processed_stamp_ns": 210625000000,
+            "sequence": 1380,
+            "rgb_sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7",
+            "depth_sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e",
+            "base_pose": [
+              2.2827287161196494,
+              -1.6343486003042418,
+              0.7003116764943805
+            ],
+            "camera_pose": [
+              2.346958590580412,
+              -1.5802142930051295,
+              0.03,
+              -0.6411817291679373,
+              0.29813753567978246,
+              -0.2981375356797825,
+              0.6411817291679377
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 5,
+          "sampling_after_stamp_ns": 210336000000,
+          "conditions": {
+            "stamp_ns": 212533000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              2.2827287161196494,
+              -1.6343486003042418,
+              0.7003116764943805
+            ],
+            "distance_m": 0.02383200012664754,
+            "yaw_error_rad": 0.15165465067889183,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 4.876982854000062,
+            "odom_stamp_ns": 212531000000,
+            "odom_wall_age_s": 0.0022708139999849664,
+            "odom_ros_age_s": 0.002,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 249,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 5,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 15,
+            "window_count": 5,
+            "offline_artifacts_verified": false
+          }
+        }
+      }
+    ],
+    "failed": [],
+    "interrupted": [
+      {
+        "stamp": 235.038,
+        "event": "inspection_interrupted",
+        "reason": "frame_retention_failed",
+        "evidence": {
+          "request_id": "goal-6",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "ready": true,
+          "after_stamp_ns": 232791000000,
+          "deadline_wall": 618.556227845,
+          "expected_pose": [
+            0.9510919457771763,
+            -1.590316433478749,
+            2.289626326416521
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 232800000000,
+          "last_rgb_stamp_ns": 233100000000,
+          "first_depth_stamp_ns": 232800000000,
+          "last_depth_stamp_ns": 233100000000,
+          "producer_identity": [
+            "79b52434-72b4-4ee7-811b-69437523dfcd",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 233100000000,
+            "depth_stamp_ns": 233100000000,
+            "processed_stamp_ns": 233125000000,
+            "sequence": 1552,
+            "rgb_sha256": "a100c6431aecc218f19225dffb8a3b64e64b1e17a8527b436a7eb61fed360cc6",
+            "depth_sha256": "dabbdf78b2d7e91f22233adbe0092424a662d2c4fe8fbf2dab98ca83246bd09b",
+            "base_pose": [
+              0.9770971312797726,
+              -1.601665195871095,
+              2.396874572851048
+            ],
+            "camera_pose": [
+              0.915333694735542,
+              -1.5447329738325446,
+              0.030000000000000082,
+              -0.6476427541627371,
+              -0.28382893259938186,
+              0.28382893259938197,
+              0.6476427541627372
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 6,
+          "sampling_after_stamp_ns": 232791000000,
+          "conditions": {
+            "stamp_ns": 235033000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              0.9770971312797726,
+              -1.601665195871095,
+              2.396874572851048
+            ],
+            "distance_m": 0.028373651172564573,
+            "yaw_error_rad": 0.1072482464345268,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 5.799883081999951,
+            "odom_stamp_ns": 235031000000,
+            "odom_wall_age_s": 0.0029773200000136057,
+            "odom_ros_age_s": 0.002,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 246,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": "producer_reported_failed",
+            "current_window": 6,
+            "state": "failed",
+            "selected_count": 3,
+            "stored_count": 0,
+            "total_selected_count": 18,
+            "window_count": 6,
+            "offline_artifacts_verified": false
+          }
+        }
+      }
+    ]
+  },
+  "observation": {
+    "snapshot": {
+      "mode": "bounded_processed_frames",
+      "closed": true,
+      "close_reason": "blocked:frame_retention_failed",
+      "started_wall": null,
+      "deadline_wall": null,
+      "queue": null,
+      "active": null,
+      "attempts": [],
+      "continuation": {
+        "home_frontier_resumes": 0,
+        "resume_limit": 1,
+        "resume_active": false,
+        "return_started_wall": null,
+        "return_deadline_wall": null,
+        "return_reserve_s": 15.0,
+        "return_attempts": 0,
+        "return_attempt_limit": 4,
+        "decisions": []
+      },
+      "visual_coverage_claimed": false,
+      "validation_scope": "processed_frame_windows_only"
+    },
+    "finished_outcomes": {},
+    "explicit_timeout_attempts": []
+  },
+  "retention": {
+    "enabled": true,
+    "consumer_fault": "producer_reported_failed",
+    "accepted_count": 18,
+    "windows": [
+      {
+        "number": 1,
+        "binding": {
+          "after_stamp_ns": 129781000000,
+          "goal_token": 1,
+          "inspection_request_id": "goal-1",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d"
+        },
+        "state": "failed",
+        "reason": "producer_reported_failed",
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 2,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-f0849e05aef03a61f780747efdf281484f1202eb1f817f81b5237625060797fc",
+            "accepted_ordinal": 1,
+            "request_sha256": "cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a",
+            "consumer_state": "failed",
+            "consumer_reason": "producer_reported_failed",
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": false,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-1b9f349e060a086cd9b9b6ff181d793efb23103612eeb64536b6450996fc2968",
+            "accepted_ordinal": 2,
+            "request_sha256": "de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-50c18d4ec07f6de63a1db23bd91e523fec34480976f7b5cedb2d339e65574b23",
+            "accepted_ordinal": 3,
+            "request_sha256": "261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          }
+        ]
+      },
+      {
+        "number": 2,
+        "binding": {
+          "after_stamp_ns": 154632000000,
+          "goal_token": 2,
+          "inspection_request_id": "goal-2",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d"
+        },
+        "state": "failed",
+        "reason": "producer_reported_failed",
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 2,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-6a3ff0a70e04313d722a8efface05f4e8e7bb1f48e27d0d496e7bd714f77c746",
+            "accepted_ordinal": 1,
+            "request_sha256": "88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3",
+            "consumer_state": "failed",
+            "consumer_reason": "producer_reported_failed",
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": false,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-87a3ab224fe74197381ebfc45f48436da801509ec4812dc68fee6bf10e4e14c1",
+            "accepted_ordinal": 2,
+            "request_sha256": "5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-383fa75dd23a61318dd78054cbd7c6d8151486b99403ffcfe466a79381d4aa70",
+            "accepted_ordinal": 3,
+            "request_sha256": "e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          }
+        ]
+      },
+      {
+        "number": 3,
+        "binding": {
+          "after_stamp_ns": 171067000000,
+          "goal_token": 3,
+          "inspection_request_id": "goal-3",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d"
+        },
+        "state": "failed",
+        "reason": "producer_reported_failed",
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 2,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-e8c94b54068429104325eac010115f60e735f22fc27d37f0589ec387a3f8ecc3",
+            "accepted_ordinal": 1,
+            "request_sha256": "140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976",
+            "consumer_state": "failed",
+            "consumer_reason": "producer_reported_failed",
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": false,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-9d32a1e590b21929be542c3e1e8070f2ab7032e5c29ab0b18c93bcd8b585b139",
+            "accepted_ordinal": 2,
+            "request_sha256": "16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-a1cbe94b55998d5cb6d71768247973a1853fb305b35368b3aaed984bed3ab941",
+            "accepted_ordinal": 3,
+            "request_sha256": "cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          }
+        ]
+      },
+      {
+        "number": 4,
+        "binding": {
+          "after_stamp_ns": 190440000000,
+          "goal_token": 4,
+          "inspection_request_id": "goal-4",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d"
+        },
+        "state": "failed",
+        "reason": "producer_reported_failed",
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 2,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-862a44faa4034a1d93dc6bb04d75c47b7f060543bab299a35a463f1a89cff536",
+            "accepted_ordinal": 1,
+            "request_sha256": "ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2",
+            "consumer_state": "failed",
+            "consumer_reason": "producer_reported_failed",
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": false,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-47ab62d1d740d8b735f7988e5f67a8a1ad474b3ab7f88052774a4ef082eec703",
+            "accepted_ordinal": 2,
+            "request_sha256": "e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-3bfd26db7aa526150a95ec05aba95b86d737ad9849e3120ed2f570424fac7a78",
+            "accepted_ordinal": 3,
+            "request_sha256": "9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          }
+        ]
+      },
+      {
+        "number": 5,
+        "binding": {
+          "after_stamp_ns": 210336000000,
+          "goal_token": 5,
+          "inspection_request_id": "goal-5",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d"
+        },
+        "state": "failed",
+        "reason": "producer_reported_failed",
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 2,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+            "accepted_ordinal": 1,
+            "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+            "consumer_state": "failed",
+            "consumer_reason": "producer_reported_failed",
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": false,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+            "accepted_ordinal": 2,
+            "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+            "accepted_ordinal": 3,
+            "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          }
+        ]
+      },
+      {
+        "number": 6,
+        "binding": {
+          "after_stamp_ns": 232791000000,
+          "goal_token": 6,
+          "inspection_request_id": "goal-6",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d"
+        },
+        "state": "failed",
+        "reason": "mission_blocked",
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 4,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-e64e4b9c32c967660ee42c643a35f7524e35739e577fd8330661de2bcd515582",
+            "accepted_ordinal": 1,
+            "request_sha256": "f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754",
+            "consumer_state": "pending",
+            "consumer_reason": null,
+            "producer_status": "failed",
+            "producer_reason": "shutdown_aborted",
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": null,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-154749f639af71f1fe1db1e4cf3f0ac4fd579265d75d7be376f901b51f00350e",
+            "accepted_ordinal": 2,
+            "request_sha256": "513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d",
+            "consumer_state": "pending",
+            "consumer_reason": null,
+            "producer_status": "failed",
+            "producer_reason": "shutdown_aborted",
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": null,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-a8d2d2456c7113a3c97504b75039a7b7f95072e563c0012aae020c3c240869d3",
+            "accepted_ordinal": 3,
+            "request_sha256": "4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638",
+            "consumer_state": "pending",
+            "consumer_reason": null,
+            "producer_status": "failed",
+            "producer_reason": "shutdown_aborted",
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": null,
+            "offline_audit": null
+          }
+        ]
+      }
+    ],
+    "accepted_file_inventory": {
+      "accepted_count": 18,
+      "frames": [
+        {
+          "retention_id": "retain-f0849e05aef03a61f780747efdf281484f1202eb1f817f81b5237625060797fc",
+          "request_sha256": "cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a",
+          "window_number": 1,
+          "consumer_state": "failed",
+          "consumer_reason": "producer_reported_failed",
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a/rgb.bin",
+            "retained/cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a/depth.bin",
+            "retained/cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a/producer.json",
+            "retained/cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a/camera_info.json",
+            "retained/cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a/request.json",
+            "retained/cb4efa9643b1f20932b652a9708a99f472a1ff34b6557e45f60c95a4652aa80a/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-1b9f349e060a086cd9b9b6ff181d793efb23103612eeb64536b6450996fc2968",
+          "request_sha256": "de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99",
+          "window_number": 1,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99/rgb.bin",
+            "retained/de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99/depth.bin",
+            "retained/de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99/producer.json",
+            "retained/de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99/camera_info.json",
+            "retained/de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99/request.json",
+            "retained/de055f77b3d398e7dbfa1aeedababc52145ed2316f6c214010960a2618615c99/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-50c18d4ec07f6de63a1db23bd91e523fec34480976f7b5cedb2d339e65574b23",
+          "request_sha256": "261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a",
+          "window_number": 1,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a/rgb.bin",
+            "retained/261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a/depth.bin",
+            "retained/261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a/producer.json",
+            "retained/261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a/camera_info.json",
+            "retained/261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a/request.json",
+            "retained/261179ea37283283084821466c2bc0cbe7260e8b29d43f3c57b7ecd30a7ae33a/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-6a3ff0a70e04313d722a8efface05f4e8e7bb1f48e27d0d496e7bd714f77c746",
+          "request_sha256": "88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3",
+          "window_number": 2,
+          "consumer_state": "failed",
+          "consumer_reason": "producer_reported_failed",
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3/rgb.bin",
+            "retained/88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3/depth.bin",
+            "retained/88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3/producer.json",
+            "retained/88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3/camera_info.json",
+            "retained/88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3/request.json",
+            "retained/88c0befa79cca78915084ffbd8405fa7c203bf29db1ab90687291c7b804379c3/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-87a3ab224fe74197381ebfc45f48436da801509ec4812dc68fee6bf10e4e14c1",
+          "request_sha256": "5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947",
+          "window_number": 2,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947/rgb.bin",
+            "retained/5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947/depth.bin",
+            "retained/5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947/producer.json",
+            "retained/5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947/camera_info.json",
+            "retained/5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947/request.json",
+            "retained/5f034b7326390f73e151f5cb7e6c57bb218ad04541b95a77f72d9f06a32c8947/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-383fa75dd23a61318dd78054cbd7c6d8151486b99403ffcfe466a79381d4aa70",
+          "request_sha256": "e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40",
+          "window_number": 2,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40/rgb.bin",
+            "retained/e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40/depth.bin",
+            "retained/e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40/producer.json",
+            "retained/e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40/camera_info.json",
+            "retained/e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40/request.json",
+            "retained/e3d9e07b7b66a35f54c8ccf5fc4b3428219e085a6849f79c2bddde43a9462b40/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-e8c94b54068429104325eac010115f60e735f22fc27d37f0589ec387a3f8ecc3",
+          "request_sha256": "140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976",
+          "window_number": 3,
+          "consumer_state": "failed",
+          "consumer_reason": "producer_reported_failed",
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976/rgb.bin",
+            "retained/140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976/depth.bin",
+            "retained/140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976/producer.json",
+            "retained/140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976/camera_info.json",
+            "retained/140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976/request.json",
+            "retained/140037c05a7fbd190b66886e38b8a499b4d9b8fa5f6f89e09ffa7d8439c5b976/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-9d32a1e590b21929be542c3e1e8070f2ab7032e5c29ab0b18c93bcd8b585b139",
+          "request_sha256": "16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a",
+          "window_number": 3,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a/rgb.bin",
+            "retained/16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a/depth.bin",
+            "retained/16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a/producer.json",
+            "retained/16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a/camera_info.json",
+            "retained/16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a/request.json",
+            "retained/16b0b4adf35004a073d89e5102801275e02032574836559f9c5d486b87cca45a/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-a1cbe94b55998d5cb6d71768247973a1853fb305b35368b3aaed984bed3ab941",
+          "request_sha256": "cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59",
+          "window_number": 3,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59/rgb.bin",
+            "retained/cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59/depth.bin",
+            "retained/cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59/producer.json",
+            "retained/cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59/camera_info.json",
+            "retained/cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59/request.json",
+            "retained/cbcbbf9d9ae1f7327dba17e927e9223e0036d88d9b6078920a678566a3b77d59/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-862a44faa4034a1d93dc6bb04d75c47b7f060543bab299a35a463f1a89cff536",
+          "request_sha256": "ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2",
+          "window_number": 4,
+          "consumer_state": "failed",
+          "consumer_reason": "producer_reported_failed",
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2/rgb.bin",
+            "retained/ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2/depth.bin",
+            "retained/ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2/producer.json",
+            "retained/ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2/camera_info.json",
+            "retained/ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2/request.json",
+            "retained/ab20e57fb5dd2c9e27d9f7c9b78b22b404452f45d4857d6f1788fbb1d9fa28a2/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-47ab62d1d740d8b735f7988e5f67a8a1ad474b3ab7f88052774a4ef082eec703",
+          "request_sha256": "e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4",
+          "window_number": 4,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4/rgb.bin",
+            "retained/e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4/depth.bin",
+            "retained/e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4/producer.json",
+            "retained/e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4/camera_info.json",
+            "retained/e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4/request.json",
+            "retained/e366d015c6bbd6ef65919ddaeb0cc7ba0c077898e5d09f2edd590f85c279fbd4/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-3bfd26db7aa526150a95ec05aba95b86d737ad9849e3120ed2f570424fac7a78",
+          "request_sha256": "9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d",
+          "window_number": 4,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d/rgb.bin",
+            "retained/9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d/depth.bin",
+            "retained/9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d/producer.json",
+            "retained/9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d/camera_info.json",
+            "retained/9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d/request.json",
+            "retained/9f7111c35bdeb64235dbb70352e2e809b2e6ab1293c48647cf4f29b7c5c3d93d/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+          "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+          "window_number": 5,
+          "consumer_state": "failed",
+          "consumer_reason": "producer_reported_failed",
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e/rgb.bin",
+            "retained/ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e/depth.bin",
+            "retained/ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e/producer.json",
+            "retained/ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e/camera_info.json",
+            "retained/ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e/request.json",
+            "retained/ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+          "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+          "window_number": 5,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262/rgb.bin",
+            "retained/5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262/depth.bin",
+            "retained/5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262/producer.json",
+            "retained/5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262/camera_info.json",
+            "retained/5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262/request.json",
+            "retained/5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+          "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+          "window_number": 5,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2/rgb.bin",
+            "retained/9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2/depth.bin",
+            "retained/9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2/producer.json",
+            "retained/9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2/camera_info.json",
+            "retained/9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2/request.json",
+            "retained/9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-e64e4b9c32c967660ee42c643a35f7524e35739e577fd8330661de2bcd515582",
+          "request_sha256": "f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/rgb.bin",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/depth.bin",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/producer.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/camera_info.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/request.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/manifest.json"
+          ]
+        },
+        {
+          "retention_id": "retain-154749f639af71f1fe1db1e4cf3f0ac4fd579265d75d7be376f901b51f00350e",
+          "request_sha256": "513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/rgb.bin",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/depth.bin",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/producer.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/camera_info.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/request.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/manifest.json"
+          ]
+        },
+        {
+          "retention_id": "retain-a8d2d2456c7113a3c97504b75039a7b7f95072e563c0012aae020c3c240869d3",
+          "request_sha256": "4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/rgb.bin",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/depth.bin",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/producer.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/camera_info.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/request.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/manifest.json"
+          ]
+        }
+      ],
+      "missing_accepted_frames": [
+        {
+          "retention_id": "retain-e64e4b9c32c967660ee42c643a35f7524e35739e577fd8330661de2bcd515582",
+          "request_sha256": "f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/rgb.bin",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/depth.bin",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/producer.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/camera_info.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/request.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/manifest.json"
+          ]
+        },
+        {
+          "retention_id": "retain-154749f639af71f1fe1db1e4cf3f0ac4fd579265d75d7be376f901b51f00350e",
+          "request_sha256": "513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/rgb.bin",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/depth.bin",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/producer.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/camera_info.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/request.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/manifest.json"
+          ]
+        },
+        {
+          "retention_id": "retain-a8d2d2456c7113a3c97504b75039a7b7f95072e563c0012aae020c3c240869d3",
+          "request_sha256": "4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/rgb.bin",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/depth.bin",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/producer.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/camera_info.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/request.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/manifest.json"
+          ]
+        }
+      ],
+      "not_stored_accepted_frames": [
+        {
+          "retention_id": "retain-e64e4b9c32c967660ee42c643a35f7524e35739e577fd8330661de2bcd515582",
+          "request_sha256": "f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/rgb.bin",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/depth.bin",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/producer.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/camera_info.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/request.json",
+            "retained/f0e1fb41f5c1222d831667f442630015157500e94f0258e05452a93d2ae3d754/manifest.json"
+          ]
+        },
+        {
+          "retention_id": "retain-154749f639af71f1fe1db1e4cf3f0ac4fd579265d75d7be376f901b51f00350e",
+          "request_sha256": "513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/rgb.bin",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/depth.bin",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/producer.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/camera_info.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/request.json",
+            "retained/513d99551ebb95a451b3dfb0df100933cfb656ced8162e4e419e5373cfc18f4d/manifest.json"
+          ]
+        },
+        {
+          "retention_id": "retain-a8d2d2456c7113a3c97504b75039a7b7f95072e563c0012aae020c3c240869d3",
+          "request_sha256": "4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638",
+          "window_number": 6,
+          "consumer_state": "pending",
+          "consumer_reason": null,
+          "producer_status": "failed",
+          "producer_reason": "shutdown_aborted",
+          "available_files": [],
+          "missing_files": [
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/rgb.bin",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/depth.bin",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/producer.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/camera_info.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/request.json",
+            "retained/4b63e82c1aa7b80138e8342724e7a1c5efa892eebb715755ffeae6eb9682f638/manifest.json"
+          ]
+        }
+      ],
+      "scope": "Presence inventory only, not hashes, receipt validity, or a passing strict audit. Missing expected files are never fabricated."
+    },
+    "producer_result_counts": {
+      "stored": 15,
+      "failed": 3
+    },
+    "producer_checkpoint_closed": true,
+    "producer_fault": "writer_wall_timeout",
+    "shutdown": {
+      "shutdown": {
+        "elapsed_wall_s": 0.0003657029999430961,
+        "owned_writer_exit_confirmed": true,
+        "final_checkpoint_persisted": true,
+        "limitation": "SIGKILL cannot guarantee bounded exit from uninterruptible kernel I/O"
+      },
+      "writer": null,
+      "fault": "writer_wall_timeout",
+      "reason": "writer_wall_timeout"
+    },
+    "offline_audit": {
+      "schema_version": 1,
+      "passed": false,
+      "accepted_count": 0,
+      "verified_count": 0,
+      "errors": [
+        "producer_checkpoint_not_cleanly_closed"
+      ],
+      "frames": [],
+      "scope": "exact_accepted_files_reopened_and_hashed; supplied_TF_identity_only; does_not_verify_process_exit_scene_coverage_target_recall_or_motion"
+    },
+    "original_offline_audit_available": true,
+    "audit_scope": "Existing closed-run audit result, not a second raw-image decode or independent TF-accuracy test."
+  },
+  "targets": {
+    "count": 2,
+    "annotations": [
+      {
+        "uid": 1,
+        "class_id": "red_object",
+        "x": 3.586940696163701,
+        "y": -0.11578484907898012,
+        "z": -0.04335818086996712,
+        "hits": 190,
+        "first_stamp": 117.2,
+        "last_stamp": 165.8,
+        "confirmed": true,
+        "source_id": ""
+      },
+      {
+        "uid": 2,
+        "class_id": "red_object",
+        "x": -0.40058108348615096,
+        "y": -1.576367119020148,
+        "z": -0.04378866047988628,
+        "hits": 172,
+        "first_stamp": 188.2,
+        "last_stamp": 232.2,
+        "confirmed": true,
+        "source_id": ""
+      }
+    ],
+    "unconfirmed": [],
+    "count_prior": null
+  },
+  "return": {
+    "home_map_pose": [
+      0.008973483335787623,
+      -0.0014107396972358706,
+      -0.03135909118357031
+    ],
+    "final_map_pose": null,
+    "map_error": null,
+    "native": {
+      "scope": "Same native model sampled at home and final observer time; no map/world identity assumption.",
+      "home_event_stamp": 117.125,
+      "home_bracket": [
+        {
+          "sim_s": 117.101,
+          "x": -6.889020516242133e-06,
+          "y": 5.091082463946863e-07,
+          "z": -0.00500000283189723,
+          "yaw": -0.017406190698770262,
+          "id": 114,
+          "receipt_wall_elapsed_s": 22.899615188999974
+        },
+        {
+          "sim_s": 117.126,
+          "x": -6.889020516242133e-06,
+          "y": 5.091082463946863e-07,
+          "z": -0.00500000283189723,
+          "yaw": -0.017406190698770262,
+          "id": 114,
+          "receipt_wall_elapsed_s": 22.990234428000008
+        }
+      ],
+      "home_bracket_gap_s": 0.025000000000005684,
+      "home_bracket_movement": {
+        "xy_distance_m": 0.0,
+        "yaw_delta_rad": 0.0
+      },
+      "same_native_id": true,
+      "home_bracket_stationary_at_sample_endpoints": true,
+      "final_sample": {
+        "sim_s": 267.735,
+        "x": 1.0049952996819422,
+        "y": -1.575031069240257,
+        "z": -0.005000002831897223,
+        "yaw": 2.426165272035873,
+        "id": 114,
+        "receipt_wall_elapsed_s": 345.91915120100003
+      },
+      "sampled_home_to_final": {
+        "xy_distance_m": 1.86835592757154,
+        "yaw_delta_rad": 2.4435714627346434
+      }
+    },
+    "stationary_tail": {
+      "sample_count": 963,
+      "first_sim_s": 237.736,
+      "last_sim_s": 267.735,
+      "span_s": 29.999000000000024,
+      "max_gap_s": 0.036000000000001364,
+      "x_span_m": 0.0,
+      "y_span_m": 0.0,
+      "yaw_span_rad": 0.0,
+      "latest_native_receipt_fresh": true,
+      "evidence_sufficient": true,
+      "stationary_within_1mm_002rad": true,
+      "entire_window_after_terminal": true,
+      "ready_for_operator_to_end_observer": true
+    },
+    "runner_full_terminal_tail_verified": true
+  },
+  "observer": {
+    "errors": [],
+    "final_status": {
+      "phase": "blocked",
+      "reason": "frame_retention_failed",
+      "autonomous": true,
+      "confirmed_target_count": 2,
+      "map_complete": false,
+      "visual_coverage_complete": false,
+      "unresolved_failures": 0,
+      "inspection": {
+        "request_id": "goal-6",
+        "status": "invalidated",
+        "reason": "frame_retention_failed",
+        "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+        "ready": false,
+        "after_stamp_ns": 232791000000,
+        "deadline_wall": 618.556227845,
+        "expected_pose": [
+          0.9510919457771763,
+          -1.590316433478749,
+          2.289626326416521
+        ],
+        "required_frames": 3,
+        "min_span_ns": 200000000,
+        "accepted_frames": 0,
+        "first_rgb_stamp_ns": null,
+        "last_rgb_stamp_ns": null,
+        "first_depth_stamp_ns": null,
+        "last_depth_stamp_ns": null,
+        "producer_identity": [
+          "79b52434-72b4-4ee7-811b-69437523dfcd",
+          "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+          "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+          "camera_optical_frame"
+        ],
+        "reset_count": 1,
+        "rejection_counts": {
+          "sample_before_barrier": 1
+        },
+        "last_evidence": null,
+        "visual_coverage_claimed": false,
+        "goal_token": 6,
+        "sampling_after_stamp_ns": 232791000000,
+        "conditions": {
+          "stamp_ns": 235033000000,
+          "phase": "inspecting",
+          "blocking_condition": null,
+          "current_pose": [
+            0.9770971312797726,
+            -1.601665195871095,
+            2.396874572851048
+          ],
+          "distance_m": 0.028373651172564573,
+          "yaw_error_rad": 0.1072482464345268,
+          "position_tolerance_m": 0.05,
+          "yaw_tolerance_rad": 0.26,
+          "pose_within_tolerance": true,
+          "pose_stable_wall_s": 5.799883081999951,
+          "odom_stamp_ns": 235031000000,
+          "odom_wall_age_s": 0.0029773200000136057,
+          "odom_ros_age_s": 0.002,
+          "odom_fresh": true,
+          "odom_sample_stationary": true,
+          "odom_stationary_count": 246,
+          "stop_confirmed": true
+        },
+        "frame_retention": {
+          "enabled": true,
+          "fault": "producer_reported_failed",
+          "current_window": 6,
+          "state": "failed",
+          "selected_count": 3,
+          "stored_count": 0,
+          "total_selected_count": 18,
+          "window_count": 6,
+          "offline_artifacts_verified": false
+        }
+      },
+      "last_inspection_failure": {
+        "reason": "frame_retention_failed",
+        "stamp": 235.038,
+        "goal": {
+          "x": 0.9510919457771763,
+          "y": -1.590316433478749,
+          "yaw": 2.289626326416521,
+          "kind": "frontier",
+          "anchor": [
+            0.6010919405617698,
+            -1.1903164275182845
+          ]
+        },
+        "evidence": {
+          "request_id": "goal-6",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "ready": true,
+          "after_stamp_ns": 232791000000,
+          "deadline_wall": 618.556227845,
+          "expected_pose": [
+            0.9510919457771763,
+            -1.590316433478749,
+            2.289626326416521
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 232800000000,
+          "last_rgb_stamp_ns": 233100000000,
+          "first_depth_stamp_ns": 232800000000,
+          "last_depth_stamp_ns": 233100000000,
+          "producer_identity": [
+            "79b52434-72b4-4ee7-811b-69437523dfcd",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 233100000000,
+            "depth_stamp_ns": 233100000000,
+            "processed_stamp_ns": 233125000000,
+            "sequence": 1552,
+            "rgb_sha256": "a100c6431aecc218f19225dffb8a3b64e64b1e17a8527b436a7eb61fed360cc6",
+            "depth_sha256": "dabbdf78b2d7e91f22233adbe0092424a662d2c4fe8fbf2dab98ca83246bd09b",
+            "base_pose": [
+              0.9770971312797726,
+              -1.601665195871095,
+              2.396874572851048
+            ],
+            "camera_pose": [
+              0.915333694735542,
+              -1.5447329738325446,
+              0.030000000000000082,
+              -0.6476427541627371,
+              -0.28382893259938186,
+              0.28382893259938197,
+              0.6476427541627372
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 6,
+          "sampling_after_stamp_ns": 232791000000,
+          "conditions": {
+            "stamp_ns": 235033000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              0.9770971312797726,
+              -1.601665195871095,
+              2.396874572851048
+            ],
+            "distance_m": 0.028373651172564573,
+            "yaw_error_rad": 0.1072482464345268,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 5.799883081999951,
+            "odom_stamp_ns": 235031000000,
+            "odom_wall_age_s": 0.0029773200000136057,
+            "odom_ros_age_s": 0.002,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 246,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": "producer_reported_failed",
+            "current_window": 6,
+            "state": "failed",
+            "selected_count": 3,
+            "stored_count": 0,
+            "total_selected_count": 18,
+            "window_count": 6,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      "observation_actions": {
+        "mode": "bounded_processed_frames",
+        "closed": true,
+        "close_reason": "blocked:frame_retention_failed",
+        "started_wall": null,
+        "deadline_wall": null,
+        "queue": null,
+        "active": null,
+        "attempts": [],
+        "continuation": {
+          "home_frontier_resumes": 0,
+          "resume_limit": 1,
+          "resume_active": false,
+          "return_started_wall": null,
+          "return_deadline_wall": null,
+          "return_reserve_s": 15.0,
+          "return_attempts": 0,
+          "return_attempt_limit": 4,
+          "decisions": []
+        },
+        "visual_coverage_claimed": false,
+        "validation_scope": "processed_frame_windows_only"
+      },
+      "selection": {
+        "state": "goal",
+        "goal": {
+          "x": 0.9510919457771763,
+          "y": -1.590316433478749,
+          "yaw": 2.289626326416521,
+          "kind": "frontier",
+          "anchor": [
+            0.6010919405617698,
+            -1.1903164275182845
+          ]
+        },
+        "frontier_count": 11,
+        "uncovered_count": 2586,
+        "reachable_count": 2586,
+        "unobserved_count": 0
+      }
+    },
+    "native_sample_count": 5155,
+    "native_ids": [
+      114
+    ]
+  },
+  "map_export": {
+    "snapshot_and_posegraph": {
+      "passed": true,
+      "errors": [],
+      "exports": {
+        "/slam_toolbox/serialize_map": {
+          "service": "/slam_toolbox/serialize_map",
+          "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run26-tf-tolerance/final-map",
+          "status": "service_success",
+          "sent_wall_s": 4.919669294999949,
+          "sent_ros_ns": 247625000000,
+          "result": 0,
+          "completed_wall_s": 5.439006211999981
+        }
+      },
+      "exported_files_at_capture": [
+        {
+          "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run26-tf-tolerance/final-map.posegraph",
+          "exists": true,
+          "bytes": 9323138,
+          "sha256": "718c42c09ce642b15fa9b1c47ed16625f5142aa708861e4c67816d4697860cc4"
+        },
+        {
+          "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run26-tf-tolerance/final-map.data",
+          "exists": true,
+          "bytes": 6137072,
+          "sha256": "d6b528e8116e19d3ce01e4fbb14a5e367c722e3e5914b24b58581c3ff65a79d5"
+        }
+      ],
+      "raster_export_mode": "separate_frozen_snapshot_export",
+      "save_map_service_attempted": false
+    },
+    "separate_snapshot_raster": {
+      "schema_version": 1,
+      "passed": true,
+      "method": "captured_occupancy_grid_offline_export",
+      "source": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run26-tf-tolerance/final-save.json",
+      "source_bytes": 113742,
+      "source_sha256": "5d957984dc25ff21386f66ed38ecb0542697d9987d76451d3f16e4c3ad2cc93d",
+      "frame_id": "map",
+      "map_stamp_ns": 247250000000,
+      "map_metadata": {
+        "frame_id": "map",
+        "stamp_ns": 247250000000,
+        "map_load_time_ns": 0,
+        "width": 84,
+        "height": 56,
+        "resolution": 0.05000000074505806,
+        "origin": {
+          "xyz": [
+            -0.49158319630597536,
+            -2.2452880546956484,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "valid_geometry": true
+        },
+        "receipt_ros_ns": 247400000000,
+        "receipt_wall_s": 4.121907717999989,
+        "source_age_ros_s": 0.375,
+        "receipt_age_wall_s": 0.6408735349999688
+      },
+      "snapshot_capture": {
+        "valid": true,
+        "captured_ros_ns": 247625000000,
+        "captured_wall_s": 4.762781252999957,
+        "epoch": {
+          "raw": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+          "receipt_ros_ns": 247490000000,
+          "receipt_wall_s": 4.276326315000006,
+          "receipt_age_wall_s": 0.48645493799995165
+        }
+      },
+      "source_report_export_status": {
+        "passed": true,
+        "errors": [],
+        "exports": {
+          "/slam_toolbox/serialize_map": {
+            "service": "/slam_toolbox/serialize_map",
+            "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run26-tf-tolerance/final-map",
+            "status": "service_success",
+            "sent_wall_s": 4.919669294999949,
+            "sent_ros_ns": 247625000000,
+            "result": 0,
+            "completed_wall_s": 5.439006211999981
+          }
+        }
+      },
+      "source_grid_sha256": "e9a3958c62d382210c4830029384bd5be1a358ef6a25788ac7873de2039fa9ca",
+      "input_classification": {
+        "free_threshold": 0.25,
+        "occupied_threshold": 0.65,
+        "free_max_cell_inclusive": 25,
+        "occupied_min_cell_inclusive": 65,
+        "rounding": "nearest_integer_ties_to_even; free_test_first",
+        "unknown_and_intermediate_to": -1
+      },
+      "source_cell_counts": {
+        "-1": 1320,
+        "100": 766,
+        "0": 2618
+      },
+      "yaml": {
+        "image": "snapshot-map.pgm",
+        "mode": "trinary",
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.49158319630597536,
+          -2.2452880546956484,
+          0.0
+        ],
+        "negate": 0,
+        "occupied_thresh": 0.65,
+        "free_thresh": 0.196
+      },
+      "conventions": {
+        "grid_index": "width*y+x; y=0 bottom row",
+        "pgm_index": "width*(height-1-y)+x; top row first",
+        "origin": "metric lower-left corner of cell (0,0); yaw in radians, no half-cell shift",
+        "planar_tolerance": 1e-09,
+        "yaml_thresholds": "fixed Nav2 trinary reload thresholds; distinct from input classification"
+      },
+      "verification": {
+        "passed": true,
+        "method": "reopened_P5_and_YAML; reconstructed_all_trinary_cells",
+        "verified_cells": 4704,
+        "class_counts": {
+          "-1": 1320,
+          "100": 766,
+          "0": 2618
+        },
+        "files": {
+          "snapshot-map.pgm": {
+            "bytes": 4717,
+            "sha256": "d894977ac8a0958f390444399fe7dee2e0a585ab28c04ec2630482731734aa77"
+          },
+          "snapshot-map.yaml": {
+            "bytes": 182,
+            "sha256": "91d7a799279be331a8dd8096ec3072db0028181a282bfd5da1ad2c0c7c05be3d"
+          }
+        }
+      },
+      "limitations": [
+        "No live map service was called or repaired; source report is unchanged.",
+        "Trinary export preserves unknowns and classifies intermediate probabilities as unknown; raw probabilities remain in source JSON.",
+        "YAML has no frame field; use the recorded frame_id when configuring map_server.",
+        "File readback does not prove complete mapping, visual coverage, navigation safety, or mission success."
+      ]
+    },
+    "separate_snapshot_raster_failure": {},
+    "terminal_evidence_collection": {
+      "exports": [
+        {
+          "name": "snapshot_and_posegraph",
+          "passed": true
+        },
+        {
+          "name": "snapshot_raster",
+          "passed": true
+        }
+      ],
+      "tail_verified": true,
+      "errors": [],
+      "deadline_wall": 723.783212334,
+      "passed": true
+    },
+    "scope": "Separate captured OccupancyGrid raster and posegraph service; not a save_map service repair."
+  },
+  "cleanup": {
+    "run": "run26-tf-tolerance",
+    "epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+    "status": "terminal_observed",
+    "stages": [
+      {
+        "name": "sim_start_and_sensor_check",
+        "elapsed_wall_s": 47.623802874999996
+      },
+      {
+        "name": "navigation_start_and_parameter_check",
+        "elapsed_wall_s": 115.330347972
+      },
+      {
+        "name": "recording_perception_and_initial_survey",
+        "elapsed_wall_s": 157.009412113
+      },
+      {
+        "name": "read_only_planning_and_processed_image_preflight",
+        "elapsed_wall_s": 276.266774542
+      },
+      {
+        "name": "autonomous_mission",
+        "elapsed_wall_s": 292.50342739399997
+      },
+      {
+        "name": "terminal_map_export_and_independent_stationary_tail",
+        "elapsed_wall_s": 585.829456591
+      },
+      {
+        "name": "owned_shutdown",
+        "elapsed_wall_s": 646.3726927170001
+      }
+    ],
+    "errors": [
+      "Producer did not confirm clean retained-frame shutdown",
+      "Retained-frame offline audit failed"
+    ],
+    "stops": {
+      "mission": {
+        "signals": [
+          {
+            "pid": 1686,
+            "start_ticks": 34753,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1705,
+            "start_ticks": 35901,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.0134325899999794,
+        "exit_code": 0
+      },
+      "recorder": {
+        "signals": [
+          {
+            "pid": 1440,
+            "start_ticks": 20000,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.6070271730000059,
+        "exit_code": 0
+      },
+      "observer": {
+        "signals": [
+          {
+            "pid": 1650,
+            "start_ticks": 33549,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.6194000070000811,
+        "exit_code": null
+      },
+      "perception": {
+        "signals": [
+          {
+            "pid": 1441,
+            "start_ticks": 20001,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1478,
+            "start_ticks": 20828,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.4067005080000854,
+        "exit_code": 2
+      },
+      "motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0012579820000837572,
+        "exit_code": 0
+      },
+      "survey": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0014605600000550112,
+        "exit_code": 0
+      },
+      "navigation": {
+        "signals": [
+          {
+            "pid": 1152,
+            "start_ticks": 15832,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1214,
+            "start_ticks": 17057,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1215,
+            "start_ticks": 17057,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1216,
+            "start_ticks": 17058,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1217,
+            "start_ticks": 17058,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1218,
+            "start_ticks": 17059,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1219,
+            "start_ticks": 17061,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1220,
+            "start_ticks": 17063,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1221,
+            "start_ticks": 17078,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1222,
+            "start_ticks": 17078,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1225,
+            "start_ticks": 17087,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.010463191000099,
+        "exit_code": 0
+      },
+      "sim": {
+        "signals": [
+          {
+            "pid": 918,
+            "start_ticks": 9062,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 967,
+            "start_ticks": 11028,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 968,
+            "start_ticks": 11028,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 969,
+            "start_ticks": 11029,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.2098793069999374,
+        "exit_code": 0
+      },
+      "installed-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010773870000093666,
+        "exit_code": 0
+      },
+      "sim-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010925369999768009,
+        "exit_code": 0
+      },
+      "native-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010143399999833491,
+        "exit_code": 0
+      },
+      "nav-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009931590000178403,
+        "exit_code": 0
+      },
+      "parameter-gate": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009708239999781654,
+        "exit_code": 0
+      },
+      "native-before-motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.001251370999966639,
+        "exit_code": 0
+      },
+      "preflight": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0015959540000949346,
+        "exit_code": 0
+      },
+      "save-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0008577730000070005,
+        "exit_code": 0
+      },
+      "provenance": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010336289999486326,
+        "exit_code": 0
+      },
+      "native-terminal": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009343149999949674,
+        "exit_code": 0
+      },
+      "save-final": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009239600000228165,
+        "exit_code": 0
+      },
+      "snapshot-raster": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.002093751999950655,
+        "exit_code": 0
+      }
+    },
+    "active_wall_budget_seconds": 1800,
+    "native_terminal_tail_verified": true,
+    "cleanup_budget_note": "Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.",
+    "stage": "owned_shutdown",
+    "terminal": {
+      "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run26-tf-tolerance/mission/mission_20261101_231156.json",
+      "sha256": "03937f5a7a743a9322fb61cdc4b73753bee49e613e9983f7ae9a71366745725f",
+      "status": "blocked",
+      "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+      "reported_mission_success": false
+    },
+    "same_native_instance_at_terminal": true,
+    "observed_terminal_native_tail": {
+      "wall_s": 343.72985821000003,
+      "count": 5123,
+      "tail": {
+        "sample_count": 963,
+        "first_sim_s": 236.736,
+        "last_sim_s": 266.736,
+        "span_s": 30.0,
+        "max_gap_s": 0.036000000000001364,
+        "x_span_m": 0.0,
+        "y_span_m": 0.0,
+        "yaw_span_rad": 0.0,
+        "latest_native_receipt_fresh": true,
+        "evidence_sufficient": true,
+        "stationary_within_1mm_002rad": true,
+        "entire_window_after_terminal": true,
+        "ready_for_operator_to_end_observer": true
+      }
+    },
+    "terminal_evidence_collection": {
+      "exports": [
+        {
+          "name": "snapshot_and_posegraph",
+          "passed": true
+        },
+        {
+          "name": "snapshot_raster",
+          "passed": true
+        }
+      ],
+      "tail_verified": true,
+      "errors": [],
+      "deadline_wall": 723.783212334,
+      "passed": true
+    },
+    "shutdown_signal_poll_budget_seconds": 588,
+    "recorder_inner_recheck": {
+      "owner": {
+        "pid": 1475,
+        "pgid": 1475,
+        "sid": 1475,
+        "start_ticks": 20707,
+        "token": "dd4b13898d1c46f1b04a8dc3ae29e8d5"
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true,
+      "reported_cleanup": {
+        "signals": [
+          {
+            "pid": 1475,
+            "start_ticks": 20707,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 15.0,
+        "elapsed_wall_seconds": 0.40551002600000174
+      }
+    },
+    "elapsed_wall_s": 652.5024862949999,
+    "all_owned_groups_empty": true,
+    "all_run_token_processes_absent": false,
+    "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+    "owned_cleanup_scope": "Verified launched process groups, nested recorder and exact writer child exit",
+    "retention_audit_passed": false,
+    "evidence_collection_complete": false
+  },
+  "run_token_cleanup": {
+    "remaining": [],
+    "errors": [
+      {
+        "pid": "501",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "504",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "1650",
+        "error": "PermissionError"
+      }
+    ],
+    "signals_sent": []
+  },
+  "run_token_cleanup_context": {
+    "original_global_absence_verified": false,
+    "recheck": {},
+    "denied_process_context": {},
+    "scope": "Ancillary evidence only; does not override the original incomplete global scan."
+  },
+  "limitations": [
+    "No ROS nodes or motion commands started by this review; no truth files read.",
+    "Owned groups and the retained-frame writer have closure evidence; global token absence remains as reported, including permission failures.",
+    "A bounded queue of processed-frame windows does not establish whole-maze visual coverage or target recall.",
+    "Saved online claims and closed-run artifact audit have different scopes; missing evidence is not a pass.",
+    "Native stationary brackets/tails are sampled evidence, not a continuous-motion proof.",
+    "No physical LIMO hardware evaluated."
+  ],
+  "missing_files": [
+    "run-token-process-recheck.json",
+    "denied-process-context.json",
+    "snapshot-map.failure.json"
+  ],
+  "source_files": {
+    "outputs\\ros_smoke\\run26-tf-tolerance\\orchestration.json": {
+      "bytes": 12140,
+      "sha256": "8234ffc84acd948dca01d708a9d50fe78b2f83932b8f2b3a15133b86d1119877"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\run-token-final-processes.json": {
+      "bytes": 261,
+      "sha256": "98ffe815036a0190aa11ee8358cde7af0a3f79b8beddca5a5f396f7a6f8f19bc"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\retention-shutdown.json": {
+      "bytes": 327,
+      "sha256": "a6590ca363f74716a219f5610db48bc5aaa2fd1866e7a188e32eadc545de9e3d"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\mission\\mission_20261101_231156.json": {
+      "bytes": 110383,
+      "sha256": "03937f5a7a743a9322fb61cdc4b73753bee49e613e9983f7ae9a71366745725f"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\observer.json": {
+      "bytes": 14767950,
+      "sha256": "6e3046b5f6c064df44ed449bc5c85b266ef9659f42ad3f40d4ed7f516ff04fed"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\retention-audit.json": {
+      "bytes": 322,
+      "sha256": "1dc80f1d83d861cac77cd5290bbe7fdadd8b3afe657045783e21994677e5b693"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\retained\\checkpoint.json": {
+      "bytes": 32899,
+      "sha256": "8202ed212f1b6abeb4d2fd7ce8dd8bf44296634f22804fb0c03717e9cdbdb32d"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\preparation.json": {
+      "bytes": 2387,
+      "sha256": "b1a753346cf7780848d3b9386a97f3c1091202b054fdfc6dbbb56e2589544883"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\final-save.json": {
+      "bytes": 113742,
+      "sha256": "5d957984dc25ff21386f66ed38ecb0542697d9987d76451d3f16e4c3ad2cc93d"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\snapshot-map.provenance.json": {
+      "bytes": 3877,
+      "sha256": "e4ed928275b896c4d76cf423d90b537bdd97597cab9832140772931525e05036"
+    },
+    "outputs\\ros_smoke\\run26-tf-tolerance\\navigation.log": {
+      "bytes": 76321,
+      "sha256": "50fa1d00939116d84640685b3e2b2e5f6dcdb4bb1f4c743020633dd5b77ea2fb"
+    }
+  }
+}

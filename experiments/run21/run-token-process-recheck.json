@@ -1,0 +1,39 @@
+{
+  "remaining": [],
+  "errors": [
+    {
+      "pid": 477,
+      "error": "unreadable_potential_run_process"
+    },
+    {
+      "pid": 480,
+      "error": "unreadable_potential_run_process"
+    }
+  ],
+  "unreadable_predating_processes": [
+    {
+      "pid": 477,
+      "state": "S",
+      "pgid": 477,
+      "sid": 477,
+      "start_ticks": 62592,
+      "comm": "systemd",
+      "predates_first_owned_process": false,
+      "known_run_process_group": false
+    },
+    {
+      "pid": 480,
+      "state": "S",
+      "pgid": 477,
+      "sid": 477,
+      "start_ticks": 62605,
+      "comm": "(sd-pam)",
+      "predates_first_owned_process": false,
+      "known_run_process_group": false
+    }
+  ],
+  "earliest_owned_start_ticks": 6093,
+  "signals_sent": [],
+  "passed": false,
+  "scope": "Current absence; original final-check PermissionErrors preserved; no unknown process signaled"
+}

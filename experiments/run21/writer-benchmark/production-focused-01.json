@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_frame_retention_adapter",
+    "test_frame_retention_owner_races",
+    "test_perception_lifecycle"
+  ],
+  "exit_code": 0,
+  "elapsed_wall_s": 21.262533378,
+  "sources_before": {
+    "src/limo_maze_perception/limo_maze_perception/retention_adapter.py": "7a6f57cacce995e666b9c2b0210635fd915a5d2a8d93a30f2a5e3e8023f63f76",
+    "tests/test_frame_retention_adapter.py": "011f233410c8262b7c4d4e019bce9b33c8d76bf18795fa364faa8062c1d7e2a6",
+    "tests/test_frame_retention_owner_races.py": "8841bf83650380cbcf7737cf692fa18e614a08864df2bacdd1d5bf9f76e22068",
+    "tests/test_perception_lifecycle.py": "c61b3e9b5ff75ea61a2bfbb0fa7fec28260aa1a01e9802f7931a47d4290a7545"
+  },
+  "sources_after": {
+    "src/limo_maze_perception/limo_maze_perception/retention_adapter.py": "7a6f57cacce995e666b9c2b0210635fd915a5d2a8d93a30f2a5e3e8023f63f76",
+    "tests/test_frame_retention_adapter.py": "011f233410c8262b7c4d4e019bce9b33c8d76bf18795fa364faa8062c1d7e2a6",
+    "tests/test_frame_retention_owner_races.py": "8841bf83650380cbcf7737cf692fa18e614a08864df2bacdd1d5bf9f76e22068",
+    "tests/test_perception_lifecycle.py": "c61b3e9b5ff75ea61a2bfbb0fa7fec28260aa1a01e9802f7931a47d4290a7545"
+  },
+  "sources_unchanged": true,
+  "scope": "source focused owned writer, race, and extracted lifecycle regression; no ROS nodes"
+}

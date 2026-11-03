@@ -1,0 +1,772 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only observed-grid diagnosis; no world truth or motion commands",
+  "runtime_parameters": {
+    "robot_radius_m": 0.25,
+    "frontier_standoff_m": 0.55,
+    "frontier_min_translation_m": 0.2,
+    "goal_arrival_margin_m": 0.05
+  },
+  "mission": {
+    "status": "done",
+    "reason": "unreachable_frontiers_or_coverage_incomplete;final_observation_checks_incomplete",
+    "mission_success": false,
+    "map_complete": false,
+    "returned_pose_verified": true
+  },
+  "retained_audit": {
+    "passed": true,
+    "accepted_count": 15,
+    "verified_count": 15
+  },
+  "grids": [
+    {
+      "source": "outputs/ros_smoke/run22-isolated-writer/observer-snapshots/0033-phase-canceling.json",
+      "sha256": "fd6df76f8cc75a5f00247d3f81a4dbb82abf8ebc6620ad52114f4cf41dff8751",
+      "stamp_ros_s": 198.625,
+      "pose": [
+        1.7339507865359045,
+        -1.5884905478918308,
+        0.4597191289689546
+      ],
+      "width": 84,
+      "height": 53,
+      "resolution": 0.05000000074505806,
+      "origin": [
+        -0.5160506743998308,
+        -2.1784644387705105,
+        0.0
+      ],
+      "value_counts": {
+        "-1": 1177,
+        "100": 691,
+        "0": 2584
+      },
+      "prior_filled_unknown_cells": 0,
+      "actual_selection": {
+        "state": "unreachable_frontiers_or_coverage",
+        "goal": null,
+        "frontier_count": 3,
+        "uncovered_count": 2582,
+        "reachable_count": 2582,
+        "unobserved_count": 0
+      },
+      "connected_free_cells": 2582,
+      "safe_cells": 749,
+      "reachable_safe_cells": 749,
+      "reachable_endpoint_cells": 125,
+      "frontier_clusters": [
+        [
+          [
+            78,
+            32
+          ],
+          [
+            79,
+            32
+          ],
+          [
+            80,
+            32
+          ]
+        ]
+      ],
+      "frontiers": [
+        {
+          "cell": [
+            78,
+            32
+          ],
+          "xy": [
+            3.4089493840872267,
+            -0.5534644145561236
+          ],
+          "unknown_neighbors": [
+            [
+              77,
+              32
+            ],
+            [
+              78,
+              31
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                77,
+                32
+              ],
+              "unknown_cells": 518,
+              "touches_grid_edge": true
+            },
+            {
+              "seed": [
+                78,
+                31
+              ],
+              "unknown_cells": 518,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 3,
+          "visible_safe_endpoints_any_distance": 0,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": null,
+          "nearest_visible_translating_safe_endpoint": null,
+          "neighborhood_rows_high_y_first": [
+            "..........##?",
+            "..........##?",
+            "..........##?",
+            "..........##?",
+            "..........#??",
+            "########..#??",
+            "??????F..##??",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        },
+        {
+          "cell": [
+            79,
+            32
+          ],
+          "xy": [
+            3.4589493848322848,
+            -0.5534644145561236
+          ],
+          "unknown_neighbors": [
+            [
+              79,
+              31
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                79,
+                31
+              ],
+              "unknown_cells": 518,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 2,
+          "visible_safe_endpoints_any_distance": 0,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": null,
+          "nearest_visible_translating_safe_endpoint": null,
+          "neighborhood_rows_high_y_first": [
+            ".........##??",
+            ".........##??",
+            ".........##??",
+            ".........##??",
+            ".........#???",
+            "#######..#???",
+            "?????.F.##???",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        },
+        {
+          "cell": [
+            80,
+            32
+          ],
+          "xy": [
+            3.508949385577343,
+            -0.5534644145561236
+          ],
+          "unknown_neighbors": [
+            [
+              80,
+              31
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                80,
+                31
+              ],
+              "unknown_cells": 518,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 1,
+          "visible_safe_endpoints_any_distance": 0,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": null,
+          "nearest_visible_translating_safe_endpoint": null,
+          "neighborhood_rows_high_y_first": [
+            "........##???",
+            "........##???",
+            "........##???",
+            "........##???",
+            "........#????",
+            "######..#????",
+            "????..F##????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        }
+      ]
+    },
+    {
+      "source": "outputs/ros_smoke/run22-isolated-writer/observer-snapshots/0038-phase-done.json",
+      "sha256": "5840c29d255e209c050a5df70e37f8260d383198e68b0a8ef4805f4f0f22ef3d",
+      "stamp_ros_s": 257.25,
+      "pose": [
+        0.02953686271079159,
+        -0.002865692794314937,
+        -0.15949049430844067
+      ],
+      "width": 84,
+      "height": 53,
+      "resolution": 0.05000000074505806,
+      "origin": [
+        -0.5160506743998308,
+        -2.1784644387705105,
+        0.0
+      ],
+      "value_counts": {
+        "-1": 1147,
+        "100": 703,
+        "0": 2602
+      },
+      "prior_filled_unknown_cells": 0,
+      "actual_selection": {
+        "state": "unreachable_frontiers_or_coverage",
+        "goal": null,
+        "frontier_count": 3,
+        "uncovered_count": 2571,
+        "reachable_count": 2571,
+        "unobserved_count": 0
+      },
+      "connected_free_cells": 2571,
+      "safe_cells": 761,
+      "reachable_safe_cells": 761,
+      "reachable_endpoint_cells": 137,
+      "frontier_clusters": [
+        [
+          [
+            78,
+            31
+          ],
+          [
+            79,
+            31
+          ],
+          [
+            80,
+            31
+          ]
+        ]
+      ],
+      "frontiers": [
+        {
+          "cell": [
+            78,
+            31
+          ],
+          "xy": [
+            3.4089493840872267,
+            -0.6034644153011817
+          ],
+          "unknown_neighbors": [
+            [
+              77,
+              31
+            ],
+            [
+              78,
+              30
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                77,
+                31
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            },
+            {
+              "seed": [
+                78,
+                30
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 1,
+          "visible_safe_endpoints_any_distance": 0,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": null,
+          "nearest_visible_translating_safe_endpoint": null,
+          "neighborhood_rows_high_y_first": [
+            "..........##?",
+            "..........##?",
+            "..........##?",
+            "..........#??",
+            "#.###.....##?",
+            "#######..##??",
+            "??????F..#???",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        },
+        {
+          "cell": [
+            79,
+            31
+          ],
+          "xy": [
+            3.4589493848322848,
+            -0.6034644153011817
+          ],
+          "unknown_neighbors": [
+            [
+              79,
+              30
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                79,
+                30
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 0,
+          "visible_safe_endpoints_any_distance": 0,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": null,
+          "nearest_visible_translating_safe_endpoint": null,
+          "neighborhood_rows_high_y_first": [
+            ".........##??",
+            ".........##??",
+            ".........##??",
+            ".........#???",
+            ".###.....##??",
+            "######..##???",
+            "?????.F.#????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        },
+        {
+          "cell": [
+            80,
+            31
+          ],
+          "xy": [
+            3.508949385577343,
+            -0.6034644153011817
+          ],
+          "unknown_neighbors": [
+            [
+              80,
+              30
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                80,
+                30
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 0,
+          "visible_safe_endpoints_any_distance": 4,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": {
+            "cell": [
+              74,
+              41
+            ],
+            "xy": [
+              3.2089493811069945,
+              -0.10346440785060107
+            ],
+            "distance_to_anchor_m": 0.5830951981733254,
+            "translation_from_pose_m": 3.18100362521099,
+            "meets_translation": true,
+            "route_grid_steps": 66,
+            "safe_radius_m": 0.25,
+            "endpoint_radius_m": 0.335355339586163,
+            "line_free": true
+          },
+          "nearest_visible_translating_safe_endpoint": {
+            "cell": [
+              74,
+              41
+            ],
+            "xy": [
+              3.2089493811069945,
+              -0.10346440785060107
+            ],
+            "distance_to_anchor_m": 0.5830951981733254,
+            "translation_from_pose_m": 3.18100362521099,
+            "meets_translation": true,
+            "route_grid_steps": 66,
+            "safe_radius_m": 0.25,
+            "endpoint_radius_m": 0.335355339586163,
+            "line_free": true
+          },
+          "neighborhood_rows_high_y_first": [
+            "........##???",
+            "........##???",
+            "........##???",
+            "........#????",
+            "###.....##???",
+            "#####..##????",
+            "????..F#?????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        }
+      ]
+    },
+    {
+      "source": "outputs/ros_smoke/run22-isolated-writer/final-save.json",
+      "sha256": "701412c8d0a724480222693da416492cf63f6b392d77321e98cb01cbf4dbc963",
+      "stamp_ros_s": 271.0,
+      "pose": [
+        0.02953686271079159,
+        -0.002865692794314937,
+        -0.15949049430844067
+      ],
+      "width": 84,
+      "height": 53,
+      "resolution": 0.05000000074505806,
+      "origin": [
+        -0.5160506743998308,
+        -2.1784644387705105,
+        0.0
+      ],
+      "value_counts": {
+        "-1": 1147,
+        "100": 703,
+        "0": 2602
+      },
+      "prior_filled_unknown_cells": 0,
+      "actual_selection": {
+        "state": "unreachable_frontiers_or_coverage",
+        "goal": null,
+        "frontier_count": 3,
+        "uncovered_count": 2571,
+        "reachable_count": 2571,
+        "unobserved_count": 0
+      },
+      "connected_free_cells": 2571,
+      "safe_cells": 761,
+      "reachable_safe_cells": 761,
+      "reachable_endpoint_cells": 137,
+      "frontier_clusters": [
+        [
+          [
+            78,
+            31
+          ],
+          [
+            79,
+            31
+          ],
+          [
+            80,
+            31
+          ]
+        ]
+      ],
+      "frontiers": [
+        {
+          "cell": [
+            78,
+            31
+          ],
+          "xy": [
+            3.4089493840872267,
+            -0.6034644153011817
+          ],
+          "unknown_neighbors": [
+            [
+              77,
+              31
+            ],
+            [
+              78,
+              30
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                77,
+                31
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            },
+            {
+              "seed": [
+                78,
+                30
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 1,
+          "visible_safe_endpoints_any_distance": 0,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": null,
+          "nearest_visible_translating_safe_endpoint": null,
+          "neighborhood_rows_high_y_first": [
+            "..........##?",
+            "..........##?",
+            "..........##?",
+            "..........#??",
+            "#.###.....##?",
+            "#######..##??",
+            "??????F..#???",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        },
+        {
+          "cell": [
+            79,
+            31
+          ],
+          "xy": [
+            3.4589493848322848,
+            -0.6034644153011817
+          ],
+          "unknown_neighbors": [
+            [
+              79,
+              30
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                79,
+                30
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 0,
+          "visible_safe_endpoints_any_distance": 0,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": null,
+          "nearest_visible_translating_safe_endpoint": null,
+          "neighborhood_rows_high_y_first": [
+            ".........##??",
+            ".........##??",
+            ".........##??",
+            ".........#???",
+            ".###.....##??",
+            "######..##???",
+            "?????.F.#????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        },
+        {
+          "cell": [
+            80,
+            31
+          ],
+          "xy": [
+            3.508949385577343,
+            -0.6034644153011817
+          ],
+          "unknown_neighbors": [
+            [
+              80,
+              30
+            ]
+          ],
+          "unknown_components": [
+            {
+              "seed": [
+                80,
+                30
+              ],
+              "unknown_cells": 495,
+              "touches_grid_edge": true
+            }
+          ],
+          "route_safe": false,
+          "endpoint_safe": false,
+          "eligible_endpoints_within_standoff": 0,
+          "visible_safe_endpoints_any_distance": 4,
+          "valid_actual_goal_candidates": 0,
+          "nearest_visible_safe_endpoint": {
+            "cell": [
+              74,
+              41
+            ],
+            "xy": [
+              3.2089493811069945,
+              -0.10346440785060107
+            ],
+            "distance_to_anchor_m": 0.5830951981733254,
+            "translation_from_pose_m": 3.18100362521099,
+            "meets_translation": true,
+            "route_grid_steps": 66,
+            "safe_radius_m": 0.25,
+            "endpoint_radius_m": 0.335355339586163,
+            "line_free": true
+          },
+          "nearest_visible_translating_safe_endpoint": {
+            "cell": [
+              74,
+              41
+            ],
+            "xy": [
+              3.2089493811069945,
+              -0.10346440785060107
+            ],
+            "distance_to_anchor_m": 0.5830951981733254,
+            "translation_from_pose_m": 3.18100362521099,
+            "meets_translation": true,
+            "route_grid_steps": 66,
+            "safe_radius_m": 0.25,
+            "endpoint_radius_m": 0.335355339586163,
+            "line_free": true
+          },
+          "neighborhood_rows_high_y_first": [
+            "........##???",
+            "........##???",
+            "........##???",
+            "........#????",
+            "###.....##???",
+            "#####..##????",
+            "????..F#?????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????",
+            "?????????????"
+          ]
+        }
+      ]
+    }
+  ],
+  "map_export": {
+    "errors": [
+      "export_incomplete:/slam_toolbox/save_map",
+      "expected_export_files_missing_or_empty_at_capture"
+    ],
+    "exports": {
+      "/slam_toolbox/save_map": {
+        "service": "/slam_toolbox/save_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map",
+        "status": "service_failed",
+        "sent_wall_s": 6.999757288000069,
+        "sent_ros_ns": 271417000000,
+        "result": 255,
+        "completed_wall_s": 12.869747371000017
+      },
+      "/slam_toolbox/serialize_map": {
+        "service": "/slam_toolbox/serialize_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run22-isolated-writer/final-map",
+        "status": "service_success",
+        "sent_wall_s": 12.873291181000013,
+        "sent_ros_ns": 274173000000,
+        "result": 0,
+        "completed_wall_s": 13.383390347000045
+      }
+    },
+    "snapshot_valid": true
+  },
+  "analysis_wall_s": 0.12544410799999994,
+  "interpretation": {
+    "frontier": "The original selection is reproducible under identical parameters. Three cells form one unresolved cluster; return-trigger grid has no safe endpoint with a conservative line of sight. Later home/final grids contain four valid-geometry viewpoints for one anchor, all beyond the 0.55 m search standoff; nearest is 0.5830951981733254 m. Other two anchors still have no safe visible endpoint.",
+    "completion": "Do not discard the cluster or mark complete: neighboring unknown cells connect to the grid boundary, and final-grid evidence provides a missed conservative viewpoint rather than proof of physical inaccessibility.",
+    "future_frontier_change": "A bounded wider viewpoint fallback with unchanged radius, endpoint margin, known-free connectivity and conservative visibility can recover the final-grid candidate. It requires independent runtime validation and does not prove it will close every unknown region.",
+    "export": "Service returned 255; map_saver_cli logged Failed to spin map subscription after approximately 2.005 s. A fresh valid OccupancyGrid snapshot existed; no raster output was written. The evidence does not isolate DDS discovery, scheduling or delivery as root cause.",
+    "tail": "The supervisor raises on nonzero save-final exit before entering the independent native-tail loop. Export failure therefore truncates tail collection; it does not establish a new post-terminal motion fault.",
+    "future_export_change": "Keep export failure recorded but collect the original independent terminal tail before cleanup. Save a separately named PGM/YAML from the already-captured valid immutable OccupancyGrid with explicit snapshot provenance, or use one owned map_saver_cli with an explicit bounded subscription timeout; never relabel the failed service call as success."
+  },
+  "source_references": {
+    "planner": "src/limo_maze_mission/limo_maze_mission/core.py: select, safe_cells, line_free",
+    "planner_sha256": "6e56ed052df3c08da6d413de3f8a455fbcf4f683706f3ee1ebcb5b0f2a30ac8e",
+    "slam_map_saver": "F:/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-boundary-ws/src/slam_toolbox/src/map_saver.cpp",
+    "slam_map_saver_sha256": "f09697c4335d5db2e5feb63f9c0fc44f3a82f87bb9f572255c1f6583b29ab0c7",
+    "nav2_jazzy_source": "https://raw.githubusercontent.com/ros-navigation/navigation2/jazzy/nav2_map_server/src/map_saver/map_saver.cpp",
+    "nav2_source_scope": "Upstream Jazzy source corroborates default 2.0 s map-subscription timeout and error location; no claim that fetched branch is a byte-identical installed build."
+  },
+  "completed_execution": {
+    "session_id": 17656,
+    "exit_code": 0,
+    "no_ros_nodes_started": true,
+    "no_runtime_or_production_edits": true,
+    "outputs_only": [
+      "outputs/setup/run22-followup-diagnosis.json",
+      "outputs/setup/run22-followup-diagnosis.md"
+    ]
+  }
+}

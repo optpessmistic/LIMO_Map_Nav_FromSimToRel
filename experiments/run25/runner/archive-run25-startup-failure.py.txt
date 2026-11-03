@@ -1,0 +1,210 @@
+"""Archive the CLOSED run25 startup failure; never promote missing cleanup.
+
+Root confirmed session 23159 exited. This special path preserves the original
+all_owned_groups_empty=false and missing recorder/writer/mission artifacts.
+It checks each recorded owned stop without creating a regular closure pass.
+"""
+import hashlib
+import json
+import math
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run25-tf-tolerance'
+DEST = ROOT / 'experiments/run25'
+SETUP = ROOT / 'outputs/setup'
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def raw(path):
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT):
+        raise RuntimeError('Unsafe or missing source: ' + str(path))
+    if path.stat().st_size > 32 * 1024 * 1024:
+        raise RuntimeError('Unexpected large startup artifact: ' + str(path))
+    return path.read_bytes()
+
+
+def read(path):
+    return json.loads(raw(path))
+
+
+def write(path, data):
+    payload = data if isinstance(data, bytes) else (json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode()
+    with path.open('xb') as stream:
+        stream.write(payload)
+
+
+def main():
+    if DEST.exists() or DEST.is_symlink():
+        raise RuntimeError('Refuse existing run25 archive')
+    orchestration = read(RUN / 'orchestration.json')
+    preparation = read(RUN / 'preparation.json')
+    token_scan = read(RUN / 'run-token-final-processes.json')
+    elapsed = orchestration.get('elapsed_wall_s')
+    if not (orchestration.get('status') == 'orchestration_failed'
+            and type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed > 0
+            and orchestration.get('terminal') is None):
+        raise RuntimeError('Not the recorded terminal startup failure')
+    owners = {read(path)['name']: read(path) for path in RUN.glob('process-*.json')}
+    stops = orchestration.get('stops') or {}
+    if not owners or set(owners) != set(stops):
+        raise RuntimeError('Owned process/stop names differ')
+    for name, owner in owners.items():
+        stop = stops[name]
+        if not (owner['token'] == preparation['token'] and owner['pid'] == owner['pgid'] == owner['sid']
+                and stop.get('remaining') == [] and stop.get('ownership_errors') == []
+                and stop.get('remaining_check_complete') is True and type(stop.get('exit_code')) is int):
+            raise RuntimeError('Recorded owned stop incomplete: ' + name)
+    if token_scan.get('remaining') != []:
+        raise RuntimeError('Original scan reports a remaining run-token process')
+    # These absences are part of this specific early failure, not evidence of a
+    # successful writer shutdown or a completed nested-recorder cleanup check.
+    absent_paths = ['recording', 'recording/supervisor.json', 'retained', 'retained/checkpoint.json',
+                    'retention-shutdown.json', 'retention-audit.json', 'process-mission.json',
+                    'process-survey.json', 'process-motion.json', 'final-save.json', 'observer.json']
+    existence = {name: (RUN / name).exists() for name in absent_paths}
+    mission_files = sorted(p.name for p in (RUN / 'mission').glob('*') if p.is_file())
+    if any(existence.values()) or mission_files:
+        raise RuntimeError('Unexpected later-stage artifacts; review before using startup-only archive')
+    epoch = raw(RUN / 'epoch.txt')
+    argument = epoch.rstrip(b'\n')  # Bash substitution removes LF, not CR.
+    recorder_log = raw(RUN / 'recorder.log').decode('utf-8', errors='replace')
+    perception_log = raw(RUN / 'perception.log').decode('utf-8', errors='replace')
+    if not (epoch.endswith(b'\r\n') and argument.endswith(b'\r')
+            and 'An explicit nonempty map epoch is required' in recorder_log
+            and stops['recorder']['exit_code'] == 2
+            and 'KeyboardInterrupt' in perception_log and 'ros2cli/cli.py' in perception_log
+            and stops['perception']['exit_code'] == -2):
+        raise RuntimeError('Startup failure evidence differs from the reviewed case')
+    inputs = read(RUN / 'runner-inputs.json')
+    input_checks = []
+    for name, expected in inputs.items():
+        actual = sha(raw(ROOT / name))
+        if actual != expected:
+            raise RuntimeError('Frozen runtime input changed: ' + name)
+        input_checks.append({'source': name, 'sha256': actual, 'matches_runtime_record': True})
+    recorder_source = raw(ROOT / 'scripts/record_bounded.py').decode()
+    supervise = recorder_source[recorder_source.index('def supervise('):]
+    validation_precedes_launch = (supervise.index('config.validate()') < supervise.index('output.mkdir(')
+                                 < supervise.index('process = popen('))
+    if not validation_precedes_launch:
+        raise RuntimeError('Recorder source no longer supports prelaunch validation inference')
+    nav_lines = raw(RUN / 'navigation.log').decode('utf-8', errors='replace').splitlines()
+    nav_matches = [{'line_number': number, 'text': line} for number, line in enumerate(nav_lines, 1)
+                   if 'extrapolat' in line.casefold()]
+    review = {'schema_version': 1, 'run_outcome': 'startup_failed', 'runtime_head': preparation['code_head'],
+        'elapsed_wall_s': elapsed, 'original_errors': orchestration['errors'],
+        'normal_terminal_present': False, 'mission_artifacts': mission_files,
+        'reported_owned_groups': {'count': len(owners), 'all_recorded_stops_empty': True,
+            'source': 'exact process-*.json identities and orchestration.stops',
+            'scope': 'Recorded directly owned groups only; does not replace the original aggregate cleanup flag.'},
+        'original_all_owned_groups_empty': orchestration.get('all_owned_groups_empty'),
+        'original_recorder_inner_recheck': orchestration.get('recorder_inner_recheck'),
+        'original_all_run_token_processes_absent': orchestration.get('all_run_token_processes_absent'),
+        'original_token_scan': token_scan, 'artifact_existence': existence,
+        'epoch': {'bytes': len(epoch), 'sha256': sha(epoch), 'hex': epoch.hex(),
+            'ends_with_crlf': True, 'bash_substitution_argument_hex': argument.hex(),
+            'argument_has_trailing_cr': True, 'strip_would_change_argument': argument.strip() != argument},
+        'recorder_prelaunch_failure': {'supported': True, 'exit_code': stops['recorder']['exit_code'],
+            'diagnostic': recorder_log.strip(), 'source_validation_precedes_directory_and_child_creation': True,
+            'scope': 'Matching frozen source and exit diagnostic support that inner rosbag was not launched; original nested cleanup check remains incomplete.'},
+        'writer_startup': {'inference': 'Perception was interrupted during ros2cli/rclpy import, before detector startup.',
+            'exit_code': stops['perception']['exit_code'], 'writer_exit_receipt_available': False,
+            'checkpoint_available': False, 'scope': 'No writer startup evidence; do not claim a verified writer shutdown.'},
+        'retention': {'audit_available': False, 'audit_passed': None, 'accepted_count': None,
+            'scope': 'No mission/consumer exists; do not manufacture a 0/0 audit.'},
+        'tf_diagnostics': {'base_tf_age_rejected_events': None, 'mission_not_started': True,
+            'navigation_extrapolation_matching_lines': len(nav_matches), 'examples_first_20': nav_matches[:20],
+            'scope': 'Navigation log-line count only; this run did not test autonomous TF tolerance.'},
+        'runtime_inputs_verified': input_checks,
+        'limitations': ['No motion survey or autonomous mission started in the supervisor sequence.',
+            'No independent physical stop or native terminal-tail validation exists for this startup failure.',
+            'Original aggregate owned cleanup=false and global /proc permission uncertainty are preserved.',
+            'File archiving does not establish global process absence, mapping/search success or real-robot validity.']}
+    DEST.mkdir()
+    records = []
+
+    def keep(source, name):
+        payload = raw(source)
+        target = DEST / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        write(target, payload)
+        if raw(target) != payload or raw(source) != payload:
+            raise RuntimeError('Byte identity failed: ' + name)
+        records.append({'source': source.relative_to(ROOT).as_posix(), 'archive': name,
+                        'bytes': len(payload), 'sha256': sha(payload)})
+
+    try:
+        keep(ROOT / 'experiments/run24/.gitattributes', '.gitattributes')
+        for path in sorted(RUN.iterdir()):
+            if path.is_file() and path.suffix in ('.json', '.log', '.yaml', '.txt'):
+                keep(path, path.name)
+        for path in sorted((RUN / 'spawn').rglob('*.json')):
+            keep(path, 'spawn/' + path.relative_to(RUN / 'spawn').as_posix())
+        for name in ('start-run25.sh', 'run25-env.sh', 'run25-process.py', 'run25-param-gate.py',
+                     'run25-preflight.py', 'run25-save.py', 'run25-provenance.py', 'run25-installed-check.py',
+                     'archive-run25-startup-failure.py'):
+            keep(SETUP / name, 'runner/' + name + '.txt')
+        for name in inputs:
+            if not name.startswith(('outputs/setup/', 'outputs/ros_smoke/')):
+                keep(ROOT / name, 'runner/' + name.replace('/', '__') + '.txt')
+        for name in ('verify-run25.sh', 'run25-tests.log', 'run25-tests-02.log', 'run25-tf-diagnostics-final.log',
+                     'run25-build.log', 'run25-launch-args.log', 'run25-code-ci.json'):
+            if (SETUP / name).is_file():
+                keep(SETUP / name, 'validation/' + name)
+        write(DEST / 'startup-failure-review.json', review)
+        readme = ('# run25: startup failure before the autonomous mission\n\n'
+            f"Runtime code `{preparation['code_head']}`; orchestration failed after {elapsed:.3f} wall seconds. "
+            'The recorder rejected the map epoch before the survey. No mission result, retained-frame audit, map export or terminal-tail result exists.\n\n'
+            '`epoch.txt` is preserved byte-for-byte: 38 bytes ending `0D 0A`. Bash `$(cat ...)` removes the LF and leaves the CR. '
+            '`record_bounded.Config.validate()` rejects the resulting surrounding whitespace before making the recording directory or launching rosbag. '
+            'The frozen runtime source hash, recorder exit 2 and diagnostic support this prelaunch failure.\n\n'
+            f"All {len(owners)} directly recorded owned groups have empty/complete stop checks. The original aggregate "
+            '`all_owned_groups_empty=false` remains unchanged because the nested recorder supervisor report was never created. '
+            'The original global token scan also stays false: no readable matching process remained, but two /proc environments were unreadable. '
+            'This archive does not infer global process absence.\n\n'
+            'Perception received SIGINT during ros2cli/rclpy import and exited -2. Its traceback and absent retention directory support that detector/writer startup '
+            'had not been reached; there is no writer checkpoint or exit receipt, so no verified writer shutdown is claimed. '
+            'The empty mission directory and absent mission/survey/motion process records are preserved as observations, not synthetic successful results.\n\n'
+            'The TF tolerance experiment was not exercised by autonomous motion. TF age events and accepted-frame counts are unavailable, '
+            'not fabricated zero-frame successes. Existing navigation extrapolation log-line counts appear in startup-failure-review.json.\n\n'
+            'Verify copied bytes with `sha256sum -c SHA256SUMS`. Archive verification concerns file identity only. '
+            'Raw epoch CRLF, errors, false flags, logs and missing-artifact observations are retained. Validation logs document prior tests/builds; '
+            'they do not turn this failed runtime into a pass. No new ROS processes, tests or simulator were started by the archive builder.\n')
+        write(DEST / 'README.md', readme.encode())
+        copied = {row['archive'] for row in records}
+        generated = [{'archive': p.relative_to(DEST).as_posix(), 'bytes': p.stat().st_size, 'sha256': sha(raw(p))}
+                     for p in sorted(DEST.rglob('*')) if p.is_file() and p.relative_to(DEST).as_posix() not in copied]
+        for row in records:
+            if sha(raw(ROOT / row['source'])) != row['sha256'] or sha(raw(DEST / row['archive'])) != row['sha256']:
+                raise RuntimeError('Source or copied evidence changed')
+        write(DEST / 'archive-manifest.json', {'schema_version': 1, 'run_outcome': 'startup_failed',
+            'copied': records, 'generated': generated,
+            'index_exclusions': ['archive-manifest.json', 'archive-verification.json', 'SHA256SUMS'],
+            'scope': 'Original run flags preserved; no recorder/writer closure pass manufactured.'})
+        write(DEST / 'archive-verification.json', {'schema_version': 1, 'passed': True,
+            'scope': 'Archive byte identity only, not runtime cleanup or mission success.',
+            'copied_source_count': len(records), 'generated_file_count': len(generated),
+            'original_run_success': False, 'original_all_owned_groups_empty': orchestration.get('all_owned_groups_empty'),
+            'manifest_sha256': sha(raw(DEST / 'archive-manifest.json'))})
+        files = sorted(p for p in DEST.rglob('*') if p.is_file())
+        sums = ''.join(sha(raw(p)) + '  ' + p.relative_to(DEST).as_posix() + '\n' for p in files)
+        write(DEST / 'SHA256SUMS', sums.encode())
+        for line in raw(DEST / 'SHA256SUMS').decode().splitlines():
+            expected, name = line.split('  ', 1)
+            if sha(raw(DEST / name)) != expected:
+                raise RuntimeError('Final SHA256SUMS mismatch: ' + name)
+        print(json.dumps({'archive_identity_passed': True, 'run_outcome': 'startup_failed',
+            'files': len(files) + 1, 'bytes': sum(p.stat().st_size for p in DEST.rglob('*') if p.is_file()),
+            'copied_sources': len(records), 'original_all_owned_groups_empty': orchestration.get('all_owned_groups_empty'),
+            'SHA256SUMS_sha256': sha(raw(DEST / 'SHA256SUMS'))}, indent=2))
+    except Exception as exc:
+        write(DEST / 'ARCHIVE-FAILED.json', {'passed': False, 'error': type(exc).__name__ + ': ' + str(exc)})
+        raise
+
+
+if __name__ == '__main__':
+    main()

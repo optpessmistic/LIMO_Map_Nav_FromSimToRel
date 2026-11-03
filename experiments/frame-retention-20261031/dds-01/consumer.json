@@ -1,0 +1,291 @@
+{
+  "consumer_session": "retention-dds-consumer",
+  "current_window": 1,
+  "enabled": true,
+  "fault": null,
+  "ignored_results": 0,
+  "reserved_metadata_bytes": 108544,
+  "scope": "exact_accepted_metadata_and_receipts; offline_artifacts_not_audited",
+  "windows": [
+    {
+      "accepted": [
+        {
+          "reason": null,
+          "request": {
+            "accepted_ordinal": 1,
+            "after_stamp_ns": 1793447719848623777,
+            "goal_token": 1,
+            "inspection_request_id": "retention-dds-window",
+            "map_epoch": "retention-dds-epoch",
+            "retention_id": "retain-3e48ed752cb21c9bf4604f9dd5fa6dd2f17d957fb74fc6985db241d487d153e2",
+            "sample": {
+              "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f",
+              "depth_sha256": "740ee0e4be5948a1e9e0e38fb5f0eb1b061d7791cf462ea15dd5b27a1811bb62",
+              "depth_stamp_ns": 1793447719848700550,
+              "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+              "detector_session_id": "5f3efb69-7d50-4c4f-a63e-329f103b5e3a",
+              "frame_id": "camera_optical_frame",
+              "map_epoch": "retention-dds-epoch",
+              "rgb_sha256": "00210dc674194e3d948bdf1b2b89b99fdc02e38f5bab95709443a0238d3c008d",
+              "rgb_stamp_ns": 1793447719848700550,
+              "sequence": 1,
+              "source": "red_rgbd_sim_baseline"
+            },
+            "schema_version": 1,
+            "tf": {
+              "base_pose": [
+                1.0,
+                1.0,
+                0.0
+              ],
+              "camera_pose": [
+                1.08,
+                1.0,
+                0.25,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "stamp_ns": 1793447719848700550
+            }
+          },
+          "request_sha256": "409a58423121bf4a5ef9490d7e8c061fb3c6a3f650c970c1d6e2c9ec27965d39",
+          "result": {
+            "checkpoint_persisted": true,
+            "completed_wall": 921.081420014,
+            "reason": null,
+            "receipt": {
+              "directory": "409a58423121bf4a5ef9490d7e8c061fb3c6a3f650c970c1d6e2c9ec27965d39",
+              "file_fsync_completed": true,
+              "files": {
+                "camera_info.json": {
+                  "bytes": 498,
+                  "sha256": "6569189f457fc5df7ae15ec40edb227fae6e12460c94d0d9abd024fc20d74ff1"
+                },
+                "depth.bin": {
+                  "bytes": 19200,
+                  "sha256": "740ee0e4be5948a1e9e0e38fb5f0eb1b061d7791cf462ea15dd5b27a1811bb62"
+                },
+                "manifest.json": {
+                  "bytes": 1355,
+                  "sha256": "b8b519b6099c57aff144086099acb2bf8bcbbcd24b144b11fc5b724c50a3ac20"
+                },
+                "producer.json": {
+                  "bytes": 2005,
+                  "sha256": "0afae79b3ba8e22e8c6598800f5d2e2eff035d5d2485c439d1782cb903071d13"
+                },
+                "request.json": {
+                  "bytes": 965,
+                  "sha256": "409a58423121bf4a5ef9490d7e8c061fb3c6a3f650c970c1d6e2c9ec27965d39"
+                },
+                "rgb.bin": {
+                  "bytes": 14400,
+                  "sha256": "00210dc674194e3d948bdf1b2b89b99fdc02e38f5bab95709443a0238d3c008d"
+                }
+              },
+              "request_sha256": "409a58423121bf4a5ef9490d7e8c061fb3c6a3f650c970c1d6e2c9ec27965d39"
+            },
+            "request_sha256": "409a58423121bf4a5ef9490d7e8c061fb3c6a3f650c970c1d6e2c9ec27965d39",
+            "requested_wall": 917.686996524,
+            "retention_id": "retain-3e48ed752cb21c9bf4604f9dd5fa6dd2f17d957fb74fc6985db241d487d153e2",
+            "status": "stored",
+            "writer_owned": false
+          },
+          "state": "stored"
+        },
+        {
+          "reason": null,
+          "request": {
+            "accepted_ordinal": 2,
+            "after_stamp_ns": 1793447719848623777,
+            "goal_token": 1,
+            "inspection_request_id": "retention-dds-window",
+            "map_epoch": "retention-dds-epoch",
+            "retention_id": "retain-84e55f70981a9fa57efe39dba91d81f79f592fe073f56b99d6b4879f1c723cb2",
+            "sample": {
+              "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f",
+              "depth_sha256": "fd4b0242bd142862f2dd8a0cf1ddf88ee3987c611b3c0d99c8eb1406c258bbb3",
+              "depth_stamp_ns": 1793447719986850374,
+              "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+              "detector_session_id": "5f3efb69-7d50-4c4f-a63e-329f103b5e3a",
+              "frame_id": "camera_optical_frame",
+              "map_epoch": "retention-dds-epoch",
+              "rgb_sha256": "0fb60f64eb7803b689a6a1a6e95f7bb3423957477fd7f4c0d3a7d396e589b02f",
+              "rgb_stamp_ns": 1793447719986850374,
+              "sequence": 2,
+              "source": "red_rgbd_sim_baseline"
+            },
+            "schema_version": 1,
+            "tf": {
+              "base_pose": [
+                1.0,
+                1.0,
+                0.0
+              ],
+              "camera_pose": [
+                1.08,
+                1.0,
+                0.25,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "stamp_ns": 1793447719986850374
+            }
+          },
+          "request_sha256": "5585a7c08ef189ab4b81ef8693fcdaff39cead85518f80b5b871c9458c14cb75",
+          "result": {
+            "checkpoint_persisted": true,
+            "completed_wall": 923.230871278,
+            "reason": null,
+            "receipt": {
+              "directory": "5585a7c08ef189ab4b81ef8693fcdaff39cead85518f80b5b871c9458c14cb75",
+              "file_fsync_completed": true,
+              "files": {
+                "camera_info.json": {
+                  "bytes": 498,
+                  "sha256": "f1e4daee19e1714e2befb6014820f365dced6a0a6eda40a490214ba500edacae"
+                },
+                "depth.bin": {
+                  "bytes": 19200,
+                  "sha256": "fd4b0242bd142862f2dd8a0cf1ddf88ee3987c611b3c0d99c8eb1406c258bbb3"
+                },
+                "manifest.json": {
+                  "bytes": 1355,
+                  "sha256": "c8e2141b924962341783b8c7d40a09da15f5a74eaf96b9899b992d7e8e0002d3"
+                },
+                "producer.json": {
+                  "bytes": 2005,
+                  "sha256": "5830c4862ffeb9754a5b0815d4becc98c7e9a43907edd38eab6fe8cabda75815"
+                },
+                "request.json": {
+                  "bytes": 965,
+                  "sha256": "5585a7c08ef189ab4b81ef8693fcdaff39cead85518f80b5b871c9458c14cb75"
+                },
+                "rgb.bin": {
+                  "bytes": 14400,
+                  "sha256": "0fb60f64eb7803b689a6a1a6e95f7bb3423957477fd7f4c0d3a7d396e589b02f"
+                }
+              },
+              "request_sha256": "5585a7c08ef189ab4b81ef8693fcdaff39cead85518f80b5b871c9458c14cb75"
+            },
+            "request_sha256": "5585a7c08ef189ab4b81ef8693fcdaff39cead85518f80b5b871c9458c14cb75",
+            "requested_wall": 917.824116832,
+            "retention_id": "retain-84e55f70981a9fa57efe39dba91d81f79f592fe073f56b99d6b4879f1c723cb2",
+            "status": "stored",
+            "writer_owned": false
+          },
+          "state": "stored"
+        },
+        {
+          "reason": null,
+          "request": {
+            "accepted_ordinal": 3,
+            "after_stamp_ns": 1793447719848623777,
+            "goal_token": 1,
+            "inspection_request_id": "retention-dds-window",
+            "map_epoch": "retention-dds-epoch",
+            "retention_id": "retain-8d00aca396fefc35de84d5c99ef841af23b6b3af7763641d277ca569dd87ecb6",
+            "sample": {
+              "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f",
+              "depth_sha256": "04262f7e5f042f22e20505148d15a75bde6f104b66eb562bd667f871f2420e73",
+              "depth_stamp_ns": 1793447720124786229,
+              "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+              "detector_session_id": "5f3efb69-7d50-4c4f-a63e-329f103b5e3a",
+              "frame_id": "camera_optical_frame",
+              "map_epoch": "retention-dds-epoch",
+              "rgb_sha256": "7ab84b41e2594c143372231d4eac49522cce473547076aea5fa695b4b9320387",
+              "rgb_stamp_ns": 1793447720124786229,
+              "sequence": 3,
+              "source": "red_rgbd_sim_baseline"
+            },
+            "schema_version": 1,
+            "tf": {
+              "base_pose": [
+                1.0,
+                1.0,
+                0.0
+              ],
+              "camera_pose": [
+                1.08,
+                1.0,
+                0.25,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "stamp_ns": 1793447720124786229
+            }
+          },
+          "request_sha256": "b1e1bd9549409eecb572aae8fbdd6029e7f0914ae389fa5cf9bdfdd272ecd583",
+          "result": {
+            "checkpoint_persisted": true,
+            "completed_wall": 925.230839813,
+            "reason": null,
+            "receipt": {
+              "directory": "b1e1bd9549409eecb572aae8fbdd6029e7f0914ae389fa5cf9bdfdd272ecd583",
+              "file_fsync_completed": true,
+              "files": {
+                "camera_info.json": {
+                  "bytes": 498,
+                  "sha256": "fecfb6d98b32538af3ef4735bf32fcd5c92d9172909c135bd7cc35a6438e9bb0"
+                },
+                "depth.bin": {
+                  "bytes": 19200,
+                  "sha256": "04262f7e5f042f22e20505148d15a75bde6f104b66eb562bd667f871f2420e73"
+                },
+                "manifest.json": {
+                  "bytes": 1355,
+                  "sha256": "e0fb1ae21482ce2d0faf1325079b60b196cac295c866abb63e0625f53755da75"
+                },
+                "producer.json": {
+                  "bytes": 2005,
+                  "sha256": "ad8874200556669a983978d026aaad0e06a9ebc2a1209898d1265fd255052165"
+                },
+                "request.json": {
+                  "bytes": 965,
+                  "sha256": "b1e1bd9549409eecb572aae8fbdd6029e7f0914ae389fa5cf9bdfdd272ecd583"
+                },
+                "rgb.bin": {
+                  "bytes": 14400,
+                  "sha256": "7ab84b41e2594c143372231d4eac49522cce473547076aea5fa695b4b9320387"
+                }
+              },
+              "request_sha256": "b1e1bd9549409eecb572aae8fbdd6029e7f0914ae389fa5cf9bdfdd272ecd583"
+            },
+            "request_sha256": "b1e1bd9549409eecb572aae8fbdd6029e7f0914ae389fa5cf9bdfdd272ecd583",
+            "requested_wall": 917.962528902,
+            "retention_id": "retain-8d00aca396fefc35de84d5c99ef841af23b6b3af7763641d277ca569dd87ecb6",
+            "status": "stored",
+            "writer_owned": false
+          },
+          "state": "stored"
+        }
+      ],
+      "binding": {
+        "after_stamp_ns": 1793447719848623777,
+        "goal_token": 1,
+        "inspection_request_id": "retention-dds-window",
+        "map_epoch": "retention-dds-epoch"
+      },
+      "closed_wall": 927.28154041,
+      "created_wall": 917.670826135,
+      "deadline_wall": 932.670826135,
+      "ids": [
+        "retain-3e48ed752cb21c9bf4604f9dd5fa6dd2f17d957fb74fc6985db241d487d153e2",
+        "retain-84e55f70981a9fa57efe39dba91d81f79f592fe073f56b99d6b4879f1c723cb2",
+        "retain-8d00aca396fefc35de84d5c99ef841af23b6b3af7763641d277ca569dd87ecb6"
+      ],
+      "late_results": 0,
+      "ledger_accepted_count": 3,
+      "ledger_reset_count": 0,
+      "number": 1,
+      "processing_satisfied": true,
+      "reason": null,
+      "state": "complete"
+    }
+  ]
+}

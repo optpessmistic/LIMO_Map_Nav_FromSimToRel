@@ -1,0 +1,42 @@
+"""Read actual Nav2/SLAM parameters before any run22 motion."""
+import json
+from pathlib import Path
+import time
+import rclpy
+from rcl_interfaces.srv import GetParameters
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT/'outputs/ros_smoke/run22-isolated-writer'
+expected = {
+    'controller_server': {'general_goal_checker.xy_goal_tolerance':.03,
+        'general_goal_checker.yaw_goal_tolerance':.26, 'general_goal_checker.stateful':False,
+        'FollowPath.plugin':'nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController',
+        'FollowPath.stateful':False, 'FollowPath.desired_linear_vel':.15,
+        'FollowPath.rotate_to_heading_angular_vel':.4, 'FollowPath.max_angular_accel':.6},
+    'slam_toolbox':{'loop_search_space_dimension':1., 'distance_variance_penalty':.05}}
+rclpy.init()
+node = rclpy.create_node('run22_parameter_gate')
+pending = {}
+try:
+    for target, values in expected.items():
+        client = node.create_client(GetParameters, '/'+target+'/get_parameters')
+        if not client.wait_for_service(timeout_sec=8): raise RuntimeError('Parameter service unavailable: '+target)
+        pending[target] = (client, client.call_async(GetParameters.Request(names=list(values))))
+    until = time.monotonic()+20
+    while not all(future.done() for _,future in pending.values()) and time.monotonic()<until:
+        rclpy.spin_once(node, timeout_sec=.1)
+    actual = {}
+    fields = {1:'bool_value',2:'integer_value',3:'double_value',4:'string_value'}
+    for target,(_,future) in pending.items():
+        if not future.done(): raise RuntimeError('Parameter request timed out: '+target)
+        actual[target] = {name:getattr(value,fields[value.type]) for name,value in zip(expected[target],future.result().values)}
+    passed = actual == expected
+    with (OUT/'parameter-gate.json').open('x') as handle:
+        json.dump({'expected':expected,'actual':actual,'passed':passed},handle,indent=2)
+    print(json.dumps({'passed':passed,'actual':actual}), flush=True)
+finally:
+    for client,future in pending.values():
+        if not future.done(): client.remove_pending_request(future)
+    node.destroy_node()
+    rclpy.shutdown()
+raise SystemExit(0 if passed else 1)

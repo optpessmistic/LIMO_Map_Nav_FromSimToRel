@@ -1,0 +1,71 @@
+{
+  "run": "run16-arrival-margin",
+  "epoch": "153dfa35-4372-4aa2-8679-b2f506f0f5f4",
+  "status": "orchestration_failed",
+  "stages": [
+    {
+      "name": "sim_start_and_sensor_check",
+      "elapsed_wall_s": 8.275822337999998
+    },
+    {
+      "name": "owned_shutdown",
+      "elapsed_wall_s": 48.473159085000006
+    }
+  ],
+  "errors": [
+    "RuntimeError: sim-check exited 1"
+  ],
+  "stops": {
+    "sim": {
+      "signals": [
+        {
+          "pid": 835,
+          "start_ticks": 9519,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 884,
+          "start_ticks": 11011,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 885,
+          "start_ticks": 11011,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 886,
+          "start_ticks": 11012,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 10.094506859000006,
+      "exit_code": 0
+    },
+    "sim-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008606389999954445,
+      "exit_code": 1
+    }
+  },
+  "active_wall_budget_seconds": 1800,
+  "native_terminal_tail_verified": false,
+  "cleanup_budget_note": "Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.",
+  "stage": "owned_shutdown",
+  "shutdown_signal_poll_budget_seconds": 56,
+  "elapsed_wall_s": 58.60065890899999,
+  "all_owned_groups_empty": true,
+  "evidence_collection_complete": false
+}

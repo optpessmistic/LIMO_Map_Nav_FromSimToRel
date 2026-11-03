@@ -1,0 +1,42 @@
+{
+  "ros_domain_id": 74,
+  "discovery": "LOCALHOST",
+  "installed_source_match": {
+    "import": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/build/limo_maze_mission/limo_maze_mission/node.py",
+    "source_sha256": "ab2ba10c5f5e70ba691f51a1ebcafca08fca6e56c30a5dd6f1839d5408aeca87",
+    "import_sha256": "ab2ba10c5f5e70ba691f51a1ebcafca08fca6e56c30a5dd6f1839d5408aeca87"
+  },
+  "test_file_sha256": "d9474eb7613b3dac108fe107741196b9aaba1b878f768e5cef8667f1d08c14d9",
+  "full_regression": {
+    "log": "all-tests-03.log",
+    "note": "Loaded the previous 10-DDS test version; final 11-DDS file separately verified below.",
+    "skipped": 1,
+    "passed": 167,
+    "total": 168,
+    "duration_s": 48.899
+  },
+  "final_dds_regression": {
+    "skipped": 0,
+    "duration_s": 43.702,
+    "passed": 11,
+    "log": "dds-tests-04.log",
+    "total": 11
+  },
+  "production_default_inspection_timeout_s": 12,
+  "command_scripts": [
+    "run-dds-02.sh",
+    "run-all-03.sh",
+    "run-dds-04.sh"
+  ],
+  "regression_scope": [
+    "goal 1 satisfied then goal 2 never stops",
+    "goal 1 satisfied then goal 2 XY and yaw outside tolerance",
+    "settling and inspecting paused-clock deadlines remain terminal-relative",
+    "last_inspection_failure survives ledger invalidation with current goal evidence"
+  ],
+  "limitations": [
+    "Synthetic DDS Clock/map/Odometry/TF/frame evidence; action terminal is a fixture Future.",
+    "No new Gazebo mission, navigation execution, real camera or physical robot run.",
+    "Preflight-01 and DDS-02 failures retained alongside final successful runs."
+  ]
+}

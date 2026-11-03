@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eo pipefail
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+source /opt/ros/jazzy/setup.bash
+/usr/bin/python3 -B -c 'import json; from pathlib import Path; p=Path("outputs/ros_smoke/run20-arrival-margin"); x=json.loads((p/"orchestration.json").read_text()); assert x.get("all_owned_groups_empty") and x.get("evidence_collection_complete"), "Experiment must be closed before offline audit"; assert (p/"recording/bag/metadata.yaml").is_file()'
+exec /usr/bin/python3 -B outputs/setup/audit-run15-inspection.py \
+  --bag outputs/ros_smoke/run20-arrival-margin/recording/bag \
+  --mission outputs/ros_smoke/run20-arrival-margin/mission/mission_20261031_030130.json \
+  --output outputs/ros_smoke/run20-arrival-margin/inspection-audit --max-samples 64

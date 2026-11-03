@@ -1,0 +1,15 @@
+"""Direct source import for this isolated signal check; no images or commands."""
+from pathlib import Path
+import sys
+
+root = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(root/'src/limo_maze_perception'))
+from limo_maze_perception import node
+
+expected = root/'src/limo_maze_perception/limo_maze_perception/node.py'
+if Path(node.__file__).resolve() != expected.resolve():
+    raise RuntimeError('Wrong perception module selected')
+print('SOURCE_IMPORT '+str(Path(node.__file__).resolve()), flush=True)
+node.main(['--ros-args', '-p', 'use_sim_time:=true', '-p', 'enabled:=true',
+           '-p', 'depth_registered_to_color:=true', '-p', 'publish_frame_processing:=true'])
+print('MAIN_RETURNED', flush=True)

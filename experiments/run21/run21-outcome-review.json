@@ -1,0 +1,1253 @@
+{
+  "schema_version": 1,
+  "role": "offline_run21_outcome_summary",
+  "run": "run21-observation-retention",
+  "runtime_head": "2d36634caf0665e6b0af88e7452575ae69c0d0dd",
+  "map_epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64",
+  "mission": {
+    "status": "blocked",
+    "reason": "frame_retention_failed",
+    "mission_success": false,
+    "returned_pose_verified": false,
+    "map_complete": false,
+    "visual_coverage_complete": false,
+    "mission_timed_out": false,
+    "target_definition_verified": false,
+    "coordinates_valid": true
+  },
+  "navigation": {
+    "by_kind": {
+      "frontier": {
+        "sent": 2,
+        "terminal_success": 1,
+        "terminal_failure": 1,
+        "without_recorded_terminal": 0
+      }
+    },
+    "dispatches": [
+      {
+        "stamp": 104.32,
+        "event": "goal_sent",
+        "token": 1,
+        "goal": {
+          "x": 0.23737820033207496,
+          "y": 0.032480962959581916,
+          "yaw": -2.9441970937399127,
+          "kind": "frontier",
+          "anchor": [
+            -0.012621803393215336,
+            -0.017519037785476144
+          ]
+        },
+        "terminal": {
+          "stamp": 115.7,
+          "event": "goal_terminal",
+          "token": 1,
+          "success": false,
+          "detail": "6:"
+        }
+      },
+      {
+        "stamp": 115.75,
+        "event": "goal_sent",
+        "token": 2,
+        "goal": {
+          "x": 1.1873782144881782,
+          "y": -0.001500388339886194,
+          "yaw": -1.3521273809209546,
+          "kind": "frontier",
+          "anchor": [
+            1.2873782159782943,
+            -0.45150039504540873
+          ]
+        },
+        "terminal": {
+          "stamp": 140.1,
+          "event": "goal_terminal",
+          "token": 2,
+          "success": true,
+          "detail": "4:"
+        }
+      }
+    ],
+    "cancel_events": [
+      {
+        "stamp": 145.6,
+        "event": "cancel_requested",
+        "next_phase": "blocked",
+        "reason": "frame_retention_failed"
+      }
+    ],
+    "note": "Terminal failure includes cancellation; timeout classification uses explicit recorded reasons only."
+  },
+  "inspection": {
+    "completed": [],
+    "failed": [],
+    "interrupted": [
+      {
+        "stamp": 145.6,
+        "event": "inspection_interrupted",
+        "reason": "frame_retention_failed",
+        "evidence": {
+          "request_id": "goal-2",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64",
+          "ready": true,
+          "after_stamp_ns": 140875000000,
+          "deadline_wall": 451.375106035,
+          "expected_pose": [
+            1.1873782144881782,
+            -0.001500388339886194,
+            -1.3521273809209546
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 140900000000,
+          "last_rgb_stamp_ns": 141200000000,
+          "first_depth_stamp_ns": 140900000000,
+          "last_depth_stamp_ns": 141200000000,
+          "producer_identity": [
+            "333ca55a-93cd-4a9e-9bb1-fcb6e704933b",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 141200000000,
+            "depth_stamp_ns": 141200000000,
+            "processed_stamp_ns": 141250000000,
+            "sequence": 810,
+            "rgb_sha256": "a9573ee8426c261c0d575574b5fe7e8402c0d5ca146fdd653a7411b7ccbb636a",
+            "depth_sha256": "eb32d2b42094d05f372140a09ce6a79391a4d96476b6022a12492aef941881c6",
+            "base_pose": [
+              1.1702603118195627,
+              -0.008044644652287044,
+              -1.2165998826361075
+            ],
+            "camera_pose": [
+              1.1993946031694098,
+              -0.08683038617664035,
+              0.03,
+              0.12457377900511489,
+              -0.6960469621975122,
+              0.6960469621975122,
+              -0.12457377900511493
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 2,
+          "sampling_after_stamp_ns": 140875000000,
+          "conditions": {
+            "stamp_ns": 145518000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.1702603118195627,
+              -0.008044644652287044,
+              -1.2165998826361075
+            ],
+            "distance_m": 0.018326207530599194,
+            "yaw_error_rad": 0.1355274982848469,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 10.899779953999996,
+            "odom_stamp_ns": 145511000000,
+            "odom_wall_age_s": 0.007382833000008304,
+            "odom_ros_age_s": 0.007,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 492,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": "retention_window_deadline",
+            "current_window": 1,
+            "state": "failed",
+            "selected_count": 3,
+            "stored_count": 2,
+            "total_selected_count": 3,
+            "window_count": 1,
+            "offline_artifacts_verified": false
+          }
+        }
+      }
+    ]
+  },
+  "observation": {
+    "snapshot": {
+      "mode": "bounded_processed_frames",
+      "closed": true,
+      "close_reason": "blocked:frame_retention_failed",
+      "started_wall": null,
+      "deadline_wall": null,
+      "queue": null,
+      "active": null,
+      "attempts": [],
+      "continuation": {
+        "home_frontier_resumes": 0,
+        "resume_limit": 1,
+        "resume_active": false,
+        "return_started_wall": null,
+        "return_deadline_wall": null,
+        "return_reserve_s": 15.0,
+        "return_attempts": 0,
+        "return_attempt_limit": 4,
+        "decisions": []
+      },
+      "visual_coverage_claimed": false,
+      "validation_scope": "processed_frame_windows_only"
+    },
+    "finished_outcomes": {},
+    "explicit_timeout_attempts": []
+  },
+  "retention": {
+    "enabled": true,
+    "consumer_fault": "retention_window_deadline",
+    "accepted_count": 3,
+    "windows": [
+      {
+        "number": 1,
+        "binding": {
+          "after_stamp_ns": 140875000000,
+          "goal_token": 2,
+          "inspection_request_id": "goal-2",
+          "map_epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64"
+        },
+        "state": "failed",
+        "reason": "retention_window_deadline",
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 0,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-7aa43200801b959f016be74f1f3dba0ead8ebe54780d41b4ddb6374f281c216e",
+            "accepted_ordinal": 1,
+            "request_sha256": "9f72043d4cc4901be32724c5edee8dde6b2c9d5b1844cbc6a5b223effd1cb795",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-9493e4f210f8e48a1cc594efbe19a286df88d3947843cf2dc8251bdb05376d8d",
+            "accepted_ordinal": 2,
+            "request_sha256": "c6746b0286eed19318962a83c833593e2fc31aad848dabe2ba91f10c0079b597",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": null
+          },
+          {
+            "retention_id": "retain-661ecb511bbde746ceba2d257bb73ceaae658747ea568989fb43d060a863fb84",
+            "accepted_ordinal": 3,
+            "request_sha256": "91274c667692e41d718682713413af9de45600fb6c6f678a10b982d805e49cbf",
+            "consumer_state": "pending",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": null,
+            "offline_audit": null
+          }
+        ]
+      }
+    ],
+    "producer_result_counts": {
+      "stored": 3
+    },
+    "producer_checkpoint_closed": true,
+    "producer_fault": null,
+    "shutdown": {
+      "shutdown": {
+        "elapsed_wall_s": 1.3325093400000014,
+        "owned_writer_exit_confirmed": true,
+        "final_checkpoint_persisted": true,
+        "limitation": "SIGKILL cannot guarantee bounded exit from uninterruptible kernel I/O"
+      },
+      "writer": null,
+      "fault": null,
+      "reason": "SIGINT"
+    },
+    "offline_audit": {
+      "schema_version": 1,
+      "passed": false,
+      "accepted_count": 0,
+      "verified_count": 0,
+      "errors": [
+        "consumer_disabled_or_faulted"
+      ],
+      "frames": [],
+      "scope": "exact_accepted_files_reopened_and_hashed; supplied_TF_identity_only; does_not_verify_process_exit_scene_coverage_target_recall_or_motion"
+    },
+    "audit_scope": "Existing closed-run audit result, not a second raw-image decode or independent TF-accuracy test."
+  },
+  "targets": {
+    "count": 1,
+    "annotations": [
+      {
+        "uid": 1,
+        "class_id": "red_object",
+        "x": 3.574833462105023,
+        "y": -0.07334859129994051,
+        "z": -0.042754505756988255,
+        "hits": 164,
+        "first_stamp": 104.8,
+        "last_stamp": 139.1,
+        "confirmed": true,
+        "source_id": ""
+      }
+    ],
+    "unconfirmed": [],
+    "count_prior": null
+  },
+  "return": {
+    "home_map_pose": [
+      0.019370138714553037,
+      -0.00205594977842827,
+      -0.04064734562359059
+    ],
+    "final_map_pose": null,
+    "map_error": null,
+    "native": {
+      "scope": "Same native model sampled at home and final observer time; no map/world identity assumption.",
+      "home_event_stamp": 104.32,
+      "home_bracket": [
+        {
+          "sim_s": 104.319,
+          "x": -7.362058111952686e-06,
+          "y": 4.741991837174413e-07,
+          "z": -0.005000002831897227,
+          "yaw": -0.019714442455630327,
+          "id": 114,
+          "receipt_wall_elapsed_s": 16.486139374000004
+        },
+        {
+          "sim_s": 104.353,
+          "x": -7.362058111952686e-06,
+          "y": 4.741991837174413e-07,
+          "z": -0.005000002831897227,
+          "yaw": -0.019714442455630327,
+          "id": 114,
+          "receipt_wall_elapsed_s": 16.520118545000003
+        }
+      ],
+      "home_bracket_gap_s": 0.033999999999991815,
+      "home_bracket_movement": {
+        "xy_distance_m": 0.0,
+        "yaw_delta_rad": 0.0
+      },
+      "same_native_id": true,
+      "home_bracket_stationary_at_sample_endpoints": true,
+      "final_sample": {
+        "sim_s": 179.601,
+        "x": 1.158315602377718,
+        "y": 0.02039289461323644,
+        "z": -0.005000002831897225,
+        "yaw": -1.1974106555219306,
+        "id": 114,
+        "receipt_wall_elapsed_s": 186.04394378499995
+      },
+      "sampled_home_to_final": {
+        "xy_distance_m": 1.158502456082745,
+        "yaw_delta_rad": -1.1776962130663002
+      }
+    },
+    "stationary_tail": {
+      "sample_count": 965,
+      "first_sim_s": 149.619,
+      "last_sim_s": 179.601,
+      "span_s": 29.982,
+      "max_gap_s": 0.036000000000001364,
+      "x_span_m": 0.0,
+      "y_span_m": 0.0,
+      "yaw_span_rad": 0.0,
+      "latest_native_receipt_fresh": true,
+      "evidence_sufficient": true,
+      "stationary_within_1mm_002rad": true,
+      "entire_window_after_terminal": true,
+      "ready_for_operator_to_end_observer": true
+    }
+  },
+  "observer": {
+    "errors": [],
+    "final_status": {
+      "phase": "blocked",
+      "reason": "frame_retention_failed",
+      "autonomous": true,
+      "confirmed_target_count": 1,
+      "map_complete": false,
+      "visual_coverage_complete": false,
+      "unresolved_failures": 0,
+      "inspection": {
+        "request_id": "goal-2",
+        "status": "invalidated",
+        "reason": "frame_retention_failed",
+        "map_epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64",
+        "ready": false,
+        "after_stamp_ns": 140875000000,
+        "deadline_wall": 451.375106035,
+        "expected_pose": [
+          1.1873782144881782,
+          -0.001500388339886194,
+          -1.3521273809209546
+        ],
+        "required_frames": 3,
+        "min_span_ns": 200000000,
+        "accepted_frames": 0,
+        "first_rgb_stamp_ns": null,
+        "last_rgb_stamp_ns": null,
+        "first_depth_stamp_ns": null,
+        "last_depth_stamp_ns": null,
+        "producer_identity": [
+          "333ca55a-93cd-4a9e-9bb1-fcb6e704933b",
+          "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+          "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+          "camera_optical_frame"
+        ],
+        "reset_count": 1,
+        "rejection_counts": {
+          "sample_before_barrier": 1
+        },
+        "last_evidence": null,
+        "visual_coverage_claimed": false,
+        "goal_token": 2,
+        "sampling_after_stamp_ns": 140875000000,
+        "conditions": {
+          "stamp_ns": 145518000000,
+          "phase": "inspecting",
+          "blocking_condition": null,
+          "current_pose": [
+            1.1702603118195627,
+            -0.008044644652287044,
+            -1.2165998826361075
+          ],
+          "distance_m": 0.018326207530599194,
+          "yaw_error_rad": 0.1355274982848469,
+          "position_tolerance_m": 0.05,
+          "yaw_tolerance_rad": 0.26,
+          "pose_within_tolerance": true,
+          "pose_stable_wall_s": 10.899779953999996,
+          "odom_stamp_ns": 145511000000,
+          "odom_wall_age_s": 0.007382833000008304,
+          "odom_ros_age_s": 0.007,
+          "odom_fresh": true,
+          "odom_sample_stationary": true,
+          "odom_stationary_count": 492,
+          "stop_confirmed": true
+        },
+        "frame_retention": {
+          "enabled": true,
+          "fault": "retention_window_deadline",
+          "current_window": 1,
+          "state": "failed",
+          "selected_count": 3,
+          "stored_count": 2,
+          "total_selected_count": 3,
+          "window_count": 1,
+          "offline_artifacts_verified": false
+        }
+      },
+      "last_inspection_failure": {
+        "reason": "frame_retention_failed",
+        "stamp": 145.6,
+        "goal": {
+          "x": 1.1873782144881782,
+          "y": -0.001500388339886194,
+          "yaw": -1.3521273809209546,
+          "kind": "frontier",
+          "anchor": [
+            1.2873782159782943,
+            -0.45150039504540873
+          ]
+        },
+        "evidence": {
+          "request_id": "goal-2",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64",
+          "ready": true,
+          "after_stamp_ns": 140875000000,
+          "deadline_wall": 451.375106035,
+          "expected_pose": [
+            1.1873782144881782,
+            -0.001500388339886194,
+            -1.3521273809209546
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 140900000000,
+          "last_rgb_stamp_ns": 141200000000,
+          "first_depth_stamp_ns": 140900000000,
+          "last_depth_stamp_ns": 141200000000,
+          "producer_identity": [
+            "333ca55a-93cd-4a9e-9bb1-fcb6e704933b",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 141200000000,
+            "depth_stamp_ns": 141200000000,
+            "processed_stamp_ns": 141250000000,
+            "sequence": 810,
+            "rgb_sha256": "a9573ee8426c261c0d575574b5fe7e8402c0d5ca146fdd653a7411b7ccbb636a",
+            "depth_sha256": "eb32d2b42094d05f372140a09ce6a79391a4d96476b6022a12492aef941881c6",
+            "base_pose": [
+              1.1702603118195627,
+              -0.008044644652287044,
+              -1.2165998826361075
+            ],
+            "camera_pose": [
+              1.1993946031694098,
+              -0.08683038617664035,
+              0.03,
+              0.12457377900511489,
+              -0.6960469621975122,
+              0.6960469621975122,
+              -0.12457377900511493
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 2,
+          "sampling_after_stamp_ns": 140875000000,
+          "conditions": {
+            "stamp_ns": 145518000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.1702603118195627,
+              -0.008044644652287044,
+              -1.2165998826361075
+            ],
+            "distance_m": 0.018326207530599194,
+            "yaw_error_rad": 0.1355274982848469,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 10.899779953999996,
+            "odom_stamp_ns": 145511000000,
+            "odom_wall_age_s": 0.007382833000008304,
+            "odom_ros_age_s": 0.007,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 492,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": "retention_window_deadline",
+            "current_window": 1,
+            "state": "failed",
+            "selected_count": 3,
+            "stored_count": 2,
+            "total_selected_count": 3,
+            "window_count": 1,
+            "offline_artifacts_verified": false
+          }
+        }
+      },
+      "observation_actions": {
+        "mode": "bounded_processed_frames",
+        "closed": true,
+        "close_reason": "blocked:frame_retention_failed",
+        "started_wall": null,
+        "deadline_wall": null,
+        "queue": null,
+        "active": null,
+        "attempts": [],
+        "continuation": {
+          "home_frontier_resumes": 0,
+          "resume_limit": 1,
+          "resume_active": false,
+          "return_started_wall": null,
+          "return_deadline_wall": null,
+          "return_reserve_s": 15.0,
+          "return_attempts": 0,
+          "return_attempt_limit": 4,
+          "decisions": []
+        },
+        "visual_coverage_claimed": false,
+        "validation_scope": "processed_frame_windows_only"
+      },
+      "selection": {
+        "state": "goal",
+        "goal": {
+          "x": 1.1873782144881782,
+          "y": -0.001500388339886194,
+          "yaw": -1.3521273809209546,
+          "kind": "frontier",
+          "anchor": [
+            1.2873782159782943,
+            -0.45150039504540873
+          ]
+        },
+        "frontier_count": 18,
+        "uncovered_count": 1269,
+        "reachable_count": 1269,
+        "unobserved_count": 0
+      }
+    },
+    "native_sample_count": 2617,
+    "native_ids": [
+      114
+    ]
+  },
+  "map_export": {
+    "passed": true,
+    "errors": [],
+    "exports": {
+      "/slam_toolbox/save_map": {
+        "service": "/slam_toolbox/save_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run21-observation-retention/final-map",
+        "status": "service_success",
+        "sent_wall_s": 7.90012158899998,
+        "sent_ros_ns": 157600000000,
+        "result": 0,
+        "completed_wall_s": 12.343620599000019
+      },
+      "/slam_toolbox/serialize_map": {
+        "service": "/slam_toolbox/serialize_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run21-observation-retention/final-map",
+        "status": "service_success",
+        "sent_wall_s": 12.346402721000004,
+        "sent_ros_ns": 159600000000,
+        "result": 0,
+        "completed_wall_s": 12.498144747000026
+      }
+    },
+    "exported_files_at_capture": [
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run21-observation-retention/final-map.yaml",
+        "exists": true,
+        "bytes": 131,
+        "sha256": "b995b97dea8641c3a13b6214772662ec279fcdee4bf7e14ff38789ff223f289f"
+      },
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run21-observation-retention/final-map.pgm",
+        "exists": true,
+        "bytes": 4246,
+        "sha256": "7fa4a6c172551028a0ef88f2b880740e5a79930f53b8328f7aeca7ef778a39e0"
+      },
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run21-observation-retention/final-map.posegraph",
+        "exists": true,
+        "bytes": 6125356,
+        "sha256": "a807e150f5bea5a093f211b37d4249730f2d234ca2738d45518f9c4b3091bb0b"
+      },
+      {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run21-observation-retention/final-map.data",
+        "exists": true,
+        "bytes": 3112856,
+        "sha256": "4c6e89f3e4b39f953a56eb7fed45cffad12398a2c8e973191194b99f7df7b1f9"
+      }
+    ]
+  },
+  "cleanup": {
+    "run": "run21-observation-retention",
+    "epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64",
+    "status": "terminal_observed",
+    "stages": [
+      {
+        "name": "sim_start_and_sensor_check",
+        "elapsed_wall_s": 39.885267277
+      },
+      {
+        "name": "navigation_start_and_parameter_check",
+        "elapsed_wall_s": 108.305344566
+      },
+      {
+        "name": "recording_perception_and_initial_survey",
+        "elapsed_wall_s": 148.804546563
+      },
+      {
+        "name": "read_only_planning_and_processed_image_preflight",
+        "elapsed_wall_s": 266.977166392
+      },
+      {
+        "name": "autonomous_mission",
+        "elapsed_wall_s": 284.013450147
+      },
+      {
+        "name": "terminal_map_export_and_independent_stationary_tail",
+        "elapsed_wall_s": 414.168327655
+      },
+      {
+        "name": "owned_shutdown",
+        "elapsed_wall_s": 477.14608319599995
+      }
+    ],
+    "errors": [
+      "Run token process absence not verified",
+      "Retained-frame offline audit failed"
+    ],
+    "stops": {
+      "mission": {
+        "signals": [
+          {
+            "pid": 1668,
+            "start_ticks": 34437,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1706,
+            "start_ticks": 35263,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.012809673999982,
+        "exit_code": 0
+      },
+      "recorder": {
+        "signals": [
+          {
+            "pid": 1422,
+            "start_ticks": 19774,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.6062946920000059,
+        "exit_code": 0
+      },
+      "observer": {
+        "signals": [
+          {
+            "pid": 1632,
+            "start_ticks": 33295,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.8084142140000949,
+        "exit_code": 0
+      },
+      "perception": {
+        "signals": [
+          {
+            "pid": 1423,
+            "start_ticks": 19776,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1460,
+            "start_ticks": 20589,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.8229718730000286,
+        "exit_code": 0
+      },
+      "motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.001786260000017137,
+        "exit_code": 0
+      },
+      "survey": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0023303119999127375,
+        "exit_code": 0
+      },
+      "navigation": {
+        "signals": [
+          {
+            "pid": 1133,
+            "start_ticks": 15724,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1195,
+            "start_ticks": 16812,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1196,
+            "start_ticks": 16813,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1197,
+            "start_ticks": 16813,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1198,
+            "start_ticks": 16815,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1199,
+            "start_ticks": 16817,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1200,
+            "start_ticks": 16821,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1201,
+            "start_ticks": 16823,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1202,
+            "start_ticks": 16834,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1203,
+            "start_ticks": 16835,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1204,
+            "start_ticks": 16838,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.2179905689999941,
+        "exit_code": 0
+      },
+      "sim": {
+        "signals": [
+          {
+            "pid": 899,
+            "start_ticks": 8883,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 948,
+            "start_ticks": 10730,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 949,
+            "start_ticks": 10730,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 950,
+            "start_ticks": 10731,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 10.27463134300001,
+        "exit_code": 0
+      },
+      "installed-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0011299720000579327,
+        "exit_code": 0
+      },
+      "sim-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010407879999547731,
+        "exit_code": 0
+      },
+      "native-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0019596399999954883,
+        "exit_code": 0
+      },
+      "nav-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0011184249999587337,
+        "exit_code": 0
+      },
+      "parameter-gate": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010014920000003258,
+        "exit_code": 0
+      },
+      "native-before-motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.000924262000012277,
+        "exit_code": 0
+      },
+      "preflight": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0020095579999406255,
+        "exit_code": 0
+      },
+      "save-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0014207809999788878,
+        "exit_code": 0
+      },
+      "provenance": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.002187235000064902,
+        "exit_code": 0
+      },
+      "native-terminal": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010010789999341796,
+        "exit_code": 0
+      },
+      "save-final": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010664030000953062,
+        "exit_code": 0
+      }
+    },
+    "active_wall_budget_seconds": 1800,
+    "native_terminal_tail_verified": true,
+    "cleanup_budget_note": "Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.",
+    "stage": "owned_shutdown",
+    "terminal": {
+      "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run21-observation-retention/mission/mission_20261031_053024.json",
+      "sha256": "aeedd212e37b15f9eb23d899bcf95f4481e30ce1d750849c94a7419d4ff80e7d",
+      "status": "blocked",
+      "map_epoch": "2cfdd336-5f22-4977-aa21-29fc5a0c9c64",
+      "reported_mission_success": false
+    },
+    "same_native_instance_at_terminal": true,
+    "observed_terminal_native_tail": {
+      "wall_s": 183.49621769200002,
+      "count": 2578,
+      "tail": {
+        "sample_count": 966,
+        "first_sim_s": 148.376,
+        "last_sim_s": 178.376,
+        "span_s": 30.0,
+        "max_gap_s": 0.036000000000001364,
+        "x_span_m": 0.0,
+        "y_span_m": 0.0,
+        "yaw_span_rad": 0.0,
+        "latest_native_receipt_fresh": true,
+        "evidence_sufficient": true,
+        "stationary_within_1mm_002rad": true,
+        "entire_window_after_terminal": true,
+        "ready_for_operator_to_end_observer": true
+      }
+    },
+    "shutdown_signal_poll_budget_seconds": 560,
+    "recorder_inner_recheck": {
+      "owner": {
+        "pid": 1457,
+        "pgid": 1457,
+        "sid": 1457,
+        "start_ticks": 20519,
+        "token": "cc41639ffd9347a19d59b4675943e4b5"
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true,
+      "reported_cleanup": {
+        "signals": [
+          {
+            "pid": 1457,
+            "start_ticks": 20519,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 15.0,
+        "elapsed_wall_seconds": 0.4075663200000008
+      }
+    },
+    "elapsed_wall_s": 493.42124673700005,
+    "all_owned_groups_empty": true,
+    "all_run_token_processes_absent": false,
+    "retention_audit_passed": false,
+    "evidence_collection_complete": false
+  },
+  "run_token_cleanup": {
+    "remaining": [],
+    "errors": [
+      {
+        "pid": "485",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "486",
+        "error": "PermissionError"
+      }
+    ],
+    "signals_sent": []
+  },
+  "run_token_cleanup_context": {
+    "original_global_absence_verified": false,
+    "recheck": {
+      "remaining": [],
+      "errors": [
+        {
+          "pid": 477,
+          "error": "unreadable_potential_run_process"
+        },
+        {
+          "pid": 480,
+          "error": "unreadable_potential_run_process"
+        }
+      ],
+      "unreadable_predating_processes": [
+        {
+          "pid": 477,
+          "state": "S",
+          "pgid": 477,
+          "sid": 477,
+          "start_ticks": 62592,
+          "comm": "systemd",
+          "predates_first_owned_process": false,
+          "known_run_process_group": false
+        },
+        {
+          "pid": 480,
+          "state": "S",
+          "pgid": 477,
+          "sid": 477,
+          "start_ticks": 62605,
+          "comm": "(sd-pam)",
+          "predates_first_owned_process": false,
+          "known_run_process_group": false
+        }
+      ],
+      "earliest_owned_start_ticks": 6093,
+      "signals_sent": [],
+      "passed": false,
+      "scope": "Current absence; original final-check PermissionErrors preserved; no unknown process signaled"
+    },
+    "denied_process_context": {
+      "processes": [
+        {
+          "pid": "1",
+          "comm": "systemd",
+          "identity": [
+            "Name:\tsystemd",
+            "State:\tS (sleeping)",
+            "PPid:\t0",
+            "Uid:\t0\t0\t0\t0",
+            "Gid:\t0\t0\t0\t0"
+          ],
+          "cmdline": "/sbin/init ",
+          "cgroup": "0::/init.scope\n"
+        },
+        {
+          "pid": "490",
+          "comm": "systemd",
+          "identity": [
+            "Name:\tsystemd",
+            "State:\tS (sleeping)",
+            "PPid:\t1",
+            "Uid:\t1000\t1000\t1000\t1000",
+            "Gid:\t1000\t1000\t1000\t1000"
+          ],
+          "cmdline": "/usr/lib/systemd/systemd --user ",
+          "cgroup": "0::/user.slice/user-1000.slice/user@1000.service/init.scope\n"
+        },
+        {
+          "pid": "491",
+          "comm": "(sd-pam)",
+          "identity": [
+            "Name:\t(sd-pam)",
+            "State:\tS (sleeping)",
+            "PPid:\t490",
+            "Uid:\t1000\t1000\t1000\t1000",
+            "Gid:\t1000\t1000\t1000\t1000"
+          ],
+          "cmdline": "(sd-pam) ",
+          "cgroup": "0::/user.slice/user-1000.slice/user@1000.service/init.scope\n"
+        }
+      ],
+      "signals_sent": []
+    },
+    "scope": "Ancillary evidence only; does not override the original incomplete global scan."
+  },
+  "limitations": [
+    "No ROS nodes or motion commands started by this review; no truth files read.",
+    "Owned groups and the retained-frame writer have closure evidence; global token absence remains as reported, including permission failures.",
+    "A bounded queue of processed-frame windows does not establish whole-maze visual coverage or target recall.",
+    "Saved online claims and closed-run artifact audit have different scopes; missing evidence is not a pass.",
+    "Native stationary brackets/tails are sampled evidence, not a continuous-motion proof.",
+    "No physical LIMO hardware evaluated."
+  ],
+  "missing_files": [],
+  "source_files": {
+    "outputs/ros_smoke/run21-observation-retention/orchestration.json": {
+      "bytes": 11283,
+      "sha256": "a49f06bf58b0234184ff405baff7cb7c0d977d67abeda86744ac6e9e383cf21e"
+    },
+    "outputs/ros_smoke/run21-observation-retention/run-token-final-processes.json": {
+      "bytes": 194,
+      "sha256": "bae3d7fa4ee1a5d4a4c41c5cce9d05ffdd7c34ea26e80b8f4f807e5d98b0d6f6"
+    },
+    "outputs/ros_smoke/run21-observation-retention/retention-shutdown.json": {
+      "bytes": 294,
+      "sha256": "02156b397e0a4cbd483dd5ea036d84daebb901904a250769e867b3feb79c70a5"
+    },
+    "outputs/ros_smoke/run21-observation-retention/run-token-process-recheck.json": {
+      "bytes": 881,
+      "sha256": "564a6a242e044a1ac19e272de253d902cce381057cdbaf28b380483083645774"
+    },
+    "outputs/ros_smoke/run21-observation-retention/denied-process-context.json": {
+      "bytes": 1065,
+      "sha256": "2dc4a6c746935d702205c34189bedd363afa3dcf836c9dad01d26a2844ba2293"
+    },
+    "outputs/ros_smoke/run21-observation-retention/mission/mission_20261031_053024.json": {
+      "bytes": 25094,
+      "sha256": "aeedd212e37b15f9eb23d899bcf95f4481e30ce1d750849c94a7419d4ff80e7d"
+    },
+    "outputs/ros_smoke/run21-observation-retention/observer.json": {
+      "bytes": 6828127,
+      "sha256": "25bf461f632a5d1e59addc053efc0839ff3a4d44daf9c10d5dbf2d5742832dcd"
+    },
+    "outputs/ros_smoke/run21-observation-retention/retention-audit.json": {
+      "bytes": 312,
+      "sha256": "e70d72e4e04ed6c35faab5e88e38df4172efb67b92d7de8026e585b5261f62b2"
+    },
+    "outputs/ros_smoke/run21-observation-retention/retained/checkpoint.json": {
+      "bytes": 13808,
+      "sha256": "1c21aef8d410b986af266740ad67595886317c8fd94a82bdcb88ab309828ae0b"
+    },
+    "outputs/ros_smoke/run21-observation-retention/preparation.json": {
+      "bytes": 956,
+      "sha256": "4adccd0cf151c6e480c6c1cff33a84e05335897e37457c6975bda050089eafea"
+    },
+    "outputs/ros_smoke/run21-observation-retention/final-save.json": {
+      "bytes": 109576,
+      "sha256": "aea6b43eed89ab2bc9a7bdfd66a659fc8b82d92a9f39e48fa382c786a90f26b7"
+    }
+  }
+}

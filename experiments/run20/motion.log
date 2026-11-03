@@ -1,0 +1,72 @@
+READY: native Gazebo limo world pose and ROS odom received; waiting for controlled motion; no commands published.
+MOTION DETECTED: collecting 70 wall seconds from now.
+{
+  "schema_version": 1,
+  "read_only": true,
+  "truth_used_only_for_offline_diagnosis": true,
+  "world_topic": "/world/limo_maze/pose/info",
+  "world_entity": "limo",
+  "motion_detected": true,
+  "wall_seconds": 90.31362876200001,
+  "requested_seconds_after_motion": 70.0,
+  "partial": false,
+  "reason": "duration_complete",
+  "error": null,
+  "errors": [],
+  "requested_signal": null,
+  "automatic_pass_verdict": false,
+  "world_summary": {
+    "count": 1302,
+    "first": {
+      "sim_s": 41.229,
+      "yaw": -3.934946980797366e-20,
+      "x": -5.7924531180803355e-12,
+      "y": -1.652197329782426e-19,
+      "z": -0.005000772039637763,
+      "id": 114
+    },
+    "last": {
+      "sim_s": 81.836,
+      "yaw": -0.023028348954009445,
+      "x": -7.991997314401651e-06,
+      "y": 5.103853713725238e-07,
+      "z": -0.005000002831897227,
+      "id": 114
+    },
+    "yaw_accumulated_rad": 6.2601569582255765,
+    "yaw_accumulated_min_rad": 0.0,
+    "yaw_accumulated_max_rad": 6.406376893710686,
+    "max_displacement_m": 6.540843999649168e-05
+  },
+  "odom_summary": {
+    "count": 1980,
+    "first": {
+      "sim_s": 42.26,
+      "yaw": 2.5332795479041622e-18,
+      "x": 4.148919411298193e-19,
+      "y": 5.2537857738568394e-37,
+      "angular_velocity": 1.2198130271224696e-19,
+      "linear_velocity": 1.1768247159740354e-20
+    },
+    "last": {
+      "sim_s": 81.84,
+      "yaw": -0.023021256106724477,
+      "x": 3.0823257645375387e-15,
+      "y": 8.075472258366391e-16,
+      "angular_velocity": 0.0,
+      "linear_velocity": 0.0
+    },
+    "yaw_accumulated_rad": 6.260164051072861,
+    "yaw_accumulated_min_rad": 0.0,
+    "yaw_accumulated_max_rad": 6.406384154994817,
+    "max_displacement_m": 3.2394986815378296e-15
+  },
+  "aligned_count": 1269,
+  "cleanup": {
+    "status": "complete",
+    "native_unsubscribed": true,
+    "native_release_attempted": true,
+    "ros_shutdown_called": true
+  },
+  "collection_complete": true
+}

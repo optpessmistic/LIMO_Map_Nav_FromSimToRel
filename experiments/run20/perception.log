@@ -1,0 +1,15 @@
+[WARN] [1793440460.304025087] [red_rgbd_sim_baseline]: Red RGB-D detector is a SIMULATION SURROGATE, not final object identity recognition; no coverage is published.
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/limo_maze_perception/red_rgbd_detector", line 33, in <module>
+    sys.exit(load_entry_point('limo-maze-perception==0.1.0', 'console_scripts', 'red_rgbd_detector')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/node.py", line 139, in main
+    rclpy.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 134, in shutdown
+    _shutdown(context=context)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/utilities.py", line 82, in shutdown
+    context.shutdown()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/context.py", line 129, in shutdown
+    self.__context.shutdown()
+rclpy._rclpy_pybind11.RCLError: failed to shutdown: rcl_shutdown already called on the given context, at ./src/rcl/init.c:333
+[ros2run]: Process exited with failure 1

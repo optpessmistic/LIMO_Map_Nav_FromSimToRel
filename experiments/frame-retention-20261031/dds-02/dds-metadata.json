@@ -1,0 +1,873 @@
+{
+  "records": [
+    {
+      "schema_version": 1,
+      "source": "red_rgbd_sim_baseline",
+      "detector_session_id": "7c851724-cae8-4069-96d8-8ae6c539e5c2",
+      "sequence": 1,
+      "map_epoch": "retention-dds-epoch",
+      "status": "processed",
+      "reason": null,
+      "rgb": {
+        "encoding": "rgb8",
+        "width": 80,
+        "height": 60,
+        "step": 240,
+        "is_bigendian": 0,
+        "stamp_ns": 1793448495851139988,
+        "frame_id": "camera_optical_frame",
+        "data_bytes": 14400,
+        "data_sha256": "00210dc674194e3d948bdf1b2b89b99fdc02e38f5bab95709443a0238d3c008d"
+      },
+      "depth": {
+        "encoding": "32FC1",
+        "width": 80,
+        "height": 60,
+        "step": 320,
+        "is_bigendian": 0,
+        "stamp_ns": 1793448495851139988,
+        "frame_id": "camera_optical_frame",
+        "data_bytes": 19200,
+        "data_sha256": "740ee0e4be5948a1e9e0e38fb5f0eb1b061d7791cf462ea15dd5b27a1811bb62"
+      },
+      "camera_info": {
+        "stamp_ns": 1793448495851139988,
+        "frame_id": "camera_optical_frame",
+        "calibration": {
+          "width": 80,
+          "height": 60,
+          "distortion_model": "plumb_bob",
+          "binning_x": 0,
+          "binning_y": 0,
+          "k": [
+            100.0,
+            0.0,
+            39.5,
+            0.0,
+            100.0,
+            29.5,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "d": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "r": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "p": [
+            100.0,
+            0.0,
+            39.5,
+            0.0,
+            0.0,
+            100.0,
+            29.5,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "roi": {
+            "x_offset": 0,
+            "y_offset": 0,
+            "height": 0,
+            "width": 0,
+            "do_rectify": false
+          }
+        },
+        "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f"
+      },
+      "callback_stamp_ns": 1793448495863225477,
+      "processed_stamp_ns": 1793448495864176777,
+      "detector_config": {
+        "hue_tolerance_degrees": 15.0,
+        "min_saturation": 0.55,
+        "min_value": 0.3,
+        "min_area_pixels": 30,
+        "min_depth_pixels": 8,
+        "min_valid_depth_fraction": 0.5,
+        "min_depth_m": 0.15,
+        "max_depth_m": 6.0,
+        "inner_fraction": 0.6
+      },
+      "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+      "processing": {
+        "total_pixels": 4800,
+        "valid_depth_pixels": 4800,
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0,
+        "rejection_counts": {
+          "too_few_inner_pixels": 0,
+          "insufficient_valid_depth": 0,
+          "mixed_depth": 0,
+          "insufficient_depth_inliers": 0,
+          "nonfinite_projection": 0
+        },
+        "empty_reason": "no_red_candidates"
+      },
+      "hash_scope": "Original Image.data bytes, including padding; hashes do not prove source images were saved."
+    },
+    {
+      "schema_version": 1,
+      "source": "red_rgbd_sim_baseline",
+      "detector_session_id": "7c851724-cae8-4069-96d8-8ae6c539e5c2",
+      "sequence": 2,
+      "map_epoch": "retention-dds-epoch",
+      "status": "processed",
+      "reason": null,
+      "rgb": {
+        "encoding": "rgb8",
+        "width": 80,
+        "height": 60,
+        "step": 240,
+        "is_bigendian": 0,
+        "stamp_ns": 1793448495988149366,
+        "frame_id": "camera_optical_frame",
+        "data_bytes": 14400,
+        "data_sha256": "0fb60f64eb7803b689a6a1a6e95f7bb3423957477fd7f4c0d3a7d396e589b02f"
+      },
+      "depth": {
+        "encoding": "32FC1",
+        "width": 80,
+        "height": 60,
+        "step": 320,
+        "is_bigendian": 0,
+        "stamp_ns": 1793448495988149366,
+        "frame_id": "camera_optical_frame",
+        "data_bytes": 19200,
+        "data_sha256": "fd4b0242bd142862f2dd8a0cf1ddf88ee3987c611b3c0d99c8eb1406c258bbb3"
+      },
+      "camera_info": {
+        "stamp_ns": 1793448495988149366,
+        "frame_id": "camera_optical_frame",
+        "calibration": {
+          "width": 80,
+          "height": 60,
+          "distortion_model": "plumb_bob",
+          "binning_x": 0,
+          "binning_y": 0,
+          "k": [
+            100.0,
+            0.0,
+            39.5,
+            0.0,
+            100.0,
+            29.5,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "d": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "r": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "p": [
+            100.0,
+            0.0,
+            39.5,
+            0.0,
+            0.0,
+            100.0,
+            29.5,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "roi": {
+            "x_offset": 0,
+            "y_offset": 0,
+            "height": 0,
+            "width": 0,
+            "do_rectify": false
+          }
+        },
+        "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f"
+      },
+      "callback_stamp_ns": 1793448496000066446,
+      "processed_stamp_ns": 1793448496001350604,
+      "detector_config": {
+        "hue_tolerance_degrees": 15.0,
+        "min_saturation": 0.55,
+        "min_value": 0.3,
+        "min_area_pixels": 30,
+        "min_depth_pixels": 8,
+        "min_valid_depth_fraction": 0.5,
+        "min_depth_m": 0.15,
+        "max_depth_m": 6.0,
+        "inner_fraction": 0.6
+      },
+      "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+      "processing": {
+        "total_pixels": 4800,
+        "valid_depth_pixels": 4800,
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0,
+        "rejection_counts": {
+          "too_few_inner_pixels": 0,
+          "insufficient_valid_depth": 0,
+          "mixed_depth": 0,
+          "insufficient_depth_inliers": 0,
+          "nonfinite_projection": 0
+        },
+        "empty_reason": "no_red_candidates"
+      },
+      "hash_scope": "Original Image.data bytes, including padding; hashes do not prove source images were saved."
+    },
+    {
+      "schema_version": 1,
+      "source": "red_rgbd_sim_baseline",
+      "detector_session_id": "7c851724-cae8-4069-96d8-8ae6c539e5c2",
+      "sequence": 3,
+      "map_epoch": "retention-dds-epoch",
+      "status": "processed",
+      "reason": null,
+      "rgb": {
+        "encoding": "rgb8",
+        "width": 80,
+        "height": 60,
+        "step": 240,
+        "is_bigendian": 0,
+        "stamp_ns": 1793448496125008991,
+        "frame_id": "camera_optical_frame",
+        "data_bytes": 14400,
+        "data_sha256": "7ab84b41e2594c143372231d4eac49522cce473547076aea5fa695b4b9320387"
+      },
+      "depth": {
+        "encoding": "32FC1",
+        "width": 80,
+        "height": 60,
+        "step": 320,
+        "is_bigendian": 0,
+        "stamp_ns": 1793448496125008991,
+        "frame_id": "camera_optical_frame",
+        "data_bytes": 19200,
+        "data_sha256": "04262f7e5f042f22e20505148d15a75bde6f104b66eb562bd667f871f2420e73"
+      },
+      "camera_info": {
+        "stamp_ns": 1793448496125008991,
+        "frame_id": "camera_optical_frame",
+        "calibration": {
+          "width": 80,
+          "height": 60,
+          "distortion_model": "plumb_bob",
+          "binning_x": 0,
+          "binning_y": 0,
+          "k": [
+            100.0,
+            0.0,
+            39.5,
+            0.0,
+            100.0,
+            29.5,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "d": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "r": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "p": [
+            100.0,
+            0.0,
+            39.5,
+            0.0,
+            0.0,
+            100.0,
+            29.5,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "roi": {
+            "x_offset": 0,
+            "y_offset": 0,
+            "height": 0,
+            "width": 0,
+            "do_rectify": false
+          }
+        },
+        "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f"
+      },
+      "callback_stamp_ns": 1793448496137503598,
+      "processed_stamp_ns": 1793448496138581966,
+      "detector_config": {
+        "hue_tolerance_degrees": 15.0,
+        "min_saturation": 0.55,
+        "min_value": 0.3,
+        "min_area_pixels": 30,
+        "min_depth_pixels": 8,
+        "min_valid_depth_fraction": 0.5,
+        "min_depth_m": 0.15,
+        "max_depth_m": 6.0,
+        "inner_fraction": 0.6
+      },
+      "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+      "processing": {
+        "total_pixels": 4800,
+        "valid_depth_pixels": 4800,
+        "candidate_count": 0,
+        "detection_count": 0,
+        "unlocalized_candidate_count": 0,
+        "rejection_counts": {
+          "too_few_inner_pixels": 0,
+          "insufficient_valid_depth": 0,
+          "mixed_depth": 0,
+          "insufficient_depth_inliers": 0,
+          "nonfinite_projection": 0
+        },
+        "empty_reason": "no_red_candidates"
+      },
+      "hash_scope": "Original Image.data bytes, including padding; hashes do not prove source images were saved."
+    }
+  ],
+  "requests": [
+    {
+      "accepted_ordinal": 1,
+      "after_stamp_ns": 1793448495851095771,
+      "goal_token": 1,
+      "inspection_request_id": "retention-dds-window",
+      "map_epoch": "retention-dds-epoch",
+      "retention_id": "retain-5dc1abbe8f03dcfd21e7ac22074aa7ecbf464836b25e68ed83bbcead37de2cec",
+      "sample": {
+        "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f",
+        "depth_sha256": "740ee0e4be5948a1e9e0e38fb5f0eb1b061d7791cf462ea15dd5b27a1811bb62",
+        "depth_stamp_ns": 1793448495851139988,
+        "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "detector_session_id": "7c851724-cae8-4069-96d8-8ae6c539e5c2",
+        "frame_id": "camera_optical_frame",
+        "map_epoch": "retention-dds-epoch",
+        "rgb_sha256": "00210dc674194e3d948bdf1b2b89b99fdc02e38f5bab95709443a0238d3c008d",
+        "rgb_stamp_ns": 1793448495851139988,
+        "sequence": 1,
+        "source": "red_rgbd_sim_baseline"
+      },
+      "schema_version": 1,
+      "tf": {
+        "base_pose": [
+          1.0,
+          1.0,
+          0.0
+        ],
+        "camera_pose": [
+          1.08,
+          1.0,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "stamp_ns": 1793448495851139988
+      }
+    },
+    {
+      "accepted_ordinal": 2,
+      "after_stamp_ns": 1793448495851095771,
+      "goal_token": 1,
+      "inspection_request_id": "retention-dds-window",
+      "map_epoch": "retention-dds-epoch",
+      "retention_id": "retain-1266da2890a69ee99439ed24150201f7bcf5ecd9b766bacc3f42a2a223bb0ff3",
+      "sample": {
+        "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f",
+        "depth_sha256": "fd4b0242bd142862f2dd8a0cf1ddf88ee3987c611b3c0d99c8eb1406c258bbb3",
+        "depth_stamp_ns": 1793448495988149366,
+        "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "detector_session_id": "7c851724-cae8-4069-96d8-8ae6c539e5c2",
+        "frame_id": "camera_optical_frame",
+        "map_epoch": "retention-dds-epoch",
+        "rgb_sha256": "0fb60f64eb7803b689a6a1a6e95f7bb3423957477fd7f4c0d3a7d396e589b02f",
+        "rgb_stamp_ns": 1793448495988149366,
+        "sequence": 2,
+        "source": "red_rgbd_sim_baseline"
+      },
+      "schema_version": 1,
+      "tf": {
+        "base_pose": [
+          1.0,
+          1.0,
+          0.0
+        ],
+        "camera_pose": [
+          1.08,
+          1.0,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "stamp_ns": 1793448495988149366
+      }
+    },
+    {
+      "accepted_ordinal": 3,
+      "after_stamp_ns": 1793448495851095771,
+      "goal_token": 1,
+      "inspection_request_id": "retention-dds-window",
+      "map_epoch": "retention-dds-epoch",
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "sample": {
+        "calibration_id": "02fcad3a0baac871d1845c90d80c7b90def61a5b4dbae543363745d87742137f",
+        "depth_sha256": "04262f7e5f042f22e20505148d15a75bde6f104b66eb562bd667f871f2420e73",
+        "depth_stamp_ns": 1793448496125008991,
+        "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "detector_session_id": "7c851724-cae8-4069-96d8-8ae6c539e5c2",
+        "frame_id": "camera_optical_frame",
+        "map_epoch": "retention-dds-epoch",
+        "rgb_sha256": "7ab84b41e2594c143372231d4eac49522cce473547076aea5fa695b4b9320387",
+        "rgb_stamp_ns": 1793448496125008991,
+        "sequence": 3,
+        "source": "red_rgbd_sim_baseline"
+      },
+      "schema_version": 1,
+      "tf": {
+        "base_pose": [
+          1.0,
+          1.0,
+          0.0
+        ],
+        "camera_pose": [
+          1.08,
+          1.0,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "stamp_ns": 1793448496125008991
+      }
+    }
+  ],
+  "results": [
+    {
+      "retention_id": "retain-5dc1abbe8f03dcfd21e7ac22074aa7ecbf464836b25e68ed83bbcead37de2cec",
+      "request_sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2",
+      "status": "queued",
+      "reason": null,
+      "writer_owned": false,
+      "requested_wall": 271.344847881,
+      "completed_wall": null,
+      "receipt": null,
+      "checkpoint_persisted": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": null,
+      "reason": null,
+      "receipt": null,
+      "request_sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2",
+      "requested_wall": 271.344847881,
+      "retention_id": "retain-5dc1abbe8f03dcfd21e7ac22074aa7ecbf464836b25e68ed83bbcead37de2cec",
+      "status": "queued",
+      "writer_owned": false
+    },
+    {
+      "retention_id": "retain-1266da2890a69ee99439ed24150201f7bcf5ecd9b766bacc3f42a2a223bb0ff3",
+      "request_sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85",
+      "status": "queued",
+      "reason": null,
+      "writer_owned": false,
+      "requested_wall": 271.482590681,
+      "completed_wall": null,
+      "receipt": null,
+      "checkpoint_persisted": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": null,
+      "reason": null,
+      "receipt": null,
+      "request_sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85",
+      "requested_wall": 271.482590681,
+      "retention_id": "retain-1266da2890a69ee99439ed24150201f7bcf5ecd9b766bacc3f42a2a223bb0ff3",
+      "status": "queued",
+      "writer_owned": false
+    },
+    {
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+      "status": "queued",
+      "reason": null,
+      "writer_owned": false,
+      "requested_wall": 271.619486359,
+      "completed_wall": null,
+      "receipt": null,
+      "checkpoint_persisted": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": null,
+      "reason": null,
+      "receipt": null,
+      "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+      "requested_wall": 271.619486359,
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "status": "queued",
+      "writer_owned": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": null,
+      "reason": null,
+      "receipt": null,
+      "request_sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2",
+      "requested_wall": 271.344847881,
+      "retention_id": "retain-5dc1abbe8f03dcfd21e7ac22074aa7ecbf464836b25e68ed83bbcead37de2cec",
+      "status": "writing",
+      "writer_owned": true
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": 272.810928441,
+      "reason": null,
+      "receipt": {
+        "directory": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 498,
+            "sha256": "08649f043c685e7d805c6a5b994927ff97bea8392286d0e19ab7a9a2c95293db"
+          },
+          "depth.bin": {
+            "bytes": 19200,
+            "sha256": "740ee0e4be5948a1e9e0e38fb5f0eb1b061d7791cf462ea15dd5b27a1811bb62"
+          },
+          "manifest.json": {
+            "bytes": 1355,
+            "sha256": "af84e720632a9df8336da638a4badde9763cd4bb6fd1b21a6eac23567c052605"
+          },
+          "producer.json": {
+            "bytes": 2005,
+            "sha256": "a78ef31600adfac7fac8c496e1c29cc643f23051a10f0c76ef13410104a58e1a"
+          },
+          "request.json": {
+            "bytes": 965,
+            "sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2"
+          },
+          "rgb.bin": {
+            "bytes": 14400,
+            "sha256": "00210dc674194e3d948bdf1b2b89b99fdc02e38f5bab95709443a0238d3c008d"
+          }
+        },
+        "request_sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2"
+      },
+      "request_sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2",
+      "requested_wall": 271.344847881,
+      "retention_id": "retain-5dc1abbe8f03dcfd21e7ac22074aa7ecbf464836b25e68ed83bbcead37de2cec",
+      "status": "checkpoint_pending",
+      "writer_owned": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": null,
+      "reason": null,
+      "receipt": null,
+      "request_sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85",
+      "requested_wall": 271.482590681,
+      "retention_id": "retain-1266da2890a69ee99439ed24150201f7bcf5ecd9b766bacc3f42a2a223bb0ff3",
+      "status": "writing",
+      "writer_owned": true
+    },
+    {
+      "checkpoint_persisted": true,
+      "completed_wall": null,
+      "reason": null,
+      "receipt": null,
+      "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+      "requested_wall": 271.619486359,
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "status": "queued",
+      "writer_owned": false
+    },
+    {
+      "checkpoint_persisted": true,
+      "completed_wall": 272.810928441,
+      "reason": null,
+      "receipt": {
+        "directory": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 498,
+            "sha256": "08649f043c685e7d805c6a5b994927ff97bea8392286d0e19ab7a9a2c95293db"
+          },
+          "depth.bin": {
+            "bytes": 19200,
+            "sha256": "740ee0e4be5948a1e9e0e38fb5f0eb1b061d7791cf462ea15dd5b27a1811bb62"
+          },
+          "manifest.json": {
+            "bytes": 1355,
+            "sha256": "af84e720632a9df8336da638a4badde9763cd4bb6fd1b21a6eac23567c052605"
+          },
+          "producer.json": {
+            "bytes": 2005,
+            "sha256": "a78ef31600adfac7fac8c496e1c29cc643f23051a10f0c76ef13410104a58e1a"
+          },
+          "request.json": {
+            "bytes": 965,
+            "sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2"
+          },
+          "rgb.bin": {
+            "bytes": 14400,
+            "sha256": "00210dc674194e3d948bdf1b2b89b99fdc02e38f5bab95709443a0238d3c008d"
+          }
+        },
+        "request_sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2"
+      },
+      "request_sha256": "a0fb9db7abaa1d62d37fa4a69ddc154c07e723a3fc911d13cbe58d07b38c72f2",
+      "requested_wall": 271.344847881,
+      "retention_id": "retain-5dc1abbe8f03dcfd21e7ac22074aa7ecbf464836b25e68ed83bbcead37de2cec",
+      "status": "stored",
+      "writer_owned": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": 273.310888543,
+      "reason": null,
+      "receipt": {
+        "directory": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 498,
+            "sha256": "73cafd060610bf00b286dbc25a4a5488afb4602be98e7ac2c2153fdeebeaae6a"
+          },
+          "depth.bin": {
+            "bytes": 19200,
+            "sha256": "fd4b0242bd142862f2dd8a0cf1ddf88ee3987c611b3c0d99c8eb1406c258bbb3"
+          },
+          "manifest.json": {
+            "bytes": 1355,
+            "sha256": "20487659de1c85960f5d3feea6565ed40aee6824997f596c41f2fc6c495b114e"
+          },
+          "producer.json": {
+            "bytes": 2005,
+            "sha256": "bb1a40fa659619a96424dba1d5d87e17ca1c2348118b7f1b3ce382574c90104a"
+          },
+          "request.json": {
+            "bytes": 965,
+            "sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85"
+          },
+          "rgb.bin": {
+            "bytes": 14400,
+            "sha256": "0fb60f64eb7803b689a6a1a6e95f7bb3423957477fd7f4c0d3a7d396e589b02f"
+          }
+        },
+        "request_sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85"
+      },
+      "request_sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85",
+      "requested_wall": 271.482590681,
+      "retention_id": "retain-1266da2890a69ee99439ed24150201f7bcf5ecd9b766bacc3f42a2a223bb0ff3",
+      "status": "checkpoint_pending",
+      "writer_owned": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": null,
+      "reason": null,
+      "receipt": null,
+      "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+      "requested_wall": 271.619486359,
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "status": "writing",
+      "writer_owned": true
+    },
+    {
+      "checkpoint_persisted": true,
+      "completed_wall": 273.310888543,
+      "reason": null,
+      "receipt": {
+        "directory": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 498,
+            "sha256": "73cafd060610bf00b286dbc25a4a5488afb4602be98e7ac2c2153fdeebeaae6a"
+          },
+          "depth.bin": {
+            "bytes": 19200,
+            "sha256": "fd4b0242bd142862f2dd8a0cf1ddf88ee3987c611b3c0d99c8eb1406c258bbb3"
+          },
+          "manifest.json": {
+            "bytes": 1355,
+            "sha256": "20487659de1c85960f5d3feea6565ed40aee6824997f596c41f2fc6c495b114e"
+          },
+          "producer.json": {
+            "bytes": 2005,
+            "sha256": "bb1a40fa659619a96424dba1d5d87e17ca1c2348118b7f1b3ce382574c90104a"
+          },
+          "request.json": {
+            "bytes": 965,
+            "sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85"
+          },
+          "rgb.bin": {
+            "bytes": 14400,
+            "sha256": "0fb60f64eb7803b689a6a1a6e95f7bb3423957477fd7f4c0d3a7d396e589b02f"
+          }
+        },
+        "request_sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85"
+      },
+      "request_sha256": "38b29bcc9e03d35c340d0f0c19180f5bd9300061b3c1d623ba896f33f4bf9d85",
+      "requested_wall": 271.482590681,
+      "retention_id": "retain-1266da2890a69ee99439ed24150201f7bcf5ecd9b766bacc3f42a2a223bb0ff3",
+      "status": "stored",
+      "writer_owned": false
+    },
+    {
+      "checkpoint_persisted": false,
+      "completed_wall": 273.861052574,
+      "reason": null,
+      "receipt": {
+        "directory": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 498,
+            "sha256": "d228297a9a04bbfc5423dec46b3da2ee8295a8fc6df791cb6bf8a13ce6b5f540"
+          },
+          "depth.bin": {
+            "bytes": 19200,
+            "sha256": "04262f7e5f042f22e20505148d15a75bde6f104b66eb562bd667f871f2420e73"
+          },
+          "manifest.json": {
+            "bytes": 1355,
+            "sha256": "33d8f5eaace2ca5aa51407c1a38decd355a2e972cde8dc7a6f4b5bf41ced7de8"
+          },
+          "producer.json": {
+            "bytes": 2005,
+            "sha256": "e51dc8582774fa9b609f7980611aa04a678606da1af6a32737d5880d48c3c8db"
+          },
+          "request.json": {
+            "bytes": 965,
+            "sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24"
+          },
+          "rgb.bin": {
+            "bytes": 14400,
+            "sha256": "7ab84b41e2594c143372231d4eac49522cce473547076aea5fa695b4b9320387"
+          }
+        },
+        "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24"
+      },
+      "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+      "requested_wall": 271.619486359,
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "status": "checkpoint_pending",
+      "writer_owned": false
+    },
+    {
+      "checkpoint_persisted": true,
+      "completed_wall": 273.861052574,
+      "reason": null,
+      "receipt": {
+        "directory": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 498,
+            "sha256": "d228297a9a04bbfc5423dec46b3da2ee8295a8fc6df791cb6bf8a13ce6b5f540"
+          },
+          "depth.bin": {
+            "bytes": 19200,
+            "sha256": "04262f7e5f042f22e20505148d15a75bde6f104b66eb562bd667f871f2420e73"
+          },
+          "manifest.json": {
+            "bytes": 1355,
+            "sha256": "33d8f5eaace2ca5aa51407c1a38decd355a2e972cde8dc7a6f4b5bf41ced7de8"
+          },
+          "producer.json": {
+            "bytes": 2005,
+            "sha256": "e51dc8582774fa9b609f7980611aa04a678606da1af6a32737d5880d48c3c8db"
+          },
+          "request.json": {
+            "bytes": 965,
+            "sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24"
+          },
+          "rgb.bin": {
+            "bytes": 14400,
+            "sha256": "7ab84b41e2594c143372231d4eac49522cce473547076aea5fa695b4b9320387"
+          }
+        },
+        "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24"
+      },
+      "request_sha256": "eeee2c3a6dd7520acb7ede39e5cbfc4e17f6b5fe54fa527f4ecb7ba47f64ec24",
+      "requested_wall": 271.619486359,
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "status": "stored",
+      "writer_owned": false
+    }
+  ],
+  "decisions": [
+    {
+      "accepted": true,
+      "reason": null,
+      "status": "waiting",
+      "retention_id": "retain-5dc1abbe8f03dcfd21e7ac22074aa7ecbf464836b25e68ed83bbcead37de2cec",
+      "consumer_fault": null
+    },
+    {
+      "accepted": true,
+      "reason": null,
+      "status": "waiting",
+      "retention_id": "retain-1266da2890a69ee99439ed24150201f7bcf5ecd9b766bacc3f42a2a223bb0ff3",
+      "consumer_fault": null
+    },
+    {
+      "accepted": true,
+      "reason": null,
+      "status": "satisfied",
+      "retention_id": "retain-569ed6b3278fd8da20d695d6b5bc2bfca25fecfd80007e0c9b68b7145526859c",
+      "consumer_fault": null
+    }
+  ]
+}

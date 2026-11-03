@@ -1,0 +1,55 @@
+{
+  "passed": false,
+  "errors": [
+    "/clock: expected >=3 messages, received 2",
+    "/odom: expected >=3 messages, received 0",
+    "/scan: expected >=3 messages, received 0",
+    "/imu: expected >=3 messages, received 2",
+    "/joint_states: expected >=3 messages, received 0",
+    "/camera/color/image_raw: expected >=3 messages, received 0",
+    "/camera/depth/image_raw: expected >=3 messages, received 0",
+    "/camera/color/camera_info: expected >=3 messages, received 0",
+    "/camera/depth/camera_info: expected >=3 messages, received 0",
+    "/imu: simulation timestamp did not advance",
+    "Required TF chain unavailable, including odom->camera at RGB observation stamp",
+    "No RGB/depth pair with the same simulation timestamp was received"
+  ],
+  "checked_at_utc": "2026-10-31T08:56:59.988198+00:00",
+  "environment": {
+    "ROS_DISTRO": "jazzy",
+    "ROS_DOMAIN_ID": "73",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+    "GZ_PARTITION": "limo_maze_jazzy"
+  },
+  "wall_seconds": 30.03,
+  "counts": {
+    "/imu": 2,
+    "/clock": 2
+  },
+  "shared_rgb_depth_stamps": 0,
+  "ros_publisher_counts": {
+    "/clock": 1,
+    "/odom": 1,
+    "/scan": 1,
+    "/imu": 1,
+    "/joint_states": 1,
+    "/camera/color/image_raw": 1,
+    "/camera/depth/image_raw": 1,
+    "/camera/color/camera_info": 1,
+    "/camera/depth/camera_info": 1
+  },
+  "first_clock_seconds": 0.002,
+  "max_initial_sim_time": null,
+  "frames": {
+    "/imu": "imu_link"
+  },
+  "images": {},
+  "timestamps": {
+    "/imu": {
+      "sec": 0,
+      "nanosec": 1000000
+    }
+  },
+  "camera_info": {},
+  "tf_chain": {}
+}

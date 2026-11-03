@@ -1,0 +1,108 @@
+test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return (test_observation_ros.ObservationActionDDSTests.test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return) ... [INFO] [1793445422.120989311] [limo_maze_mission]: Mission loaded; autonomous=True
+[INFO] [1793445422.819299705] [limo_maze_mission]: home_recorded {"pose": [1.55, 1.55, 0.0], "map_epoch": "observation-action-dds-epoch"}
+[INFO] [1793445422.863384004] [limo_maze_mission]: observation_queue_frozen {"queue": {"epoch": "observation-action-dds-epoch", "invalidated": false, "invalid_reason": null, "active_action_id": null, "active_dispatch_id": null, "cancel_required": false, "planned_stations": 1, "planned_views": 2, "dispatches": 0, "dispatch_budget": 2, "pending_views": 2, "state_counts": {"pending": 2}, "all_planned_actions_completed": false, "visual_coverage_claimed": false, "mission_success_claimed": false, "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."}}
+[INFO] [1793445422.905003330] [limo_maze_mission]: goal_sent {"token": 1, "goal": {"x": 1.5500000230967999, "y": 1.5500000230967999, "yaw": 0.0, "kind": "observation_queue", "anchor": [1.5500000230967999, 1.5500000230967999]}}
+ERROR
+[INFO] [1793445423.092272325] [limo_maze_mission]: goal_terminal {"token": 1, "success": false, "detail": "6:"}
+test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return (test_observation_ros.ObservationActionDDSTests.test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return) ... [INFO] [1793445423.693160649] [limo_maze_mission]: Mission loaded; autonomous=True
+[INFO] [1793445424.371457471] [limo_maze_mission]: home_recorded {"pose": [1.55, 1.55, 0.0], "map_epoch": "observation-action-dds-epoch"}
+[INFO] [1793445424.383366353] [limo_maze_mission]: observation_queue_frozen {"queue": {"epoch": "observation-action-dds-epoch", "invalidated": false, "invalid_reason": null, "active_action_id": null, "active_dispatch_id": null, "cancel_required": false, "planned_stations": 1, "planned_views": 2, "dispatches": 0, "dispatch_budget": 2, "pending_views": 2, "state_counts": {"pending": 2}, "all_planned_actions_completed": false, "visual_coverage_claimed": false, "mission_success_claimed": false, "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."}}
+[INFO] [1793445424.510378537] [limo_maze_mission]: goal_sent {"token": 1, "goal": {"x": 1.5500000230967999, "y": 1.5500000230967999, "yaw": 0.0, "kind": "observation_queue", "anchor": [1.5500000230967999, 1.5500000230967999]}}
+ERROR
+[INFO] [1793445424.609692437] [limo_maze_mission]: goal_terminal {"token": 1, "success": false, "detail": "6:"}
+
+======================================================================
+ERROR: test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return (test_observation_ros.ObservationActionDDSTests.test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_observation_ros.py", line 310, in test_paused_clock_stage_deadline_waits_for_owned_terminal_before_return
+    self.wait_until(lambda: self.mission.cancel_response, "real cancel ACK after stage wall deadline",
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_observation_ros.py", line 191, in wait_until
+    self.pulse() if pulse else self.spin(.02)
+                               ^^^^^^^^^^^^^^
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_mission_inspection_ros.py", line 89, in spin
+    self.executor.spin_once(timeout_sec=min(.01, max(0., end-time.monotonic())))
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 926, in spin_once
+    self._spin_once_impl(timeout_sec)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 918, in _spin_once_impl
+    raise handler.exception()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/task.py", line 286, in _execute_coroutine_step
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 592, in handler
+    await call_coroutine()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 454, in _execute
+    await await_or_execute(tmr.callback)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 115, in await_or_execute
+    return callback(*args)
+           ^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/node.py", line 1154, in tick
+    self.publish_status()
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/node.py", line 1287, in publish_status
+    self.status_pub.publish(String(data=json.dumps(value)))
+                                        ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type uint8 is not JSON serializable
+
+======================================================================
+ERROR: test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return (test_observation_ros.ObservationActionDDSTests.test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_observation_ros.py", line 234, in test_two_headings_use_real_action_uuid_and_new_dds_windows_then_return
+    entry = self.goal_entry(index, kind="observation_queue")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_observation_ros.py", line 195, in goal_entry
+    self.wait_until(lambda: len(self.server_goals) > index and self.mission.goal_handle is not None,
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_observation_ros.py", line 191, in wait_until
+    self.pulse() if pulse else self.spin(.02)
+    ^^^^^^^^^^^^
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_observation_ros.py", line 186, in pulse
+    self.spin(.07)
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_mission_inspection_ros.py", line 89, in spin
+    self.executor.spin_once(timeout_sec=min(.01, max(0., end-time.monotonic())))
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 926, in spin_once
+    self._spin_once_impl(timeout_sec)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 918, in _spin_once_impl
+    raise handler.exception()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/task.py", line 286, in _execute_coroutine_step
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 592, in handler
+    await call_coroutine()
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 454, in _execute
+    await await_or_execute(tmr.callback)
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 115, in await_or_execute
+    return callback(*args)
+           ^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/node.py", line 1154, in tick
+    self.publish_status()
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/src/limo_maze_mission/limo_maze_mission/node.py", line 1287, in publish_status
+    self.status_pub.publish(String(data=json.dumps(value)))
+                                        ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type uint8 is not JSON serializable
+
+----------------------------------------------------------------------
+Ran 2 tests in 5.917s
+
+FAILED (errors=2)

@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "frame_id": "map",
+  "map_epoch": "5f84ff8e-c30f-462f-9676-7a8e140b9075",
+  "status": "blocked",
+  "reason": "frame_retention_failed",
+  "mission_success": false,
+  "returned_pose_verified": false,
+  "map_complete": false,
+  "visual_coverage_complete": false,
+  "mission_timed_out": false,
+  "target_definition_verified": false,
+  "coordinates_valid": true,
+  "inspection": {
+    "request_id": null,
+    "status": "idle",
+    "reason": null,
+    "map_epoch": "5f84ff8e-c30f-462f-9676-7a8e140b9075",
+    "ready": true,
+    "after_stamp_ns": null,
+    "deadline_wall": null,
+    "expected_pose": null,
+    "required_frames": 3,
+    "min_span_ns": 200000000,
+    "accepted_frames": 0,
+    "first_rgb_stamp_ns": null,
+    "last_rgb_stamp_ns": null,
+    "first_depth_stamp_ns": null,
+    "last_depth_stamp_ns": null,
+    "producer_identity": null,
+    "reset_count": 0,
+    "rejection_counts": {},
+    "last_evidence": null,
+    "visual_coverage_claimed": false,
+    "goal_token": null,
+    "sampling_after_stamp_ns": null,
+    "conditions": null,
+    "frame_retention": {
+      "enabled": true,
+      "fault": "mission_blocked",
+      "current_window": null,
+      "state": "idle",
+      "selected_count": 0,
+      "stored_count": 0,
+      "total_selected_count": 0,
+      "window_count": 0,
+      "offline_artifacts_verified": false
+    }
+  },
+  "last_inspection_failure": null,
+  "observation_actions": {
+    "mode": "bounded_processed_frames",
+    "closed": true,
+    "close_reason": "blocked:stale_base_tf",
+    "started_wall": null,
+    "deadline_wall": null,
+    "queue": null,
+    "active": null,
+    "attempts": [],
+    "continuation": {
+      "home_frontier_resumes": 0,
+      "resume_limit": 1,
+      "resume_active": false,
+      "return_started_wall": null,
+      "return_deadline_wall": null,
+      "return_reserve_s": 15.0,
+      "return_attempts": 0,
+      "return_attempt_limit": 4,
+      "decisions": []
+    },
+    "visual_coverage_claimed": false,
+    "validation_scope": "processed_frame_windows_only"
+  },
+  "frame_retention": {
+    "consumer_session": "6d2681a5-ec44-4814-bbf7-244930613f02",
+    "current_window": null,
+    "enabled": true,
+    "fault": "mission_blocked",
+    "ignored_results": 0,
+    "reserved_metadata_bytes": 0,
+    "scope": "exact_accepted_metadata_and_receipts; offline_artifacts_not_audited",
+    "windows": []
+  },
+  "initial_clearance_prior": {
+    "enabled": true,
+    "coordinates_valid": true,
+    "frame_id": "map",
+    "map_epoch": "5f84ff8e-c30f-462f-9676-7a8e140b9075",
+    "center": [
+      0.019249130410667798,
+      0.0002267555378196125
+    ],
+    "verified_radius_m": 0.3,
+    "margin_m": 0.05,
+    "source": "smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+    "currently_filled_unknown_cells": 2,
+    "sensor_observation": false,
+    "raw_slam_map_modified": false
+  },
+  "target_count_prior": null,
+  "targets": [
+    {
+      "uid": 1,
+      "class_id": "red_object",
+      "x": 3.584622995411419,
+      "y": 0.01731546002802782,
+      "z": -0.041162399310055275,
+      "hits": 36,
+      "first_stamp": 104.9,
+      "last_stamp": 111.0,
+      "confirmed": true,
+      "source_id": ""
+    }
+  ],
+  "unconfirmed_target_candidates": [],
+  "observation_sources": [
+    "red_rgbd_sim_baseline"
+  ],
+  "home": [
+    0.019249130410667798,
+    0.0002267555378196125,
+    -0.014342355116964575
+  ],
+  "final_pose": null,
+  "failures": [
+    {
+      "anchor": [
+        -0.000845627163364171,
+        -0.015653823486667218
+      ],
+      "kind": "frontier",
+      "attempts": 1,
+      "last_time": 372.602567064,
+      "reason": "6:"
+    }
+  ],
+  "events": [
+    {
+      "stamp": 104.92,
+      "event": "home_recorded",
+      "pose": [
+        0.019249130410667798,
+        0.0002267555378196125,
+        -0.014342355116964575
+      ],
+      "map_epoch": "5f84ff8e-c30f-462f-9676-7a8e140b9075"
+    },
+    {
+      "stamp": 104.92,
+      "event": "goal_sent",
+      "token": 1,
+      "goal": {
+        "x": 0.24915437656192613,
+        "y": 0.03434617725839084,
+        "yaw": -2.9441970937399127,
+        "kind": "frontier",
+        "anchor": [
+          -0.000845627163364171,
+          -0.015653823486667218
+        ]
+      }
+    },
+    {
+      "stamp": 113.6,
+      "event": "goal_terminal",
+      "token": 1,
+      "success": false,
+      "detail": "6:"
+    },
+    {
+      "stamp": 113.6,
+      "event": "goal_sent",
+      "token": 2,
+      "goal": {
+        "x": 1.5991543966784938,
+        "y": -0.11024850421418675,
+        "yaw": -2.432966381462123,
+        "kind": "frontier",
+        "anchor": [
+          1.2491543914630874,
+          -0.4102485086845351
+        ]
+      }
+    },
+    {
+      "stamp": 114.6,
+      "event": "cancel_requested",
+      "next_phase": "blocked",
+      "reason": "stale_base_tf"
+    },
+    {
+      "stamp": 114.661,
+      "event": "goal_terminal",
+      "token": 2,
+      "success": false,
+      "detail": "5:"
+    }
+  ],
+  "limitations": [
+    "Map-frame observations are not pose-graph landmarks.",
+    "2D coverage needs a validated detector and target-height assumption.",
+    "Navigation success is independently checked against TF at home.",
+    "A red simulation surrogate does not establish real target recognition."
+  ]
+}

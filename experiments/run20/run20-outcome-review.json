@@ -1,0 +1,1356 @@
+{
+  "schema_version": 1,
+  "role": "independent_offline_run20_outcome_review",
+  "run": "run20-arrival-margin",
+  "runtime_head": "b80aa8de6799520b16fb7f70dcb1ac43d21d5f2a",
+  "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+  "no_ros_nodes_started": true,
+  "bag_redecoded_by_this_review": false,
+  "truth_used_only_for_this_offline_evaluation": true,
+  "mission": {
+    "status": "done",
+    "reason": "perception_unverified_incomplete;final_observation_checks_incomplete",
+    "mission_success": false,
+    "returned_pose_verified": true,
+    "map_complete": true,
+    "visual_coverage_complete": false,
+    "mission_timed_out": false,
+    "target_definition_verified": false,
+    "coordinates_valid": true
+  },
+  "goals": {
+    "sent": [
+      {
+        "stamp": 100.1,
+        "event": "goal_sent",
+        "token": 1,
+        "goal": {
+          "x": 1.4387531090960144,
+          "y": -0.05286523410186539,
+          "yaw": -1.9295669970654687,
+          "kind": "frontier",
+          "anchor": [
+            1.2887531068608402,
+            -0.45286524006232987
+          ]
+        }
+      },
+      {
+        "stamp": 118.6,
+        "event": "goal_sent",
+        "token": 2,
+        "goal": {
+          "x": 1.5887531113311886,
+          "y": -0.9063882246598776,
+          "yaw": -2.4227626539681686,
+          "kind": "frontier",
+          "anchor": [
+            1.188753105370724,
+            -1.256388229875284
+          ]
+        }
+      },
+      {
+        "stamp": 131.7,
+        "event": "goal_sent",
+        "token": 3,
+        "goal": {
+          "x": 1.5887531113311886,
+          "y": -1.1624811880175439,
+          "yaw": -2.922923707715851,
+          "kind": "frontier",
+          "anchor": [
+            1.138753104625666,
+            -1.26248118950766
+          ]
+        }
+      },
+      {
+        "stamp": 143.1,
+        "event": "goal_sent",
+        "token": 4,
+        "goal": {
+          "x": 1.2243923704898567,
+          "y": -1.6381383116061539,
+          "yaw": 1.7894652726688385,
+          "kind": "frontier",
+          "anchor": [
+            1.1243923689997406,
+            -1.1881383049006313
+          ]
+        }
+      },
+      {
+        "stamp": 158.6,
+        "event": "goal_sent",
+        "token": 5,
+        "goal": {
+          "x": 2.524392389861366,
+          "y": -1.688138312351212,
+          "yaw": 0.8519663271732721,
+          "kind": "frontier",
+          "anchor": [
+            2.8743923950767725,
+            -1.2881383063907474
+          ]
+        }
+      },
+      {
+        "stamp": 177.982,
+        "event": "goal_sent",
+        "token": 6,
+        "goal": {
+          "x": 0.01952675299848138,
+          "y": -0.003704707553647661,
+          "yaw": -0.06490125610672276,
+          "kind": "home",
+          "anchor": [
+            0.01952675299848138,
+            -0.003704707553647661
+          ]
+        }
+      }
+    ],
+    "terminal": [
+      {
+        "stamp": 116.625,
+        "event": "goal_terminal",
+        "token": 1,
+        "success": true,
+        "detail": "4:"
+      },
+      {
+        "stamp": 130.2,
+        "event": "goal_terminal",
+        "token": 2,
+        "success": true,
+        "detail": "4:"
+      },
+      {
+        "stamp": 141.8,
+        "event": "goal_terminal",
+        "token": 3,
+        "success": true,
+        "detail": "4:"
+      },
+      {
+        "stamp": 157.082,
+        "event": "goal_terminal",
+        "token": 4,
+        "success": true,
+        "detail": "4:"
+      },
+      {
+        "stamp": 176.3,
+        "event": "goal_terminal",
+        "token": 5,
+        "success": true,
+        "detail": "4:"
+      },
+      {
+        "stamp": 219.625,
+        "event": "goal_terminal",
+        "token": 6,
+        "success": true,
+        "detail": "4:"
+      }
+    ],
+    "kinds": {
+      "frontier": 5,
+      "home": 1
+    },
+    "terminal_success_count": 6
+  },
+  "inspection_online_claims": [
+    {
+      "request_id": "goal-1",
+      "token": 1,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 118300000000,
+      "last_rgb_stamp_ns": 118500000000,
+      "rgb_span_s": 0.2,
+      "position_error_m": 0.028025716209733157,
+      "yaw_error_rad": 0.14173149331442492,
+      "stop_confirmed": true,
+      "status": "satisfied",
+      "reset_count": 3
+    },
+    {
+      "request_id": "goal-2",
+      "token": 2,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 131000000000,
+      "last_rgb_stamp_ns": 131600000000,
+      "rgb_span_s": 0.6,
+      "position_error_m": 0.028591116144262938,
+      "yaw_error_rad": 0.1371114926230863,
+      "stop_confirmed": true,
+      "status": "satisfied",
+      "reset_count": 1
+    },
+    {
+      "request_id": "goal-3",
+      "token": 3,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 142800000000,
+      "last_rgb_stamp_ns": 143000000000,
+      "rgb_span_s": 0.2,
+      "position_error_m": 0.028976632302699576,
+      "yaw_error_rad": 0.14199812263159473,
+      "stop_confirmed": true,
+      "status": "satisfied",
+      "reset_count": 1
+    },
+    {
+      "request_id": "goal-4",
+      "token": 4,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 157900000000,
+      "last_rgb_stamp_ns": 158400000000,
+      "rgb_span_s": 0.5,
+      "position_error_m": 0.020283058993295248,
+      "yaw_error_rad": 0.10919271815143494,
+      "stop_confirmed": true,
+      "status": "satisfied",
+      "reset_count": 1
+    },
+    {
+      "request_id": "goal-5",
+      "token": 5,
+      "accepted_frames": 3,
+      "first_rgb_stamp_ns": 177600000000,
+      "last_rgb_stamp_ns": 177800000000,
+      "rgb_span_s": 0.2,
+      "position_error_m": 0.027170526468999284,
+      "yaw_error_rad": 0.1476186633496388,
+      "stop_confirmed": true,
+      "status": "satisfied",
+      "reset_count": 1
+    }
+  ],
+  "independent_last_frame_audit": {
+    "selected_count": 5,
+    "consistent_count": 0,
+    "samples": [
+      {
+        "request_id": "goal-1",
+        "last_stamp_ns": 118500000000,
+        "source_record_counts": {
+          "rgb": 1,
+          "depth": 0,
+          "camera_info": 1
+        },
+        "base_tf_consistent": true,
+        "camera_tf_consistent": true,
+        "final_frame_evidence_consistent": false,
+        "errors": [
+          "missing_record:depth"
+        ]
+      },
+      {
+        "request_id": "goal-2",
+        "last_stamp_ns": 131600000000,
+        "source_record_counts": {
+          "rgb": 1,
+          "depth": 0,
+          "camera_info": 1
+        },
+        "base_tf_consistent": true,
+        "camera_tf_consistent": true,
+        "final_frame_evidence_consistent": false,
+        "errors": [
+          "missing_record:depth"
+        ]
+      },
+      {
+        "request_id": "goal-3",
+        "last_stamp_ns": 143000000000,
+        "source_record_counts": {
+          "rgb": 0,
+          "depth": 1,
+          "camera_info": 1
+        },
+        "base_tf_consistent": true,
+        "camera_tf_consistent": true,
+        "final_frame_evidence_consistent": false,
+        "errors": [
+          "missing_record:rgb"
+        ]
+      },
+      {
+        "request_id": "goal-4",
+        "last_stamp_ns": 158400000000,
+        "source_record_counts": {
+          "rgb": 1,
+          "depth": 0,
+          "camera_info": 1
+        },
+        "base_tf_consistent": true,
+        "camera_tf_consistent": true,
+        "final_frame_evidence_consistent": false,
+        "errors": [
+          "missing_record:depth"
+        ]
+      },
+      {
+        "request_id": "goal-5",
+        "last_stamp_ns": 177800000000,
+        "source_record_counts": {
+          "rgb": 1,
+          "depth": 0,
+          "camera_info": 1
+        },
+        "base_tf_consistent": true,
+        "camera_tf_consistent": true,
+        "final_frame_evidence_consistent": false,
+        "errors": [
+          "missing_record:depth"
+        ]
+      }
+    ],
+    "static_tf_conflicts": {},
+    "dynamic_tf_conflicts": {},
+    "scope": "Only last retained frame per online completed window; not all 15 claimed accepted frames.",
+    "all_window_sampling_independently_verified": false,
+    "bag_time_scope": {
+      "mode": "unbounded_receive_time",
+      "time_basis": "Absolute rosbag2 read_next receive timestamp (MCAP log_time); not elapsed duration or message header stamp.",
+      "requested_end_bag_time_s": null,
+      "end_bag_time_ns_inclusive": null,
+      "start": "Beginning of selected bag; no lower time cutoff.",
+      "mission_json_scope": "All supplied inspection events remain selected; events outside the recorded prefix can have missing evidence.",
+      "pass1": {
+        "read_order": "ReceivedTimestamp ascending (accepted by storage plugin)",
+        "topic_filter": null,
+        "end_bag_time_ns_inclusive": null,
+        "records_yielded": 335008,
+        "first_received_ns": 35505000000,
+        "last_received_ns": 255409000000,
+        "first_excluded_received_ns": null,
+        "storage_end_reached": true,
+        "stopped_by": "end_of_selected_storage_stream"
+      },
+      "pass2": {
+        "read_order": "ReceivedTimestamp ascending (accepted by storage plugin)",
+        "topic_filter": [
+          "/camera/color/image_raw",
+          "/camera/depth/image_raw",
+          "/camera/color/camera_info",
+          "/tf",
+          "/tf_static",
+          "/odom"
+        ],
+        "end_bag_time_ns_inclusive": null,
+        "records_yielded": 76754,
+        "first_received_ns": 35505000000,
+        "last_received_ns": 255409000000,
+        "first_excluded_received_ns": null,
+        "storage_end_reached": true,
+        "stopped_by": "end_of_selected_storage_stream"
+      }
+    },
+    "full_bag_integrity_verified": false
+  },
+  "return": {
+    "home_map_pose": [
+      0.01952675299848138,
+      -0.003704707553647661,
+      -0.06490125610672276
+    ],
+    "terminal_map_pose": [
+      0.050927560838360295,
+      -0.0013479312073592375,
+      -0.19669166177674915
+    ],
+    "map_xy_error_m": 0.031489127135305384,
+    "map_yaw_error_rad": 0.1317904056700264,
+    "native_before_survey": {
+      "sim_s": 41.229,
+      "yaw": -3.934946980797366e-20,
+      "x": -5.7924531180803355e-12,
+      "y": -1.652197329782426e-19,
+      "z": -0.005000772039637763,
+      "id": 114
+    },
+    "native_at_stationary_mission_home": {
+      "sim_s": 93.401,
+      "x": -7.991997314401651e-06,
+      "y": 5.103853713725238e-07,
+      "z": -0.005000002831897227,
+      "yaw": -0.023028348954009445,
+      "id": 114,
+      "receipt_wall_elapsed_s": 2.097961146999978
+    },
+    "native_terminal_tail_last": {
+      "sim_s": 255.694,
+      "x": 0.037921490197730966,
+      "y": 1.950300001111078e-05,
+      "z": -0.0050000028318972186,
+      "yaw": -0.1543095372926586,
+      "id": 114,
+      "receipt_wall_elapsed_s": 377.497420073
+    },
+    "native_before_survey_to_final": {
+      "dx_m": 0.037921490203523416,
+      "dy_m": 1.9503000011110947e-05,
+      "xy_distance_m": 0.037921495218713776,
+      "yaw_delta_rad": -0.1543095372926586
+    },
+    "native_home_to_final": {
+      "dx_m": 0.03792948219504537,
+      "dy_m": 1.899261463973826e-05,
+      "xy_distance_m": 0.03792948695017736,
+      "yaw_delta_rad": -0.13128118833864916
+    },
+    "observer_final_native_tail_30sim": {
+      "sample_count": 967,
+      "first_sim_s": 225.701,
+      "last_sim_s": 255.694,
+      "span_s": 29.992999999999995,
+      "max_gap_s": 0.036000000000001364,
+      "x_span_m": 0.0,
+      "y_span_m": 0.0,
+      "yaw_span_rad": 0.0,
+      "latest_native_receipt_fresh": true,
+      "evidence_sufficient": true,
+      "stationary_within_1mm_002rad": true,
+      "entire_window_after_terminal": true,
+      "ready_for_operator_to_end_observer": true
+    }
+  },
+  "geometry_and_targets": {
+    "final_planner_selection": {
+      "state": "perception_unverified",
+      "goal": null,
+      "frontier_count": 0,
+      "uncovered_count": 2575,
+      "reachable_count": 2575,
+      "unobserved_count": 0
+    },
+    "target_count": 2,
+    "targets": [
+      {
+        "uid": 1,
+        "class_id": "red_object",
+        "x": 3.57895385595352,
+        "y": -0.15045698841336141,
+        "z": -0.04146846824620018,
+        "hits": 120,
+        "first_stamp": 100.1,
+        "last_stamp": 221.5,
+        "confirmed": true,
+        "source_id": ""
+      },
+      {
+        "uid": 2,
+        "class_id": "red_object",
+        "x": -0.43580650090930584,
+        "y": -1.5842635135137433,
+        "z": -0.04282981160880866,
+        "hits": 105,
+        "first_stamp": 140.5,
+        "last_stamp": 189.2,
+        "confirmed": true,
+        "source_id": ""
+      }
+    ],
+    "geometry_map_complete_scope": "Runtime planner reachable-frontier/unknown criterion, not independent whole-maze map accuracy or visual coverage.",
+    "initial_clearance_prior": {
+      "enabled": true,
+      "coordinates_valid": true,
+      "frame_id": "map",
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "center": [
+        0.01952675299848138,
+        -0.003704707553647661
+      ],
+      "verified_radius_m": 0.3,
+      "margin_m": 0.05,
+      "source": "smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+      "currently_filled_unknown_cells": 0,
+      "sensor_observation": false,
+      "raw_slam_map_modified": false
+    },
+    "target_count_prior": null
+  },
+  "independent_start_alignment": {
+    "method": "Single stationary pre-goal robot pose anchor; no target positions used in alignment.",
+    "checks": {
+      "stationary_native_window_at_home": true,
+      "one_observed_native_id": true,
+      "tf_chain_same_stamp": true,
+      "tf_at_or_before_home_and_recent": true,
+      "native_bracket_gap_le_50ms": true,
+      "native_bracket_stationary": true,
+      "home_matches_synchronous_tf": true,
+      "same_map_epoch": true,
+      "base_joint_has_zero_planar_offset_and_rotation": true
+    },
+    "usable_as_start_anchor": true,
+    "tf_sample": {
+      "wall_s": 18.52037304199996,
+      "ros_s": 100.1,
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "active_goal_token": null,
+      "transforms": {
+        "map_to_base_link": {
+          "parent": "map",
+          "child": "base_link",
+          "stamp_ns": 100075000000,
+          "xyz": [
+            0.01952675299848138,
+            -0.003704707553647661,
+            2.7755575615628914e-17
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            -0.032444933034026624,
+            0.9994735245720207
+          ],
+          "yaw": -0.06490125610672276
+        },
+        "map_to_odom": {
+          "parent": "map",
+          "child": "odom",
+          "stamp_ns": 100075000000,
+          "xyz": [
+            0.019526752998478267,
+            -0.0037047075536483388,
+            -0.14999999999999997
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            -0.020938469725785534,
+            0.9997807662110441
+          ],
+          "yaw": -0.04187999999999828
+        },
+        "odom_to_base_link": {
+          "parent": "odom",
+          "child": "base_link",
+          "stamp_ns": 100075000000,
+          "xyz": [
+            3.0823257645375387e-15,
+            8.075472258366391e-16,
+            0.15
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            -0.011510373872449733,
+            0.9999337534523557
+          ],
+          "yaw": -0.023021256106724477
+        }
+      },
+      "tf_errors": {},
+      "reference_stamp_ns": 100075000000,
+      "reference_stamp_advanced": true,
+      "tf_age_ros_s": 0.024999999999991473,
+      "same_stamp_chain_complete": true,
+      "latest_odom": {
+        "sequence": 623,
+        "receipt_wall_s": 18.449071276999973,
+        "receipt_ros_s": 100.1,
+        "stamp_ns": 100100000000,
+        "parent": "odom",
+        "child": "base_footprint",
+        "xyz": [
+          3.0823257645375387e-15,
+          8.075472258366391e-16,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          -0.0,
+          0.0,
+          0.011510373872449733,
+          -0.9999337534523557
+        ],
+        "yaw": -0.023021256106724477,
+        "twist_linear_xyz_angular_xyz": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receipt_age_wall_s": 0.07130176499998697,
+        "new_message_since_previous_sample": true,
+        "messages_since_previous_sample": 11,
+        "header_age_ros_s": -1.4210854715202004e-14,
+        "stamp_minus_tf_reference_s": 0.025
+      }
+    },
+    "native_bracket": [
+      {
+        "sim_s": 100.07,
+        "x": -7.991997314401651e-06,
+        "y": 5.103853713725238e-07,
+        "z": -0.005000002831897227,
+        "yaw": -0.023028348954009445,
+        "id": 114,
+        "receipt_wall_elapsed_s": 18.418854597999996
+      },
+      {
+        "sim_s": 100.101,
+        "x": -7.991997314401651e-06,
+        "y": 5.103853713725238e-07,
+        "z": -0.005000002831897227,
+        "yaw": -0.023028348954009445,
+        "id": 114,
+        "receipt_wall_elapsed_s": 18.636184764999996
+      }
+    ],
+    "prehome_native_window": {
+      "count": 216,
+      "first_sim_s": 93.401,
+      "last_sim_s": 100.07,
+      "max_gap_s": 0.03699999999999193,
+      "x_span_m": 0.0,
+      "y_span_m": 0.0,
+      "yaw_span_rad": 0.0
+    },
+    "uncertainty": [
+      "Stationary sampled bracket has no observed motion; no numerical confidence interval is established.",
+      "Planar coincidence of model origin and base_footprint/base_link uses the expanded URDF zero-XY fixed joint.",
+      "This anchors the starting map session only; SLAM correction and stored target averaging can change later consistency.",
+      "No target fitting, target-derived yaw, final-return refitting or hidden surface-to-centre correction."
+    ],
+    "map_to_world_se2": {
+      "x": -0.019672710522558146,
+      "y": 0.0028845676047571014,
+      "yaw": 0.041872907152713315
+    },
+    "late_map_consistency_diagnostic": {
+      "last_tf_stamp_ns": 255575000000,
+      "native_bracket_sim_s": [255.569, 255.601],
+      "native_bracket_xy_movement_m": 0.0,
+      "native_bracket_yaw_movement_rad": 0.0,
+      "start_anchor_transformed_last_map_xy": [
+        0.031266635471188686,
+        0.0036696798349577695
+      ],
+      "last_native_xy": [
+        0.037921490197730966,
+        1.950300001111078e-05
+      ],
+      "xy_residual_m": 0.007590183288812157,
+      "yaw_residual_rad": -0.0005092173313772375,
+      "map_to_odom_start": {
+        "parent": "map",
+        "child": "odom",
+        "stamp_ns": 100075000000,
+        "xyz": [
+          0.019526752998478267,
+          -0.0037047075536483388,
+          -0.14999999999999997
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          -0.020938469725785534,
+          0.9997807662110441
+        ],
+        "yaw": -0.04187999999999828
+      },
+      "map_to_odom_end": {
+        "parent": "map",
+        "child": "odom",
+        "stamp_ns": 255575000000,
+        "xyz": [
+          0.014236805365916245,
+          0.0021049566524013246,
+          -0.14999999999999994
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          -0.02119294188637445,
+          0.9997754043855054
+        ],
+        "yaw": -0.042389057285724174
+      },
+      "map_to_odom_xy_change_m": 0.007857209691888285,
+      "map_to_odom_yaw_change_rad": -0.0005090572857258945,
+      "used_to_refit_alignment": false
+    }
+  },
+  "descriptive_target_evaluation": {
+    "schema_version": 1,
+    "role": "offline_target_evaluation_only",
+    "mission_status": "done",
+    "reported_mission_success": false,
+    "map_frame": "map",
+    "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+    "alignment": {
+      "direction": "map_to_world",
+      "x_m": -0.019672710522558146,
+      "y_m": 0.0028845676047571014,
+      "yaw_rad": 0.041872907152713315,
+      "source": "run20 observer native stationary bracket 100.07..100.101 s and same-stamp TF at 100.075 s, matching home_recorded; epoch 76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "estimated_from_targets": false
+    },
+    "appearance_to_class": {
+      "red_box_surrogate": "red_object"
+    },
+    "distance_metric": "planar_xy_euclidean_m",
+    "max_distance_m": 0.2,
+    "prediction_count": 2,
+    "ground_truth_count": 2,
+    "TP": 2,
+    "FP": 0,
+    "FN": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "zero_target_case": false,
+    "target_inventory_exact": true,
+    "position_error_m": {
+      "mean": 0.013427008483121427,
+      "median": 0.013427008483121427,
+      "rmse": 0.016307993114866554,
+      "max": 0.02268260585059157
+    },
+    "matches": [
+      {
+        "prediction_uid": 1,
+        "truth_index": 0,
+        "class_id": "red_object",
+        "distance_m": 0.02268260585059157
+      },
+      {
+        "prediction_uid": 2,
+        "truth_index": 1,
+        "class_id": "red_object",
+        "distance_m": 0.0041714111156512836
+      }
+    ],
+    "unmatched_prediction_uids": [],
+    "unmatched_truth_indices": [],
+    "transformed_predictions": [
+      {
+        "uid": 1,
+        "class_id": "red_object",
+        "map_xyz": [
+          3.57895385595352,
+          -0.15045698841336141,
+          -0.04146846824620018
+        ],
+        "world_x": 3.562442272368789,
+        "world_y": 0.002376874479100807
+      },
+      {
+        "uid": 2,
+        "class_id": "red_object",
+        "map_xyz": [
+          -0.43580650090930584,
+          -1.5842635135137433,
+          -0.04282981160880866
+        ],
+        "world_x": -0.38877887341675943,
+        "world_y": -1.5982334252362587
+      }
+    ],
+    "limitations": [
+      "Target matching does not assess map coverage, visual coverage, autonomy, or return home.",
+      "Zero-truth recall and zero-prediction precision are undefined (null).",
+      "Alignment provenance is supplied by the evaluator, not verified by this program.",
+      "Error is planar; no surface-to-centre correction or target-height validation is applied."
+    ],
+    "threshold_status": "Post-run descriptive association threshold 0.20 m; not a preregistered acceptance criterion.",
+    "reference_point_note": "Predictions are aggregated visible-surface points; metadata truth is box centre (0.03 m thickness along x, 0.06 m y). Report planar raw residuals without surface correction; z excluded.",
+    "formal_detection_acceptance": false
+  },
+  "native_identity": {
+    "snapshots": {
+      "early": {
+        "passed": true,
+        "target_count": 1,
+        "target_models": [
+          {
+            "name": "limo",
+            "id": 114,
+            "path": [
+              "limo"
+            ],
+            "deleted": false
+          }
+        ]
+      },
+      "before-motion": {
+        "passed": true,
+        "target_count": 1,
+        "target_models": [
+          {
+            "name": "limo",
+            "id": 114,
+            "path": [
+              "limo"
+            ],
+            "deleted": false
+          }
+        ]
+      },
+      "terminal": {
+        "passed": true,
+        "target_count": 1,
+        "target_models": [
+          {
+            "name": "limo",
+            "id": 114,
+            "path": [
+              "limo"
+            ],
+            "deleted": false
+          }
+        ]
+      }
+    },
+    "observed_ids": [
+      114
+    ],
+    "observed_samples": 5221,
+    "scope": "Three scene responses plus sampled native poses; no proof of permanent uniqueness between all observations."
+  },
+  "parameters": {
+    "gate": {
+      "expected": {
+        "controller_server": {
+          "general_goal_checker.xy_goal_tolerance": 0.03,
+          "general_goal_checker.yaw_goal_tolerance": 0.26,
+          "general_goal_checker.stateful": false,
+          "FollowPath.plugin": "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController",
+          "FollowPath.stateful": false,
+          "FollowPath.desired_linear_vel": 0.15,
+          "FollowPath.rotate_to_heading_angular_vel": 0.4,
+          "FollowPath.max_angular_accel": 0.6
+        },
+        "slam_toolbox": {
+          "loop_search_space_dimension": 1.0,
+          "distance_variance_penalty": 0.05
+        }
+      },
+      "actual": {
+        "controller_server": {
+          "general_goal_checker.xy_goal_tolerance": 0.03,
+          "general_goal_checker.yaw_goal_tolerance": 0.26,
+          "general_goal_checker.stateful": false,
+          "FollowPath.plugin": "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController",
+          "FollowPath.stateful": false,
+          "FollowPath.desired_linear_vel": 0.15,
+          "FollowPath.rotate_to_heading_angular_vel": 0.4,
+          "FollowPath.max_angular_accel": 0.6
+        },
+        "slam_toolbox": {
+          "loop_search_space_dimension": 1.0,
+          "distance_variance_penalty": 0.05
+        }
+      },
+      "passed": true
+    },
+    "mission_actual": {
+      "goal_arrival_margin_m": 0.05,
+      "home_position_tolerance_m": 0.15,
+      "home_yaw_tolerance_rad": 0.26,
+      "require_processed_inspection": true,
+      "inspection_required_frames": 3,
+      "inspection_min_span_s": 0.2,
+      "inspection_timeout_s": 12.0,
+      "inspection_settle_s": 0.5,
+      "target_definition_verified": false,
+      "autonomous": true,
+      "use_sim_time": true
+    },
+    "note": "Nav2 0.03 m also changes RPP end-heading switch behavior; mission frontier margin stays 0.05 m; home verification uses 0.15 m."
+  },
+  "map_export": {
+    "passed": true,
+    "errors": [],
+    "services": {
+      "/slam_toolbox/save_map": {
+        "service": "/slam_toolbox/save_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/final-map",
+        "status": "service_success",
+        "sent_wall_s": 5.591972214000066,
+        "sent_ros_ns": 234700000000,
+        "result": 0,
+        "completed_wall_s": 11.987331614000027
+      },
+      "/slam_toolbox/serialize_map": {
+        "service": "/slam_toolbox/serialize_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/final-map",
+        "status": "service_success",
+        "sent_wall_s": 11.990740624000068,
+        "sent_ros_ns": 237530000000,
+        "result": 0,
+        "completed_wall_s": 12.34387162400003
+      }
+    },
+    "files": [
+      {
+        "name": "final-map.yaml",
+        "bytes": 131,
+        "sha256": "91370618c2561b4adf0f6a3525dced3502d2615ad8acc78e91818935e59ca166",
+        "hash_matches_saved": true
+      },
+      {
+        "name": "final-map.pgm",
+        "bytes": 4465,
+        "sha256": "7aba9ff415ef6dd87a20babd1a1ead4f2e3534ce786133032dacdba52a641345",
+        "hash_matches_saved": true
+      },
+      {
+        "name": "final-map.posegraph",
+        "bytes": 9995019,
+        "sha256": "821b9ce6266dde592c6c415ef71627cc5d3cb88d2b3a4a830e091c62b825e2d8",
+        "hash_matches_saved": true
+      },
+      {
+        "name": "final-map.data",
+        "bytes": 6747731,
+        "sha256": "41289a81765dfaab1d428474a5559b44e33ce253295389119a0cef924de9f13a",
+        "hash_matches_saved": true
+      }
+    ],
+    "raw_occupancy_grid": {
+      "frame_id": "map",
+      "stamp_ns": 234125000000,
+      "width": 84,
+      "height": 53,
+      "resolution": 0.05000000074505806,
+      "origin": {
+        "xyz": [
+          -0.5028293274983047,
+          -2.1639943856510966,
+          0.0
+        ],
+        "quaternion_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "valid_geometry": true
+      }
+    },
+    "raw_data_length": 4452,
+    "raw_cell_counts": {
+      "-1": 1178,
+      "100": 664,
+      "0": 2610
+    },
+    "raw_data_length_correct": true
+  },
+  "recording": {
+    "metadata_message_count": 335008,
+    "metadata_duration_s": 219.904,
+    "bag_files": [
+      {
+        "name": "bag_0.mcap",
+        "bytes": 55516288
+      },
+      {
+        "name": "metadata.yaml",
+        "bytes": 34072
+      }
+    ],
+    "bag_directory_total_bytes": 55550360,
+    "transport_lost_counts": [
+      2355
+    ],
+    "transport_loss_scope": "Recorder whole recording cumulative count; not per inspection, per image stream, or proof of precise cause of missing selected frames.",
+    "supervisor": {
+      "schema_version": 1,
+      "status": "stopped",
+      "command": [
+        "ros2",
+        "bag",
+        "record",
+        "--storage",
+        "mcap",
+        "--storage-preset-profile",
+        "zstd_fast",
+        "--use-sim-time",
+        "--disable-keyboard-controls",
+        "--output",
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/recording/bag",
+        "--max-bag-size",
+        "268435456",
+        "--qos-profile-overrides-path",
+        "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/config/recording_qos.yaml",
+        "--topics",
+        "/scan",
+        "/tf",
+        "/tf_static",
+        "/odom",
+        "/clock",
+        "/pose",
+        "/map",
+        "/plan",
+        "/received_global_plan",
+        "/lookahead_point",
+        "/lookahead_collision_arc",
+        "/is_rotating_to_heading",
+        "/global_costmap/costmap_raw",
+        "/local_costmap/costmap_raw",
+        "/cmd_vel_nav",
+        "/cmd_vel_smoothed",
+        "/cmd_vel",
+        "/rosout",
+        "/mission/status",
+        "/mission/map_epoch",
+        "/mission/targets",
+        "/mission/target_observations",
+        "/mission/frame_processing",
+        "/camera/color/image_raw",
+        "/camera/depth/image_raw",
+        "/camera/color/camera_info",
+        "/camera/depth/camera_info"
+      ],
+      "mission_dir": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/mission",
+      "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+      "limits": {
+        "max_wall_seconds": 1650.0,
+        "post_terminal_wall_seconds": 120.0,
+        "max_bytes": 8589934592,
+        "min_free_bytes": 4294967296
+      },
+      "terminal": {
+        "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run20-arrival-margin/mission/mission_20261031_030130.json",
+        "sha256": "c9936e35d1a134bf1a42890ca0c887e426f99430be40c315e8952033fd36fe1c",
+        "status": "done",
+        "map_epoch": "76f2f4d2-461c-469f-b8b4-40405854f92d",
+        "reported_mission_success": false,
+        "observed_elapsed_wall_seconds": 435.353028646,
+        "tail_deadline_elapsed_wall_seconds": 555.353028646
+      },
+      "reason": "supervisor_SIGINT",
+      "errors": [],
+      "owner": {
+        "pid": 1464,
+        "pgid": 1464,
+        "sid": 1464,
+        "start_ticks": 23677,
+        "token": "7f6a06a0a4dd48c78bf4d1e964b39639"
+      },
+      "mission_success_inferred": false,
+      "robot_stop_verified": false,
+      "limitations": [
+        "Only the original owned recorder process group is supervised.",
+        "Limits initiate shutdown; cleanup budgets and scheduling/I/O delays add time.",
+        "Byte/free-space limits are polled soft thresholds.",
+        "A terminal file or tail period does not prove robot stop or mission success."
+      ],
+      "observed_bytes": 54999017,
+      "observed_free_bytes": 59125792768,
+      "stop_requested_elapsed_wall_seconds": 513.085200614,
+      "cleanup": {
+        "signals": [
+          {
+            "pid": 1464,
+            "start_ticks": 23677,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 15.0,
+        "elapsed_wall_seconds": 0.41153443600001083
+      },
+      "recorder_exit_code": 0,
+      "graceful_recorder_shutdown": true,
+      "elapsed_wall_seconds": 513.496827643,
+      "metadata": {
+        "exists": true,
+        "integrity_verified": false
+      }
+    },
+    "topic_record_counts_from_existing_audit": {
+      "/camera/color/camera_info": 2200,
+      "/global_costmap/costmap_raw": 169,
+      "/rosout": 610,
+      "/local_costmap/costmap_raw": 394,
+      "/clock": 219609,
+      "/tf_static": 1,
+      "/scan": 1756,
+      "/odom": 21930,
+      "/mission/map_epoch": 1,
+      "/mission/frame_processing": 1498,
+      "/map": 502,
+      "/tf": 50598,
+      "/camera/depth/camera_info": 2192,
+      "/mission/target_observations": 1497,
+      "/camera/depth/image_raw": 603,
+      "/camera/color/image_raw": 1422,
+      "/cmd_vel_nav": 2843,
+      "/cmd_vel_smoothed": 6280,
+      "/cmd_vel": 6267,
+      "/pose": 231,
+      "/plan": 254,
+      "/received_global_plan": 2449,
+      "/lookahead_point": 2449,
+      "/lookahead_collision_arc": 2449,
+      "/is_rotating_to_heading": 2449,
+      "/mission/status": 3512,
+      "/mission/targets": 843
+    }
+  },
+  "cleanup": {
+    "runner_evidence_collection_complete": true,
+    "all_owned_groups_empty": true,
+    "runner_errors": [],
+    "elapsed_wall_s": 645.3795282020001,
+    "groups": {
+      "mission": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "recorder": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "observer": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "perception": {
+        "exit_code": 1,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "motion": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "survey": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "navigation": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "sim": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "sim-check": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "native-early": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "nav-check": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "parameter-gate": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "native-before-motion": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "preflight": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "save-early": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "provenance": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "native-terminal": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      },
+      "save-final": {
+        "exit_code": 0,
+        "remaining": [],
+        "ownership_errors": [],
+        "forced_kill": false,
+        "terminate_used": false
+      }
+    },
+    "recorder_inner_recheck": {
+      "owner": {
+        "pid": 1464,
+        "pgid": 1464,
+        "sid": 1464,
+        "start_ticks": 23677,
+        "token": "7f6a06a0a4dd48c78bf4d1e964b39639"
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true,
+      "reported_cleanup": {
+        "signals": [
+          {
+            "pid": 1464,
+            "start_ticks": 23677,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 15.0,
+        "elapsed_wall_seconds": 0.41153443600001083
+      }
+    },
+    "perception_shutdown_repeated_context_error": true,
+    "all_components_clean_exit": false
+  },
+  "limitations": [
+    "Online 5x3 accepted frames are runtime claims; this independent source-byte audit covers only five retained last frames and none has complete recorded RGB+depth.",
+    "Target XY error is descriptive under an independent start anchor, not final object recognition or a preregistered accuracy pass.",
+    "World target coordinates were read only after run shutdown for evaluation. The existing disclosed start-clearance prior remains a separate non-sensor assumption.",
+    "SLAM map-frame target observations are averaged coordinates, not pose-graph landmarks; later map corrections are not automatically retroactive.",
+    "No physical LIMO hardware was evaluated."
+  ],
+  "source_files": {
+    "outputs/ros_smoke/run20-arrival-margin/mission/mission_20261031_030130.json": {
+      "bytes": 28534,
+      "sha256": "c9936e35d1a134bf1a42890ca0c887e426f99430be40c315e8952033fd36fe1c"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/observer.json": {
+      "bytes": 16235372,
+      "sha256": "d32d52b6a327bc0d3ddde409117e83f2127013fc94dbd40ac85d3f08145d5a26"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/orchestration.json": {
+      "bytes": 10799,
+      "sha256": "1b6893a88132077c3e58c86a9b9d287dde5f154d4f9bdd3433ce62be5618a76c"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/inspection-audit/audit.json": {
+      "bytes": 73378,
+      "sha256": "be4d6e8957aa1fad2a68241c61137005b30ade055db58bd53a1019b8c320fa1d"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/initial-motion.json": {
+      "bytes": 983567,
+      "sha256": "c226db9ed211af52f1c9aa3a415c66d6ab11a656cbbafc868d1a707dd4b1dde4"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/final-save.json": {
+      "bytes": 99554,
+      "sha256": "ac2e858d5246d9652dffc17fa45a9c82d1a96ea977e72ea5d10d255217d3020c"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/parameters-early.json": {
+      "bytes": 37385,
+      "sha256": "1c2dee5b2823c46c1117564fc286a5788d86bf4d356bf5c31e60a495946d8182"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/parameter-gate.json": {
+      "bytes": 1216,
+      "sha256": "18171acd5ccd56916ab4c6591efc9afcd244589bec3ab998320154f074ea43f3"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/preparation.json": {
+      "bytes": 920,
+      "sha256": "579b9cd026a47490591b1922541aac622f0d43198d58b44cfd018732c1498dad"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/recording/supervisor.json": {
+      "bytes": 3346,
+      "sha256": "52139343fbc7f4a3aa07b6e490cd2d272a9cf29de39cd2d4e9a15d77ae49c934"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/recording/bag/metadata.yaml": {
+      "bytes": 34072,
+      "sha256": "27fc6d811f697712162cf03066ae780911b9c106b091947f4c654f52bf898160"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/recording/recorder.log": {
+      "bytes": 3823,
+      "sha256": "458f11c69630461e04270f8f9ec41dcff628f92d1cf8ddfbaf6ccb1c2624c1cc"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/perception.log": {
+      "bytes": 1341,
+      "sha256": "394d0b84fa07e55e97c020be2af00c302c2598be117f06b50479a451d312c904"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/native-scene-early.json": {
+      "bytes": 4332,
+      "sha256": "e531d314949a3028a9d4e38a28c337252704a592fd1cdc69dc364891cc494240"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/native-scene-before-motion.json": {
+      "bytes": 4333,
+      "sha256": "ed0daa489faedf3ace0657adaa2c6c1f8665d0e0be13cd2f9bdf6bbb7cb3477c"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/native-scene-terminal.json": {
+      "bytes": 4333,
+      "sha256": "e9fff9accd21845fb49431b156eb6b7e7d8e2292bdc62e3d8aa31e4110686d4e"
+    },
+    "outputs/ros_smoke/run20-arrival-margin/spawn/robot.urdf": {
+      "bytes": 11652,
+      "sha256": "0a7b5d7dbcff95286de3473140e543f2805e5c192251476ad896ec854dcd8502"
+    },
+    "tools/evaluate_targets.py": {
+      "bytes": 15475,
+      "sha256": "1b37c05b99946f272ad7b0a289c56333380b3a6cf34385e30ccbb50402df6ae9"
+    },
+    "worlds/smoke_maze.metadata.json": {
+      "bytes": 1383,
+      "sha256": "226282a376b5cae5401fc55e40ccf5977cfd1812d6278aeedb4d37f52e524d22"
+    },
+    "worlds/smoke_maze.world": {
+      "bytes": 11269,
+      "sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811"
+    }
+  }
+}

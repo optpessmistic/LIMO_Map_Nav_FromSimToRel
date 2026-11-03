@@ -1,0 +1,303 @@
+"""After root confirms session 80301 CLOSED, archive run23 without ROS.
+
+Requires terminal orchestration, all owned groups and writer closed. A failed
+run with zero accepted frames may lack the normal terminal/audit, provided its
+exact mission/shutdown evidence confirms cancellation and stop. No 0/0 pass.
+No result is promoted to mission success; failed export/tail flags stay failed.
+"""
+import gzip
+import hashlib
+import json
+import math
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run23-frontier-fallback'
+SETUP = ROOT / 'outputs/setup'
+DEST = ROOT / 'experiments/run23'
+SUMMARY = SETUP / 'run23-outcome-review'
+
+
+def digest(path, compressed=False):
+    value = hashlib.sha256()
+    with (gzip.open(path, 'rb') if compressed else path.open('rb')) as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            value.update(chunk)
+    return value.hexdigest()
+
+
+def safe_file(path):
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT):
+        raise RuntimeError('Unsafe or missing source: ' + str(path))
+    return path
+
+
+def read(path):
+    safe_file(path)
+    if path.stat().st_size > 256 * 1024 * 1024:
+        raise RuntimeError('Oversized JSON: ' + str(path))
+    return json.loads(path.read_bytes())
+
+
+def write(path, value):
+    raw = (json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode()
+    with path.open('xb') as stream:
+        stream.write(raw)
+
+
+def closure():
+    orchestration = read(RUN / 'orchestration.json')
+    shutdown = read(RUN / 'retention-shutdown.json')
+    checkpoint = read(RUN / 'retained/checkpoint.json')
+    audit_path = RUN / 'retention-audit.json'
+    audit = read(audit_path) if audit_path.is_file() else {}
+    elapsed = orchestration.get('elapsed_wall_s')
+    if not (orchestration.get('status') in ('terminal_observed', 'orchestration_failed')
+            and type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed > 0
+            and orchestration.get('all_owned_groups_empty') is True
+            and shutdown.get('writer') is None and shutdown.get('fault') is None
+            and shutdown.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown', {}).get('final_checkpoint_persisted') is True
+            and checkpoint.get('closed') is True and checkpoint.get('fault') is None
+            and checkpoint.get('core', {}).get('closed') is True
+            and checkpoint.get('core', {}).get('writer_pending') is False):
+        raise RuntimeError('Run ownership/writer closure not confirmed')
+    name = str((orchestration.get('terminal') or {}).get('path', '')).replace('\\', '/').rsplit('/', 1)[-1]
+    shutdown_path = None
+    if not name:
+        shutdowns = sorted((RUN / 'mission').glob('shutdown_*.json'))
+        if len(shutdowns) != 1:
+            raise RuntimeError('Cannot resolve exact unique shutdown mission')
+        shutdown_path = shutdowns[0]
+        name = shutdown_path.name.replace('shutdown_', 'mission_', 1)
+        stopped = read(shutdown_path)
+        if not (stopped.get('goal_terminal_verified') is True and stopped.get('stop_verified') is True
+                and stopped.get('send_pending') is False and stopped.get('goal_handle_present') is False):
+            raise RuntimeError('Shutdown did not verify goal cancellation and stop')
+        mission_log = (RUN / 'mission.log').read_text()
+        if name not in mission_log or shutdown_path.name not in mission_log:
+            raise RuntimeError('Shutdown pair not identified in original mission log')
+    if not name.startswith('mission_') or not name.endswith('.json'):
+        raise RuntimeError('Missing exact terminal mission filename')
+    mission_path = RUN / 'mission' / name
+    mission = read(mission_path)
+    if mission.get('status') not in ('done', 'blocked'):
+        raise RuntimeError('Recorded mission is not terminal')
+    accepted = [e for w in (mission.get('frame_retention') or {}).get('windows', []) for e in w.get('accepted', [])]
+    if accepted:
+        if not (audit.get('passed') is True and len(accepted) == audit.get('accepted_count') == audit.get('verified_count')):
+            raise RuntimeError('Nonempty accepted set requires the original strict audit pass')
+    elif not (shutdown_path is not None and orchestration.get('status') == 'orchestration_failed'
+              and mission.get('mission_success') is False and checkpoint['core'].get('results') == []):
+        raise RuntimeError('Zero accepted exception requires exact failed-run shutdown and empty producer results')
+    files = [RUN / n for n in ('orchestration.json', 'retention-shutdown.json', 'retained/checkpoint.json')]
+    if audit:
+        files.append(audit_path)
+    if shutdown_path is not None:
+        files.append(shutdown_path)
+    files.append(mission_path)
+    return orchestration, mission_path, mission, audit, {str(p): digest(p) for p in files}
+
+
+def main():
+    if DEST.exists() or DEST.is_symlink():
+        raise RuntimeError('Refuse existing experiments/run23, including partial archives')
+    orchestration, mission_path, mission, audit, closed_hashes = closure()
+    accepted_count = sum(len(w.get('accepted', [])) for w in mission.get('frame_retention', {}).get('windows', []))
+    audit_passed = audit.get('passed')
+    # The summary only reads closed artifacts. Preserve an existing complete
+    # summary if every recorded source still has the same bytes.
+    outputs = [SUMMARY.with_suffix(s) for s in ('.json', '.md')]
+    if any(p.exists() for p in outputs) and not all(p.is_file() for p in outputs):
+        raise RuntimeError('Partial outcome review exists; inspect it before archiving')
+    if not any(p.exists() for p in outputs):
+        subprocess.run([sys.executable, '-B', str(SUMMARY.with_suffix('.py'))], cwd=ROOT, check=True)
+    summary = read(outputs[0])
+    if summary.get('run') != RUN.name:
+        raise RuntimeError('Outcome review belongs to a different run')
+    for source, row in summary['source_files'].items():
+        path = safe_file(ROOT / source)
+        if path.stat().st_size != row['bytes'] or digest(path) != row['sha256']:
+            raise RuntimeError('Outcome review source changed: ' + source)
+    DEST.mkdir()
+    records, missing = [], []
+
+    def keep(source, name=None, compressed=False, required=True):
+        if not source.exists():
+            if required:
+                raise RuntimeError('Missing required archive source: ' + str(source))
+            missing.append(str(source.relative_to(ROOT)))
+            return
+        safe_file(source)
+        target = DEST / (name or source.name)
+        if compressed:
+            target = target.with_name(target.name + '.gz')
+        if not target.resolve().is_relative_to(DEST):
+            raise RuntimeError('Archive target escaped destination')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        source_hash, source_bytes = digest(source), source.stat().st_size
+        with source.open('rb') as original, target.open('xb') as stream:
+            if compressed:
+                with gzip.GzipFile(filename='', mode='wb', fileobj=stream, mtime=0) as packed:
+                    shutil.copyfileobj(original, packed)
+            else:
+                shutil.copyfileobj(original, stream)
+        if digest(target, compressed) != source_hash or digest(source) != source_hash:
+            raise RuntimeError('Copied bytes or source changed: ' + str(source))
+        records.append({'source': str(source.relative_to(ROOT)), 'archive': target.relative_to(DEST).as_posix(),
+            'source_bytes': source_bytes, 'source_sha256': source_hash,
+            'archive_bytes': target.stat().st_size, 'archive_sha256': digest(target),
+            'encoding': 'gzip' if compressed else 'identity', 'original_bytes_verified': True})
+
+    try:
+        keep(ROOT / 'experiments/run22/.gitattributes')
+        for name in ('epoch.txt', 'orchestration.json', 'retention-shutdown.json',
+                     'run-token-final-processes.json', 'preparation.json'):
+            keep(RUN / name)
+        keep(mission_path, 'mission/' + mission_path.name)
+        shutdown_path = mission_path.with_name(mission_path.name.replace('mission_', 'shutdown_', 1))
+        keep(shutdown_path, 'mission/' + shutdown_path.name, required=False)
+        keep(RUN / 'retention-audit.json', required=False)
+        keep(RUN / 'retained/checkpoint.json', 'retained-checkpoint.json')
+        for name in ('final-save.json', 'final-map.reservation.json', 'parameter-gate.json', 'parameters-early.json',
+                     'preflight.json', 'installed-check.json', 'runner-inputs.json', 'provenance-live.json',
+                     'native-scene-early.json', 'native-scene-before-motion.json', 'native-scene-terminal.json',
+                     'nav2-rpp-03m.yaml', 'mission.log', 'sim.log', 'perception.log', 'navigation.log',
+                     'observer.log', 'save-early.log', 'process-save-early.json', 'save-final.log', 'snapshot-raster.log', 'run-token-process-recheck.json',
+                     'denied-process-context.json'):
+            keep(RUN / name, required=False)
+        for suffix in ('.pgm', '.yaml', '.provenance.json', '.reservation.json', '.failure.json'):
+            keep(RUN / ('snapshot-map' + suffix), required=False)
+        for name in ('observer.json', 'initial-survey.json', 'initial-motion.json'):
+            keep(RUN / name, compressed=True, required=False)
+        for name in ('supervisor.json', 'recorder.log', 'bag/metadata.yaml'):
+            keep(RUN / 'recording' / name, 'recording/' + name, required=False)
+        # At most one most recent small phase snapshot; full history is already
+        # in the compressed observer. No world/truth files are consumed.
+        snapshots = sorted((RUN / 'observer-snapshots').glob('*-phase-*.json'))
+        if snapshots:
+            keep(snapshots[-1], 'observer-snapshots/' + snapshots[-1].name)
+        for path in outputs:
+            keep(path)
+        for name in ('prepare-run23.py', 'start-run23.sh', 'run23-env.sh', 'run23-process.py', 'run23-param-gate.py',
+                     'run23-preflight.py', 'run23-save.py', 'run23-provenance.py', 'run23-installed-check.py',
+                     'run23-outcome-review.py', 'archive-run23.py'):
+            keep(SETUP / name, 'runner/' + name + '.txt')
+        for name in ('scripts/terminal_evidence.py', 'tools/export_occupancy_map.py', 'tools/audit_frame_retention.py'):
+            keep(ROOT / name, 'runner/' + name.replace('/', '__') + '.txt')
+        for name in ('build-run23.sh', 'verify-run23-build-installed.py', 'run23-build.log', 'run23-build-installed.json', 'run23-code-ci.json',
+                     'run23-terminal-tests.log', 'run23-ros-startup.sh', 'run23-ros-startup.log', 'occupancy-map-export-tests-01.log',
+                     'run23-frontier-focused/pure-01.log', 'run23-frontier-focused/pure-01.json',
+                     'run23-frontier-focused/frozen-map-plan.json'):
+            keep(SETUP / name, 'validation/' + name, required=False)
+        source_pack = safe_file(ROOT / 'experiments/run22/pack-retained.py')
+        reopened = {}
+        if accepted_count:
+            pack_text = source_pack.read_text().replace('run22-isolated-writer', RUN.name).replace('run22', 'run23')
+            with (DEST / 'pack-retained.py').open('x', encoding='utf-8', newline='\n') as stream:
+                stream.write(pack_text)
+            subprocess.run([sys.executable, '-B', str(DEST / 'pack-retained.py')], cwd=ROOT, check=True)
+            packed = read(DEST / 'retained-files.json')
+            reopened = read(DEST / 'archive-reopened-audit.json')
+            if not (packed['extracted_audit_passed'] is True and reopened['passed'] is True
+                    and reopened['verified_count'] == audit['verified_count']
+                    and reopened['accepted_count'] == audit['accepted_count']):
+                raise RuntimeError('Archived extraction audit differs from closed original')
+        else:
+            write(DEST / 'retention-audit-status.json', {'performed': False, 'passed': None,
+                'accepted_count': 0, 'producer_result_count': 0, 'original_audit_available': bool(audit),
+                'original_audit_passed': audit_passed, 'archive_extraction_audit_performed': False,
+                'reason': 'Supervisor had no normal terminal mission; strict audit was not produced. No accepted image pairs.',
+                'scope': 'No 0/0 pass, fabricated receipts, empty image archive, or visual-coverage claim.'})
+        excluded = []
+        for path in sorted(p for p in RUN.rglob('*') if p.suffix in ('.mcap', '.posegraph', '.data') and p.is_file()):
+            safe_file(path)
+            excluded.append({'source': str(path.relative_to(ROOT)), 'bytes': path.stat().st_size,
+                             'sha256': digest(path), 'archived': False})
+        flags = {k: mission.get(k) for k in ('status', 'reason', 'mission_success', 'map_complete',
+                    'visual_coverage_complete', 'returned_pose_verified')}
+        readme = ('# run23: closed evidence archive\n\n'
+            'This archive preserves the recorded outcome; archive integrity is not full mission acceptance.\n\n'
+            '```json\n' + json.dumps(flags, ensure_ascii=False, indent=2) + '\n```\n\n'
+            + (f"Strict original and extracted retention audits verified {audit.get('verified_count')}/{accepted_count} accepted pairs.\n\n"
+             if accepted_count else 'Accepted frames: **0**; producer results: **0**. The supervisor did not record a normal terminal result, '
+             'so no strict retention audit was generated. This is **not a 0/0 audit pass**; no image package or replacement audit is fabricated.\n\n')
+            + 'No final-save or snapshot-map export was reached in this failed run. '
+            'Missing optional evidence remains listed in archive-manifest.json.\n\n'
+            'Owned groups and writer closure are required. The original global process-scan limitation is preserved; '
+            'no global absence claim is added. Native/map return measurements have separate coordinate scopes.\n\n'
+            'From this directory, verify copied artifact identity with `sha256sum -c SHA256SUMS`. '
+            'Archive identity checks are independent of mission and retention audit outcomes.\n\n'
+            'The early parameter capture started at 2026-10-31 13:27:02.956911 UTC. Its mission list request was sent '
+            'at wall +5.467660993 s, approximately 13:27:08.424572 UTC. The mission loaded log timestamp '
+            '1793453228.700346545 is 13:27:08.700346 UTC: the request preceded that log by about 0.276 s. '
+            'mission.log also contains `rclpy failed to send response (timeout)`. This supports a startup/service-response '
+            'timing hypothesis; the exact DDS cause remains unproven. The capture failed with '
+            '`parameters_unavailable:limo_maze_mission`, then supervisor SIGINT canceled one frontier goal.\n\n'
+            'A proposed next run will wait for the Mission loaded log before starting parameter capture; '
+            'the per-request 6 s, total 17 s and original experiment budgets stay unchanged. This archive does not validate that proposal.\n\n'
+            'No final snapshot/raster export or independent terminal-tail verification was reached. '
+            'A confirmed red-surrogate annotation is preserved, but no completed search or return is claimed.\n\n'
+            'MCAP/posegraph/data remain local; '
+            'only their paths, sizes and SHA256 are retained. Gzip entries must decode to their recorded source hashes. '
+            'Runner copies use local paths and are evidence, not a generic launcher. No physical LIMO validation is implied.\n')
+        with (DEST / 'README.md').open('x', encoding='utf-8', newline='\n') as stream:
+            stream.write(readme)
+        # Verify every copied original again after packing; never hash a
+        # manifest into itself. Generated entries exclude all three indexes.
+        checks = []
+        for row in records:
+            source, target = ROOT / row['source'], DEST / row['archive']
+            passed = (digest(source) == row['source_sha256'] and digest(target) == row['archive_sha256']
+                      and digest(target, row['encoding'] == 'gzip') == row['source_sha256'])
+            if not passed:
+                raise RuntimeError('Final copied-source verification failed: ' + row['archive'])
+            checks.append({'path': row['archive'], 'source_and_archive_hashes_match': True,
+                           'decoded_original_bytes_match': True})
+        if any(digest(Path(path)) != value for path, value in closed_hashes.items()):
+            raise RuntimeError('Closure evidence changed while archiving')
+        copied_names = {row['archive'] for row in records}
+        generated = [{'archive': p.relative_to(DEST).as_posix(), 'bytes': p.stat().st_size, 'sha256': digest(p)}
+                     for p in sorted(DEST.rglob('*')) if p.is_file() and p.relative_to(DEST).as_posix() not in copied_names]
+        manifest = {'schema_version': 1, 'role': 'byte_exact_selected_run23_archive',
+            'source_run': str(RUN.relative_to(ROOT)), 'runtime_head': summary.get('runtime_head'),
+            'run_outcome': 'failed', 'original_retention_audit_passed': audit_passed,
+            'copied': records, 'generated': generated, 'excluded_large_files': excluded, 'missing_optional': missing,
+            'pack_helper_source_sha256': digest(source_pack),
+            'global_process_absence_as_originally_reported': orchestration.get('all_run_token_processes_absent'),
+            'index_exclusions': ['archive-manifest.json', 'archive-verification.json', 'SHA256SUMS'],
+            'scope': 'Closed original bytes and extracted retained samples; no new mission or service success claim.'}
+        write(DEST / 'archive-manifest.json', manifest)
+        for row in read(DEST / 'archive-manifest.json')['generated']:
+            target = DEST / row['archive']
+            if target.stat().st_size != row['bytes'] or digest(target) != row['sha256']:
+                raise RuntimeError('Generated archive file failed readback')
+        write(DEST / 'archive-verification.json', {'schema_version': 1, 'passed': True,
+            'role': 'archive_identity_verification', 'copied_source_count': len(records), 'copy_checks': checks,
+            'generated_file_count': len(generated), 'extracted_retention_audit_passed': reopened.get('passed'),
+            'accepted_count': accepted_count, 'verified_count': reopened.get('verified_count'),
+            'scope': 'Archive byte identity only; original run failed and strict retention audit was not performed.',
+            'closed_evidence_unchanged': True, 'manifest_sha256': digest(DEST / 'archive-manifest.json')})
+        files = sorted(p for p in DEST.rglob('*') if p.is_file())
+        sums = ''.join(digest(p) + '  ' + p.relative_to(DEST).as_posix() + '\n' for p in files)
+        with (DEST / 'SHA256SUMS').open('x', encoding='ascii', newline='\n') as stream:
+            stream.write(sums)
+        for line in (DEST / 'SHA256SUMS').read_text().splitlines():
+            expected, name = line.split('  ', 1)
+            if digest(DEST / name) != expected:
+                raise RuntimeError('Final SHA256SUMS verification failed: ' + name)
+        print(json.dumps({'passed': True, 'archive': str(DEST), 'files': len(files) + 1,
+            'bytes': sum(p.stat().st_size for p in DEST.rglob('*') if p.is_file()),
+            'copied_sources': len(records), 'accepted_pairs': accepted_count, 'run_outcome': 'failed',
+            'original_retention_audit_passed': audit_passed}, indent=2))
+    except Exception as exc:
+        write(DEST / 'ARCHIVE-FAILED.json', {'passed': False, 'error': type(exc).__name__ + ': ' + str(exc),
+            'scope': 'Partial archive retained. Do not treat this directory or any earlier index as a successful archive.'})
+        raise
+
+
+if __name__ == '__main__':
+    main()

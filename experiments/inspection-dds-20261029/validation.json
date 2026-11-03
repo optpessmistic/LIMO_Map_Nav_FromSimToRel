@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "base_commit": "75f2aee34461ecf461dd34496d8664ff30e683b8",
+  "ros_distribution": "jazzy",
+  "domain": 74,
+  "discovery": "LOCALHOST",
+  "tests": {
+    "core-tests-final.log": {
+      "discovered": 166,
+      "passed": 165,
+      "skipped": 1,
+      "duration_s": 33.396,
+      "sha256": "ec360199dd6ae4286ffb0201af9dea3c9323777f164c62ccc0e29316868fed93"
+    },
+    "tool-tests-final.log": {
+      "discovered": 111,
+      "passed": 111,
+      "skipped": 0,
+      "duration_s": 0.598,
+      "sha256": "f29ccf66baec4ddb4e89c3741e6251939e313b1f2eddd4ceb45f9bfa351795cb"
+    }
+  },
+  "new_pure_inspection_tests": 27,
+  "new_dds_inspection_tests": 8,
+  "skipped_test": "Opt-in Spin action regression (RUN_ROS_SURVEY_TEST not set)",
+  "logic_simulation": {
+    "cases": 15,
+    "passed": 15,
+    "sha256": "1ef4569b04f522e0a39a4734fe9320783667b30a3279696f75c5fe752a946307"
+  },
+  "installed_modules": {
+    "limo_maze_mission.core": {
+      "source": "src/limo_maze_mission/limo_maze_mission/core.py",
+      "installed_import": "install/limo_maze_mission/lib/python3.12/site-packages/limo_maze_mission/core.py",
+      "sha256": "4815a0d5725101c3f952c84ab540778e7341baf827678890a0bb66129401e113",
+      "identical": true
+    },
+    "limo_maze_mission.inspection": {
+      "source": "src/limo_maze_mission/limo_maze_mission/inspection.py",
+      "installed_import": "install/limo_maze_mission/lib/python3.12/site-packages/limo_maze_mission/inspection.py",
+      "sha256": "b308b43c27d9f2528f9de94631d1402f336213548d816287900e04e889ca6a20",
+      "identical": true
+    },
+    "limo_maze_mission.node": {
+      "source": "src/limo_maze_mission/limo_maze_mission/node.py",
+      "installed_import": "install/limo_maze_mission/lib/python3.12/site-packages/limo_maze_mission/node.py",
+      "sha256": "988fe120b929777961c388f6cd232cede6f768309058a5dbc81f5144d7176f0a",
+      "identical": true
+    },
+    "limo_maze_perception.core": {
+      "source": "src/limo_maze_perception/limo_maze_perception/core.py",
+      "installed_import": "install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/core.py",
+      "sha256": "01ca5d189b6a9df1a424046066e7e4f3e5e1b2b0d2ca75c8d4c7bffebb29693a",
+      "identical": true
+    },
+    "limo_maze_perception.evidence": {
+      "source": "src/limo_maze_perception/limo_maze_perception/evidence.py",
+      "installed_import": "install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/evidence.py",
+      "sha256": "328d28a71205a2a7417e7e05ed3d620e9d36a93180fffc010b726a62970cb562",
+      "identical": true
+    },
+    "limo_maze_perception.node": {
+      "source": "src/limo_maze_perception/limo_maze_perception/node.py",
+      "installed_import": "install/limo_maze_perception/lib/python3.12/site-packages/limo_maze_perception/node.py",
+      "sha256": "dd2799b7382cdf6f49e15718f6c7ce9676df569a27678f6c48cca9d24a304603",
+      "identical": true
+    }
+  },
+  "post_test_other_ros_nodes": [],
+  "build_log_sha256": "db95affa7035a85c6d522c14ef18389fcdda5f08cd2cea8b5861a23b40e6efab",
+  "test_file_sha256": {
+    "tests/test_mission_inspection.py": "f0e46cac33e5dcbbd4003c7ab7ea2c1f8f6662eef17202f5bf040ebea857ba08",
+    "tests/test_mission_inspection_ros.py": "8c91240177e68f51266d4b3575b388facf441715e6d244d432670e43df5d681f"
+  },
+  "physical_simulation_run": false,
+  "real_robot_test": false,
+  "motion_commands_published": false,
+  "limitations": [
+    "Navigation terminal result is a Future fixture, not actual Nav2 motion.",
+    "DDS Clock, map, wheel odometry, dynamic TF and evidence are synthetic test messages.",
+    "Wheel stop evidence is not independent physical braking evidence.",
+    "No visual coverage or final target definition is established."
+  ]
+}

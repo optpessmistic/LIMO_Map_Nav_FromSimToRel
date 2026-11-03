@@ -1,0 +1,46 @@
+"""Fresh bounded run22; only the committed writer launch differs from run21."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+OLD = ROOT/'outputs/ros_smoke/run21-observation-retention'
+OUT = ROOT/'outputs/ros_smoke/run22-isolated-writer'
+NAMES = ('env.sh','process.py','param-gate.py','preflight.py','save.py','provenance.py','installed-check.py')
+if OUT.exists() or any((ROOT/('outputs/setup/run22-'+name)).exists() for name in NAMES):
+    raise SystemExit('Refuse to reuse run22 output or helpers')
+subprocess.run(['git','diff','--exit-code'],cwd=ROOT,check=True)
+subprocess.run(['git','diff','--cached','--exit-code'],cwd=ROOT,check=True)
+HEAD = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+previous = json.loads((OLD/'preparation.json').read_text())
+token = 'run22-'+uuid.uuid4().hex
+helpers = {}
+for name in NAMES:
+    text = (ROOT/('outputs/setup/run21-'+name)).read_text()
+    text = text.replace(previous['token'],token).replace('run21-observation-retention','run22-isolated-writer')
+    text = text.replace('run21','run22').replace('Run21','Run22').replace('RUN21','RUN22')
+    if name == 'process.py':
+        old = "if residue or residue_errors: report['errors'].append('Run token process absence not verified')"
+        assert text.count(old) == 1
+        text = text.replace(old,"""if residue: report['errors'].append('Live run-token processes remain')
+        if residue_errors:
+            report['global_scan_limitation']='Some same-UID /proc environments unreadable; no global absence claim'
+        report['owned_cleanup_scope']='Verified launched process groups, nested recorder and exact writer child exit'""")
+    helpers[name] = text
+world_hash=hashlib.sha256((ROOT/'worlds/smoke_maze.world').read_bytes()).hexdigest()
+assert world_hash == previous['world_sha256']
+OUT.mkdir(parents=True)
+(OUT/'mission').mkdir()
+(OUT/'epoch.txt').write_text(str(uuid.uuid4())+'\n')
+(OUT/'nav2-rpp-03m.yaml').write_bytes((OLD/'nav2-rpp-03m.yaml').read_bytes())
+for name,text in helpers.items():
+    with (ROOT/('outputs/setup/run22-'+name)).open('x') as stream:
+        stream.write(text)
+report={**previous,'run':'run22-isolated-writer','code_head':HEAD,'token':token,
+        'epoch':(OUT/'epoch.txt').read_text().strip(),
+        'change':'Writer python -S -B with only resolved common protocol on PYTHONPATH; Python startup overrides removed',
+        'cleanup_reporting_change':'Unreadable unrelated process environments remain explicitly uncertain; owned groups and writer exit remain mandatory'}
+(OUT/'preparation.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(report),flush=True)

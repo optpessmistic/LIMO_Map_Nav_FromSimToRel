@@ -1,0 +1,137 @@
+"""Bounded domain79 check, exact owned-child signals only; no Gazebo or motion."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import time
+import uuid
+
+OUT = Path(__file__).resolve().parent
+ROOT = OUT.parents[2]
+sys.path.insert(0, str(ROOT/'scripts'))
+from record_bounded import TOKEN_KEY, proc_stat, signal_owned, stop_owned
+
+
+def write(path, value):
+    with path.open('x', encoding='utf-8') as stream:
+        json.dump(value, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+
+
+def isolation():
+    import rclpy
+    from rclpy.context import Context
+    from rclpy.executors import SingleThreadedExecutor
+    from rclpy.signals import SignalHandlerOptions
+    context = Context()
+    rclpy.init(context=context, signal_handler_options=SignalHandlerOptions.NO)
+    node = rclpy.create_node('perception_shutdown_isolation', context=context,
+        enable_rosout=False, start_parameter_services=False)
+    executor = SingleThreadedExecutor(context=context)
+    executor.add_node(node)
+    try:
+        until = time.monotonic()+3
+        while time.monotonic() < until:
+            executor.spin_once(timeout_sec=.1)
+        names = node.get_node_names()
+        write(OUT/'isolation.json', {'nodes': names, 'domain': 79, 'passed': names == [node.get_name()]})
+        if names != [node.get_name()]:
+            raise RuntimeError('Domain 79 is occupied')
+    finally:
+        executor.remove_node(node)
+        executor.shutdown()
+        node.destroy_node()
+        context.try_shutdown()
+
+
+def trial(signum):
+    name = signal.Signals(signum).name.lower()
+    token = uuid.uuid4().hex
+    env = dict(os.environ, **{TOKEN_KEY: token, 'ROS_LOG_DIR': str(OUT/'ros_logs'/name)})
+    read_fd, write_fd = os.pipe()
+    bootstrap = ('import os,sys; fd=int(sys.argv[1]); r=os.read(fd,1); os.close(fd); '
+                 'os.execvpe(sys.argv[2],sys.argv[2:],os.environ) if r==b"1" else sys.exit(125)')
+    process = owner = None
+    began = time.monotonic()
+    report = {'signal': signal.Signals(signum).name, 'errors': [], 'domain': 79,
+              'source_direct_import': True, 'no_images_published': True, 'no_motion': True}
+    try:
+        with (OUT/(name+'.log')).open('xb') as log:
+            process = subprocess.Popen(['/usr/bin/python3', '-B', '-c', bootstrap, str(read_fd),
+                '/usr/bin/python3', '-B', str(OUT/'child.py')], stdout=log, stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL, start_new_session=True, pass_fds=(read_fd,), cwd=ROOT, env=env)
+        row = proc_stat(process.pid)
+        if row['pgid'] != process.pid or row['sid'] != process.pid:
+            raise RuntimeError('Child session identity missing')
+        owner = {key: row[key] for key in ('pid', 'pgid', 'sid', 'start_ticks')}
+        owner['token'] = token
+        write(OUT/(name+'-process.json'), owner)
+        os.write(write_fd, b'1')
+    except Exception as exc:
+        report['errors'].append('setup: '+type(exc).__name__+': '+str(exc))
+    finally:
+        os.close(read_fd)
+        os.close(write_fd)
+    try:
+        if owner is None or report['errors']:
+            raise RuntimeError('Launch gate setup did not complete')
+        until = time.monotonic()+20
+        ready = False
+        while process.poll() is None and time.monotonic() < until:
+            ready = 'SIMULATION SURROGATE' in (OUT/(name+'.log')).read_text()
+            if ready:
+                break
+            time.sleep(.1)
+        if not ready:
+            raise RuntimeError('Node did not finish construction before deadline')
+        # Give spin time to enter its executor wait; no ROS clock/images needed.
+        time.sleep(.5)
+        signal_owned(owner, proc_stat(process.pid), signum)
+        report['requested_signal_sent_with_verified_pidfd'] = True
+        process.wait(timeout=10)
+        report['exit_code_before_cleanup'] = process.returncode
+    except Exception as exc:
+        report['errors'].append(type(exc).__name__+': '+str(exc))
+    finally:
+        if owner is not None:
+            report['cleanup'] = stop_owned(owner, process, graces=(5., 3., 2.))
+        else:
+            if process is not None:
+                try:
+                    process.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    report['errors'].append('Gate child did not exit; ownership unconfirmed, no signal sent')
+            report['cleanup'] = {'remaining_check_complete': False, 'launch_gate_never_released': True}
+        report['exit_code'] = process.poll() if process is not None else None
+        report['elapsed_wall_seconds'] = time.monotonic()-began
+        content = (OUT/(name+'.log')).read_text() if (OUT/(name+'.log')).exists() else ''
+        report['main_returned'] = 'MAIN_RETURNED' in content
+        report['traceback_or_rclerror'] = 'Traceback' in content or 'RCLError' in content
+        report['passed'] = (report['exit_code'] == 0 and report['main_returned']
+            and not report['traceback_or_rclerror'] and not report['errors']
+            and report['cleanup'].get('remaining_check_complete') is True
+            and not report['cleanup'].get('remaining') and not report['cleanup'].get('ownership_errors'))
+        write(OUT/(name+'-result.json'), report)
+    return report
+
+
+if __name__ == '__main__':
+    if os.environ.get('ROS_DOMAIN_ID') != '79' or os.environ.get('ROS_AUTOMATIC_DISCOVERY_RANGE') != 'LOCALHOST':
+        raise RuntimeError('Require isolated domain 79 LOCALHOST')
+    write(OUT/'inputs.json', {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in (ROOT/'src/limo_maze_perception/limo_maze_perception/node.py',
+                     ROOT/'tests/test_perception_lifecycle.py', Path(__file__), OUT/'child.py')})
+    isolation()
+    results = []
+    for signum in (signal.SIGINT, signal.SIGTERM):
+        result = trial(signum)
+        results.append(result)
+        if not result['passed']:
+            break
+    summary = {'passed': len(results) == 2 and all(r['passed'] for r in results), 'results': results}
+    write(OUT/'summary.json', summary)
+    print(json.dumps(summary, indent=2))
+    raise SystemExit(0 if summary['passed'] else 1)

@@ -1,0 +1,48 @@
+"""Fresh run24: gate parameter capture on mission constructor completion."""
+import ast
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+OLD = ROOT/'outputs/ros_smoke/run23-frontier-fallback'
+OUT = ROOT/'outputs/ros_smoke/run24-startup-gate'
+NAMES = ('env.sh','process.py','param-gate.py','preflight.py','save.py','provenance.py','installed-check.py')
+if OUT.exists() or any((ROOT/('outputs/setup/run24-'+name)).exists() for name in NAMES):
+    raise SystemExit('Refuse to reuse run24 output or helpers')
+subprocess.run(['git','diff','--quiet'],cwd=ROOT,check=True)
+subprocess.run(['git','diff','--cached','--quiet'],cwd=ROOT,check=True)
+HEAD = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+previous = json.loads((OLD/'preparation.json').read_text())
+closed = json.loads((OLD/'orchestration.json').read_text())
+assert closed['all_owned_groups_empty'] and closed['elapsed_wall_s'] > 0
+token = 'run24-'+uuid.uuid4().hex
+helpers = {}
+for name in NAMES:
+    content=(ROOT/('outputs/setup/run23-'+name)).read_text()
+    content=content.replace(previous['token'],token).replace('run23-frontier-fallback','run24-startup-gate')
+    content=content.replace('run23','run24').replace('Run23','Run24').replace('RUN23','RUN24')
+    if name == 'process.py':
+        old="    start('mission','mission')\n    run('save-early',60,'python','outputs/setup/run24-save.py','--parameters-only')"
+        new="    start('mission','mission')\n    wait_ready('mission','Mission loaded; autonomous=True',30)\n    run('save-early',60,'python','outputs/setup/run24-save.py','--parameters-only')"
+        assert content.count(old) == 1
+        content=content.replace(old,new)
+    if name.endswith('.py'):
+        ast.parse(content)
+    helpers[name]=content
+assert hashlib.sha256((ROOT/'worlds/smoke_maze.world').read_bytes()).hexdigest()==previous['world_sha256']
+OUT.mkdir(parents=True)
+(OUT/'mission').mkdir()
+(OUT/'epoch.txt').write_text(str(uuid.uuid4())+'\n')
+(OUT/'nav2-rpp-03m.yaml').write_bytes((OLD/'nav2-rpp-03m.yaml').read_bytes())
+for name,content in helpers.items():
+    with (ROOT/('outputs/setup/run24-'+name)).open('x') as stream:
+        stream.write(content)
+report={**previous,'run':OUT.name,'code_head':HEAD,'token':token,
+    'epoch':(OUT/'epoch.txt').read_text().strip(),
+    'previous_attempt':{'run':OLD.name,'status':closed['status'],'errors':closed['errors']},
+    'startup_change':'Wait for Mission loaded log before creating parameter capture client; 30s readiness bound shares original global deadline. Parameter per-request6s and total17s budgets unchanged.'}
+(OUT/'preparation.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(report),flush=True)

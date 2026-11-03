@@ -1,0 +1,16 @@
+[INFO] [1793453228.700346545] [limo_maze_mission]: Mission loaded; autonomous=True
+/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/service.py:78: RuntimeWarning: failed to send response (timeout): client will not receive response, at ./src/rmw_response.cpp:153, at ./src/rcl/service.c:400
+  self.__service.service_send_response(response, header.request_id)
+[WARN] [1793453231.688863130] [limo_maze_mission]: Rejected target observation: observation timestamp stale or in future
+[WARN] [1793453231.719856684] [limo_maze_mission]: Rejected target observation: Could not find a connection between 'map' and 'camera_optical_frame' because they are not part of the same tree.Tf has two or more unconnected trees.
+[WARN] [1793453231.772564596] [limo_maze_mission]: Rejected target observation: Could not find a connection between 'map' and 'camera_optical_frame' because they are not part of the same tree.Tf has two or more unconnected trees.
+[WARN] [1793453231.831278796] [limo_maze_mission]: Rejected target observation: Could not find a connection between 'map' and 'camera_optical_frame' because they are not part of the same tree.Tf has two or more unconnected trees.
+[WARN] [1793453231.896523853] [limo_maze_mission]: Rejected target observation: Could not find a connection between 'map' and 'camera_optical_frame' because they are not part of the same tree.Tf has two or more unconnected trees.
+[WARN] [1793453231.942779586] [limo_maze_mission]: Rejected target observation: Could not find a connection between 'map' and 'camera_optical_frame' because they are not part of the same tree.Tf has two or more unconnected trees.
+[INFO] [1793453231.993545641] [limo_maze_mission]: home_recorded {"pose": [0.00899296090170372, -0.0027155444456072346, -0.04196245860789688], "map_epoch": "883eb6e7-fbc9-4598-8530-a735b7b1b652"}
+[INFO] [1793453232.036024815] [limo_maze_mission]: goal_sent {"token": 1, "goal": {"x": 0.23543620575695995, "y": 0.0218988677085743, "yaw": 3.141592653589793, "kind": "frontier", "anchor": [-0.06456379871338841, 0.0218988677085743]}}
+[WARN] [1793453232.071927641] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 103.500000 but the latest data is at time 103.370000, when looking up transform from frame [camera_optical_frame] to frame [map]
+[INFO] [1793453234.777927998] [limo_maze_mission]: cancel_requested {"next_phase": "blocked", "reason": "operator_sigint_stop_unverified"}
+[INFO] [1793453234.828767200] [limo_maze_mission]: goal_terminal {"token": 1, "success": false, "detail": "5:"}
+[INFO] [1793453235.978020343] [limo_maze_mission]: Saved mission evidence: /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run23-frontier-fallback/mission/mission_20261031_062715.json
+[INFO] [1793453236.041831748] [limo_maze_mission]: Shutdown operator_sigint_stop_verified; evidence: /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run23-frontier-fallback/mission/shutdown_20261031_062715.json

@@ -1,0 +1,92 @@
+{
+  "scope": "frozen observed run22 grids only; no ROS, navigation or world truth",
+  "parameters": {
+    "radius": 0.25,
+    "standoff": 0.55,
+    "frontier_min_translation_m": 0.2,
+    "goal_arrival_margin_m": 0.05,
+    "frontier_fallback_standoff_m": 0.8
+  },
+  "grids": [
+    {
+      "source": "experiments/run22/observer-snapshots/0033-phase-canceling.json",
+      "sha256": "fd6df76f8cc75a5f00247d3f81a4dbb82abf8ebc6620ad52114f4cf41dff8751",
+      "pose": [
+        1.7339507865359045,
+        -1.5884905478918308,
+        0.4597191289689546
+      ],
+      "prior_filled": 0,
+      "primary": {
+        "state": "unreachable_frontiers_or_coverage",
+        "goal": null,
+        "frontier_count": 3,
+        "uncovered_count": 2582,
+        "reachable_count": 2582,
+        "unobserved_count": 0
+      },
+      "fallback_enabled": {
+        "state": "unreachable_frontiers_or_coverage",
+        "goal": null,
+        "frontier_count": 3,
+        "uncovered_count": 2582,
+        "reachable_count": 2582,
+        "unobserved_count": 0
+      }
+    },
+    {
+      "source": "experiments/run22/final-save.json",
+      "sha256": "701412c8d0a724480222693da416492cf63f6b392d77321e98cb01cbf4dbc963",
+      "pose": [
+        0.02953686271079159,
+        -0.002865692794314937,
+        -0.15949049430844067
+      ],
+      "prior_filled": 0,
+      "primary": {
+        "state": "unreachable_frontiers_or_coverage",
+        "goal": null,
+        "frontier_count": 3,
+        "uncovered_count": 2571,
+        "reachable_count": 2571,
+        "unobserved_count": 0
+      },
+      "fallback_enabled": {
+        "state": "goal",
+        "goal": {
+          "x": 3.0589493788718203,
+          "y": -0.10346440785060107,
+          "yaw": -0.83798122500839,
+          "kind": "frontier",
+          "anchor": [
+            3.508949385577343,
+            -0.6034644153011817
+          ]
+        },
+        "frontier_count": 3,
+        "uncovered_count": 2571,
+        "reachable_count": 2571,
+        "unobserved_count": 0
+      },
+      "goal_cell": [
+        71,
+        41
+      ],
+      "anchor_cell": [
+        80,
+        31
+      ],
+      "anchor_distance_m": 0.6726812123774165,
+      "translation_m": 3.0310823635368394,
+      "reachable_safe": true,
+      "route_grid_steps": 63,
+      "endpoint_radius_m": 0.335355339586163,
+      "endpoint_safe": true,
+      "supercover_clear": true
+    }
+  ],
+  "source_sha256": {
+    "src/limo_maze_mission/limo_maze_mission/core.py": "44295e9560023829669f7dfeff07bc2f0a9021e5a7ce78111d936055179ff774",
+    "src/limo_maze_mission/limo_maze_mission/node.py": "2a0a05325377dc1de056bff2ab9861f1a054df4acaa9b1038ed33c33216def8b"
+  }
+}

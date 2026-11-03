@@ -1,0 +1,80 @@
+"""Prepare a fresh full mission after run19; no nodes or motion are started."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import uuid
+import yaml
+
+root = Path(__file__).resolve().parents[2]
+head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+out = root/'outputs/ros_smoke/run20-arrival-margin'
+names = ('env.sh', 'process.py', 'param-gate.py', 'preflight.py', 'save.py', 'provenance.py')
+if out.exists() or any((root/('outputs/setup/run20-'+name)).exists() for name in names):
+    raise SystemExit('Refuse reusing a run20 preparation')
+out.mkdir(parents=True)
+(out/'mission').mkdir()
+epoch = str(uuid.uuid4())
+(out/'epoch.txt').write_text(epoch+'\n')
+source = root/'src/limo_maze_bringup/config/nav2_rpp.yaml'
+parameters = yaml.safe_load(source.read_text())
+assert parameters['controller_server']['ros__parameters']['general_goal_checker']['xy_goal_tolerance'] == .05
+parameters['controller_server']['ros__parameters']['general_goal_checker']['xy_goal_tolerance'] = .03
+candidate = out/'nav2-rpp-03m.yaml'
+candidate.write_text('# Run20: experimental Nav2 XY .03 m; mission .05 m unchanged.\n'
+                     +yaml.safe_dump(parameters, sort_keys=False))
+for name in names:
+    text = (root/('outputs/setup/run18-'+name)).read_text()
+    text = text.replace('run18', 'run20').replace('Run18', 'Run20').replace('RUN18', 'RUN20')
+    text = text.replace('5d3229f', head[:7])
+    if name == 'env.sh':
+        text = text.replace('headless:=true ;;', 'headless:=true spawn_artifacts:="$run_dir/spawn" ;;')
+        text = text.replace('  nav-check)',
+            '  native-check) exec /usr/bin/python3 src/limo_sim_bringup/scripts/inspect_scene_once.py --execute --world limo_maze --name limo --output "$run_dir/native-scene-$1.json" ;;\n  nav-check)')
+    if name == 'provenance.py':
+        text = text.replace("FILES = ('worlds/smoke_maze.world',", "FILES = ('worlds/smoke_maze.world',\n"
+            "         'scripts/odom_integrity.py',\n"
+            "         'src/limo_sim_bringup/scripts/spawn_once.py',\n"
+            "         'src/limo_sim_bringup/scripts/inspect_scene_once.py',")
+    if name == 'process.py':
+        text = text.replace("    stage('navigation_start_and_parameter_check')", """    spawn_report=json.loads((OUT/'spawn/result/report.json').read_text())
+    if not spawn_report.get('success') or spawn_report.get('request_attempts') != 1:
+        raise RuntimeError('Expected exactly one acknowledged spawn request')
+    run('native-early',50,'native-check','early')
+    native_early=json.loads((OUT/'native-scene-early.json').read_text())
+    if not native_early.get('passed') or not native_early.get('unique_instance_verified_in_snapshot'):
+        raise RuntimeError('Native instance precheck failed')
+    stage('navigation_start_and_parameter_check')""")
+        text = text.replace("    stage('recording_perception_and_initial_survey')", """    run('native-before-motion',50,'native-check','before-motion')
+    native_before=json.loads((OUT/'native-scene-before-motion.json').read_text())
+    if not native_before.get('passed') or native_before.get('target_models') != native_early['target_models']:
+        raise RuntimeError('Native identity changed before motion')
+    stage('recording_perception_and_initial_survey')""")
+        text = text.replace("    terminal_wall=time.monotonic()", """    terminal_wall=time.monotonic()
+    run('native-terminal',50,'native-check','terminal')
+    native_terminal=json.loads((OUT/'native-scene-terminal.json').read_text())
+    report['same_native_instance_at_terminal']=bool(native_terminal.get('passed') and
+        native_terminal.get('target_models') == native_early['target_models'])
+    if not report['same_native_instance_at_terminal']:
+        raise RuntimeError('Native instance changed before terminal evidence')""")
+        text = text.replace("ROOT/'scripts/record_bounded.py',OUT/'nav2-rpp-03m.yaml']",
+            "ROOT/'scripts/record_bounded.py',ROOT/'scripts/capture_motion_evidence.py',\n"
+            "           ROOT/'scripts/check_sim_runtime.py',ROOT/'scripts/odom_integrity.py',\n"
+            "           ROOT/'src/limo_sim_bringup/launch/sim.launch.py',\n"
+            "           ROOT/'src/limo_sim_bringup/scripts/spawn_once.py',\n"
+            "           ROOT/'src/limo_sim_bringup/scripts/inspect_scene_once.py',OUT/'nav2-rpp-03m.yaml']")
+    with (root/('outputs/setup/run20-'+name)).open('x') as output:
+        output.write(text)
+world = root/'worlds/smoke_maze.world'
+assert hashlib.sha256(world.read_bytes()).hexdigest() == '1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811'
+report = {'run':'run20-arrival-margin','epoch':epoch,'code_head':head,
+          'change':{'path':'controller_server.ros__parameters.general_goal_checker.xy_goal_tolerance','old':.05,'new':.03},
+          'mission_arrival_margin_m':.05,'mission_home_tolerance_m':.15,
+          'single_request_spawn':True,'native_identity_snapshots':['early','before-motion','terminal'],
+          'sensor_probe_wall_budget_s':120,'active_wall_budget_s':1800,
+          'nav_baseline_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
+          'nav_candidate_sha256':hashlib.sha256(candidate.read_bytes()).hexdigest(),
+          'world_sha256':hashlib.sha256(world.read_bytes()).hexdigest(),
+          'note':'Nav2 end-heading switch radius also changes. No visual coverage or formal-target claim.'}
+(out/'preparation.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(report),flush=True)

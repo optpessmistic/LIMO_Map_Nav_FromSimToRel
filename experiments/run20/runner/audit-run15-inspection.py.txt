@@ -1,0 +1,507 @@
+#!/usr/bin/env python3
+"""Offline audit of final accepted frames in settled-inspection snapshots.
+
+Runs no ROS nodes and never writes to the bag. Pass one indexes small producer
+records in an on-disk SQLite database; pass two streams source images, TF and
+odometry. Only selected images and nearest TF brackets are retained in memory.
+This does NOT independently reconstruct every accepted frame or visual coverage.
+Whole-window frame count, time span and stationarity are not independently proved.
+A zero exit status means the report was written, not that evidence checks passed;
+inspect audit.json, including its errors, counts and explicitly scoped booleans.
+Optional --end-bag-time-s bounds both passes by absolute bag receive time
+(inclusive seconds), not elapsed duration or message header time. Counts then
+describe that prefix only, not the whole bag. No full-bag integrity is proved.
+Use with a CLOSED bag and a new output directory, after sourcing ROS Jazzy.
+"""
+import argparse
+from collections import Counter
+import hashlib
+import json
+import math
+from pathlib import Path
+import sqlite3
+
+import numpy as np
+import cv2
+import rosbag2_py
+from rclpy.serialization import deserialize_message
+from rclpy.time import Time
+from rclpy.duration import Duration
+from rosidl_runtime_py.utilities import get_message
+from tf2_py import BufferCore
+
+
+RGB = '/camera/color/image_raw'
+DEPTH = '/camera/depth/image_raw'
+INFO = '/camera/color/camera_info'
+PRODUCER = '/mission/frame_processing'
+STATUS = '/mission/status'
+
+
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
+
+
+def stamp(msg):
+    return int(msg.header.stamp.sec)*1_000_000_000+int(msg.header.stamp.nanosec)
+
+
+def dump(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False)+'\n', encoding='utf-8')
+
+
+def reader(path, topics=None):
+    result = rosbag2_py.SequentialReader()
+    result.open(rosbag2_py.StorageOptions(uri=str(path), storage_id='mcap'),
+                rosbag2_py.ConverterOptions('', ''))
+    # A prefix break is valid only with the storage plugin's timestamp ordering;
+    # never silently substitute MCAP file/arrival order or a full-tail scan.
+    order = rosbag2_py.ReadOrder(rosbag2_py.ReadOrderSortBy.ReceivedTimestamp, False)
+    if not result.set_read_order(order):
+        raise RuntimeError('MCAP reader rejected ReceivedTimestamp ascending order; refusing prefix audit')
+    types = {item.name: get_message(item.type) for item in result.get_all_topics_and_types()}
+    if topics:
+        result.set_filter(rosbag2_py.StorageFilter(topics=topics))
+    return result, types
+
+
+def messages(path, topics=None, *, end_bag_time_ns=None, scope=None):
+    bag, types = reader(path, topics)
+    if scope is None:
+        scope = {}
+    scope.update(read_order='ReceivedTimestamp ascending (accepted by storage plugin)',
+                 topic_filter=topics, end_bag_time_ns_inclusive=end_bag_time_ns,
+                 records_yielded=0, first_received_ns=None, last_received_ns=None,
+                 first_excluded_received_ns=None, storage_end_reached=False, stopped_by=None)
+    previous = None
+    try:
+        while bag.has_next():
+            topic, raw, received = bag.read_next()
+            if previous is not None and received < previous:
+                raise RuntimeError('Bag receive timestamps decreased despite requested ordering')
+            previous = received
+            if end_bag_time_ns is not None and received > end_bag_time_ns:
+                scope['first_excluded_received_ns'] = received
+                scope['stopped_by'] = 'explicit_receive_time_limit'
+                break
+            scope['records_yielded'] += 1
+            if scope['first_received_ns'] is None:
+                scope['first_received_ns'] = received
+            scope['last_received_ns'] = received
+            yield topic, raw, received, types[topic]
+        else:
+            scope['storage_end_reached'] = True
+            scope['stopped_by'] = 'end_of_selected_storage_stream'
+    finally:
+        if scope['stopped_by'] is None:
+            scope['stopped_by'] = 'consumer_stopped_before_stream_end'
+
+
+def calibration(msg):
+    values = {key: getattr(msg, key) for key in ('width', 'height', 'distortion_model', 'binning_x', 'binning_y')}
+    values.update({key: [float(v) for v in getattr(msg, key)] for key in ('k', 'd', 'r', 'p')})
+    values['roi'] = {key: getattr(msg.roi, key) for key in ('x_offset', 'y_offset', 'height', 'width', 'do_rectify')}
+    return {'stamp_ns': stamp(msg), 'frame_id': msg.header.frame_id, 'calibration': values,
+            'calibration_id': digest(canonical({'frame_id': msg.header.frame_id, **values}).encode())}
+
+
+def transform_record(msg):
+    t, q = msg.transform.translation, msg.transform.rotation
+    return {'stamp_ns': stamp(msg), 'parent': msg.header.frame_id, 'child': msg.child_frame_id,
+            'translation': [t.x, t.y, t.z], 'rotation_xyzw': [q.x, q.y, q.z, q.w]}
+
+
+def update_dynamic_brackets(item, transform):
+    """Keep ambiguity with its candidate stamp, discarding it upon replacement.
+
+    Always retain the first value at the current closest stamp. Different values
+    at that same final stamp cause a conservative failure; none is selected by
+    how well it agrees with the mission snapshot. State is bounded per edge/side.
+    """
+    edge = (transform.header.frame_id, transform.child_frame_id)
+    timestamp = stamp(transform)
+    if edge not in item['tf'] and len(item['tf']) >= 128:
+        raise SystemExit('Dynamic TF edges exceed 128-edge bound')
+    pair = item['tf'].setdefault(edge, [None, None])
+    conflicts = item['tf_bracket_conflicts'].setdefault(edge, [None, None])
+    for side in (0, 1):
+        old = pair[side]
+        eligible = timestamp <= item['stamp'] if side == 0 else timestamp >= item['stamp']
+        better = old is None or (timestamp > stamp(old) if side == 0 else timestamp < stamp(old))
+        if eligible and better:
+            pair[side] = transform
+            conflicts[side] = {'different_record_count': 0, 'first_different_transform': None}
+        elif eligible and old is not None and timestamp == stamp(old) and transform_record(old) != transform_record(transform):
+            conflicts[side]['different_record_count'] += 1
+            if conflicts[side]['first_different_transform'] is None:
+                conflicts[side]['first_different_transform'] = transform_record(transform)
+
+
+def retained_bracket_conflicts(item):
+    """Report only ambiguities at this sample's final retained bracket stamps."""
+    result = {}
+    for edge, pair in item['tf'].items():
+        for side, transform in enumerate(pair):
+            conflict = item['tf_bracket_conflicts'][edge][side]
+            if transform is None or not conflict['different_record_count']:
+                continue
+            label = 'at_or_before' if side == 0 else 'at_or_after'
+            key = 'dynamic:'+str(edge)+':'+str(stamp(transform))+':'+label
+            result[key] = {**conflict, 'side': label, 'retained_transform': transform_record(transform)}
+    return result
+
+
+def image_record(msg):
+    return {**{key: getattr(msg, key) for key in ('encoding', 'width', 'height', 'step', 'is_bigendian')},
+            'stamp_ns': stamp(msg), 'frame_id': msg.header.frame_id,
+            'data_bytes': len(msg.data), 'data_sha256': digest(bytes(msg.data))}
+
+
+def save_image(folder, kind, msg, cdr):
+    raw = bytes(msg.data)
+    (folder/(kind+'.data.bin')).write_bytes(raw)
+    (folder/(kind+'.cdr')).write_bytes(cdr)
+    if len(raw) != msg.step*msg.height:
+        return {'error': 'buffer_length_not_step_times_height'}
+    if kind == 'rgb':
+        if msg.encoding not in ('rgb8', 'bgr8') or msg.step < msg.width*3:
+            return {'error': 'unsupported_rgb_encoding_or_stride'}
+        pixels = np.frombuffer(raw, np.uint8).reshape(msg.height, msg.step)[:, :msg.width*3].reshape(msg.height, msg.width, 3)
+        bgr = pixels[:, :, ::-1] if msg.encoding == 'rgb8' else pixels
+        if not cv2.imwrite(str(folder/'rgb.png'), bgr):
+            raise RuntimeError('PNG writing failed')
+        return {'view': 'rgb.png', 'conversion': 'row padding removed; rgb8 channels converted to BGR for PNG encoder'}
+    if msg.encoding not in ('32FC1', '16UC1'):
+        return {'error': 'unsupported_depth_encoding'}
+    size = 4 if msg.encoding == '32FC1' else 2
+    if msg.step < msg.width*size:
+        return {'error': 'invalid_depth_stride'}
+    dtype = np.dtype(('>' if msg.is_bigendian else '<')+('f4' if size == 4 else 'u2'))
+    pixels = np.ndarray((msg.height, msg.width), dtype=dtype, buffer=raw, strides=(msg.step, size)).copy()
+    np.save(folder/'depth.npy', pixels, allow_pickle=False)
+    finite = pixels[np.isfinite(pixels)]
+    return {'view': 'depth.npy', 'dtype': str(pixels.dtype), 'units': 'm' if size == 4 else 'mm',
+            'finite_pixels': int(finite.size), 'min_finite': float(finite.min()) if finite.size else None,
+            'max_finite': float(finite.max()) if finite.size else None,
+            'conversion': 'row padding removed; values and source numeric units preserved'}
+
+
+def snapshot_key(snapshot):
+    last = snapshot.get('last_evidence') or {}
+    return (snapshot.get('map_epoch'), snapshot.get('request_id'), last.get('rgb_stamp_ns'), last.get('sequence'))
+
+
+def run(args):
+    end_bag_time_ns = None if args.end_bag_time_s is None else round(args.end_bag_time_s*1_000_000_000)
+    output = args.output.resolve()
+    if output.exists():
+        raise SystemExit('Refusing to overwrite existing output directory: '+str(output))
+    output.mkdir(parents=True)
+    db = sqlite3.connect(str(output/'producer-index.sqlite3'))
+    db.execute('PRAGMA cache_size=-2048')
+    db.execute('CREATE TABLE evidence (session TEXT, sequence INTEGER, received INTEGER, sha TEXT, value TEXT)')
+    db.execute('CREATE INDEX identity ON evidence(session,sequence)')
+    report = {'schema_version': 1, 'bag': str(args.bag.resolve()), 'mission_file': str(args.mission.resolve()) if args.mission else None,
+              'bag_time_scope': {'mode': 'explicit_receive_time_prefix' if end_bag_time_ns is not None else 'unbounded_receive_time',
+                                 'time_basis': 'Absolute rosbag2 read_next receive timestamp (MCAP log_time); not elapsed duration or message header stamp.',
+                                 'requested_end_bag_time_s': args.end_bag_time_s,
+                                 'end_bag_time_ns_inclusive': end_bag_time_ns,
+                                 'start': 'Beginning of selected bag; no lower time cutoff.',
+                                 'mission_json_scope': 'All supplied inspection events remain selected; events outside the recorded prefix can have missing evidence.',
+                                 'pass1': {}, 'pass2': {}},
+              'full_bag_integrity_verified': False,
+              'source_topics': {'rgb': RGB, 'depth': DEPTH, 'camera_info': INFO, 'producer': PRODUCER, 'status': STATUS},
+              'method': 'Two streaming passes; producer metadata indexed on disk; final accepted sample only per completed/satisfied snapshot.',
+              'limits': ['No ROS nodes, no commands and no bag modifications.',
+                         'Mission accepted-frame count is a runtime claim; this audit verifies only its final retained frame.',
+                         'Whole-window frame count, time span and stationarity are not independently proved.',
+                         'A zero exit status means report generation completed, not that evidence checks passed; inspect audit.json.',
+                         'With --end-bag-time-s, all bag-derived topic/status/producer/rejection/duplicate counts describe only the inclusive receive-time prefix. They are not whole-bag counts; supplied mission-event counts are not time-filtered.',
+                         'Both passes request ReceivedTimestamp ascending order and reject observed decreases; the first record beyond the explicit limit is only a boundary sentinel and is excluded from counts. The remaining tail is not scanned or validated.',
+                         'MCAP may read index/chunk metadata beyond the selected prefix internally. Storage ordering support is required; unsupported ordering aborts rather than silently changing scope.',
+                         'Late-received evidence beyond the limit is excluded even when its source header stamp is earlier. Missing reconstruction is reported, not filled from the excluded tail.',
+                         'No whole-bag completeness or losslessness is established, even when the selected storage stream reaches its end.',
+                         'Dynamic TF ambiguity is counted per sample only at each edge/side final retained bracket stamp; replaced historical candidates are not counted. One sample cannot fail solely due to another sample\'s dynamic ambiguity.',
+                         'Different values at a retained TF stamp conservatively fail that sample; the first retained value is used for diagnostic reconstruction only, never chosen by agreement with the mission. Static TF conflicts remain shared conservative failures.',
+                         'Status snapshot match/mismatch counts compare every observed satisfied snapshot with the selected mission event, or the first satisfied snapshot when no event exists. No observations yield an unknown (null) all-match result.',
+                         'Status comparisons and odometry summaries do not gate final-frame byte/calibration/TF consistency; that boolean is not a whole-window verdict.',
+                         'Hash agreement proves recorded byte consistency, not detector accuracy or physical calibration.',
+                         'Recorded TF can include transforms delivered after a mission callback; equal reconstructed poses establish consistency, not receipt ordering.',
+                         'Wheel odometry is not independent physical stationarity evidence.',
+                         'No visual coverage, target-definition or whole-mission success is inferred.'],
+              'visual_coverage_claimed': False, 'samples': []}
+    chosen, snapshots, mission_events = {}, {}, []
+    if args.mission:
+        if args.mission.stat().st_size > 32*1024*1024:
+            raise SystemExit('Mission JSON exceeds 32 MiB input bound')
+        mission = json.loads(args.mission.read_text(encoding='utf-8'))
+        report['mission_sha256'] = digest(args.mission.read_bytes())
+        report['mission_claims'] = {key: mission.get(key) for key in ('status', 'reason', 'mission_success', 'map_complete',
+                                    'returned_pose_verified', 'visual_coverage_complete', 'target_definition_verified')}
+        mission_events = [event for event in mission.get('events', []) if event.get('event', '').startswith('inspection_')]
+        dump(output/'mission-inspection-events.json', mission_events)
+        for event in mission_events:
+            if event.get('event') == 'inspection_complete':
+                snapshot = event['evidence']
+                key = snapshot_key(snapshot)
+                if len(chosen) >= args.max_samples and key not in chosen:
+                    raise SystemExit('Completed snapshots exceed --max-samples; increase explicit bound')
+                chosen[key] = {'snapshot': snapshot, 'source': 'mission_inspection_complete_event', 'event_stamp_s': event.get('stamp')}
+    counts, phases, producer_status, producer_reasons = Counter(), Counter(), Counter(), Counter()
+    processing_rejections = Counter()
+    parse_errors = Counter()
+    for topic, raw, received, cls in messages(args.bag, end_bag_time_ns=end_bag_time_ns,
+                                              scope=report['bag_time_scope']['pass1']):
+        counts[topic] += 1
+        if topic not in (PRODUCER, STATUS):
+            continue
+        if len(raw) > 256*1024:
+            parse_errors[topic+':payload_too_large'] += 1
+            continue
+        try:
+            data = json.loads(deserialize_message(raw, cls).data)
+            if not isinstance(data, dict):
+                raise ValueError('not object')
+        except Exception as exc:
+            parse_errors[topic+':'+type(exc).__name__] += 1
+            continue
+        if topic == PRODUCER:
+            producer_status[str(data.get('status'))] += 1
+            producer_reasons[str(data.get('reason'))] += 1
+            processing = data.get('processing') or {}
+            for reason, count in (processing.get('rejection_counts') or {}).items():
+                if type(count) is int and count >= 0:
+                    processing_rejections[str(reason)] += count
+            db.execute('INSERT INTO evidence VALUES (?,?,?,?,?)',
+                       (str(data.get('detector_session_id')), data.get('sequence'), received, digest(raw), canonical(data)))
+            if counts[topic] % 1000 == 0:
+                db.commit()
+        else:
+            phases[str(data.get('phase'))] += 1
+            snapshot = data.get('inspection')
+            if not isinstance(snapshot, dict):
+                continue
+            key = snapshot_key(snapshot)
+            if snapshot.get('status') == 'satisfied':
+                if key not in chosen:
+                    if len(chosen) >= args.max_samples:
+                        raise SystemExit('Satisfied snapshots exceed --max-samples; increase explicit bound')
+                    chosen[key] = {'snapshot': snapshot, 'source': 'status_observed_satisfied_only'}
+                item = chosen[key]
+                item['status_message_count'] = item.get('status_message_count', 0)+1
+                item.setdefault('first_status_received_ns', received)
+                item['last_status_received_ns'] = received
+                matches_reference = snapshot == item['snapshot']
+                item['status_snapshot_match_count'] = item.get('status_snapshot_match_count', 0)+int(matches_reference)
+                item['status_snapshot_mismatch_count'] = item.get('status_snapshot_mismatch_count', 0)+int(not matches_reference)
+                item['all_status_snapshots_match_reference'] = item['status_snapshot_mismatch_count'] == 0
+            identity = (snapshot.get('map_epoch'), snapshot.get('request_id'))
+            if identity not in snapshots and len(snapshots) >= args.max_samples*4:
+                raise SystemExit('Inspection request count exceeds bounded audit capacity')
+            snapshots[identity] = snapshot
+    db.commit()
+    report.update(scoped_topic_record_counts=dict(counts), producer_status_counts=dict(producer_status),
+                  bag_derived_counts_scope='bag_time_scope prefix; not whole-bag totals when an end time is supplied',
+                  producer_reason_counts=dict(producer_reasons), mission_phase_counts=dict(phases), parse_errors=dict(parse_errors),
+                  processing_rejection_totals_per_record=dict(processing_rejections),
+                  required_topics_without_records=[topic for topic in (RGB, DEPTH, INFO, PRODUCER, STATUS, '/tf', '/tf_static', '/odom') if not counts[topic]],
+                  inspection_event_counts=dict(Counter(e.get('event') for e in mission_events)),
+                  last_snapshot_per_request=list(snapshots.values()))
+    report['duplicate_producer_identities'] = [dict(zip(('session', 'sequence', 'records', 'distinct_cdr_hashes'), row))
+        for row in db.execute('SELECT session,sequence,COUNT(*),COUNT(DISTINCT sha) FROM evidence GROUP BY session,sequence HAVING COUNT(*)>1 LIMIT 100')]
+    report['duplicate_producer_identity_groups'] = db.execute('SELECT COUNT(*) FROM (SELECT 1 FROM evidence GROUP BY session,sequence HAVING COUNT(*)>1)').fetchone()[0]
+    selected = []
+    for index, item in enumerate(chosen.values(), 1):
+        snapshot = item['snapshot']
+        last, identity = snapshot.get('last_evidence') or {}, snapshot.get('producer_identity') or []
+        sample = {**item, 'sample_directory': 'sample-%03d'%index, 'errors': [], 'source_matches': {},
+                  'status_snapshot_reference': item['source'],
+                  'status_snapshot_match_count': item.get('status_snapshot_match_count', 0),
+                  'status_snapshot_mismatch_count': item.get('status_snapshot_mismatch_count', 0),
+                  'all_status_snapshots_match_reference': item.get('all_status_snapshots_match_reference'),
+                  'satisfied_status_snapshot_observed': item.get('status_message_count', 0) > 0}
+        report['samples'].append(sample)
+        folder = output/sample['sample_directory']
+        folder.mkdir()
+        dump(folder/'snapshot.json', snapshot)
+        if not last or len(identity) != 4:
+            sample['errors'].append('missing_last_evidence_or_producer_identity')
+            continue
+        rows = list(db.execute('SELECT value,received FROM evidence WHERE session=? AND sequence=? LIMIT 9', (identity[0], last.get('sequence'))))
+        sample['producer_record_count'] = db.execute('SELECT COUNT(*) FROM evidence WHERE session=? AND sequence=?', (identity[0], last.get('sequence'))).fetchone()[0]
+        if not rows:
+            sample['errors'].append('producer_record_missing')
+            continue
+        records = [json.loads(row[0]) for row in rows]
+        if len({canonical(value) for value in records}) != 1 or len(rows) > 8:
+            sample['errors'].append('ambiguous_producer_record')
+            continue
+        record = records[0]
+        dump(folder/'producer.json', record)
+        checks = {'map_epoch': record.get('map_epoch') == snapshot.get('map_epoch'),
+                  'producer_status': record.get('status') == 'processed',
+                  'identity': [record.get('detector_session_id'), record.get('detector_config_id'), record.get('camera_info', {}).get('calibration_id'), record.get('rgb', {}).get('frame_id')] == identity,
+                  'detector_config_digest': digest(canonical(record['detector_config']).encode()) == record.get('detector_config_id')}
+        for kind in ('rgb', 'depth'):
+            checks[kind+'_stamp'] = record[kind]['stamp_ns'] == last[kind+'_stamp_ns']
+            checks[kind+'_hash'] = record[kind]['data_sha256'] == last[kind+'_sha256']
+        sample['producer_snapshot_checks'] = checks
+        sample['errors'].extend('producer_snapshot_mismatch:'+key for key, valid in checks.items() if not valid)
+        sample['processing'] = record.get('processing')
+        selected.append({'report': sample, 'folder': folder, 'record': record, 'stamp': last['rgb_stamp_ns'],
+                         'sources': {kind: [] for kind in ('rgb', 'depth', 'camera_info')}, 'tf': {}, 'tf_bracket_conflicts': {},
+                         'odom': {'records': 0, 'first_stamp_ns': None, 'last_stamp_ns': None, 'max_gap_ns': 0,
+                                  'max_abs_twist': [0.0]*6, 'nonfinite_records': 0}})
+    db.close()
+    static, static_tf_conflicts = {}, Counter()
+    for topic, raw, received, cls in messages(args.bag, [RGB, DEPTH, INFO, '/tf', '/tf_static', '/odom'],
+                                              end_bag_time_ns=end_bag_time_ns,
+                                              scope=report['bag_time_scope']['pass2']):
+        if not selected:
+            break
+        msg = deserialize_message(raw, cls)
+        if topic in (RGB, DEPTH, INFO):
+            kind = {RGB: 'rgb', DEPTH: 'depth', INFO: 'camera_info'}[topic]
+            timestamp = stamp(msg)
+            for item in selected:
+                expected = item['record'][kind]
+                if timestamp != expected['stamp_ns'] or msg.header.frame_id != expected['frame_id']:
+                    continue
+                actual = calibration(msg) if kind == 'camera_info' else image_record(msg)
+                matches = item['sources'][kind]
+                if len(matches) >= 32:
+                    raise SystemExit('More than 32 records at a selected source stamp; ambiguous bag')
+                result = {'bag_received_ns': received, 'cdr_sha256': digest(raw), 'metadata': actual, 'all_metadata_match': actual == expected}
+                matches.append(result)
+                if len(matches) == 1:
+                    dump(item['folder']/(kind+'-metadata.json'), actual)
+                    if kind == 'camera_info':
+                        (item['folder']/'camera_info.cdr').write_bytes(raw)
+                    else:
+                        result['export'] = save_image(item['folder'], kind, msg, raw)
+        elif topic in ('/tf', '/tf_static'):
+            for transform in msg.transforms:
+                edge = (transform.header.frame_id, transform.child_frame_id)
+                if topic == '/tf_static':
+                    if edge in static and transform_record(static[edge]) != transform_record(transform):
+                        static_tf_conflicts['static:'+str(edge)] += 1
+                    static[edge] = transform
+                    if len(static) > 128:
+                        raise SystemExit('Static TF edges exceed 128-edge bound')
+                    continue
+                for item in selected:
+                    update_dynamic_brackets(item, transform)
+        elif topic == '/odom':
+            timestamp = stamp(msg)
+            for item in selected:
+                snapshot = item['report']['snapshot']
+                if not snapshot['first_rgb_stamp_ns'] <= timestamp <= max(snapshot['last_rgb_stamp_ns'], snapshot['last_depth_stamp_ns']):
+                    continue
+                odom = item['odom']
+                twist = msg.twist.twist
+                values = [twist.linear.x, twist.linear.y, twist.linear.z, twist.angular.x, twist.angular.y, twist.angular.z]
+                odom['records'] += 1
+                odom['first_stamp_ns'] = min(odom['first_stamp_ns'], timestamp) if odom['first_stamp_ns'] is not None else timestamp
+                if odom['last_stamp_ns'] is not None:
+                    odom['max_gap_ns'] = max(odom['max_gap_ns'], timestamp-odom['last_stamp_ns'])
+                odom['last_stamp_ns'] = timestamp
+                if not all(math.isfinite(v) for v in values):
+                    odom['nonfinite_records'] += 1
+                else:
+                    odom['max_abs_twist'] = [max(a, abs(b)) for a, b in zip(odom['max_abs_twist'], values)]
+    report['static_tf_conflicts'] = dict(static_tf_conflicts)
+    report['tf_conflicts_at_selected_brackets'] = {}
+    for item in selected:
+        sample, snapshot = item['report'], item['report']['snapshot']
+        sample_tf_conflicts = retained_bracket_conflicts(item)
+        sample['tf_conflicts_at_selected_brackets'] = sample_tf_conflicts
+        sample['static_tf_conflicts'] = dict(static_tf_conflicts)
+        if sample_tf_conflicts:
+            report['tf_conflicts_at_selected_brackets'][sample['sample_directory']] = sample_tf_conflicts
+            sample['errors'].append('ambiguous_recorded_dynamic_tf_at_retained_bracket')
+        if static_tf_conflicts:
+            sample['errors'].append('ambiguous_recorded_static_tf')
+        for kind, matches in item['sources'].items():
+            sample['source_matches'][kind] = {'record_count': len(matches), 'records': matches,
+                'distinct_cdr_hashes': len({match['cdr_sha256'] for match in matches})}
+            if not matches:
+                sample['errors'].append('missing_record:'+kind)
+            elif not all(match['all_metadata_match'] for match in matches):
+                sample['errors'].append('metadata_or_hash_mismatch:'+kind)
+        sample['odom_during_retained_window'] = item['odom']
+        transforms = list(static.values())
+        dynamic = []
+        for pair in item['tf'].values():
+            for transform in pair:
+                if transform is not None and transform not in dynamic:
+                    dynamic.append(transform)
+        dump(item['folder']/'tf-inputs.json', {'static': [transform_record(t) for t in transforms],
+                                             'dynamic_brackets': [transform_record(t) for t in dynamic],
+                                             'static_conflicts': dict(static_tf_conflicts),
+                                             'dynamic_bracket_conflicts': sample_tf_conflicts})
+        buffer = BufferCore(Duration(seconds=86400))
+        for transform in transforms:
+            buffer.set_transform_static(transform, 'offline_bag_audit')
+        for transform in sorted(dynamic, key=stamp):
+            buffer.set_transform(transform, 'offline_bag_audit')
+        tf_result = {}
+        for kind, frame in (('base', args.base_frame), ('camera', item['record']['rgb']['frame_id'])):
+            try:
+                transform = buffer.lookup_transform_core(args.map_frame, frame, Time(nanoseconds=item['stamp']))
+                t, q = transform.transform.translation, transform.transform.rotation
+                actual = [t.x, t.y, math.atan2(2*(q.w*q.z+q.x*q.y), 1-2*(q.y*q.y+q.z*q.z))] if kind == 'base' else [t.x, t.y, t.z, q.x, q.y, q.z, q.w]
+                expected = snapshot['last_evidence'][kind+'_pose']
+                if kind == 'base':
+                    differences = [actual[0]-expected[0], actual[1]-expected[1], math.atan2(math.sin(actual[2]-expected[2]), math.cos(actual[2]-expected[2]))]
+                else:
+                    sign = -1 if sum(a*b for a, b in zip(actual[3:], expected[3:])) < 0 else 1
+                    differences = [actual[i]-expected[i] for i in range(3)]+[sign*actual[i]-expected[i] for i in range(3, 7)]
+                tf_result[kind] = {'frame': frame, 'lookup_stamp_ns': item['stamp'], 'reconstructed_pose': actual,
+                                   'snapshot_pose': expected, 'component_differences': differences,
+                                   'within_1e_8': max(map(abs, differences)) <= 1e-8}
+                if not tf_result[kind]['within_1e_8']:
+                    sample['errors'].append('recorded_tf_pose_disagrees:'+kind)
+            except Exception as exc:
+                tf_result[kind] = {'error': type(exc).__name__, 'detail': str(exc)[:1000]}
+                sample['errors'].append('recorded_tf_unavailable:'+kind)
+        sample['sample_time_tf_reconstruction'] = tf_result
+        sample['final_frame_evidence_consistent'] = not sample['errors'] and not sample_tf_conflicts and not static_tf_conflicts
+        sample['artifact_sha256'] = {path.name: digest(path.read_bytes()) for path in item['folder'].iterdir() if path.is_file()}
+    report['selected_sample_count'] = len(report['samples'])
+    report['consistent_final_frame_count'] = sum(bool(item.get('final_frame_evidence_consistent')) for item in report['samples'])
+    report['all_selected_final_frames_consistent'] = bool(report['samples']) and report['consistent_final_frame_count'] == len(report['samples'])
+    report['no_completed_or_satisfied_snapshot'] = not bool(chosen)
+    dump(output/'audit.json', report)
+    print(json.dumps({'report': str(output/'audit.json'), 'selected_samples': report['selected_sample_count'],
+                      'consistent_final_frames': report['consistent_final_frame_count'],
+                      'bag_time_scope': report['bag_time_scope'], 'full_bag_integrity_verified': False,
+                      'mission_claims': report.get('mission_claims'), 'visual_coverage_claimed': False}, ensure_ascii=False))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--bag', type=Path, required=True)
+    parser.add_argument('--mission', type=Path)
+    parser.add_argument('--output', type=Path, required=True, help='New directory; existing directories are never overwritten')
+    parser.add_argument('--max-samples', type=int, default=64)
+    parser.add_argument('--end-bag-time-s', type=float,
+                        help='Optional inclusive upper bound in absolute bag receive seconds, not elapsed duration/header time; both passes and bag-derived counts use this prefix only')
+    parser.add_argument('--map-frame', default='map')
+    parser.add_argument('--base-frame', default='base_link')
+    args = parser.parse_args()
+    if not 1 <= args.max_samples <= 1024:
+        parser.error('--max-samples must be in 1..1024')
+    if args.end_bag_time_s is not None and (
+            not math.isfinite(args.end_bag_time_s) or args.end_bag_time_s < 0 or
+            args.end_bag_time_s > (2**63-1)/1_000_000_000 or
+            round(args.end_bag_time_s*1_000_000_000) > 2**63-1):
+        parser.error('--end-bag-time-s must be finite, nonnegative and fit an int64 nanosecond timestamp')
+    run(args)
+
+
+if __name__ == '__main__':
+    main()

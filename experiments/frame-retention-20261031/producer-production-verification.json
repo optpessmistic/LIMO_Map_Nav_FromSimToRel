@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "scope": "producer adapter production migration; no ROS/Gazebo/build/install/commit",
+  "frozen": true,
+  "tests": {
+    "run": 72,
+    "passed": 71,
+    "skipped": 1,
+    "failed": 0,
+    "errors": 0,
+    "elapsed_seconds": 33.163,
+    "exit_code": 0,
+    "log": "production-tests-02.log",
+    "command": "PYTHONPATH=src/limo_evidence_protocol:src/limo_maze_perception:src/limo_maze_mission:tests timeout 100s /usr/bin/python3 -B -m unittest test_frame_retention_core test_frame_retention_repairs test_frame_retention_adapter test_frame_retention_owner_races test_perception_lifecycle test_perception_evidence -v"
+  },
+  "earlier_failure": {
+    "log": "production-tests-01.log",
+    "failed": 2,
+    "explanation": "Test-only writer timeouts (0.25s and 2s) expired during cold shared-package imports before the controlled ignore-TERM handler was ready. Fixtures now use production default worker 5s and verify readiness before asserting escalation. Production defaults unchanged."
+  },
+  "sources": {
+    "src/limo_maze_perception/limo_maze_perception/node.py": "ac8dd52c27e479a7b7a5763c43e352a276d12ecff30a8a8d8beef432fdfa1643",
+    "src/limo_maze_perception/limo_maze_perception/retention_adapter.py": "c743bfc8cfa812b717f8c421d69444b1e87d3ac61c1433e117f5a5753695d43c",
+    "src/limo_maze_perception/limo_maze_perception/retention_worker.py": "c186dfb193fc926a6ae93e67ae9ca483934037bc7d2dea6a13e932ef740948d7",
+    "src/limo_maze_perception/package.xml": "dc1aa43918bb15e7dbcde1f333632208e88bec9c95fb022d290d9a97a5c6e473",
+    "tests/test_frame_retention_adapter.py": "910b52b49b6b9ed55911622d8919ee3ff099f6bb720db1cd3308aaaaa9eb3759",
+    "tests/test_frame_retention_owner_races.py": "8841bf83650380cbcf7737cf692fa18e614a08864df2bacdd1d5bf9f76e22068",
+    "src/limo_evidence_protocol/limo_evidence_protocol/retention.py": "ac2a885da8afc8b69710ed6caa1a7967221ce55421aa18a1eefc06c2a7ea0d2c"
+  },
+  "limitations": [
+    "No ROS/DDS/Gazebo validation in this subtask.",
+    "Linux pidfd is required when enabling producer retention.",
+    "Native uninterruptible I/O may remain after SIGKILL; exit report preserves unconfirmed writer identity and refuses final checkpoint success.",
+    "Source retained artifacts do not certify detection accuracy, visual coverage, robot stationarity, or mission success."
+  ],
+  "reviewed_draft_node_sha256": "c721a46c8eab04dcb15c854e64ed18b1eb08acbaddf760c58e693b9476f86dbd"
+}

@@ -1,0 +1,44 @@
+{
+  "processes": [
+    {
+      "pid": "1",
+      "comm": "systemd",
+      "identity": [
+        "Name:\tsystemd",
+        "State:\tS (sleeping)",
+        "PPid:\t0",
+        "Uid:\t0\t0\t0\t0",
+        "Gid:\t0\t0\t0\t0"
+      ],
+      "cmdline": "/sbin/init ",
+      "cgroup": "0::/init.scope\n"
+    },
+    {
+      "pid": "490",
+      "comm": "systemd",
+      "identity": [
+        "Name:\tsystemd",
+        "State:\tS (sleeping)",
+        "PPid:\t1",
+        "Uid:\t1000\t1000\t1000\t1000",
+        "Gid:\t1000\t1000\t1000\t1000"
+      ],
+      "cmdline": "/usr/lib/systemd/systemd --user ",
+      "cgroup": "0::/user.slice/user-1000.slice/user@1000.service/init.scope\n"
+    },
+    {
+      "pid": "491",
+      "comm": "(sd-pam)",
+      "identity": [
+        "Name:\t(sd-pam)",
+        "State:\tS (sleeping)",
+        "PPid:\t490",
+        "Uid:\t1000\t1000\t1000\t1000",
+        "Gid:\t1000\t1000\t1000\t1000"
+      ],
+      "cmdline": "(sd-pam) ",
+      "cgroup": "0::/user.slice/user-1000.slice/user@1000.service/init.scope\n"
+    }
+  ],
+  "signals_sent": []
+}

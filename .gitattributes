@@ -11,3 +11,50 @@
 experiments/run14/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/run14/*.yaml -text
 experiments/run14/*.pgm -text
+experiments/run15/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/run15/sample-*/*.json -text
+experiments/run15/*.yaml -text
+experiments/run15/*.pgm -text
+experiments/run15/*.log -text
+experiments/inspection-dds-20261031/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/bounded-recording-20261031/*.json -text
+experiments/bounded-recording-20261031/*.yaml -text
+experiments/bounded-recording-20261031/*.log -text
+experiments/startup-20261031/**/*.json -text
+experiments/startup-20261031/**/*.yaml -text
+experiments/startup-20261031/**/*.log -text whitespace=-blank-at-eol
+experiments/startup-20261031/**/*.txt -text
+experiments/startup-20261031/SHA256SUMS text eol=lf
+experiments/run18/**/*.json -text
+experiments/run18/**/*.yaml -text
+experiments/run18/*.json -text
+experiments/run18/*.yaml -text
+experiments/run18/*.log -text whitespace=-blank-at-eol
+experiments/run18/SHA256SUMS text eol=lf
+experiments/run19/**/*.json -text
+experiments/run19/*.json -text
+experiments/run19/**/*.log -text whitespace=-blank-at-eol
+experiments/run19/*.log -text whitespace=-blank-at-eol
+experiments/run19/*.txt -text
+experiments/run19/SHA256SUMS text eol=lf
+experiments/run20/**/*.json -text
+experiments/run20/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/run20/**/*.yaml -text
+experiments/run20/*.yaml -text
+experiments/run20/**/*.log -text whitespace=-blank-at-eol
+experiments/run20/*.log -text whitespace=-blank-at-eol
+experiments/run20/**/*.txt -text
+experiments/run20/*.pgm -text
+experiments/run20/run20-outcome-review.md -text
+experiments/run20/SHA256SUMS text eol=lf
+experiments/perception-shutdown-20261031/*.json -text
+experiments/perception-shutdown-20261031/*.log -text
+experiments/perception-shutdown-20261031/*.txt -text
+experiments/perception-shutdown-20261031/SHA256SUMS text eol=lf
+experiments/red-calibration-20261031/*.json -text
+experiments/red-calibration-20261031/SHA256SUMS text eol=lf
+experiments/red-calibration-deferred-20261031/* -text
+experiments/observation-association-20261031/* -text
+experiments/observation-association-20261031/*.log -text whitespace=-blank-at-eol
+experiments/frame-retention-20261031/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+experiments/run24-clock-audit/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol

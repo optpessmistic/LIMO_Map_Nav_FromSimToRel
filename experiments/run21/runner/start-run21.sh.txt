@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -eo pipefail
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+git diff --quiet
+git diff --cached --quiet
+cmp src/limo_sim_bringup/launch/sim.launch.py install/limo_sim_bringup/share/limo_sim_bringup/launch/sim.launch.py
+cmp src/limo_sim_bringup/scripts/spawn_once.py install/limo_sim_bringup/lib/limo_sim_bringup/spawn_once.py
+/usr/bin/python3 outputs/setup/prepare-run21.py
+/usr/bin/python3 -m py_compile outputs/setup/run21-process.py outputs/setup/run21-param-gate.py outputs/setup/run21-preflight.py outputs/setup/run21-save.py outputs/setup/run21-provenance.py outputs/setup/run21-installed-check.py
+bash -n outputs/setup/run21-env.sh
+exec bash outputs/setup/run21-env.sh control

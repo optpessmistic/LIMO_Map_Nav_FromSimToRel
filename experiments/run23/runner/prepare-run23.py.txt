@@ -1,0 +1,105 @@
+"""Fresh run23: bounded frontier fallback, snapshot raster, independent tail."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+OLD = ROOT/'outputs/ros_smoke/run22-isolated-writer'
+OUT = ROOT/'outputs/ros_smoke/run23-frontier-fallback'
+NAMES = ('env.sh','process.py','param-gate.py','preflight.py','save.py','provenance.py','installed-check.py')
+if OUT.exists() or any((ROOT/('outputs/setup/run23-'+name)).exists() for name in NAMES):
+    raise SystemExit('Refuse to reuse run23 output or helpers')
+subprocess.run(['git','diff','--exit-code'],cwd=ROOT,check=True)
+subprocess.run(['git','diff','--cached','--exit-code'],cwd=ROOT,check=True)
+HEAD = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+previous = json.loads((OLD/'preparation.json').read_text())
+token = 'run23-'+uuid.uuid4().hex
+
+
+def once(text, old, new):
+    if text.count(old) != 1:
+        raise RuntimeError('Expected one replacement: '+old[:100])
+    return text.replace(old,new)
+
+
+helpers = {}
+for name in NAMES:
+    text = (ROOT/('outputs/setup/run22-'+name)).read_text()
+    text = text.replace(previous['token'],token).replace('run22-isolated-writer','run23-frontier-fallback')
+    text = text.replace('run22','run23').replace('Run22','Run23').replace('RUN22','RUN23')
+    if name == 'env.sh':
+        text=once(text,'-p autonomous:=true -p require_processed_inspection',
+                  '-p autonomous:=true -p frontier_fallback_standoff_m:=0.8 -p require_processed_inspection')
+    if name == 'process.py':
+        text=once(text,'from record_bounded import TOKEN_KEY, proc_stat, stop_owned, scan_owned_group, terminal_result',
+                  'from record_bounded import TOKEN_KEY, proc_stat, stop_owned, scan_owned_group, terminal_result\nfrom terminal_evidence import collect_terminal_evidence')
+        text=once(text,"def start(name,mode,*args):\n    if name in jobs", "def start(name,mode,*args):\n    if time.monotonic() >= deadline:\n        raise TimeoutError('Global experiment deadline before launch')\n    if name in jobs")
+        text=once(text,"def wait_job(name, seconds):\n    end=min(deadline,time.monotonic()+seconds)",
+                  "def wait_job(name, seconds, absolute_deadline=None):\n    end=min(deadline,time.monotonic()+seconds,deadline if absolute_deadline is None else absolute_deadline)")
+        text=once(text,"ROOT/'scripts/record_bounded.py',ROOT/'scripts/capture_motion_evidence.py',",
+                  "ROOT/'scripts/record_bounded.py',ROOT/'scripts/capture_motion_evidence.py',\n           ROOT/'scripts/terminal_evidence.py',ROOT/'tools/export_occupancy_map.py',")
+        text=once(text,"expected={'goal_arrival_margin_m':.05,'require_processed_inspection':True,",
+                  "expected={'goal_arrival_margin_m':.05,'frontier_standoff_m':.55,'frontier_fallback_standoff_m':.8,'require_processed_inspection':True,")
+        old="""    run('save-final',60,'python','outputs/setup/run23-save.py','--final')
+    while time.monotonic()<min(deadline,terminal_wall+110):
+        value=latest_tail()
+        if value and value['tail'].get('ready_for_operator_to_end_observer'):
+            report['observed_terminal_native_tail']=value
+            report['native_terminal_tail_verified']=True
+            break
+        time.sleep(1)
+    report['status']='terminal_observed'
+    if not report['native_terminal_tail_verified']:
+        report['errors'].append('Native terminal tail not verified within bounded collection window')"""
+        new="""    terminal_end=min(deadline,terminal_wall+110)
+    def terminal_export(name,seconds,absolute_deadline,*args):
+        if time.monotonic() >= absolute_deadline:
+            raise TimeoutError('Terminal deadline before export launch')
+        start(name,*args)
+        wait_job(name,seconds,absolute_deadline)
+    def wait_terminal_tail(absolute_deadline):
+        # Reuse the original global and post-terminal deadlines, never reset.
+        while time.monotonic()<absolute_deadline:
+            value=latest_tail()
+            if value and value['tail'].get('ready_for_operator_to_end_observer'):
+                report['observed_terminal_native_tail']=value
+                return True
+            time.sleep(1)
+        return False
+    collection=collect_terminal_evidence([
+        ('snapshot_and_posegraph',lambda end:terminal_export('save-final',60,end,'python','outputs/setup/run23-save.py','--final')),
+        ('snapshot_raster',lambda end:terminal_export('snapshot-raster',30,end,'python','tools/export_occupancy_map.py',
+            '--snapshot',str(OUT/'final-save.json'),'--output-prefix',str(OUT/'snapshot-map')))],
+        wait_terminal_tail,deadline_wall=terminal_end)
+    report['terminal_evidence_collection']=collection
+    report['native_terminal_tail_verified']=collection['tail_verified']
+    report['errors'].extend(collection['errors'])
+    report['status']='terminal_observed'"""
+        text=once(text,old,new)
+    if name == 'save.py':
+        text=once(text,'from slam_toolbox.srv import SaveMap, SerializePoseGraph',
+                  'from slam_toolbox.srv import SerializePoseGraph')
+        text=once(text,"            save_request = SaveMap.Request()\n            save_request.name.data = str(prefix)\n            export('/slam_toolbox/save_map', SaveMap, save_request)",
+                  "            report['raster_export_mode'] = 'separate_frozen_snapshot_export'\n            report['save_map_service_attempted'] = False")
+        text=once(text,"for suffix in ('.yaml', '.pgm', '.posegraph', '.data')", "for suffix in ('.posegraph', '.data')")
+    helpers[name] = text
+
+world_hash=hashlib.sha256((ROOT/'worlds/smoke_maze.world').read_bytes()).hexdigest()
+assert world_hash == previous['world_sha256']
+OUT.mkdir(parents=True)
+(OUT/'mission').mkdir()
+(OUT/'epoch.txt').write_text(str(uuid.uuid4())+'\n')
+(OUT/'nav2-rpp-03m.yaml').write_bytes((OLD/'nav2-rpp-03m.yaml').read_bytes())
+for name,text in helpers.items():
+    with (ROOT/('outputs/setup/run23-'+name)).open('x') as stream:
+        stream.write(text)
+report={**previous,'run':'run23-frontier-fallback','code_head':HEAD,'token':token,
+        'epoch':(OUT/'epoch.txt').read_text().strip(),
+        'change':'Frontier fallback .8m after primary .55m; snapshot-based raster export; independent terminal-tail collection even after export failure',
+        'raster_export':'Separate immutable captured OccupancyGrid PGM/YAML; save_map service not attempted, serialize_map remains separate',
+        'primary_frontier_standoff_m':.55,'fallback_frontier_standoff_m':.8,
+        'budgets':'All original mission900/return240/goal120/inspection12/writer5/request10/shutdown8 and observation360 bounds unchanged'}
+(OUT/'preparation.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(report),flush=True)
