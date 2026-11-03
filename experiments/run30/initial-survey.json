@@ -1,0 +1,3989 @@
+{
+  "schema_version": 2,
+  "success": true,
+  "reason": "spin_and_odometry_rotation_heading_stop_verified",
+  "executed": true,
+  "motion_started": true,
+  "map_epoch": "43dc0537-ffd4-47df-a3a5-d3b7a504bf46",
+  "assumption": {
+    "independently_verified_clear_radius_m": 0.3,
+    "source": "operator_setup_guarantee_not_scan_or_world_metadata",
+    "rotation_envelope_m": 0.25,
+    "clearance_margin_m": 0.03
+  },
+  "control": "Nav2 Spin action; no custom nonzero Twist publisher",
+  "behavior_max_angular_rad_s_at_verified_startup": 0.4,
+  "odom_angular_abort_rad_s": 0.45,
+  "wall_seconds": 53.07693441899994,
+  "phase": "done",
+  "counts": {
+    "scan": 163,
+    "odom": 2029,
+    "clock": 19854
+  },
+  "yaw_accumulated_rad": 6.258963493211789,
+  "maximum_yaw_rad": 6.410056807786401,
+  "max_displacement_m": 3.56833156876581e-15,
+  "final_heading_error_rad": -0.024221813967799013,
+  "spin_goals": [
+    {
+      "uuid": "2a66dc5ba41a4ee6a43878783f8ede3a",
+      "target_yaw_rad": 6.383185307179586,
+      "accepted": true,
+      "cancel_requested": false,
+      "cancel_ack": false,
+      "terminal_status": 4,
+      "result_error_code": 0,
+      "errors": []
+    },
+    {
+      "uuid": "e7e4d3e4cd8c4105bb6bf29ec6d93917",
+      "target_yaw_rad": -0.12687150060681307,
+      "accepted": true,
+      "cancel_requested": false,
+      "cancel_ack": false,
+      "terminal_status": 4,
+      "result_error_code": 0,
+      "errors": []
+    }
+  ],
+  "action_statuses_received": {
+    "/spin/_action/status": [
+      {
+        "uuid": "2a66dc5ba41a4ee6a43878783f8ede3a",
+        "status": 4
+      },
+      {
+        "uuid": "e7e4d3e4cd8c4105bb6bf29ec6d93917",
+        "status": 4
+      }
+    ]
+  },
+  "action_status_topics_monitored": [
+    "/assisted_teleop/_action/status",
+    "/backup/_action/status",
+    "/compute_path_through_poses/_action/status",
+    "/compute_path_to_pose/_action/status",
+    "/drive_on_heading/_action/status",
+    "/follow_path/_action/status",
+    "/navigate_through_poses/_action/status",
+    "/navigate_to_pose/_action/status",
+    "/smooth_path/_action/status",
+    "/spin/_action/status",
+    "/wait/_action/status"
+  ],
+  "cancel_required": false,
+  "stop_verified": true,
+  "stop_stage_stamp": 84.307,
+  "stop_new_odom_samples": 29,
+  "fallback_zero_messages": 0,
+  "cleanup_errors": [],
+  "samples": [
+    {
+      "wall_s": 6.860532863000003,
+      "sim_s": 65.9,
+      "yaw_accumulated_rad": 0.0,
+      "angular_velocity_rad_s": 1.1294945694031813e-19,
+      "x": 5.831472669150592e-19,
+      "y": 1.1142705506618367e-36,
+      "minimum_observed_base_distance_m": 0.37561266880485256
+    },
+    {
+      "wall_s": 6.960650469000029,
+      "sim_s": 65.9,
+      "yaw_accumulated_rad": 0.0,
+      "angular_velocity_rad_s": 1.1294945694031813e-19,
+      "x": 5.831472669150592e-19,
+      "y": 1.1142705506618367e-36,
+      "minimum_observed_base_distance_m": 0.37561266880485256
+    },
+    {
+      "wall_s": 7.062461125000027,
+      "sim_s": 65.988,
+      "yaw_accumulated_rad": 0.001562399995097251,
+      "angular_velocity_rad_s": 0.045999999916379306,
+      "x": 8.402648866179688e-19,
+      "y": 2.488969672228285e-22,
+      "minimum_observed_base_distance_m": 0.3775117262779963
+    },
+    {
+      "wall_s": 7.1627014240000335,
+      "sim_s": 66.059,
+      "yaw_accumulated_rad": 0.007022399988754657,
+      "angular_velocity_rad_s": 0.10199999990415091,
+      "x": 4.553613080809394e-18,
+      "y": 1.7447677159369528e-20,
+      "minimum_observed_base_distance_m": 0.3775117262779963
+    },
+    {
+      "wall_s": 7.277057898999942,
+      "sim_s": 66.1,
+      "yaw_accumulated_rad": 0.01190239998474601,
+      "angular_velocity_rad_s": 0.13399999989716363,
+      "x": 1.019119810912118e-17,
+      "y": 7.167938379856025e-20,
+      "minimum_observed_base_distance_m": 0.3775117262779963
+    },
+    {
+      "wall_s": 7.377155426999934,
+      "sim_s": 66.1,
+      "yaw_accumulated_rad": 0.01190239998474601,
+      "angular_velocity_rad_s": 0.13399999989716363,
+      "x": 1.019119810912118e-17,
+      "y": 7.167938379856025e-20,
+      "minimum_observed_base_distance_m": 0.3775117262779963
+    },
+    {
+      "wall_s": 7.479930145000026,
+      "sim_s": 66.125,
+      "yaw_accumulated_rad": 0.016402399981556112,
+      "angular_velocity_rad_s": 0.1579999998919233,
+      "x": 1.669574755515824e-17,
+      "y": 1.6421201705161103e-19,
+      "minimum_observed_base_distance_m": 0.36861276117416253
+    },
+    {
+      "wall_s": 7.599098609999942,
+      "sim_s": 66.2,
+      "yaw_accumulated_rad": 0.029702399973501634,
+      "angular_velocity_rad_s": 0.21399999987969612,
+      "x": 4.357638528092578e-17,
+      "y": 7.939736057060577e-19,
+      "minimum_observed_base_distance_m": 0.36861276117416253
+    },
+    {
+      "wall_s": 7.6992315029999645,
+      "sim_s": 66.232,
+      "yaw_accumulated_rad": 0.03660239996978769,
+      "angular_velocity_rad_s": 0.23799999987445522,
+      "x": 6.069727207983222e-17,
+      "y": 1.363584884547353e-18,
+      "minimum_observed_base_distance_m": 0.37969075257729495
+    },
+    {
+      "wall_s": 7.799422726999978,
+      "sim_s": 66.271,
+      "yaw_accumulated_rad": 0.046922399964591265,
+      "angular_velocity_rad_s": 0.2699999998674696,
+      "x": 9.016140188317719e-17,
+      "y": 2.6025398958036027e-18,
+      "minimum_observed_base_distance_m": 0.37969075257729495
+    },
+    {
+      "wall_s": 7.919122434999963,
+      "sim_s": 66.3,
+      "yaw_accumulated_rad": 0.05550239996051054,
+      "angular_velocity_rad_s": 0.29399999986222985,
+      "x": 1.1744728970858444e-16,
+      "y": 4.003155791460394e-18,
+      "minimum_observed_base_distance_m": 0.37969075257729495
+    },
+    {
+      "wall_s": 8.019427655999948,
+      "sim_s": 66.375,
+      "yaw_accumulated_rad": 0.08190239994886014,
+      "angular_velocity_rad_s": 0.357999999848259,
+      "x": 2.1565506027098411e-16,
+      "y": 1.0800169122309705e-17,
+      "minimum_observed_base_distance_m": 0.3772332750286818
+    },
+    {
+      "wall_s": 8.119474575000027,
+      "sim_s": 66.4,
+      "yaw_accumulated_rad": 0.0893023999457729,
+      "angular_velocity_rad_s": 0.3739999998447649,
+      "x": 2.467659297862455e-16,
+      "y": 1.3466916781849798e-17,
+      "minimum_observed_base_distance_m": 0.3772332750286818
+    },
+    {
+      "wall_s": 8.219571384000005,
+      "sim_s": 66.447,
+      "yaw_accumulated_rad": 0.10899999993941176,
+      "angular_velocity_rad_s": 0.3999999999126568,
+      "x": 3.365262128119372e-16,
+      "y": 2.2404315159345882e-17,
+      "minimum_observed_base_distance_m": 0.37875054215463055
+    },
+    {
+      "wall_s": 8.320064808999973,
+      "sim_s": 66.54,
+      "yaw_accumulated_rad": 0.14499999993155122,
+      "angular_velocity_rad_s": 0.39999999991266366,
+      "x": 5.360909593022149e-16,
+      "y": 4.814080364652408e-17,
+      "minimum_observed_base_distance_m": 0.37875054215463055
+    },
+    {
+      "wall_s": 8.44007202299997,
+      "sim_s": 66.6,
+      "yaw_accumulated_rad": 0.16899999992631107,
+      "angular_velocity_rad_s": 0.39999999991266366,
+      "x": 6.842941102535759e-16,
+      "y": 7.161038483272248e-17,
+      "minimum_observed_base_distance_m": 0.37875054215463055
+    },
+    {
+      "wall_s": 8.540771148999966,
+      "sim_s": 66.615,
+      "yaw_accumulated_rad": 0.17699999992456444,
+      "angular_velocity_rad_s": 0.39999999991266366,
+      "x": 7.329953372919705e-16,
+      "y": 8.012235433137614e-17,
+      "minimum_observed_base_distance_m": 0.3801692972974666
+    },
+    {
+      "wall_s": 8.641489927999942,
+      "sim_s": 66.655,
+      "yaw_accumulated_rad": 0.19299999992107095,
+      "angular_velocity_rad_s": 0.39999999991266466,
+      "x": 8.310394498579642e-16,
+      "y": 9.846696079333353e-17,
+      "minimum_observed_base_distance_m": 0.3801692972974666
+    },
+    {
+      "wall_s": 8.759263874999988,
+      "sim_s": 66.7,
+      "yaw_accumulated_rad": 0.2089999999175776,
+      "angular_velocity_rad_s": 0.39999999991266266,
+      "x": 9.296267234017906e-16,
+      "y": 1.1855424970863733e-16,
+      "minimum_observed_base_distance_m": 0.3801692972974666
+    },
+    {
+      "wall_s": 8.859741899000028,
+      "sim_s": 66.75,
+      "yaw_accumulated_rad": 0.22899999991321088,
+      "angular_velocity_rad_s": 0.39999999991266266,
+      "x": 1.0515400559366523e-15,
+      "y": 1.4569556604499762e-16,
+      "minimum_observed_base_distance_m": 0.3762226789600776
+    },
+    {
+      "wall_s": 8.96343182399994,
+      "sim_s": 66.8,
+      "yaw_accumulated_rad": 0.24899999990884406,
+      "angular_velocity_rad_s": 0.39999999991266266,
+      "x": 1.172886550126446e-15,
+      "y": 1.7526821134490757e-16,
+      "minimum_observed_base_distance_m": 0.3762226789600776
+    },
+    {
+      "wall_s": 9.063794307999956,
+      "sim_s": 66.827,
+      "yaw_accumulated_rad": 0.26099999990622397,
+      "angular_velocity_rad_s": 0.39999999991266266,
+      "x": 1.2433892131432177e-15,
+      "y": 1.9364360860963482e-16,
+      "minimum_observed_base_distance_m": 0.3753006158251881
+    },
+    {
+      "wall_s": 9.163801534999948,
+      "sim_s": 66.894,
+      "yaw_accumulated_rad": 0.2889999999001108,
+      "angular_velocity_rad_s": 0.39999999991266266,
+      "x": 1.4120067330896235e-15,
+      "y": 2.4122133170326844e-16,
+      "minimum_observed_base_distance_m": 0.3753006158251881
+    },
+    {
+      "wall_s": 9.275593871999945,
+      "sim_s": 66.9,
+      "yaw_accumulated_rad": 0.2889999999001108,
+      "angular_velocity_rad_s": 0.39999999991266266,
+      "x": 1.4120067330896235e-15,
+      "y": 2.4122133170326844e-16,
+      "minimum_observed_base_distance_m": 0.3753006158251881
+    },
+    {
+      "wall_s": 9.375668962999953,
+      "sim_s": 66.98,
+      "yaw_accumulated_rad": 0.3209999998931243,
+      "angular_velocity_rad_s": 0.39999999991266466,
+      "x": 1.6022843090199875e-15,
+      "y": 3.0112622322929817e-16,
+      "minimum_observed_base_distance_m": 0.37893365185928
+    },
+    {
+      "wall_s": 9.475729013999967,
+      "sim_s": 67.039,
+      "yaw_accumulated_rad": 0.3449999998878843,
+      "angular_velocity_rad_s": 0.39999999991266266,
+      "x": 1.7449087026916857e-15,
+      "y": 3.504648997994695e-16,
+      "minimum_observed_base_distance_m": 0.37893365185928
+    },
+    {
+      "wall_s": 9.575862145999963,
+      "sim_s": 67.1,
+      "yaw_accumulated_rad": 0.3689999998826439,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 1.8846814444802442e-15,
+      "y": 4.026094190958226e-16,
+      "minimum_observed_base_distance_m": 0.37893365185928
+    },
+    {
+      "wall_s": 9.675923203000025,
+      "sim_s": 67.1,
+      "yaw_accumulated_rad": 0.3689999998826439,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 1.8846814444802442e-15,
+      "y": 4.026094190958226e-16,
+      "minimum_observed_base_distance_m": 0.37893365185928
+    },
+    {
+      "wall_s": 9.77626300199995,
+      "sim_s": 67.125,
+      "yaw_accumulated_rad": 0.3809999998800235,
+      "angular_velocity_rad_s": 0.3999999999126608,
+      "x": 1.9557010767678547e-15,
+      "y": 4.305750736602311e-16,
+      "minimum_observed_base_distance_m": 0.376015813631669
+    },
+    {
+      "wall_s": 9.87657388599996,
+      "sim_s": 67.174,
+      "yaw_accumulated_rad": 0.40099999987565615,
+      "angular_velocity_rad_s": 0.3999999999126608,
+      "x": 2.071161738532e-15,
+      "y": 4.782022931914113e-16,
+      "minimum_observed_base_distance_m": 0.376015813631669
+    },
+    {
+      "wall_s": 9.976756494000028,
+      "sim_s": 67.2,
+      "yaw_accumulated_rad": 0.4089999998739091,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 2.1158023190685144e-15,
+      "y": 4.973457285172707e-16,
+      "minimum_observed_base_distance_m": 0.376015813631669
+    },
+    {
+      "wall_s": 10.079231770999968,
+      "sim_s": 67.25,
+      "yaw_accumulated_rad": 0.42899999986954174,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 2.22989618490148e-15,
+      "y": 5.481601304519152e-16,
+      "minimum_observed_base_distance_m": 0.3822942585988148
+    },
+    {
+      "wall_s": 10.179294470999935,
+      "sim_s": 67.29,
+      "yaw_accumulated_rad": 0.4449999998660479,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 2.3210513603611534e-15,
+      "y": 5.907474999619994e-16,
+      "minimum_observed_base_distance_m": 0.3822942585988148
+    },
+    {
+      "wall_s": 10.299098836999974,
+      "sim_s": 67.3,
+      "yaw_accumulated_rad": 0.44899999986517436,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 2.342951012434612e-15,
+      "y": 6.012460950389835e-16,
+      "minimum_observed_base_distance_m": 0.3822942585988148
+    },
+    {
+      "wall_s": 10.39953269299997,
+      "sim_s": 67.375,
+      "yaw_accumulated_rad": 0.48099999985818664,
+      "angular_velocity_rad_s": 0.3999999999126608,
+      "x": 2.5227957712428246e-15,
+      "y": 6.9149599436674085e-16,
+      "minimum_observed_base_distance_m": 0.3787547836544037
+    },
+    {
+      "wall_s": 10.500958556,
+      "sim_s": 67.4,
+      "yaw_accumulated_rad": 0.48899999985643966,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 2.565764380362411e-15,
+      "y": 7.141444124131298e-16,
+      "minimum_observed_base_distance_m": 0.3787547836544037
+    },
+    {
+      "wall_s": 10.604517529999953,
+      "sim_s": 67.4,
+      "yaw_accumulated_rad": 0.48899999985643966,
+      "angular_velocity_rad_s": 0.3999999999126647,
+      "x": 2.565764380362411e-15,
+      "y": 7.141444124131298e-16,
+      "minimum_observed_base_distance_m": 0.37814560184006707
+    },
+    {
+      "wall_s": 10.71930225899996,
+      "sim_s": 67.5,
+      "yaw_accumulated_rad": 0.5289999998477061,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.702671895675111e-15,
+      "y": 7.891792760023568e-16,
+      "minimum_observed_base_distance_m": 0.37814560184006707
+    },
+    {
+      "wall_s": 10.81980355799999,
+      "sim_s": 67.573,
+      "yaw_accumulated_rad": 0.5609999998407174,
+      "angular_velocity_rad_s": 0.399999999912633,
+      "x": 2.7026927687991234e-15,
+      "y": 7.891448684046264e-16,
+      "minimum_observed_base_distance_m": 0.37814560184006707
+    },
+    {
+      "wall_s": 10.939428120999992,
+      "sim_s": 67.6,
+      "yaw_accumulated_rad": 0.5689999998389703,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.702697967241751e-15,
+      "y": 7.891366619304822e-16,
+      "minimum_observed_base_distance_m": 0.37814560184006707
+    },
+    {
+      "wall_s": 11.039706961999968,
+      "sim_s": 67.603,
+      "yaw_accumulated_rad": 0.5729999998380967,
+      "angular_velocity_rad_s": 0.399999999912633,
+      "x": 2.705616644551977e-15,
+      "y": 7.910123874520157e-16,
+      "minimum_observed_base_distance_m": 0.3783277473853903
+    },
+    {
+      "wall_s": 11.140364318000024,
+      "sim_s": 67.625,
+      "yaw_accumulated_rad": 0.5809999998363495,
+      "angular_velocity_rad_s": 0.399999999912633,
+      "x": 2.7027062663395213e-15,
+      "y": 7.891238494555252e-16,
+      "minimum_observed_base_distance_m": 0.3783277473853903
+    },
+    {
+      "wall_s": 11.240425364999965,
+      "sim_s": 67.698,
+      "yaw_accumulated_rad": 0.6089999998302347,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.7027257039873302e-15,
+      "y": 7.890951126153053e-16,
+      "minimum_observed_base_distance_m": 0.3783277473853903
+    },
+    {
+      "wall_s": 11.352681743999938,
+      "sim_s": 67.7,
+      "yaw_accumulated_rad": 0.6089999998302347,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.7027257039873302e-15,
+      "y": 7.890951126153053e-16,
+      "minimum_observed_base_distance_m": 0.382423325048093
+    },
+    {
+      "wall_s": 11.460733518999973,
+      "sim_s": 67.75,
+      "yaw_accumulated_rad": 0.628999999825867,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.702740189990364e-15,
+      "y": 7.890747622768823e-16,
+      "minimum_observed_base_distance_m": 0.382423325048093
+    },
+    {
+      "wall_s": 11.57574174399997,
+      "sim_s": 67.8,
+      "yaw_accumulated_rad": 0.648999999821499,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.7027559170654817e-15,
+      "y": 7.890535987410382e-16,
+      "minimum_observed_base_distance_m": 0.382423325048093
+    },
+    {
+      "wall_s": 11.675747805000015,
+      "sim_s": 67.817,
+      "yaw_accumulated_rad": 0.656999999819752,
+      "angular_velocity_rad_s": 0.39999999991263696,
+      "x": 2.7055086011787265e-15,
+      "y": 7.91165376967185e-16,
+      "minimum_observed_base_distance_m": 0.3851856162666469
+    },
+    {
+      "wall_s": 11.776991220000014,
+      "sim_s": 67.875,
+      "yaw_accumulated_rad": 0.6809999998145105,
+      "angular_velocity_rad_s": 0.399999999912633,
+      "x": 2.702780757752959e-15,
+      "y": 7.8902193635856e-16,
+      "minimum_observed_base_distance_m": 0.3851856162666469
+    },
+    {
+      "wall_s": 11.878947771999947,
+      "sim_s": 67.9,
+      "yaw_accumulated_rad": 0.6889999998127635,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.7027869063854863e-15,
+      "y": 7.890144154316452e-16,
+      "minimum_observed_base_distance_m": 0.3851856162666469
+    },
+    {
+      "wall_s": 11.979102263999948,
+      "sim_s": 67.949,
+      "yaw_accumulated_rad": 0.7089999998083956,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.7028029825386967e-15,
+      "y": 7.889952964066703e-16,
+      "minimum_observed_base_distance_m": 0.38229718899149784
+    },
+    {
+      "wall_s": 12.07913930999996,
+      "sim_s": 68.035,
+      "yaw_accumulated_rad": 0.7449999998005313,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.705382402604306e-15,
+      "y": 7.913148395166628e-16,
+      "minimum_observed_base_distance_m": 0.38229718899149784
+    },
+    {
+      "wall_s": 12.17921603000002,
+      "sim_s": 68.1,
+      "yaw_accumulated_rad": 0.7689999997952883,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.700358897654856e-15,
+      "y": 7.86528753227311e-16,
+      "minimum_observed_base_distance_m": 0.38229718899149784
+    },
+    {
+      "wall_s": 12.281172524999988,
+      "sim_s": 68.1,
+      "yaw_accumulated_rad": 0.7689999997952883,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.700358897654856e-15,
+      "y": 7.86528753227311e-16,
+      "minimum_observed_base_distance_m": 0.38229718899149784
+    },
+    {
+      "wall_s": 12.381545286999994,
+      "sim_s": 68.138,
+      "yaw_accumulated_rad": 0.7849999997917929,
+      "angular_velocity_rad_s": 0.3999999999126291,
+      "x": 2.705318957472149e-15,
+      "y": 7.91380891980994e-16,
+      "minimum_observed_base_distance_m": 0.37780879499321934
+    },
+    {
+      "wall_s": 12.49916903199994,
+      "sim_s": 68.2,
+      "yaw_accumulated_rad": 0.8089999997865502,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.700492849850091e-15,
+      "y": 7.863958094518897e-16,
+      "minimum_observed_base_distance_m": 0.37780879499321934
+    },
+    {
+      "wall_s": 12.620333981000044,
+      "sim_s": 68.25,
+      "yaw_accumulated_rad": 0.8289999997821809,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.700561793115379e-15,
+      "y": 7.863313732340467e-16,
+      "minimum_observed_base_distance_m": 0.38311646086527
+    },
+    {
+      "wall_s": 12.740370877000032,
+      "sim_s": 68.3,
+      "yaw_accumulated_rad": 0.8489999997778116,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.7006320112309168e-15,
+      "y": 7.862683286763992e-16,
+      "minimum_observed_base_distance_m": 0.38311646086527
+    },
+    {
+      "wall_s": 12.840375524000024,
+      "sim_s": 68.345,
+      "yaw_accumulated_rad": 0.8689999997734427,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.700703476110388e-15,
+      "y": 7.862067009959319e-16,
+      "minimum_observed_base_distance_m": 0.3739520968523588
+    },
+    {
+      "wall_s": 12.95957084400004,
+      "sim_s": 68.4,
+      "yaw_accumulated_rad": 0.8889999997690734,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.7007761591688013e-15,
+      "y": 7.861465148428992e-16,
+      "minimum_observed_base_distance_m": 0.3739520968523588
+    },
+    {
+      "wall_s": 13.060119818999965,
+      "sim_s": 68.4,
+      "yaw_accumulated_rad": 0.8889999997690734,
+      "angular_velocity_rad_s": 0.3999999999126369,
+      "x": 2.7007761591688013e-15,
+      "y": 7.861465148428992e-16,
+      "minimum_observed_base_distance_m": 0.3739520968523588
+    },
+    {
+      "wall_s": 13.161051154000006,
+      "sim_s": 68.489,
+      "yaw_accumulated_rad": 0.9249999997612088,
+      "angular_velocity_rad_s": 0.3999999999126291,
+      "x": 2.7050844793529654e-15,
+      "y": 7.915846018962938e-16,
+      "minimum_observed_base_distance_m": 0.3825746908333055
+    },
+    {
+      "wall_s": 13.261766707999982,
+      "sim_s": 68.569,
+      "yaw_accumulated_rad": 0.9569999997542183,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.701030644689922e-15,
+      "y": 7.85953953949717e-16,
+      "minimum_observed_base_distance_m": 0.3825746908333055
+    },
+    {
+      "wall_s": 13.376649319999956,
+      "sim_s": 68.6,
+      "yaw_accumulated_rad": 0.9689999997515967,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.701076214009171e-15,
+      "y": 7.859222539370503e-16,
+      "minimum_observed_base_distance_m": 0.3825746908333055
+    },
+    {
+      "wall_s": 13.47669212400001,
+      "sim_s": 68.6,
+      "yaw_accumulated_rad": 0.9689999997515967,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.701076214009171e-15,
+      "y": 7.859222539370503e-16,
+      "minimum_observed_base_distance_m": 0.3825746908333055
+    },
+    {
+      "wall_s": 13.578003994000028,
+      "sim_s": 68.625,
+      "yaw_accumulated_rad": 0.9809999997489752,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.7049826624821192e-15,
+      "y": 7.916569162778775e-16,
+      "minimum_observed_base_distance_m": 0.3811660712293544
+    },
+    {
+      "wall_s": 13.678437093999946,
+      "sim_s": 68.691,
+      "yaw_accumulated_rad": 1.0049999997437329,
+      "angular_velocity_rad_s": 0.3999999999126291,
+      "x": 2.704938487369557e-15,
+      "y": 7.916857168340776e-16,
+      "minimum_observed_base_distance_m": 0.3811660712293544
+    },
+    {
+      "wall_s": 13.779076247000035,
+      "sim_s": 68.7,
+      "yaw_accumulated_rad": 1.0089999997428598,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.701233876264555e-15,
+      "y": 7.858185241106222e-16,
+      "minimum_observed_base_distance_m": 0.3811660712293544
+    },
+    {
+      "wall_s": 13.879947340999934,
+      "sim_s": 68.75,
+      "yaw_accumulated_rad": 1.028999999738494,
+      "angular_velocity_rad_s": 0.399999999912637,
+      "x": 2.701311854172798e-15,
+      "y": 7.857704768792219e-16,
+      "minimum_observed_base_distance_m": 0.3790346891362254
+    },
+    {
+      "wall_s": 13.999535446999971,
+      "sim_s": 68.8,
+      "yaw_accumulated_rad": 1.0489999997341248,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7013070590781902e-15,
+      "y": 7.857732735157017e-16,
+      "minimum_observed_base_distance_m": 0.3790346891362254
+    },
+    {
+      "wall_s": 14.107475419000025,
+      "sim_s": 68.8,
+      "yaw_accumulated_rad": 1.0489999997341248,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7013070590781902e-15,
+      "y": 7.857732735157017e-16,
+      "minimum_observed_base_distance_m": 0.3742565360446025
+    },
+    {
+      "wall_s": 14.219443824999985,
+      "sim_s": 68.875,
+      "yaw_accumulated_rad": 1.0809999997271347,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7012997639728983e-15,
+      "y": 7.857772872786252e-16,
+      "minimum_observed_base_distance_m": 0.3742565360446025
+    },
+    {
+      "wall_s": 14.319968589000041,
+      "sim_s": 68.9,
+      "yaw_accumulated_rad": 1.088999999725387,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701297305918891e-15,
+      "y": 7.857785763441994e-16,
+      "minimum_observed_base_distance_m": 0.3742565360446025
+    },
+    {
+      "wall_s": 14.441142901000035,
+      "sim_s": 68.9,
+      "yaw_accumulated_rad": 1.088999999725387,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701297305918891e-15,
+      "y": 7.857785763441994e-16,
+      "minimum_observed_base_distance_m": 0.3742565360446025
+    },
+    {
+      "wall_s": 14.541728870000043,
+      "sim_s": 68.915,
+      "yaw_accumulated_rad": 1.0969999997236393,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701297305918891e-15,
+      "y": 7.857785763441994e-16,
+      "minimum_observed_base_distance_m": 0.37911538628240443
+    },
+    {
+      "wall_s": 14.659235232000015,
+      "sim_s": 69.0,
+      "yaw_accumulated_rad": 1.1289999997166489,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012898508204494e-15,
+      "y": 7.857822841777111e-16,
+      "minimum_observed_base_distance_m": 0.37911538628240443
+    },
+    {
+      "wall_s": 14.75931510700002,
+      "sim_s": 69.07,
+      "yaw_accumulated_rad": 1.1569999997105325,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012822775478207e-15,
+      "y": 7.857857445816997e-16,
+      "minimum_observed_base_distance_m": 0.37911538628240443
+    },
+    {
+      "wall_s": 14.861172916999976,
+      "sim_s": 69.1,
+      "yaw_accumulated_rad": 1.1689999997079112,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012797304757573e-15,
+      "y": 7.857868473706507e-16,
+      "minimum_observed_base_distance_m": 0.37911538628240443
+    },
+    {
+      "wall_s": 14.976066663999973,
+      "sim_s": 69.1,
+      "yaw_accumulated_rad": 1.1689999997079112,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012797304757573e-15,
+      "y": 7.857868473706507e-16,
+      "minimum_observed_base_distance_m": 0.37911538628240443
+    },
+    {
+      "wall_s": 15.076527018999968,
+      "sim_s": 69.125,
+      "yaw_accumulated_rad": 1.1809999997052898,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.701277172503339e-15,
+      "y": 7.85787924634167e-16,
+      "minimum_observed_base_distance_m": 0.38084980699651594
+    },
+    {
+      "wall_s": 15.18014403899997,
+      "sim_s": 69.2,
+      "yaw_accumulated_rad": 1.2089999996991732,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701269435747219e-15,
+      "y": 7.857910022076772e-16,
+      "minimum_observed_base_distance_m": 0.38084980699651594
+    },
+    {
+      "wall_s": 15.299044379999941,
+      "sim_s": 69.2,
+      "yaw_accumulated_rad": 1.2089999996991732,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701269435747219e-15,
+      "y": 7.857910022076772e-16,
+      "minimum_observed_base_distance_m": 0.38084980699651594
+    },
+    {
+      "wall_s": 15.419278402000032,
+      "sim_s": 69.25,
+      "yaw_accumulated_rad": 1.2289999996948042,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012642281255044e-15,
+      "y": 7.857929243897623e-16,
+      "minimum_observed_base_distance_m": 0.37378669264880365
+    },
+    {
+      "wall_s": 15.519395283999984,
+      "sim_s": 69.3,
+      "yaw_accumulated_rad": 1.2489999996904353,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701258983104195e-15,
+      "y": 7.857947420419361e-16,
+      "minimum_observed_base_distance_m": 0.37378669264880365
+    },
+    {
+      "wall_s": 15.619926248999946,
+      "sim_s": 69.3,
+      "yaw_accumulated_rad": 1.2489999996904353,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701258983104195e-15,
+      "y": 7.857947420419361e-16,
+      "minimum_observed_base_distance_m": 0.37378669264880365
+    },
+    {
+      "wall_s": 15.720231614999989,
+      "sim_s": 69.334,
+      "yaw_accumulated_rad": 1.26499999968694,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.701253702781239e-15,
+      "y": 7.857964544371561e-16,
+      "minimum_observed_base_distance_m": 0.37554059223609965
+    },
+    {
+      "wall_s": 15.820308430999944,
+      "sim_s": 69.375,
+      "yaw_accumulated_rad": 1.2809999996834451,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7012510500411325e-15,
+      "y": 7.857972709477162e-16,
+      "minimum_observed_base_distance_m": 0.37554059223609965
+    },
+    {
+      "wall_s": 15.940476097999976,
+      "sim_s": 69.4,
+      "yaw_accumulated_rad": 1.2889999996816977,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012457250462717e-15,
+      "y": 7.857988391182588e-16,
+      "minimum_observed_base_distance_m": 0.37554059223609965
+    },
+    {
+      "wall_s": 16.04090592900002,
+      "sim_s": 69.428,
+      "yaw_accumulated_rad": 1.3009999996790764,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7012430531749107e-15,
+      "y": 7.857995906653347e-16,
+      "minimum_observed_base_distance_m": 0.378555740611508
+    },
+    {
+      "wall_s": 16.142792762,
+      "sim_s": 69.5,
+      "yaw_accumulated_rad": 1.32899999967296,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012349943427158e-15,
+      "y": 7.858016844842603e-16,
+      "minimum_observed_base_distance_m": 0.378555740611508
+    },
+    {
+      "wall_s": 16.24348178599996,
+      "sim_s": 69.582,
+      "yaw_accumulated_rad": 1.3609999996659694,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7012268763315795e-15,
+      "y": 7.858035356323367e-16,
+      "minimum_observed_base_distance_m": 0.378555740611508
+    },
+    {
+      "wall_s": 16.360478091999994,
+      "sim_s": 69.6,
+      "yaw_accumulated_rad": 1.368999999664222,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012241584382895e-15,
+      "y": 7.85804098460584e-16,
+      "minimum_observed_base_distance_m": 0.378555740611508
+    },
+    {
+      "wall_s": 16.46118142800003,
+      "sim_s": 69.618,
+      "yaw_accumulated_rad": 1.3769999996624747,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012214350527056e-15,
+      "y": 7.8580463408221e-16,
+      "minimum_observed_base_distance_m": 0.3747439994850545
+    },
+    {
+      "wall_s": 16.56132796600002,
+      "sim_s": 69.628,
+      "yaw_accumulated_rad": 1.380999999661601,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7012214350527056e-15,
+      "y": 7.8580463408221e-16,
+      "minimum_observed_base_distance_m": 0.3747439994850545
+    },
+    {
+      "wall_s": 16.66220183400003,
+      "sim_s": 69.7,
+      "yaw_accumulated_rad": 1.4089999996554843,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012132346681288e-15,
+      "y": 7.858060771853805e-16,
+      "minimum_observed_base_distance_m": 0.3747439994850545
+    },
+    {
+      "wall_s": 16.762218762999964,
+      "sim_s": 69.728,
+      "yaw_accumulated_rad": 1.4209999996528628,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7012104920418113e-15,
+      "y": 7.858065034721898e-16,
+      "minimum_observed_base_distance_m": 0.3832324042614937
+    },
+    {
+      "wall_s": 16.86289681599999,
+      "sim_s": 69.782,
+      "yaw_accumulated_rad": 1.4409999996484937,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7020989905477985e-15,
+      "y": 7.926883964908792e-16,
+      "minimum_observed_base_distance_m": 0.3832324042614937
+    },
+    {
+      "wall_s": 16.97668648499996,
+      "sim_s": 69.8,
+      "yaw_accumulated_rad": 1.448999999646746,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.700360588627532e-15,
+      "y": 7.789200675037674e-16,
+      "minimum_observed_base_distance_m": 0.3832324042614937
+    },
+    {
+      "wall_s": 17.079353561999937,
+      "sim_s": 69.875,
+      "yaw_accumulated_rad": 1.480999999639755,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7018120954652513e-15,
+      "y": 7.927200728532855e-16,
+      "minimum_observed_base_distance_m": 0.3769155790752571
+    },
+    {
+      "wall_s": 17.17937283799995,
+      "sim_s": 69.9,
+      "yaw_accumulated_rad": 1.4889999996380072,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.700625670390033e-15,
+      "y": 7.788932395254904e-16,
+      "minimum_observed_base_distance_m": 0.3769155790752571
+    },
+    {
+      "wall_s": 17.27976877599997,
+      "sim_s": 69.905,
+      "yaw_accumulated_rad": 1.4929999996371333,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.700642270735635e-15,
+      "y": 7.788919120601602e-16,
+      "minimum_observed_base_distance_m": 0.3769665770447635
+    },
+    {
+      "wall_s": 17.399392046999992,
+      "sim_s": 70.0,
+      "yaw_accumulated_rad": 1.5289999996292685,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7008916129484233e-15,
+      "y": 7.788770334499214e-16,
+      "minimum_observed_base_distance_m": 0.3769665770447635
+    },
+    {
+      "wall_s": 17.499865116000024,
+      "sim_s": 70.087,
+      "yaw_accumulated_rad": 1.5649999996214035,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7012078986403437e-15,
+      "y": 7.927490777055618e-16,
+      "minimum_observed_base_distance_m": 0.3769665770447635
+    },
+    {
+      "wall_s": 17.618998217000012,
+      "sim_s": 70.1,
+      "yaw_accumulated_rad": 1.5689999996205295,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7011579897671423e-15,
+      "y": 7.78871401939125e-16,
+      "minimum_observed_base_distance_m": 0.3769665770447635
+    },
+    {
+      "wall_s": 17.71948909599996,
+      "sim_s": 70.125,
+      "yaw_accumulated_rad": 1.580999999617908,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7010913268166556e-15,
+      "y": 7.927487963944823e-16,
+      "minimum_observed_base_distance_m": 0.3774573057879969
+    },
+    {
+      "wall_s": 17.820284325999978,
+      "sim_s": 70.168,
+      "yaw_accumulated_rad": 1.5969999996144129,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70098032354314e-15,
+      "y": 7.927468021533144e-16,
+      "minimum_observed_base_distance_m": 0.3774573057879969
+    },
+    {
+      "wall_s": 17.94043408999994,
+      "sim_s": 70.2,
+      "yaw_accumulated_rad": 1.608999999611791,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70142437884032e-15,
+      "y": 7.788764027400038e-16,
+      "minimum_observed_base_distance_m": 0.3774573057879969
+    },
+    {
+      "wall_s": 18.059939016000044,
+      "sim_s": 70.25,
+      "yaw_accumulated_rad": 1.6289999996074218,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70155744509634e-15,
+      "y": 7.788828975768336e-16,
+      "minimum_observed_base_distance_m": 0.36890623146751333
+    },
+    {
+      "wall_s": 18.16044199399994,
+      "sim_s": 70.3,
+      "yaw_accumulated_rad": 1.6489999996030522,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.701690354851936e-15,
+      "y": 7.788920522624427e-16,
+      "minimum_observed_base_distance_m": 0.36890623146751333
+    },
+    {
+      "wall_s": 18.261065965999933,
+      "sim_s": 70.341,
+      "yaw_accumulated_rad": 1.6649999995995566,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7004872586950706e-15,
+      "y": 7.927171909004181e-16,
+      "minimum_observed_base_distance_m": 0.37499042775994
+    },
+    {
+      "wall_s": 18.375869571999942,
+      "sim_s": 70.4,
+      "yaw_accumulated_rad": 1.6889999995943135,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7019554922971265e-15,
+      "y": 7.789183254705435e-16,
+      "minimum_observed_base_distance_m": 0.37499042775994
+    },
+    {
+      "wall_s": 18.475938839000037,
+      "sim_s": 70.401,
+      "yaw_accumulated_rad": 1.6889999995943135,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7019554922971265e-15,
+      "y": 7.789183254705435e-16,
+      "minimum_observed_base_distance_m": 0.3695119169312983
+    },
+    {
+      "wall_s": 18.575986160999946,
+      "sim_s": 70.5,
+      "yaw_accumulated_rad": 1.7289999995855747,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.702219367012546e-15,
+      "y": 7.78955180332781e-16,
+      "minimum_observed_base_distance_m": 0.3695119169312983
+    },
+    {
+      "wall_s": 18.676086844999986,
+      "sim_s": 70.582,
+      "yaw_accumulated_rad": 1.7609999995785837,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6998006488969623e-15,
+      "y": 7.926188104858372e-16,
+      "minimum_observed_base_distance_m": 0.3695119169312983
+    },
+    {
+      "wall_s": 18.779509178000012,
+      "sim_s": 70.6,
+      "yaw_accumulated_rad": 1.768999999576836,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70248155685495e-15,
+      "y": 7.790025578892316e-16,
+      "minimum_observed_base_distance_m": 0.3695119169312983
+    },
+    {
+      "wall_s": 18.883709021999948,
+      "sim_s": 70.6,
+      "yaw_accumulated_rad": 1.768999999576836,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70248155685495e-15,
+      "y": 7.790025578892316e-16,
+      "minimum_observed_base_distance_m": 0.3721951278275595
+    },
+    {
+      "wall_s": 18.98380242500002,
+      "sim_s": 70.631,
+      "yaw_accumulated_rad": 1.7809999995742143,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6996592100561506e-15,
+      "y": 7.925900844988084e-16,
+      "minimum_observed_base_distance_m": 0.3721951278275595
+    },
+    {
+      "wall_s": 19.09954371799995,
+      "sim_s": 70.7,
+      "yaw_accumulated_rad": 1.8089999995680972,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7027416423764943e-15,
+      "y": 7.790603823459215e-16,
+      "minimum_observed_base_distance_m": 0.3721951278275595
+    },
+    {
+      "wall_s": 19.219285892000016,
+      "sim_s": 70.75,
+      "yaw_accumulated_rad": 1.8289999995637278,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7028707658417993e-15,
+      "y": 7.790931839024586e-16,
+      "minimum_observed_base_distance_m": 0.3732046223051517
+    },
+    {
+      "wall_s": 19.319320337000022,
+      "sim_s": 70.8,
+      "yaw_accumulated_rad": 1.8489999995593587,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7029992074958455e-15,
+      "y": 7.791285611960464e-16,
+      "minimum_observed_base_distance_m": 0.3732046223051517
+    },
+    {
+      "wall_s": 19.41946708499995,
+      "sim_s": 70.814,
+      "yaw_accumulated_rad": 1.8569999995576107,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.699131975439421e-15,
+      "y": 7.924565570813457e-16,
+      "minimum_observed_base_distance_m": 0.37518289659429777
+    },
+    {
+      "wall_s": 19.521175027000027,
+      "sim_s": 70.875,
+      "yaw_accumulated_rad": 1.8809999995523676,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6989621799381253e-15,
+      "y": 7.924043811248008e-16,
+      "minimum_observed_base_distance_m": 0.37518289659429777
+    },
+    {
+      "wall_s": 19.639494644000024,
+      "sim_s": 70.9,
+      "yaw_accumulated_rad": 1.88899999955062,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7032485642575724e-15,
+      "y": 7.792052591894077e-16,
+      "minimum_observed_base_distance_m": 0.37518289659429777
+    },
+    {
+      "wall_s": 19.739589275999947,
+      "sim_s": 70.974,
+      "yaw_accumulated_rad": 1.9209999995436289,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.69868389871238e-15,
+      "y": 7.923089526111259e-16,
+      "minimum_observed_base_distance_m": 0.37919229913349733
+    },
+    {
+      "wall_s": 19.83960424700001,
+      "sim_s": 71.04,
+      "yaw_accumulated_rad": 1.9449999995383853,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.698528172868455e-15,
+      "y": 7.922499472187621e-16,
+      "minimum_observed_base_distance_m": 0.37919229913349733
+    },
+    {
+      "wall_s": 19.939842934000012,
+      "sim_s": 71.1,
+      "yaw_accumulated_rad": 1.9689999995331422,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70374747678403e-15,
+      "y": 7.793921425674945e-16,
+      "minimum_observed_base_distance_m": 0.37919229913349733
+    },
+    {
+      "wall_s": 20.059464876999982,
+      "sim_s": 71.1,
+      "yaw_accumulated_rad": 1.9689999995331422,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70374747678403e-15,
+      "y": 7.793921425674945e-16,
+      "minimum_observed_base_distance_m": 0.37919229913349733
+    },
+    {
+      "wall_s": 20.15972457999999,
+      "sim_s": 71.125,
+      "yaw_accumulated_rad": 1.9809999995305205,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.6982819737987973e-15,
+      "y": 7.921480870649681e-16,
+      "minimum_observed_base_distance_m": 0.3748265235776278
+    },
+    {
+      "wall_s": 20.275830680000013,
+      "sim_s": 71.2,
+      "yaw_accumulated_rad": 2.008999999524403,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.703990929711579e-15,
+      "y": 7.795003961589432e-16,
+      "minimum_observed_base_distance_m": 0.3748265235776278
+    },
+    {
+      "wall_s": 20.37587088800001,
+      "sim_s": 71.223,
+      "yaw_accumulated_rad": 2.0169999995226546,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7040410907371505e-15,
+      "y": 7.795241731954226e-16,
+      "minimum_observed_base_distance_m": 0.379061788284968
+    },
+    {
+      "wall_s": 20.476340435999987,
+      "sim_s": 71.25,
+      "yaw_accumulated_rad": 2.0289999995200327,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7041109838449233e-15,
+      "y": 7.795581527333797e-16,
+      "minimum_observed_base_distance_m": 0.379061788284968
+    },
+    {
+      "wall_s": 20.579680284999995,
+      "sim_s": 71.3,
+      "yaw_accumulated_rad": 2.0489999995156625,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7042298589137545e-15,
+      "y": 7.796182986794854e-16,
+      "minimum_observed_base_distance_m": 0.379061788284968
+    },
+    {
+      "wall_s": 20.679851428000006,
+      "sim_s": 71.321,
+      "yaw_accumulated_rad": 2.056999999513914,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7042790289880114e-15,
+      "y": 7.796440626028847e-16,
+      "minimum_observed_base_distance_m": 0.37825475586971113
+    },
+    {
+      "wall_s": 20.781260511000028,
+      "sim_s": 71.375,
+      "yaw_accumulated_rad": 2.08099999950867,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.6976358396125606e-15,
+      "y": 7.918273880101247e-16,
+      "minimum_observed_base_distance_m": 0.37825475586971113
+    },
+    {
+      "wall_s": 20.899207441000044,
+      "sim_s": 71.4,
+      "yaw_accumulated_rad": 2.088999999506922,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.704463882154755e-15,
+      "y": 7.79745661510293e-16,
+      "minimum_observed_base_distance_m": 0.37825475586971113
+    },
+    {
+      "wall_s": 20.99934874199994,
+      "sim_s": 71.434,
+      "yaw_accumulated_rad": 2.1049999995034256,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6974915034439976e-15,
+      "y": 7.917443263147393e-16,
+      "minimum_observed_base_distance_m": 0.36689723950979575
+    },
+    {
+      "wall_s": 21.100636058999953,
+      "sim_s": 71.5,
+      "yaw_accumulated_rad": 2.1289999994981814,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.704692625047301e-15,
+      "y": 7.798822808980055e-16,
+      "minimum_observed_base_distance_m": 0.36689723950979575
+    },
+    {
+      "wall_s": 21.201174092999963,
+      "sim_s": 71.585,
+      "yaw_accumulated_rad": 2.164999999490315,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.697125581453032e-15,
+      "y": 7.915129759933861e-16,
+      "minimum_observed_base_distance_m": 0.36689723950979575
+    },
+    {
+      "wall_s": 21.301184075000037,
+      "sim_s": 71.6,
+      "yaw_accumulated_rad": 2.168999999489441,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7049157216516264e-15,
+      "y": 7.800279382807574e-16,
+      "minimum_observed_base_distance_m": 0.36689723950979575
+    },
+    {
+      "wall_s": 21.418909600000006,
+      "sim_s": 71.6,
+      "yaw_accumulated_rad": 2.168999999489441,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7049157216516264e-15,
+      "y": 7.800279382807574e-16,
+      "minimum_observed_base_distance_m": 0.3785638492324001
+    },
+    {
+      "wall_s": 21.51997171100004,
+      "sim_s": 71.625,
+      "yaw_accumulated_rad": 2.1809999994868186,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.697024949888279e-15,
+      "y": 7.914437853313022e-16,
+      "minimum_observed_base_distance_m": 0.3785638492324001
+    },
+    {
+      "wall_s": 21.620133220999946,
+      "sim_s": 71.7,
+      "yaw_accumulated_rad": 2.2089999994807004,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7051328150606856e-15,
+      "y": 7.801824006377964e-16,
+      "minimum_observed_base_distance_m": 0.3785638492324001
+    },
+    {
+      "wall_s": 21.739470611,
+      "sim_s": 71.7,
+      "yaw_accumulated_rad": 2.2089999994807004,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7051328150606856e-15,
+      "y": 7.801824006377964e-16,
+      "minimum_observed_base_distance_m": 0.3785638492324001
+    },
+    {
+      "wall_s": 21.839750455999933,
+      "sim_s": 71.75,
+      "yaw_accumulated_rad": 2.22899999947633,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.705239001644335e-15,
+      "y": 7.802628570003721e-16,
+      "minimum_observed_base_distance_m": 0.37651162426116336
+    },
+    {
+      "wall_s": 21.940482608000025,
+      "sim_s": 71.799,
+      "yaw_accumulated_rad": 2.24899999947196,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.705343588221834e-15,
+      "y": 7.803453825067346e-16,
+      "minimum_observed_base_distance_m": 0.37651162426116336
+    },
+    {
+      "wall_s": 22.040529466999942,
+      "sim_s": 71.8,
+      "yaw_accumulated_rad": 2.24899999947196,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.705343588221834e-15,
+      "y": 7.803453825067346e-16,
+      "minimum_observed_base_distance_m": 0.37651162426116336
+    },
+    {
+      "wall_s": 22.140540965000014,
+      "sim_s": 71.866,
+      "yaw_accumulated_rad": 2.276999999465841,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.705488881768648e-15,
+      "y": 7.804658377775706e-16,
+      "minimum_observed_base_distance_m": 0.38190484129515945
+    },
+    {
+      "wall_s": 22.259199478000028,
+      "sim_s": 71.9,
+      "yaw_accumulated_rad": 2.2889999994632193,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7055477062619948e-15,
+      "y": 7.805166249430276e-16,
+      "minimum_observed_base_distance_m": 0.38190484129515945
+    },
+    {
+      "wall_s": 22.359594329999936,
+      "sim_s": 71.9,
+      "yaw_accumulated_rad": 2.2889999994632193,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7055477062619948e-15,
+      "y": 7.805166249430276e-16,
+      "minimum_observed_base_distance_m": 0.38190484129515945
+    },
+    {
+      "wall_s": 22.45969189999994,
+      "sim_s": 71.997,
+      "yaw_accumulated_rad": 2.3289999994544788,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7057448131584732e-15,
+      "y": 7.806958929481677e-16,
+      "minimum_observed_base_distance_m": 0.37607599355437604
+    },
+    {
+      "wall_s": 22.559847529999956,
+      "sim_s": 72.079,
+      "yaw_accumulated_rad": 2.360999999447486,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.696033595403615e-15,
+      "y": 7.9060715770648e-16,
+      "minimum_observed_base_distance_m": 0.37607599355437604
+    },
+    {
+      "wall_s": 22.66035664100002,
+      "sim_s": 72.1,
+      "yaw_accumulated_rad": 2.3689999994457382,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7059345935822913e-15,
+      "y": 7.808828997315825e-16,
+      "minimum_observed_base_distance_m": 0.37607599355437604
+    },
+    {
+      "wall_s": 22.761192998999945,
+      "sim_s": 72.118,
+      "yaw_accumulated_rad": 2.37699999944399,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.705973180658482e-15,
+      "y": 7.809228060535226e-16,
+      "minimum_observed_base_distance_m": 0.37407093259125196
+    },
+    {
+      "wall_s": 22.862017641999955,
+      "sim_s": 72.142,
+      "yaw_accumulated_rad": 2.384999999442242,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.695921694937278e-15,
+      "y": 7.904914314978012e-16,
+      "minimum_observed_base_distance_m": 0.37407093259125196
+    },
+    {
+      "wall_s": 22.97581001100002,
+      "sim_s": 72.2,
+      "yaw_accumulated_rad": 2.4089999994369977,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7061167439252923e-15,
+      "y": 7.810773461222855e-16,
+      "minimum_observed_base_distance_m": 0.37407093259125196
+    },
+    {
+      "wall_s": 23.07898706200001,
+      "sim_s": 72.25,
+      "yaw_accumulated_rad": 2.4289999994326275,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7062048662637236e-15,
+      "y": 7.811772624115482e-16,
+      "minimum_observed_base_distance_m": 0.3769794916914616
+    },
+    {
+      "wall_s": 23.179172247999986,
+      "sim_s": 72.3,
+      "yaw_accumulated_rad": 2.448999999428257,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7062909727857273e-15,
+      "y": 7.812789210475151e-16,
+      "minimum_observed_base_distance_m": 0.3769794916914616
+    },
+    {
+      "wall_s": 23.27954394699998,
+      "sim_s": 72.312,
+      "yaw_accumulated_rad": 2.452999999427383,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.706308644356602e-15,
+      "y": 7.813003240099405e-16,
+      "minimum_observed_base_distance_m": 0.3715680302184069
+    },
+    {
+      "wall_s": 23.38057005899998,
+      "sim_s": 72.375,
+      "yaw_accumulated_rad": 2.4809999994212646,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.6954630925530703e-15,
+      "y": 7.899563589791805e-16,
+      "minimum_observed_base_distance_m": 0.3715680302184069
+    },
+    {
+      "wall_s": 23.49893065799995,
+      "sim_s": 72.4,
+      "yaw_accumulated_rad": 2.4889999994195167,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70645700143463e-15,
+      "y": 7.814873020304594e-16,
+      "minimum_observed_base_distance_m": 0.3715680302184069
+    },
+    {
+      "wall_s": 23.599234628999966,
+      "sim_s": 72.459,
+      "yaw_accumulated_rad": 2.512999999414272,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7065532135164733e-15,
+      "y": 7.816163651346627e-16,
+      "minimum_observed_base_distance_m": 0.3752437207887766
+    },
+    {
+      "wall_s": 23.699474951999946,
+      "sim_s": 72.541,
+      "yaw_accumulated_rad": 2.54499999940728,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6951987434846005e-15,
+      "y": 7.895927233640278e-16,
+      "minimum_observed_base_distance_m": 0.3752437207887766
+    },
+    {
+      "wall_s": 23.81927168200002,
+      "sim_s": 72.6,
+      "yaw_accumulated_rad": 2.5689999994020356,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7067634091995862e-15,
+      "y": 7.819231383539922e-16,
+      "minimum_observed_base_distance_m": 0.3752437207887766
+    },
+    {
+      "wall_s": 23.919654608999963,
+      "sim_s": 72.612,
+      "yaw_accumulated_rad": 2.572999999401161,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.706778391491881e-15,
+      "y": 7.819465029026749e-16,
+      "minimum_observed_base_distance_m": 0.3786921567561058
+    },
+    {
+      "wall_s": 24.019702101999997,
+      "sim_s": 72.652,
+      "yaw_accumulated_rad": 2.5889999993976653,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.706831526705683e-15,
+      "y": 7.820311224995911e-16,
+      "minimum_observed_base_distance_m": 0.3786921567561058
+    },
+    {
+      "wall_s": 24.139325613999972,
+      "sim_s": 72.7,
+      "yaw_accumulated_rad": 2.608999999393295,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7069003791346174e-15,
+      "y": 7.821451757247175e-16,
+      "minimum_observed_base_distance_m": 0.3786921567561058
+    },
+    {
+      "wall_s": 24.240249241000015,
+      "sim_s": 72.75,
+      "yaw_accumulated_rad": 2.628999999388925,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70696693688107e-15,
+      "y": 7.822605830967489e-16,
+      "minimum_observed_base_distance_m": 0.3753683349363262
+    },
+    {
+      "wall_s": 24.359664694999992,
+      "sim_s": 72.8,
+      "yaw_accumulated_rad": 2.6489999993845545,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.707031173322856e-15,
+      "y": 7.823772984542452e-16,
+      "minimum_observed_base_distance_m": 0.3753683349363262
+    },
+    {
+      "wall_s": 24.460483007999983,
+      "sim_s": 72.871,
+      "yaw_accumulated_rad": 2.676999999378436,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.707118155069008e-15,
+      "y": 7.825447912947825e-16,
+      "minimum_observed_base_distance_m": 0.37136062950355275
+    },
+    {
+      "wall_s": 24.560510389,
+      "sim_s": 72.9,
+      "yaw_accumulated_rad": 2.688999999375814,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7071525804562848e-15,
+      "y": 7.826144658828607e-16,
+      "minimum_observed_base_distance_m": 0.37136062950355275
+    },
+    {
+      "wall_s": 24.660553105999952,
+      "sim_s": 72.913,
+      "yaw_accumulated_rad": 2.6969999993740656,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.707176677483137e-15,
+      "y": 7.82664473974665e-16,
+      "minimum_observed_base_distance_m": 0.3725954134148003
+    },
+    {
+      "wall_s": 24.77596216200004,
+      "sim_s": 73.0,
+      "yaw_accumulated_rad": 2.7289999993670735,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.707264406309398e-15,
+      "y": 7.828562985932324e-16,
+      "minimum_observed_base_distance_m": 0.3725954134148003
+    },
+    {
+      "wall_s": 24.87614940499998,
+      "sim_s": 73.096,
+      "yaw_accumulated_rad": 2.768999999358333,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.707366471984675e-15,
+      "y": 7.831024097046647e-16,
+      "minimum_observed_base_distance_m": 0.3725954134148003
+    },
+    {
+      "wall_s": 24.976276059000043,
+      "sim_s": 73.1,
+      "yaw_accumulated_rad": 2.768999999358333,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.707366471984675e-15,
+      "y": 7.831024097046647e-16,
+      "minimum_observed_base_distance_m": 0.3725954134148003
+    },
+    {
+      "wall_s": 25.078971216000014,
+      "sim_s": 73.125,
+      "yaw_accumulated_rad": 2.7809999993557106,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.6944100732222577e-15,
+      "y": 7.880740249079408e-16,
+      "minimum_observed_base_distance_m": 0.3678595394218444
+    },
+    {
+      "wall_s": 25.17997668999999,
+      "sim_s": 73.161,
+      "yaw_accumulated_rad": 2.7929999993530883,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.707425226181935e-15,
+      "y": 7.832582297653852e-16,
+      "minimum_observed_base_distance_m": 0.3678595394218444
+    },
+    {
+      "wall_s": 25.29912630199999,
+      "sim_s": 73.2,
+      "yaw_accumulated_rad": 2.8089999993495924,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.70745861419883e-15,
+      "y": 7.833524054918566e-16,
+      "minimum_observed_base_distance_m": 0.3678595394218444
+    },
+    {
+      "wall_s": 25.419386496000016,
+      "sim_s": 73.25,
+      "yaw_accumulated_rad": 2.828999999345222,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7075009173162606e-15,
+      "y": 7.834787353829501e-16,
+      "minimum_observed_base_distance_m": 0.37373386733104835
+    },
+    {
+      "wall_s": 25.539590363000002,
+      "sim_s": 73.3,
+      "yaw_accumulated_rad": 2.848999999340852,
+      "angular_velocity_rad_s": 0.39999999991264484,
+      "x": 2.7075406855439603e-15,
+      "y": 7.836058860148519e-16,
+      "minimum_observed_base_distance_m": 0.37373386733104835
+    },
+    {
+      "wall_s": 25.659475334000035,
+      "sim_s": 73.375,
+      "yaw_accumulated_rad": 2.8809999993338606,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7076013078897176e-15,
+      "y": 7.83819484266735e-16,
+      "minimum_observed_base_distance_m": 0.37721543708938376
+    },
+    {
+      "wall_s": 25.775707616999966,
+      "sim_s": 73.4,
+      "yaw_accumulated_rad": 2.8889999993321127,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707615339982304e-15,
+      "y": 7.83873192529028e-16,
+      "minimum_observed_base_distance_m": 0.37721543708938376
+    },
+    {
+      "wall_s": 25.876033984999935,
+      "sim_s": 73.472,
+      "yaw_accumulated_rad": 2.9169999993259954,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7076572297083104e-15,
+      "y": 7.840458129367155e-16,
+      "minimum_observed_base_distance_m": 0.3751605369425306
+    },
+    {
+      "wall_s": 25.97618240899999,
+      "sim_s": 73.554,
+      "yaw_accumulated_rad": 2.9529999993181306,
+      "angular_velocity_rad_s": 0.39999999991262897,
+      "x": 2.6804428241113467e-15,
+      "y": 7.894829298843391e-16,
+      "minimum_observed_base_distance_m": 0.3751605369425306
+    },
+    {
+      "wall_s": 26.079102922999937,
+      "sim_s": 73.6,
+      "yaw_accumulated_rad": 2.968999999314635,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707727160458501e-15,
+      "y": 7.843940908323415e-16,
+      "minimum_observed_base_distance_m": 0.3751605369425306
+    },
+    {
+      "wall_s": 26.17984647100002,
+      "sim_s": 73.615,
+      "yaw_accumulated_rad": 2.9769999993128873,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7077345813952846e-15,
+      "y": 7.84437875228281e-16,
+      "minimum_observed_base_distance_m": 0.37480018730013964
+    },
+    {
+      "wall_s": 26.279868763999957,
+      "sim_s": 73.656,
+      "yaw_accumulated_rad": 2.992999999309392,
+      "angular_velocity_rad_s": 0.39999999991262897,
+      "x": 2.6803013494798034e-15,
+      "y": 7.886511626729552e-16,
+      "minimum_observed_base_distance_m": 0.37480018730013964
+    },
+    {
+      "wall_s": 26.399099760000013,
+      "sim_s": 73.7,
+      "yaw_accumulated_rad": 3.0089999993058965,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7077673605534868e-15,
+      "y": 7.846574765934714e-16,
+      "minimum_observed_base_distance_m": 0.37480018730013964
+    },
+    {
+      "wall_s": 26.499750706999976,
+      "sim_s": 73.75,
+      "yaw_accumulated_rad": 3.028999999301527,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.70778350216989e-15,
+      "y": 7.847897197397587e-16,
+      "minimum_observed_base_distance_m": 0.3704005303890258
+    },
+    {
+      "wall_s": 26.619046551999986,
+      "sim_s": 73.8,
+      "yaw_accumulated_rad": 3.0489999992971577,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7077969958714685e-15,
+      "y": 7.849222592491011e-16,
+      "minimum_observed_base_distance_m": 0.3704005303890258
+    },
+    {
+      "wall_s": 26.73991777499998,
+      "sim_s": 73.875,
+      "yaw_accumulated_rad": 3.080999999290167,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707812936801813e-15,
+      "y": 7.851325897842519e-16,
+      "minimum_observed_base_distance_m": 0.3695908459775467
+    },
+    {
+      "wall_s": 26.85980547600002,
+      "sim_s": 73.9,
+      "yaw_accumulated_rad": 3.088999999288419,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7078154220718114e-15,
+      "y": 7.851769290325272e-16,
+      "minimum_observed_base_distance_m": 0.3695908459775467
+    },
+    {
+      "wall_s": 26.960021683000036,
+      "sim_s": 73.986,
+      "yaw_accumulated_rad": 3.1249999992805537,
+      "angular_velocity_rad_s": 0.39999999991259727,
+      "x": 2.7078234940985083e-15,
+      "y": 7.85409924223531e-16,
+      "minimum_observed_base_distance_m": 0.37757228406094473
+    },
+    {
+      "wall_s": 27.060034683000026,
+      "sim_s": 74.082,
+      "yaw_accumulated_rad": 3.16099999927269,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7078232258649896e-15,
+      "y": 7.85654159416323e-16,
+      "minimum_observed_base_distance_m": 0.37757228406094473
+    },
+    {
+      "wall_s": 27.176059289000023,
+      "sim_s": 74.1,
+      "yaw_accumulated_rad": 3.168999999270942,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7078219177379283e-15,
+      "y": 7.857096550545566e-16,
+      "minimum_observed_base_distance_m": 0.37757228406094473
+    },
+    {
+      "wall_s": 27.276424291000012,
+      "sim_s": 74.125,
+      "yaw_accumulated_rad": 3.1809999992683204,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7078192997693623e-15,
+      "y": 7.85787326181296e-16,
+      "minimum_observed_base_distance_m": 0.37736906385493696
+    },
+    {
+      "wall_s": 27.378966332000005,
+      "sim_s": 74.2,
+      "yaw_accumulated_rad": 3.208999999262203,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7078091849868582e-15,
+      "y": 7.8597578673364e-16,
+      "minimum_observed_base_distance_m": 0.37736906385493696
+    },
+    {
+      "wall_s": 27.479020634999983,
+      "sim_s": 74.246,
+      "yaw_accumulated_rad": 3.2289999992578338,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7077988295817926e-15,
+      "y": 7.86108608376443e-16,
+      "minimum_observed_base_distance_m": 0.37055968323308086
+    },
+    {
+      "wall_s": 27.57934418000002,
+      "sim_s": 74.3,
+      "yaw_accumulated_rad": 3.2489999992534644,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.70778581999198e-15,
+      "y": 7.862411963615189e-16,
+      "minimum_observed_base_distance_m": 0.37055968323308086
+    },
+    {
+      "wall_s": 27.679576695000037,
+      "sim_s": 74.315,
+      "yaw_accumulated_rad": 3.2569999992517165,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.707779613132255e-15,
+      "y": 7.862963593196752e-16,
+      "minimum_observed_base_distance_m": 0.3728716002357
+    },
+    {
+      "wall_s": 27.77967454999998,
+      "sim_s": 74.38,
+      "yaw_accumulated_rad": 3.284999999245599,
+      "angular_velocity_rad_s": 0.39999999991259727,
+      "x": 2.707756668540994e-15,
+      "y": 7.864725015918136e-16,
+      "minimum_observed_base_distance_m": 0.3728716002357
+    },
+    {
+      "wall_s": 27.899208886999986,
+      "sim_s": 74.4,
+      "yaw_accumulated_rad": 3.2889999992447256,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7077518601323077e-15,
+      "y": 7.865054593394346e-16,
+      "minimum_observed_base_distance_m": 0.3728716002357
+    },
+    {
+      "wall_s": 27.999279229999956,
+      "sim_s": 74.477,
+      "yaw_accumulated_rad": 3.320999999237735,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7077174926206474e-15,
+      "y": 7.867135745032465e-16,
+      "minimum_observed_base_distance_m": 0.36933900899316563
+    },
+    {
+      "wall_s": 28.099653191000016,
+      "sim_s": 74.554,
+      "yaw_accumulated_rad": 3.3529999992307435,
+      "angular_velocity_rad_s": 0.39999999991262897,
+      "x": 2.6805400694056035e-15,
+      "y": 7.810909456990688e-16,
+      "minimum_observed_base_distance_m": 0.36933900899316563
+    },
+    {
+      "wall_s": 28.219462155999963,
+      "sim_s": 74.6,
+      "yaw_accumulated_rad": 3.368999999227248,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7076523899952997e-15,
+      "y": 7.870288567984848e-16,
+      "minimum_observed_base_distance_m": 0.36933900899316563
+    },
+    {
+      "wall_s": 28.319871123999974,
+      "sim_s": 74.6,
+      "yaw_accumulated_rad": 3.368999999227248,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7076523899952997e-15,
+      "y": 7.870288567984848e-16,
+      "minimum_observed_base_distance_m": 0.3735441836539989
+    },
+    {
+      "wall_s": 28.42019462899998,
+      "sim_s": 74.625,
+      "yaw_accumulated_rad": 3.3809999992246267,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707634393341041e-15,
+      "y": 7.871044595638005e-16,
+      "minimum_observed_base_distance_m": 0.3735441836539989
+    },
+    {
+      "wall_s": 28.54044274499995,
+      "sim_s": 74.7,
+      "yaw_accumulated_rad": 3.4089999992185094,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707587038848965e-15,
+      "y": 7.872871539553139e-16,
+      "minimum_observed_base_distance_m": 0.3735441836539989
+    },
+    {
+      "wall_s": 28.64071250500001,
+      "sim_s": 74.723,
+      "yaw_accumulated_rad": 3.4209999992158884,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707566033285868e-15,
+      "y": 7.873619765722461e-16,
+      "minimum_observed_base_distance_m": 0.372664028379217
+    },
+    {
+      "wall_s": 28.744017119999967,
+      "sim_s": 74.75,
+      "yaw_accumulated_rad": 3.42899999921414,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7075505022756818e-15,
+      "y": 7.874152707068226e-16,
+      "minimum_observed_base_distance_m": 0.372664028379217
+    },
+    {
+      "wall_s": 28.860162511,
+      "sim_s": 74.8,
+      "yaw_accumulated_rad": 3.4489999992097706,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7075114108452588e-15,
+      "y": 7.875426311531148e-16,
+      "minimum_observed_base_distance_m": 0.372664028379217
+    },
+    {
+      "wall_s": 28.960215628000014,
+      "sim_s": 74.851,
+      "yaw_accumulated_rad": 3.4689999992054013,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7074697801937433e-15,
+      "y": 7.876691843516868e-16,
+      "minimum_observed_base_distance_m": 0.3800398909259903
+    },
+    {
+      "wall_s": 29.06249693899997,
+      "sim_s": 74.875,
+      "yaw_accumulated_rad": 3.48099999920278,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7074443257654105e-15,
+      "y": 7.877426127505922e-16,
+      "minimum_observed_base_distance_m": 0.3800398909259903
+    },
+    {
+      "wall_s": 29.175951373999965,
+      "sim_s": 74.9,
+      "yaw_accumulated_rad": 3.4889999992010323,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7074256269728247e-15,
+      "y": 7.877948796829217e-16,
+      "minimum_observed_base_distance_m": 0.3800398909259903
+    },
+    {
+      "wall_s": 29.27654196200001,
+      "sim_s": 74.932,
+      "yaw_accumulated_rad": 3.5009999991984104,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7073987091651458e-15,
+      "y": 7.878677843420419e-16,
+      "minimum_observed_base_distance_m": 0.3751367277389589
+    },
+    {
+      "wall_s": 29.37669360999996,
+      "sim_s": 75.0,
+      "yaw_accumulated_rad": 3.528999999192293,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7073298244675944e-15,
+      "y": 7.880434960008965e-16,
+      "minimum_observed_base_distance_m": 0.3751367277389589
+    },
+    {
+      "wall_s": 29.47703706499999,
+      "sim_s": 75.089,
+      "yaw_accumulated_rad": 3.564999999184428,
+      "angular_velocity_rad_s": 0.39999999991259727,
+      "x": 2.7072378858001797e-15,
+      "y": 7.882577369822404e-16,
+      "minimum_observed_base_distance_m": 0.3751367277389589
+    },
+    {
+      "wall_s": 29.579517054999997,
+      "sim_s": 75.1,
+      "yaw_accumulated_rad": 3.5689999991835544,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707224156593145e-15,
+      "y": 7.882880823739172e-16,
+      "minimum_observed_base_distance_m": 0.3751367277389589
+    },
+    {
+      "wall_s": 29.680147683999962,
+      "sim_s": 75.1,
+      "yaw_accumulated_rad": 3.5689999991835544,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707224156593145e-15,
+      "y": 7.882880823739172e-16,
+      "minimum_observed_base_distance_m": 0.3751367277389589
+    },
+    {
+      "wall_s": 29.780814819999932,
+      "sim_s": 75.1,
+      "yaw_accumulated_rad": 3.5689999991835544,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707224156593145e-15,
+      "y": 7.882880823739172e-16,
+      "minimum_observed_base_distance_m": 0.3751367277389589
+    },
+    {
+      "wall_s": 29.898999242999935,
+      "sim_s": 75.125,
+      "yaw_accumulated_rad": 3.580999999180933,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.707191498723001e-15,
+      "y": 7.883586027341463e-16,
+      "minimum_observed_base_distance_m": 0.377585643140571
+    },
+    {
+      "wall_s": 29.99903855599996,
+      "sim_s": 75.182,
+      "yaw_accumulated_rad": 3.600999999176564,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7071336137080963e-15,
+      "y": 7.88478594927927e-16,
+      "minimum_observed_base_distance_m": 0.377585643140571
+    },
+    {
+      "wall_s": 30.099191824999934,
+      "sim_s": 75.2,
+      "yaw_accumulated_rad": 3.6089999991748156,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7071087923955057e-15,
+      "y": 7.885282475159898e-16,
+      "minimum_observed_base_distance_m": 0.377585643140571
+    },
+    {
+      "wall_s": 30.199217978999968,
+      "sim_s": 75.25,
+      "yaw_accumulated_rad": 3.6289999991704462,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7070475312518664e-15,
+      "y": 7.886465517656562e-16,
+      "minimum_observed_base_distance_m": 0.37454029689720125
+    },
+    {
+      "wall_s": 30.299636335999935,
+      "sim_s": 75.283,
+      "yaw_accumulated_rad": 3.6449999991669504,
+      "angular_velocity_rad_s": 0.39999999991259727,
+      "x": 2.707000026772478e-15,
+      "y": 7.887344560412427e-16,
+      "minimum_observed_base_distance_m": 0.37454029689720125
+    },
+    {
+      "wall_s": 30.419435335000003,
+      "sim_s": 75.3,
+      "yaw_accumulated_rad": 3.648999999166077,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.706983916432785e-15,
+      "y": 7.887636072140738e-16,
+      "minimum_observed_base_distance_m": 0.37454029689720125
+    },
+    {
+      "wall_s": 30.519618256999934,
+      "sim_s": 75.375,
+      "yaw_accumulated_rad": 3.680999999159086,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7068784383780383e-15,
+      "y": 7.889462747460599e-16,
+      "minimum_observed_base_distance_m": 0.37968637280904555
+    },
+    {
+      "wall_s": 30.639886564999983,
+      "sim_s": 75.4,
+      "yaw_accumulated_rad": 3.6889999991573386,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.706849728479907e-15,
+      "y": 7.889937849429562e-16,
+      "minimum_observed_base_distance_m": 0.37968637280904555
+    },
+    {
+      "wall_s": 30.740007101999936,
+      "sim_s": 75.4,
+      "yaw_accumulated_rad": 3.6889999991573386,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.706849728479907e-15,
+      "y": 7.889937849429562e-16,
+      "minimum_observed_base_distance_m": 0.37968637280904555
+    },
+    {
+      "wall_s": 30.840458246000026,
+      "sim_s": 75.498,
+      "yaw_accumulated_rad": 3.7289999991486,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.706706443208963e-15,
+      "y": 7.892184124673047e-16,
+      "minimum_observed_base_distance_m": 0.3754980107993694
+    },
+    {
+      "wall_s": 30.94102701600002,
+      "sim_s": 75.556,
+      "yaw_accumulated_rad": 3.752999999143356,
+      "angular_velocity_rad_s": 0.39999999991262897,
+      "x": 2.68389452038946e-15,
+      "y": 7.73409917193287e-16,
+      "minimum_observed_base_distance_m": 0.3754980107993694
+    },
+    {
+      "wall_s": 31.05970245399999,
+      "sim_s": 75.6,
+      "yaw_accumulated_rad": 3.7689999991398606,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7065542898458386e-15,
+      "y": 7.894371304310244e-16,
+      "minimum_observed_base_distance_m": 0.3754980107993694
+    },
+    {
+      "wall_s": 31.17636912399996,
+      "sim_s": 75.6,
+      "yaw_accumulated_rad": 3.7689999991398606,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7065542898458386e-15,
+      "y": 7.894371304310244e-16,
+      "minimum_observed_base_distance_m": 0.3754980107993694
+    },
+    {
+      "wall_s": 31.27966208299995,
+      "sim_s": 75.625,
+      "yaw_accumulated_rad": 3.780999999137239,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6842390866928854e-15,
+      "y": 7.729329596807925e-16,
+      "minimum_observed_base_distance_m": 0.3681669026252573
+    },
+    {
+      "wall_s": 31.380072874000007,
+      "sim_s": 75.677,
+      "yaw_accumulated_rad": 3.80099999913287,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6844941846855644e-15,
+      "y": 7.725969448450167e-16,
+      "minimum_observed_base_distance_m": 0.3681669026252573
+    },
+    {
+      "wall_s": 31.499448712999992,
+      "sim_s": 75.7,
+      "yaw_accumulated_rad": 3.8089999991311223,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.70640020325092e-15,
+      "y": 7.896407318668883e-16,
+      "minimum_observed_base_distance_m": 0.3681669026252573
+    },
+    {
+      "wall_s": 31.620152079000036,
+      "sim_s": 75.75,
+      "yaw_accumulated_rad": 3.8289999991267525,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7063167360009568e-15,
+      "y": 7.897445683715348e-16,
+      "minimum_observed_base_distance_m": 0.36990313557599425
+    },
+    {
+      "wall_s": 31.720566383000005,
+      "sim_s": 75.796,
+      "yaw_accumulated_rad": 3.848999999122383,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7062312088522444e-15,
+      "y": 7.898467148758827e-16,
+      "minimum_observed_base_distance_m": 0.36990313557599425
+    },
+    {
+      "wall_s": 31.839990376999936,
+      "sim_s": 75.8,
+      "yaw_accumulated_rad": 3.848999999122383,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7062312088522444e-15,
+      "y": 7.898467148758827e-16,
+      "minimum_observed_base_distance_m": 0.36990313557599425
+    },
+    {
+      "wall_s": 31.94052339999996,
+      "sim_s": 75.866,
+      "yaw_accumulated_rad": 3.876999999116266,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.7061065891160213e-15,
+      "y": 7.899884526970765e-16,
+      "minimum_observed_base_distance_m": 0.37638493577977156
+    },
+    {
+      "wall_s": 32.04165139400004,
+      "sim_s": 75.875,
+      "yaw_accumulated_rad": 3.880999999115392,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6855802048470345e-15,
+      "y": 7.713058863923318e-16,
+      "minimum_observed_base_distance_m": 0.37638493577977156
+    },
+    {
+      "wall_s": 32.16019496499996,
+      "sim_s": 75.9,
+      "yaw_accumulated_rad": 3.8889999991136444,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7060541125076605e-15,
+      "y": 7.9004577514697e-16,
+      "minimum_observed_base_distance_m": 0.37638493577977156
+    },
+    {
+      "wall_s": 32.27614306399994,
+      "sim_s": 75.9,
+      "yaw_accumulated_rad": 3.8889999991136444,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7060541125076605e-15,
+      "y": 7.9004577514697e-16,
+      "minimum_observed_base_distance_m": 0.37638493577977156
+    },
+    {
+      "wall_s": 32.37622277000003,
+      "sim_s": 75.9,
+      "yaw_accumulated_rad": 3.8889999991136444,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7060541125076605e-15,
+      "y": 7.9004577514697e-16,
+      "minimum_observed_base_distance_m": 0.37638493577977156
+    },
+    {
+      "wall_s": 32.477871413,
+      "sim_s": 75.949,
+      "yaw_accumulated_rad": 3.908999999109275,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.705962614148e-15,
+      "y": 7.901426092922526e-16,
+      "minimum_observed_base_distance_m": 0.37773812469813506
+    },
+    {
+      "wall_s": 32.579281046999995,
+      "sim_s": 76.0,
+      "yaw_accumulated_rad": 3.9289999991049056,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.705869197533565e-15,
+      "y": 7.902375942261547e-16,
+      "minimum_observed_base_distance_m": 0.37773812469813506
+    },
+    {
+      "wall_s": 32.67977564,
+      "sim_s": 76.011,
+      "yaw_accumulated_rad": 3.936999999103158,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.705829719492369e-15,
+      "y": 7.902766193632309e-16,
+      "minimum_observed_base_distance_m": 0.37773812469813506
+    },
+    {
+      "wall_s": 32.780619108999986,
+      "sim_s": 76.1,
+      "yaw_accumulated_rad": 3.968999999096167,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.705676759754448e-15,
+      "y": 7.904218652438404e-16,
+      "minimum_observed_base_distance_m": 0.37773812469813506
+    },
+    {
+      "wall_s": 32.88073740799996,
+      "sim_s": 76.1,
+      "yaw_accumulated_rad": 3.968999999096167,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.705676759754448e-15,
+      "y": 7.904218652438404e-16,
+      "minimum_observed_base_distance_m": 0.37773812469813506
+    },
+    {
+      "wall_s": 32.999590834999935,
+      "sim_s": 76.1,
+      "yaw_accumulated_rad": 3.968999999096167,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.705676759754448e-15,
+      "y": 7.904218652438404e-16,
+      "minimum_observed_base_distance_m": 0.37773812469813506
+    },
+    {
+      "wall_s": 33.11999257799994,
+      "sim_s": 76.125,
+      "yaw_accumulated_rad": 3.980999999093545,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6870770592819654e-15,
+      "y": 7.698208301004975e-16,
+      "minimum_observed_base_distance_m": 0.3791702820130484
+    },
+    {
+      "wall_s": 33.23977693099994,
+      "sim_s": 76.2,
+      "yaw_accumulated_rad": 4.008999999087434,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.705477107029746e-15,
+      "y": 7.905982934057193e-16,
+      "minimum_observed_base_distance_m": 0.3791702820130484
+    },
+    {
+      "wall_s": 33.34037376100002,
+      "sim_s": 76.2,
+      "yaw_accumulated_rad": 4.008999999087434,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.705477107029746e-15,
+      "y": 7.905982934057193e-16,
+      "minimum_observed_base_distance_m": 0.3791702820130484
+    },
+    {
+      "wall_s": 33.45989621599995,
+      "sim_s": 76.25,
+      "yaw_accumulated_rad": 4.02899999908308,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7053746744388047e-15,
+      "y": 7.90683477710798e-16,
+      "minimum_observed_base_distance_m": 0.37781513489666124
+    },
+    {
+      "wall_s": 33.559989352,
+      "sim_s": 76.3,
+      "yaw_accumulated_rad": 4.048999999078726,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7052705587611758e-15,
+      "y": 7.907665964643465e-16,
+      "minimum_observed_base_distance_m": 0.37781513489666124
+    },
+    {
+      "wall_s": 33.66053866499999,
+      "sim_s": 76.342,
+      "yaw_accumulated_rad": 4.064999999075242,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.705182540013975e-15,
+      "y": 7.908342602418939e-16,
+      "minimum_observed_base_distance_m": 0.3788447991074617
+    },
+    {
+      "wall_s": 33.77596146799999,
+      "sim_s": 76.4,
+      "yaw_accumulated_rad": 4.088999999070017,
+      "angular_velocity_rad_s": 0.3999999999126607,
+      "x": 2.7050574453819466e-15,
+      "y": 7.909265051707635e-16,
+      "minimum_observed_base_distance_m": 0.3788447991074617
+    },
+    {
+      "wall_s": 33.87658572299995,
+      "sim_s": 76.408,
+      "yaw_accumulated_rad": 4.092999999069146,
+      "angular_velocity_rad_s": 0.399999999912629,
+      "x": 2.6889217150838575e-15,
+      "y": 7.683431439709656e-16,
+      "minimum_observed_base_distance_m": 0.37999234558381617
+    },
+    {
+      "wall_s": 33.97699141500004,
+      "sim_s": 76.5,
+      "yaw_accumulated_rad": 4.128999999061309,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.6895349734236733e-15,
+      "y": 7.679222319779304e-16,
+      "minimum_observed_base_distance_m": 0.37999234558381617
+    },
+    {
+      "wall_s": 34.07743583699994,
+      "sim_s": 76.588,
+      "yaw_accumulated_rad": 4.164999999053471,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.7046321568934566e-15,
+      "y": 7.912090406670357e-16,
+      "minimum_observed_base_distance_m": 0.37999234558381617
+    },
+    {
+      "wall_s": 34.179195616000015,
+      "sim_s": 76.6,
+      "yaw_accumulated_rad": 4.1689999990526,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.690248200885027e-15,
+      "y": 7.674715003814996e-16,
+      "minimum_observed_base_distance_m": 0.37999234558381617
+    },
+    {
+      "wall_s": 34.29921765500001,
+      "sim_s": 76.625,
+      "yaw_accumulated_rad": 4.1809999990499875,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.70453694622683e-15,
+      "y": 7.91266142400273e-16,
+      "minimum_observed_base_distance_m": 0.3754747653554561
+    },
+    {
+      "wall_s": 34.40012471,
+      "sim_s": 76.68,
+      "yaw_accumulated_rad": 4.200999999045633,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.7044214588460985e-15,
+      "y": 7.913325611731841e-16,
+      "minimum_observed_base_distance_m": 0.3754747653554561
+    },
+    {
+      "wall_s": 34.510448739000026,
+      "sim_s": 76.7,
+      "yaw_accumulated_rad": 4.2089999990438915,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.690978882296941e-15,
+      "y": 7.670496508135849e-16,
+      "minimum_observed_base_distance_m": 0.37846772914529925
+    },
+    {
+      "wall_s": 34.610669734,
+      "sim_s": 76.754,
+      "yaw_accumulated_rad": 4.232999999038666,
+      "angular_velocity_rad_s": 0.399999999913073,
+      "x": 2.70422610386899e-15,
+      "y": 7.914380871074186e-16,
+      "minimum_observed_base_distance_m": 0.37846772914529925
+    },
+    {
+      "wall_s": 34.71950831000004,
+      "sim_s": 76.8,
+      "yaw_accumulated_rad": 4.248999999035183,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.691725848724993e-15,
+      "y": 7.666573581434814e-16,
+      "minimum_observed_base_distance_m": 0.37846772914529925
+    },
+    {
+      "wall_s": 34.81965857700004,
+      "sim_s": 76.859,
+      "yaw_accumulated_rad": 4.272999999029958,
+      "angular_velocity_rad_s": 0.399999999913073,
+      "x": 2.703987196603704e-15,
+      "y": 7.915560338599365e-16,
+      "minimum_observed_base_distance_m": 0.3752790988337286
+    },
+    {
+      "wall_s": 34.940037079000035,
+      "sim_s": 76.9,
+      "yaw_accumulated_rad": 4.288999999026474,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.692487905182254e-15,
+      "y": 7.662952499557728e-16,
+      "minimum_observed_base_distance_m": 0.3752790988337286
+    },
+    {
+      "wall_s": 35.04010081699994,
+      "sim_s": 76.911,
+      "yaw_accumulated_rad": 4.292999999025604,
+      "angular_velocity_rad_s": 0.399999999913073,
+      "x": 2.703866021726573e-15,
+      "y": 7.916114003970231e-16,
+      "minimum_observed_base_distance_m": 0.37945180361683367
+    },
+    {
+      "wall_s": 35.15605058599999,
+      "sim_s": 77.0,
+      "yaw_accumulated_rad": 4.328999999017766,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.693263832540971e-15,
+      "y": 7.659639055463277e-16,
+      "minimum_observed_base_distance_m": 0.37945180361683367
+    },
+    {
+      "wall_s": 35.25936093600001,
+      "sim_s": 77.1,
+      "yaw_accumulated_rad": 4.368999999009057,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.6940523894828575e-15,
+      "y": 7.656638549955125e-16,
+      "minimum_observed_base_distance_m": 0.37945180361683367
+    },
+    {
+      "wall_s": 35.360104578999994,
+      "sim_s": 77.1,
+      "yaw_accumulated_rad": 4.368999999009057,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.6940523894828575e-15,
+      "y": 7.656638549955125e-16,
+      "minimum_observed_base_distance_m": 0.37945180361683367
+    },
+    {
+      "wall_s": 35.46159459499995,
+      "sim_s": 77.125,
+      "yaw_accumulated_rad": 4.380999999006445,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.703329045626406e-15,
+      "y": 7.918229238443457e-16,
+      "minimum_observed_base_distance_m": 0.37225869737074263
+    },
+    {
+      "wall_s": 35.561999517000004,
+      "sim_s": 77.157,
+      "yaw_accumulated_rad": 4.392999999003832,
+      "angular_velocity_rad_s": 0.399999999913073,
+      "x": 2.703244886116162e-15,
+      "y": 7.918513082868011e-16,
+      "minimum_observed_base_distance_m": 0.37225869737074263
+    },
+    {
+      "wall_s": 35.67555423399995,
+      "sim_s": 77.2,
+      "yaw_accumulated_rad": 4.408999999000349,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.6948523144850647e-15,
+      "y": 7.653955783202116e-16,
+      "minimum_observed_base_distance_m": 0.37225869737074263
+    },
+    {
+      "wall_s": 35.77564042300003,
+      "sim_s": 77.25,
+      "yaw_accumulated_rad": 4.4289999989959945,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.695256140754214e-15,
+      "y": 7.65273491311254e-16,
+      "minimum_observed_base_distance_m": 0.3664088662815276
+    },
+    {
+      "wall_s": 35.87600084300004,
+      "sim_s": 77.3,
+      "yaw_accumulated_rad": 4.44899999899164,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.6956623278382045e-15,
+      "y": 7.651595047058549e-16,
+      "minimum_observed_base_distance_m": 0.3664088662815276
+    },
+    {
+      "wall_s": 35.97613345900004,
+      "sim_s": 77.3,
+      "yaw_accumulated_rad": 4.44899999899164,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.6956623278382045e-15,
+      "y": 7.651595047058549e-16,
+      "minimum_observed_base_distance_m": 0.3664088662815276
+    },
+    {
+      "wall_s": 36.07683067400001,
+      "sim_s": 77.375,
+      "yaw_accumulated_rad": 4.480999998984673,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.7026894798081023e-15,
+      "y": 7.920081840850054e-16,
+      "minimum_observed_base_distance_m": 0.37704934637161946
+    },
+    {
+      "wall_s": 36.17705356700003,
+      "sim_s": 77.4,
+      "yaw_accumulated_rad": 4.488999998982932,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6964811399492137e-15,
+      "y": 7.649560377196108e-16,
+      "minimum_observed_base_distance_m": 0.37704934637161946
+    },
+    {
+      "wall_s": 36.277532193999946,
+      "sim_s": 77.4,
+      "yaw_accumulated_rad": 4.488999998982932,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6964811399492137e-15,
+      "y": 7.649560377196108e-16,
+      "minimum_observed_base_distance_m": 0.37704934637161946
+    },
+    {
+      "wall_s": 36.37809542000002,
+      "sim_s": 77.467,
+      "yaw_accumulated_rad": 4.516999998976836,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7024508017299584e-15,
+      "y": 7.920599890810751e-16,
+      "minimum_observed_base_distance_m": 0.37454121017863545
+    },
+    {
+      "wall_s": 36.47986979099994,
+      "sim_s": 77.5,
+      "yaw_accumulated_rad": 4.528999998974223,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6973074355193076e-15,
+      "y": 7.647854859098915e-16,
+      "minimum_observed_base_distance_m": 0.37454121017863545
+    },
+    {
+      "wall_s": 36.580531037000014,
+      "sim_s": 77.593,
+      "yaw_accumulated_rad": 4.568999998965515,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6981398903944243e-15,
+      "y": 7.646481135331211e-16,
+      "minimum_observed_base_distance_m": 0.37454121017863545
+    },
+    {
+      "wall_s": 36.69941384899994,
+      "sim_s": 77.6,
+      "yaw_accumulated_rad": 4.568999998965515,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6981398903944243e-15,
+      "y": 7.646481135331211e-16,
+      "minimum_observed_base_distance_m": 0.37454121017863545
+    },
+    {
+      "wall_s": 36.79995114099995,
+      "sim_s": 77.6,
+      "yaw_accumulated_rad": 4.568999998965515,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6981398903944243e-15,
+      "y": 7.646481135331211e-16,
+      "minimum_observed_base_distance_m": 0.37454121017863545
+    },
+    {
+      "wall_s": 36.916509100999974,
+      "sim_s": 77.625,
+      "yaw_accumulated_rad": 4.580999998962902,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.702034627546528e-15,
+      "y": 7.92128738485771e-16,
+      "minimum_observed_base_distance_m": 0.37934640421623855
+    },
+    {
+      "wall_s": 37.01969435399997,
+      "sim_s": 77.7,
+      "yaw_accumulated_rad": 4.608999998956806,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6989771728243075e-15,
+      "y": 7.645441403557856e-16,
+      "minimum_observed_base_distance_m": 0.37934640421623855
+    },
+    {
+      "wall_s": 37.12033643799998,
+      "sim_s": 77.723,
+      "yaw_accumulated_rad": 4.620999998954193,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.7017698627074453e-15,
+      "y": 7.921585316851025e-16,
+      "minimum_observed_base_distance_m": 0.3744974130693332
+    },
+    {
+      "wall_s": 37.22197544200003,
+      "sim_s": 77.766,
+      "yaw_accumulated_rad": 4.63699999895071,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7016592307503644e-15,
+      "y": 7.921678187216893e-16,
+      "minimum_observed_base_distance_m": 0.3744974130693332
+    },
+    {
+      "wall_s": 37.33957171600002,
+      "sim_s": 77.8,
+      "yaw_accumulated_rad": 4.6489999989480975,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6998179433356953e-15,
+      "y": 7.644737327127924e-16,
+      "minimum_observed_base_distance_m": 0.3744974130693332
+    },
+    {
+      "wall_s": 37.43969710900001,
+      "sim_s": 77.849,
+      "yaw_accumulated_rad": 4.668999998943743,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.700239216451926e-15,
+      "y": 7.644511532688848e-16,
+      "minimum_observed_base_distance_m": 0.3754320090630019
+    },
+    {
+      "wall_s": 37.56019606899997,
+      "sim_s": 77.9,
+      "yaw_accumulated_rad": 4.688999998939389,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.700660856875108e-15,
+      "y": 7.64437003241353e-16,
+      "minimum_observed_base_distance_m": 0.3754320090630019
+    },
+    {
+      "wall_s": 37.66101536299993,
+      "sim_s": 77.9,
+      "yaw_accumulated_rad": 4.688999998939389,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.700660856875108e-15,
+      "y": 7.64437003241353e-16,
+      "minimum_observed_base_distance_m": 0.3761232711142799
+    },
+    {
+      "wall_s": 37.761176492999994,
+      "sim_s": 77.999,
+      "yaw_accumulated_rad": 4.72899999893068,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.701504564960712e-15,
+      "y": 7.644340107007815e-16,
+      "minimum_observed_base_distance_m": 0.3761232711142799
+    },
+    {
+      "wall_s": 37.861945956,
+      "sim_s": 78.066,
+      "yaw_accumulated_rad": 4.756999998924584,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7008604437216507e-15,
+      "y": 7.921801122109235e-16,
+      "minimum_observed_base_distance_m": 0.3761232711142799
+    },
+    {
+      "wall_s": 37.97631001900004,
+      "sim_s": 78.1,
+      "yaw_accumulated_rad": 4.768999998921972,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7023477178395224e-15,
+      "y": 7.644647598785086e-16,
+      "minimum_observed_base_distance_m": 0.3761232711142799
+    },
+    {
+      "wall_s": 38.076457207999965,
+      "sim_s": 78.123,
+      "yaw_accumulated_rad": 4.77699999892023,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.700727417696004e-15,
+      "y": 7.921728402935691e-16,
+      "minimum_observed_base_distance_m": 0.37381967842200625
+    },
+    {
+      "wall_s": 38.176595331000044,
+      "sim_s": 78.154,
+      "yaw_accumulated_rad": 4.792999998916747,
+      "angular_velocity_rad_s": 0.399999999913073,
+      "x": 2.700616692071212e-15,
+      "y": 7.921647461604312e-16,
+      "minimum_observed_base_distance_m": 0.37381967842200625
+    },
+    {
+      "wall_s": 38.27823890900004,
+      "sim_s": 78.2,
+      "yaw_accumulated_rad": 4.808999998913263,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7031889666468152e-15,
+      "y": 7.645292015824062e-16,
+      "minimum_observed_base_distance_m": 0.37381967842200625
+    },
+    {
+      "wall_s": 38.3798233,
+      "sim_s": 78.25,
+      "yaw_accumulated_rad": 4.828999998908909,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7036084562774155e-15,
+      "y": 7.645740270166963e-16,
+      "minimum_observed_base_distance_m": 0.37187762919931877
+    },
+    {
+      "wall_s": 38.49961416999997,
+      "sim_s": 78.3,
+      "yaw_accumulated_rad": 4.848999998904555,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7040269655639374e-15,
+      "y": 7.646272327195003e-16,
+      "minimum_observed_base_distance_m": 0.37187762919931877
+    },
+    {
+      "wall_s": 38.600239434999935,
+      "sim_s": 78.346,
+      "yaw_accumulated_rad": 4.8689999989002,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7044443271083083e-15,
+      "y": 7.646887974092472e-16,
+      "minimum_observed_base_distance_m": 0.3797656821056537
+    },
+    {
+      "wall_s": 38.71939442199994,
+      "sim_s": 78.4,
+      "yaw_accumulated_rad": 4.888999998895846,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.704860373971445e-15,
+      "y": 7.647586964608784e-16,
+      "minimum_observed_base_distance_m": 0.3797656821056537
+    },
+    {
+      "wall_s": 38.82059434400003,
+      "sim_s": 78.425,
+      "yaw_accumulated_rad": 4.900999998893234,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6999129107472856e-15,
+      "y": 7.920694330477577e-16,
+      "minimum_observed_base_distance_m": 0.3807716696736363
+    },
+    {
+      "wall_s": 38.92079560000002,
+      "sim_s": 78.512,
+      "yaw_accumulated_rad": 4.932999998886267,
+      "angular_velocity_rad_s": 0.399999999913073,
+      "x": 2.699695507973915e-15,
+      "y": 7.9202431869986435e-16,
+      "minimum_observed_base_distance_m": 0.3807716696736363
+    },
+    {
+      "wall_s": 39.03967434699996,
+      "sim_s": 78.6,
+      "yaw_accumulated_rad": 4.968999998878429,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7065080956315563e-15,
+      "y": 7.651210273521346e-16,
+      "minimum_observed_base_distance_m": 0.3807716696736363
+    },
+    {
+      "wall_s": 39.151152120000006,
+      "sim_s": 78.6,
+      "yaw_accumulated_rad": 4.968999998878429,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7065080956315563e-15,
+      "y": 7.651210273521346e-16,
+      "minimum_observed_base_distance_m": 0.37705935152566106
+    },
+    {
+      "wall_s": 39.25162797899998,
+      "sim_s": 78.636,
+      "yaw_accumulated_rad": 4.984999998874946,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.706840282090977e-15,
+      "y": 7.652110382458442e-16,
+      "minimum_observed_base_distance_m": 0.37705935152566106
+    },
+    {
+      "wall_s": 39.36057336600004,
+      "sim_s": 78.7,
+      "yaw_accumulated_rad": 5.008999998869721,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7073197728810873e-15,
+      "y": 7.653513148499066e-16,
+      "minimum_observed_base_distance_m": 0.37705935152566106
+    },
+    {
+      "wall_s": 39.47638645200004,
+      "sim_s": 78.75,
+      "yaw_accumulated_rad": 5.028999998865367,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7077219952087695e-15,
+      "y": 7.654785864840653e-16,
+      "minimum_observed_base_distance_m": 0.38360370045858727
+    },
+    {
+      "wall_s": 39.57664235999994,
+      "sim_s": 78.775,
+      "yaw_accumulated_rad": 5.0409999988627545,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6990119127377884e-15,
+      "y": 7.918317302931202e-16,
+      "minimum_observed_base_distance_m": 0.38360370045858727
+    },
+    {
+      "wall_s": 39.67677306300004,
+      "sim_s": 78.8,
+      "yaw_accumulated_rad": 5.048999998861013,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7081215918316704e-15,
+      "y": 7.656138765749964e-16,
+      "minimum_observed_base_distance_m": 0.38360370045858727
+    },
+    {
+      "wall_s": 39.77702471199996,
+      "sim_s": 78.854,
+      "yaw_accumulated_rad": 5.072999998855788,
+      "angular_velocity_rad_s": 0.399999999913073,
+      "x": 2.6988029324306215e-15,
+      "y": 7.917567202840555e-16,
+      "minimum_observed_base_distance_m": 0.38086476593788976
+    },
+    {
+      "wall_s": 39.87719759000004,
+      "sim_s": 78.9,
+      "yaw_accumulated_rad": 5.088999998852304,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7089122697440762e-15,
+      "y": 7.659082924846725e-16,
+      "minimum_observed_base_distance_m": 0.38086476593788976
+    },
+    {
+      "wall_s": 39.97964458199999,
+      "sim_s": 78.9,
+      "yaw_accumulated_rad": 5.088999998852304,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.7089122697440762e-15,
+      "y": 7.659082924846725e-16,
+      "minimum_observed_base_distance_m": 0.38086476593788976
+    },
+    {
+      "wall_s": 40.08043814400003,
+      "sim_s": 78.988,
+      "yaw_accumulated_rad": 5.124999998844467,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.7096194107182994e-15,
+      "y": 7.662027851009488e-16,
+      "minimum_observed_base_distance_m": 0.38070998406724044
+    },
+    {
+      "wall_s": 40.180568033999975,
+      "sim_s": 79.046,
+      "yaw_accumulated_rad": 5.148999998839242,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.698332578203375e-15,
+      "y": 7.91558082969683e-16,
+      "minimum_observed_base_distance_m": 0.38070998406724044
+    },
+    {
+      "wall_s": 40.29983251600004,
+      "sim_s": 79.1,
+      "yaw_accumulated_rad": 5.168999998834888,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6982124899038722e-15,
+      "y": 7.915003975763387e-16,
+      "minimum_observed_base_distance_m": 0.38070998406724044
+    },
+    {
+      "wall_s": 40.41955356599999,
+      "sim_s": 79.1,
+      "yaw_accumulated_rad": 5.168999998834888,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6982124899038722e-15,
+      "y": 7.915003975763387e-16,
+      "minimum_observed_base_distance_m": 0.38070998406724044
+    },
+    {
+      "wall_s": 40.520012763999944,
+      "sim_s": 79.125,
+      "yaw_accumulated_rad": 5.1809999988322755,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.698152884388136e-15,
+      "y": 7.914706571241804e-16,
+      "minimum_observed_base_distance_m": 0.3795783170503031
+    },
+    {
+      "wall_s": 40.63994663400001,
+      "sim_s": 79.2,
+      "yaw_accumulated_rad": 5.2089999988261795,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6979758938110336e-15,
+      "y": 7.913778806114827e-16,
+      "minimum_observed_base_distance_m": 0.3795783170503031
+    },
+    {
+      "wall_s": 40.74001110400002,
+      "sim_s": 79.238,
+      "yaw_accumulated_rad": 5.224999998822696,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.711506146567493e-15,
+      "y": 7.671441609837607e-16,
+      "minimum_observed_base_distance_m": 0.3742851958988017
+    },
+    {
+      "wall_s": 40.84036448699999,
+      "sim_s": 79.281,
+      "yaw_accumulated_rad": 5.240999998819213,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6978017657515966e-15,
+      "y": 7.912798369241897e-16,
+      "minimum_observed_base_distance_m": 0.3742851958988017
+    },
+    {
+      "wall_s": 40.960176789,
+      "sim_s": 79.3,
+      "yaw_accumulated_rad": 5.248999998817471,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6977443863416472e-15,
+      "y": 7.912460003269025e-16,
+      "minimum_observed_base_distance_m": 0.3742851958988017
+    },
+    {
+      "wall_s": 41.07568942499995,
+      "sim_s": 79.375,
+      "yaw_accumulated_rad": 5.280999998810504,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6975743182678734e-15,
+      "y": 7.911410717989538e-16,
+      "minimum_observed_base_distance_m": 0.3766433798775955
+    },
+    {
+      "wall_s": 41.175802568999984,
+      "sim_s": 79.4,
+      "yaw_accumulated_rad": 5.288999998808762,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6975183378583357e-15,
+      "y": 7.911049677029306e-16,
+      "minimum_observed_base_distance_m": 0.3766433798775955
+    },
+    {
+      "wall_s": 41.275991911000006,
+      "sim_s": 79.406,
+      "yaw_accumulated_rad": 5.2929999988078915,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6974997599251535e-15,
+      "y": 7.910928063530436e-16,
+      "minimum_observed_base_distance_m": 0.3710089371268618
+    },
+    {
+      "wall_s": 41.37644724200004,
+      "sim_s": 79.5,
+      "yaw_accumulated_rad": 5.328999998800054,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6972981099904148e-15,
+      "y": 7.909550083616863e-16,
+      "minimum_observed_base_distance_m": 0.3710089371268618
+    },
+    {
+      "wall_s": 41.476817669999946,
+      "sim_s": 79.57,
+      "yaw_accumulated_rad": 5.356999998793958,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.697154701248632e-15,
+      "y": 7.908501917067093e-16,
+      "minimum_observed_base_distance_m": 0.3710089371268618
+    },
+    {
+      "wall_s": 41.57714458299995,
+      "sim_s": 79.6,
+      "yaw_accumulated_rad": 5.368999998791345,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6970840550554976e-15,
+      "y": 7.907963622061172e-16,
+      "minimum_observed_base_distance_m": 0.3710089371268618
+    },
+    {
+      "wall_s": 41.679378670999995,
+      "sim_s": 79.6,
+      "yaw_accumulated_rad": 5.368999998791345,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6970840550554976e-15,
+      "y": 7.907963622061172e-16,
+      "minimum_observed_base_distance_m": 0.3710089371268618
+    },
+    {
+      "wall_s": 41.779379199000005,
+      "sim_s": 79.625,
+      "yaw_accumulated_rad": 5.380999998788733,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6970315461973856e-15,
+      "y": 7.907553727950175e-16,
+      "minimum_observed_base_distance_m": 0.3800749905550125
+    },
+    {
+      "wall_s": 41.87995223300004,
+      "sim_s": 79.636,
+      "yaw_accumulated_rad": 5.384999998787862,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.7143023624775706e-15,
+      "y": 7.6902778861554625e-16,
+      "minimum_observed_base_distance_m": 0.3800749905550125
+    },
+    {
+      "wall_s": 41.99958996199996,
+      "sim_s": 79.7,
+      "yaw_accumulated_rad": 5.408999998782637,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.696876515495854e-15,
+      "y": 7.906292830362113e-16,
+      "minimum_observed_base_distance_m": 0.3800749905550125
+    },
+    {
+      "wall_s": 42.09959489200003,
+      "sim_s": 79.736,
+      "yaw_accumulated_rad": 5.424999998779153,
+      "angular_velocity_rad_s": 0.3999999999130731,
+      "x": 2.7149515608724255e-15,
+      "y": 7.695666706321342e-16,
+      "minimum_observed_base_distance_m": 0.37847112992351556
+    },
+    {
+      "wall_s": 42.200574680000045,
+      "sim_s": 79.75,
+      "yaw_accumulated_rad": 5.428999998778282,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6967752931595055e-15,
+      "y": 7.905426640838842e-16,
+      "minimum_observed_base_distance_m": 0.37847112992351556
+    },
+    {
+      "wall_s": 42.31918378700004,
+      "sim_s": 79.8,
+      "yaw_accumulated_rad": 5.448999998773928,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.696675823330506e-15,
+      "y": 7.904540381430033e-16,
+      "minimum_observed_base_distance_m": 0.37847112992351556
+    },
+    {
+      "wall_s": 42.41929063600003,
+      "sim_s": 79.829,
+      "yaw_accumulated_rad": 5.460999998771316,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6966267580673906e-15,
+      "y": 7.904089835987612e-16,
+      "minimum_observed_base_distance_m": 0.38394377037757843
+    },
+    {
+      "wall_s": 42.51998223800001,
+      "sim_s": 79.875,
+      "yaw_accumulated_rad": 5.480999998766961,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.696529991375871e-15,
+      "y": 7.903174138892822e-16,
+      "minimum_observed_base_distance_m": 0.38394377037757843
+    },
+    {
+      "wall_s": 42.639126673999954,
+      "sim_s": 79.9,
+      "yaw_accumulated_rad": 5.48899999876522,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6964822996240545e-15,
+      "y": 7.902709078809411e-16,
+      "minimum_observed_base_distance_m": 0.38394377037757843
+    },
+    {
+      "wall_s": 42.73917166499996,
+      "sim_s": 79.954,
+      "yaw_accumulated_rad": 5.5129999987599945,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.696372846962682e-15,
+      "y": 7.901605543237356e-16,
+      "minimum_observed_base_distance_m": 0.3826776123140007
+    },
+    {
+      "wall_s": 42.83969304599998,
+      "sim_s": 80.025,
+      "yaw_accumulated_rad": 5.5409999987538985,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.696250946155255e-15,
+      "y": 7.900313537373317e-16,
+      "minimum_observed_base_distance_m": 0.3826776123140007
+    },
+    {
+      "wall_s": 42.95942415000002,
+      "sim_s": 80.1,
+      "yaw_accumulated_rad": 5.5689999987478025,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6961179840111795e-15,
+      "y": 7.898821752739518e-16,
+      "minimum_observed_base_distance_m": 0.3826776123140007
+    },
+    {
+      "wall_s": 43.05952112800003,
+      "sim_s": 80.1,
+      "yaw_accumulated_rad": 5.5689999987478025,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6961179840111795e-15,
+      "y": 7.898821752739518e-16,
+      "minimum_observed_base_distance_m": 0.3826776123140007
+    },
+    {
+      "wall_s": 43.15994320200002,
+      "sim_s": 80.125,
+      "yaw_accumulated_rad": 5.58099999874519,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6960746651731593e-15,
+      "y": 7.898315710223815e-16,
+      "minimum_observed_base_distance_m": 0.3714662096237242
+    },
+    {
+      "wall_s": 43.27590323200002,
+      "sim_s": 80.2,
+      "yaw_accumulated_rad": 5.608999998739094,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.695947774932032e-15,
+      "y": 7.896771948182596e-16,
+      "minimum_observed_base_distance_m": 0.3714662096237242
+    },
+    {
+      "wall_s": 43.376233267999964,
+      "sim_s": 80.233,
+      "yaw_accumulated_rad": 5.620999998736481,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.6959065143748024e-15,
+      "y": 7.8962489875322e-16,
+      "minimum_observed_base_distance_m": 0.3854665783315256
+    },
+    {
+      "wall_s": 43.47767519499996,
+      "sim_s": 80.279,
+      "yaw_accumulated_rad": 5.640999998732127,
+      "angular_velocity_rad_s": 0.39999999991310486,
+      "x": 2.695825572378707e-15,
+      "y": 7.895190819419688e-16,
+      "minimum_observed_base_distance_m": 0.3854665783315256
+    },
+    {
+      "wall_s": 43.57934486499994,
+      "sim_s": 80.3,
+      "yaw_accumulated_rad": 5.648999998730385,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6957858990339624e-15,
+      "y": 7.894655717773326e-16,
+      "minimum_observed_base_distance_m": 0.3854665783315256
+    },
+    {
+      "wall_s": 43.67948219200002,
+      "sim_s": 80.366,
+      "yaw_accumulated_rad": 5.676999998724289,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.6956827421916654e-15,
+      "y": 7.893209645013659e-16,
+      "minimum_observed_base_distance_m": 0.380683501818181
+    },
+    {
+      "wall_s": 43.77958670999999,
+      "sim_s": 80.4,
+      "yaw_accumulated_rad": 5.688999998721677,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6956326152838506e-15,
+      "y": 7.892476447028922e-16,
+      "minimum_observed_base_distance_m": 0.380683501818181
+    },
+    {
+      "wall_s": 43.899197785999945,
+      "sim_s": 80.4,
+      "yaw_accumulated_rad": 5.688999998721677,
+      "angular_velocity_rad_s": 0.39999999991307306,
+      "x": 2.6956326152838506e-15,
+      "y": 7.892476447028922e-16,
+      "minimum_observed_base_distance_m": 0.380683501818181
+    },
+    {
+      "wall_s": 43.99977972900001,
+      "sim_s": 80.481,
+      "yaw_accumulated_rad": 5.720999998714714,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.6955234991091708e-15,
+      "y": 7.890802336717451e-16,
+      "minimum_observed_base_distance_m": 0.38138376909603217
+    },
+    {
+      "wall_s": 44.10078847099999,
+      "sim_s": 80.551,
+      "yaw_accumulated_rad": 5.748999998708639,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6954309591684553e-15,
+      "y": 7.889286125206862e-16,
+      "minimum_observed_base_distance_m": 0.38138376909603217
+    },
+    {
+      "wall_s": 44.20182123400002,
+      "sim_s": 80.6,
+      "yaw_accumulated_rad": 5.768999998704299,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.69536422537225e-15,
+      "y": 7.888133068191745e-16,
+      "minimum_observed_base_distance_m": 0.38138376909603217
+    },
+    {
+      "wall_s": 44.31988911099995,
+      "sim_s": 80.6,
+      "yaw_accumulated_rad": 5.768999998704299,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.69536422537225e-15,
+      "y": 7.888133068191745e-16,
+      "minimum_observed_base_distance_m": 0.38138376909603217
+    },
+    {
+      "wall_s": 44.41992763199994,
+      "sim_s": 80.625,
+      "yaw_accumulated_rad": 5.780999998701694,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.6953210230717037e-15,
+      "y": 7.88735704862209e-16,
+      "minimum_observed_base_distance_m": 0.3735737338519169
+    },
+    {
+      "wall_s": 44.520154737999974,
+      "sim_s": 80.667,
+      "yaw_accumulated_rad": 5.796999998698222,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.695268481465842e-15,
+      "y": 7.886379037112761e-16,
+      "minimum_observed_base_distance_m": 0.3735737338519169
+    },
+    {
+      "wall_s": 44.63990429499995,
+      "sim_s": 80.7,
+      "yaw_accumulated_rad": 5.808999998695619,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6952377414645546e-15,
+      "y": 7.885788074817602e-16,
+      "minimum_observed_base_distance_m": 0.3735737338519169
+    },
+    {
+      "wall_s": 44.739942748999965,
+      "sim_s": 80.75,
+      "yaw_accumulated_rad": 5.828999998691279,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6951780419449875e-15,
+      "y": 7.884597076424515e-16,
+      "minimum_observed_base_distance_m": 0.38068077071018874
+    },
+    {
+      "wall_s": 44.84022052,
+      "sim_s": 80.8,
+      "yaw_accumulated_rad": 5.8489999986869385,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6951207362028983e-15,
+      "y": 7.883394377115232e-16,
+      "minimum_observed_base_distance_m": 0.38068077071018874
+    },
+    {
+      "wall_s": 44.94025275800004,
+      "sim_s": 80.804,
+      "yaw_accumulated_rad": 5.852999998686071,
+      "angular_velocity_rad_s": 0.39999999991316826,
+      "x": 2.6951114196003294e-15,
+      "y": 7.883192823408127e-16,
+      "minimum_observed_base_distance_m": 0.37310241353654366
+    },
+    {
+      "wall_s": 45.04609826000001,
+      "sim_s": 80.875,
+      "yaw_accumulated_rad": 5.880999998679994,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.6950306079593843e-15,
+      "y": 7.881365184916143e-16,
+      "minimum_observed_base_distance_m": 0.37310241353654366
+    },
+    {
+      "wall_s": 45.16018344400004,
+      "sim_s": 80.9,
+      "yaw_accumulated_rad": 5.888999998678258,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6950133967707152e-15,
+      "y": 7.88095580449049e-16,
+      "minimum_observed_base_distance_m": 0.37310241353654366
+    },
+    {
+      "wall_s": 45.260630074000005,
+      "sim_s": 80.971,
+      "yaw_accumulated_rad": 5.916999998672182,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.694939339286877e-15,
+      "y": 7.879099770144104e-16,
+      "minimum_observed_base_distance_m": 0.3787949131984145
+    },
+    {
+      "wall_s": 45.36070999799995,
+      "sim_s": 81.032,
+      "yaw_accumulated_rad": 5.940999998666974,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.69488560780303e-15,
+      "y": 7.877641321317783e-16,
+      "minimum_observed_base_distance_m": 0.3787949131984145
+    },
+    {
+      "wall_s": 45.47572644799993,
+      "sim_s": 81.1,
+      "yaw_accumulated_rad": 5.968999998660898,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.694828386537536e-15,
+      "y": 7.875959704808757e-16,
+      "minimum_observed_base_distance_m": 0.3787949131984145
+    },
+    {
+      "wall_s": 45.576387737000005,
+      "sim_s": 81.1,
+      "yaw_accumulated_rad": 5.968999998660898,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.694828386537536e-15,
+      "y": 7.875959704808757e-16,
+      "minimum_observed_base_distance_m": 0.3787949131984145
+    },
+    {
+      "wall_s": 45.676540855999974,
+      "sim_s": 81.125,
+      "yaw_accumulated_rad": 5.980999998658294,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.694801462535592e-15,
+      "y": 7.87511332424326e-16,
+      "minimum_observed_base_distance_m": 0.3788532177572515
+    },
+    {
+      "wall_s": 45.77938718600001,
+      "sim_s": 81.2,
+      "yaw_accumulated_rad": 6.008999998652218,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6947510117134702e-15,
+      "y": 7.87341017044438e-16,
+      "minimum_observed_base_distance_m": 0.3788532177572515
+    },
+    {
+      "wall_s": 45.879554686000006,
+      "sim_s": 81.231,
+      "yaw_accumulated_rad": 6.020999998649613,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.694727493867339e-15,
+      "y": 7.872553700163784e-16,
+      "minimum_observed_base_distance_m": 0.38097136016947647
+    },
+    {
+      "wall_s": 45.97957322399998,
+      "sim_s": 81.263,
+      "yaw_accumulated_rad": 6.036999998646142,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.694699705800762e-15,
+      "y": 7.871478827667916e-16,
+      "minimum_observed_base_distance_m": 0.38097136016947647
+    },
+    {
+      "wall_s": 46.098994199,
+      "sim_s": 81.3,
+      "yaw_accumulated_rad": 6.048999998643538,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.694683894199123e-15,
+      "y": 7.870831733758867e-16,
+      "minimum_observed_base_distance_m": 0.38097136016947647
+    },
+    {
+      "wall_s": 46.199137149999956,
+      "sim_s": 81.375,
+      "yaw_accumulated_rad": 6.080999998636593,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.6946358763455584e-15,
+      "y": 7.868663933126909e-16,
+      "minimum_observed_base_distance_m": 0.38268221702724076
+    },
+    {
+      "wall_s": 46.29921321500001,
+      "sim_s": 81.4,
+      "yaw_accumulated_rad": 6.088999998634858,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6946271413682937e-15,
+      "y": 7.868228519700965e-16,
+      "minimum_observed_base_distance_m": 0.38268221702724076
+    },
+    {
+      "wall_s": 46.39964165499998,
+      "sim_s": 81.424,
+      "yaw_accumulated_rad": 6.100999998632253,
+      "angular_velocity_rad_s": 0.3999999999130414,
+      "x": 2.694610543195194e-15,
+      "y": 7.86735599444896e-16,
+      "minimum_observed_base_distance_m": 0.37971550825245093
+    },
+    {
+      "wall_s": 46.500274891000004,
+      "sim_s": 81.519,
+      "yaw_accumulated_rad": 6.136999998624441,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6945709123916608e-15,
+      "y": 7.864946006671365e-16,
+      "minimum_observed_base_distance_m": 0.37971550825245093
+    },
+    {
+      "wall_s": 46.619647946999976,
+      "sim_s": 81.6,
+      "yaw_accumulated_rad": 6.1689999986174975,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.694545076200222e-15,
+      "y": 7.862964450791e-16,
+      "minimum_observed_base_distance_m": 0.37971550825245093
+    },
+    {
+      "wall_s": 46.720420116000014,
+      "sim_s": 81.606,
+      "yaw_accumulated_rad": 6.172999998616629,
+      "angular_velocity_rad_s": 0.3999999999131048,
+      "x": 2.749715867524578e-15,
+      "y": 7.801592031803251e-16,
+      "minimum_observed_base_distance_m": 0.37711446998099796
+    },
+    {
+      "wall_s": 46.821243279999976,
+      "sim_s": 81.635,
+      "yaw_accumulated_rad": 6.184999998614026,
+      "angular_velocity_rad_s": 0.39999999991316826,
+      "x": 2.694533265373974e-15,
+      "y": 7.861860540022296e-16,
+      "minimum_observed_base_distance_m": 0.37711446998099796
+    },
+    {
+      "wall_s": 46.93927759999997,
+      "sim_s": 81.7,
+      "yaw_accumulated_rad": 6.208999998608817,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6945198244188464e-15,
+      "y": 7.860312084569923e-16,
+      "minimum_observed_base_distance_m": 0.37711446998099796
+    },
+    {
+      "wall_s": 47.03937436199999,
+      "sim_s": 81.75,
+      "yaw_accumulated_rad": 6.228999998604477,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6945111817298247e-15,
+      "y": 7.858982644527035e-16,
+      "minimum_observed_base_distance_m": 0.36954536565013496
+    },
+    {
+      "wall_s": 47.139899087,
+      "sim_s": 81.8,
+      "yaw_accumulated_rad": 6.248999998600137,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6945051994721157e-15,
+      "y": 7.857651741940496e-16,
+      "minimum_observed_base_distance_m": 0.36954536565013496
+    },
+    {
+      "wall_s": 47.239911613000004,
+      "sim_s": 81.847,
+      "yaw_accumulated_rad": 6.268999998595797,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.69450188003854e-15,
+      "y": 7.856319909153831e-16,
+      "minimum_observed_base_distance_m": 0.37924174253285403
+    },
+    {
+      "wall_s": 47.34019109899998,
+      "sim_s": 81.9,
+      "yaw_accumulated_rad": 6.288999998591457,
+      "angular_velocity_rad_s": 0.39999999991304136,
+      "x": 2.6945012247568298e-15,
+      "y": 7.854987678882649e-16,
+      "minimum_observed_base_distance_m": 0.37924174253285403
+    },
+    {
+      "wall_s": 47.44090260799999,
+      "sim_s": 81.916,
+      "yaw_accumulated_rad": 6.296903998590839,
+      "angular_velocity_rad_s": 0.39159999998819983,
+      "x": 2.6945019475107292e-15,
+      "y": 7.854334022285841e-16,
+      "minimum_observed_base_distance_m": 0.3726010885994657
+    },
+    {
+      "wall_s": 47.54094913999995,
+      "sim_s": 82.016,
+      "yaw_accumulated_rad": 6.3318499716408905,
+      "angular_velocity_rad_s": 0.3173881403059552,
+      "x": 2.7500011327034712e-15,
+      "y": 7.863953293433608e-16,
+      "minimum_observed_base_distance_m": 0.3726010885994657
+    },
+    {
+      "wall_s": 47.660079482000015,
+      "sim_s": 82.1,
+      "yaw_accumulated_rad": 6.3560245545934135,
+      "angular_velocity_rad_s": 0.2977867749259313,
+      "x": 2.805406821407212e-15,
+      "y": 7.897778171526066e-16,
+      "minimum_observed_base_distance_m": 0.3726010885994657
+    },
+    {
+      "wall_s": 47.760363257999984,
+      "sim_s": 82.11,
+      "yaw_accumulated_rad": 6.358924822342909,
+      "angular_velocity_rad_s": 0.29002677494968254,
+      "x": 2.805402035935691e-15,
+      "y": 7.898418598438e-16,
+      "minimum_observed_base_distance_m": 0.3772893166142107
+    },
+    {
+      "wall_s": 47.86089941099999,
+      "sim_s": 82.159,
+      "yaw_accumulated_rad": 6.372226161090656,
+      "angular_velocity_rad_s": 0.2500267749584292,
+      "x": 2.8053752967142846e-15,
+      "y": 7.901651044028431e-16,
+      "minimum_observed_base_distance_m": 0.3772893166142107
+    },
+    {
+      "wall_s": 47.969851742999936,
+      "sim_s": 82.2,
+      "yaw_accumulated_rad": 6.381427232089168,
+      "angular_velocity_rad_s": 0.21802677496550263,
+      "x": 2.7501121497835417e-15,
+      "y": 7.849287923115642e-16,
+      "minimum_observed_base_distance_m": 0.3752696895659228
+    },
+    {
+      "wall_s": 48.070113031000005,
+      "sim_s": 82.269,
+      "yaw_accumulated_rad": 6.394449106337233,
+      "angular_velocity_rad_s": 0.16202677497759563,
+      "x": 2.9709102176653456e-15,
+      "y": 8.084014341477502e-16,
+      "minimum_observed_base_distance_m": 0.3752696895659228
+    },
+    {
+      "wall_s": 48.17913493000003,
+      "sim_s": 82.3,
+      "yaw_accumulated_rad": 6.398829909586667,
+      "angular_velocity_rad_s": 0.13802677498293242,
+      "x": 3.026045270836804e-15,
+      "y": 8.14854105952184e-16,
+      "minimum_observed_base_distance_m": 0.3752696895659228
+    },
+    {
+      "wall_s": 48.279675520999945,
+      "sim_s": 82.375,
+      "yaw_accumulated_rad": 6.4069920515859256,
+      "angular_velocity_rad_s": 0.07402677499676205,
+      "x": 3.0260356060020093e-15,
+      "y": 8.149347734949428e-16,
+      "minimum_observed_base_distance_m": 0.37274105468947144
+    },
+    {
+      "wall_s": 48.39885901499997,
+      "sim_s": 82.4,
+      "yaw_accumulated_rad": 6.408232587085914,
+      "angular_velocity_rad_s": 0.058026775000362206,
+      "x": 3.026033928173262e-15,
+      "y": 8.149481751316267e-16,
+      "minimum_observed_base_distance_m": 0.37274105468947144
+    },
+    {
+      "wall_s": 48.49941297700002,
+      "sim_s": 82.485,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.382341565988494
+    },
+    {
+      "wall_s": 48.59965557199996,
+      "sim_s": 82.586,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.382341565988494
+    },
+    {
+      "wall_s": 48.719543158999954,
+      "sim_s": 82.6,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.382341565988494
+    },
+    {
+      "wall_s": 48.83991713599994,
+      "sim_s": 82.625,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.37482151763041954
+    },
+    {
+      "wall_s": 48.940336026999944,
+      "sim_s": 82.7,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.37482151763041954
+    },
+    {
+      "wall_s": 49.04109829699996,
+      "sim_s": 82.741,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.365624278036793
+    },
+    {
+      "wall_s": 49.14206114499996,
+      "sim_s": 82.792,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.365624278036793
+    },
+    {
+      "wall_s": 49.24774919699996,
+      "sim_s": 82.8,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.3780545657580878
+    },
+    {
+      "wall_s": 49.35981484900003,
+      "sim_s": 82.875,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.3780545657580878
+    },
+    {
+      "wall_s": 49.461002173,
+      "sim_s": 82.9,
+      "yaw_accumulated_rad": 6.410056807786401,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.026032058081811e-15,
+      "y": 8.149629490909218e-16,
+      "minimum_observed_base_distance_m": 0.3780545657580878
+    },
+    {
+      "wall_s": 49.561245611000004,
+      "sim_s": 82.956,
+      "yaw_accumulated_rad": 6.409660007788767,
+      "angular_velocity_rad_s": -0.021199999921783785,
+      "x": 3.0260323972913277e-15,
+      "y": 8.149602838513946e-16,
+      "minimum_observed_base_distance_m": 0.37663101669800714
+    },
+    {
+      "wall_s": 49.66140993299996,
+      "sim_s": 83.036,
+      "yaw_accumulated_rad": 6.405376807794706,
+      "angular_velocity_rad_s": -0.07559999990989855,
+      "x": 3.026034817687294e-15,
+      "y": 8.149408720480871e-16,
+      "minimum_observed_base_distance_m": 0.37663101669800714
+    },
+    {
+      "wall_s": 49.76388349699994,
+      "sim_s": 83.1,
+      "yaw_accumulated_rad": 6.399174407800326,
+      "angular_velocity_rad_s": -0.12223999991440541,
+      "x": 3.026041433219438e-15,
+      "y": 8.148857342664703e-16,
+      "minimum_observed_base_distance_m": 0.37663101669800714
+    },
+    {
+      "wall_s": 49.864354746000004,
+      "sim_s": 83.1,
+      "yaw_accumulated_rad": 6.399174407800326,
+      "angular_velocity_rad_s": -0.12223999991440541,
+      "x": 3.026041433219438e-15,
+      "y": 8.148857342664703e-16,
+      "minimum_observed_base_distance_m": 0.37663101669800714
+    },
+    {
+      "wall_s": 49.964664309,
+      "sim_s": 83.125,
+      "yaw_accumulated_rad": 6.395034407803439,
+      "angular_velocity_rad_s": -0.14599999989441315,
+      "x": 3.0260439780041064e-15,
+      "y": 8.148636537671326e-16,
+      "minimum_observed_base_distance_m": 0.37650548951583285
+    },
+    {
+      "wall_s": 50.06493396899998,
+      "sim_s": 83.163,
+      "yaw_accumulated_rad": 6.3901744078067075,
+      "angular_velocity_rad_s": -0.16999999988926667,
+      "x": 3.0260479662677017e-15,
+      "y": 8.148271001493927e-16,
+      "minimum_observed_base_distance_m": 0.37650548951583285
+    },
+    {
+      "wall_s": 50.18035852100002,
+      "sim_s": 83.2,
+      "yaw_accumulated_rad": 6.38257440781131,
+      "angular_velocity_rad_s": -0.20199999988232017,
+      "x": 3.0260511807768995e-15,
+      "y": 8.14796292331161e-16,
+      "minimum_observed_base_distance_m": 0.37650548951583285
+    },
+    {
+      "wall_s": 50.28174267299994,
+      "sim_s": 83.25,
+      "yaw_accumulated_rad": 6.371274407817458,
+      "angular_velocity_rad_s": -0.24199999987351006,
+      "x": 3.0813402772466085e-15,
+      "y": 8.197611951551619e-16,
+      "minimum_observed_base_distance_m": 0.3797835920193955
+    },
+    {
+      "wall_s": 50.39935473699995,
+      "sim_s": 83.3,
+      "yaw_accumulated_rad": 6.357974407824041,
+      "angular_velocity_rad_s": -0.28199999986482693,
+      "x": 3.1919922883055595e-15,
+      "y": 8.28813223058551e-16,
+      "minimum_observed_base_distance_m": 0.3797835920193955
+    },
+    {
+      "wall_s": 50.49963364300004,
+      "sim_s": 83.337,
+      "yaw_accumulated_rad": 6.345966407828281,
+      "angular_velocity_rad_s": -0.3067999999917248,
+      "x": 3.2473582352791466e-15,
+      "y": 8.328229200770015e-16,
+      "minimum_observed_base_distance_m": 0.38095699344741424
+    },
+    {
+      "wall_s": 50.619484338999996,
+      "sim_s": 83.4,
+      "yaw_accumulated_rad": 6.327985245655857,
+      "angular_velocity_rad_s": -0.2995778959348375,
+      "x": 3.247347431515034e-15,
+      "y": 8.330221955573733e-16,
+      "minimum_observed_base_distance_m": 0.38095699344741424
+    },
+    {
+      "wall_s": 50.72384088399997,
+      "sim_s": 83.4,
+      "yaw_accumulated_rad": 6.327985245655857,
+      "angular_velocity_rad_s": -0.2995778959348375,
+      "x": 3.247347431515034e-15,
+      "y": 8.330221955573733e-16,
+      "minimum_observed_base_distance_m": 0.3701713742157813
+    },
+    {
+      "wall_s": 50.83956751400001,
+      "sim_s": 83.5,
+      "yaw_accumulated_rad": 6.300555456056009,
+      "angular_velocity_rad_s": -0.23997789602140224,
+      "x": 3.358294738745385e-15,
+      "y": 8.371534359570455e-16,
+      "minimum_observed_base_distance_m": 0.3701713742157813
+    },
+    {
+      "wall_s": 50.93969220400004,
+      "sim_s": 83.599,
+      "yaw_accumulated_rad": 6.280008486574492,
+      "angular_velocity_rad_s": -0.18490344938371095,
+      "x": 3.413803584764806e-15,
+      "y": 8.374252063445599e-16,
+      "minimum_observed_base_distance_m": 0.3701713742157813
+    },
+    {
+      "wall_s": 51.04102351400002,
+      "sim_s": 83.6,
+      "yaw_accumulated_rad": 6.280008486574492,
+      "angular_velocity_rad_s": -0.18490344938371095,
+      "x": 3.413803584764806e-15,
+      "y": 8.374252063445599e-16,
+      "minimum_observed_base_distance_m": 0.3701713742157813
+    },
+    {
+      "wall_s": 51.159530899999936,
+      "sim_s": 83.625,
+      "yaw_accumulated_rad": 6.27490418309314,
+      "angular_velocity_rad_s": -0.16370344938833525,
+      "x": 3.46931417947473e-15,
+      "y": 8.37185438365066e-16,
+      "minimum_observed_base_distance_m": 0.3822290664100398
+    },
+    {
+      "wall_s": 51.27881890499998,
+      "sim_s": 83.7,
+      "yaw_accumulated_rad": 6.265684941635466,
+      "angular_velocity_rad_s": -0.10770344940055514,
+      "x": 3.4138102512024896e-15,
+      "y": 8.38058308508459e-16,
+      "minimum_observed_base_distance_m": 0.3822290664100398
+    },
+    {
+      "wall_s": 51.378845007999985,
+      "sim_s": 83.75,
+      "yaw_accumulated_rad": 6.261499769165177,
+      "angular_velocity_rad_s": -0.06770344940936521,
+      "x": 3.4138140843759252e-15,
+      "y": 8.38254399842232e-16,
+      "minimum_observed_base_distance_m": 0.38049936603056805
+    },
+    {
+      "wall_s": 51.49872256499998,
+      "sim_s": 83.8,
+      "yaw_accumulated_rad": 6.259314596694446,
+      "angular_velocity_rad_s": -0.027703449418048372,
+      "x": 3.469311681557207e-15,
+      "y": 8.370285240373806e-16,
+      "minimum_observed_base_distance_m": 0.38049936603056805
+    },
+    {
+      "wall_s": 51.598735401,
+      "sim_s": 83.869,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.37668943400659893
+    },
+    {
+      "wall_s": 51.69882980900002,
+      "sim_s": 83.9,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.37668943400659893
+    },
+    {
+      "wall_s": 51.798937299000045,
+      "sim_s": 83.951,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.3794318719157587
+    },
+    {
+      "wall_s": 51.89954177799996,
+      "sim_s": 84.049,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.3794318719157587
+    },
+    {
+      "wall_s": 52.01896751999993,
+      "sim_s": 84.1,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.3794318719157587
+    },
+    {
+      "wall_s": 52.11927752899999,
+      "sim_s": 84.125,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.38029740436914183
+    },
+    {
+      "wall_s": 52.21979900600002,
+      "sim_s": 84.19,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.38029740436914183
+    },
+    {
+      "wall_s": 52.31984216800004,
+      "sim_s": 84.22,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.37591813473783064
+    },
+    {
+      "wall_s": 52.419902242000035,
+      "sim_s": 84.286,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.37591813473783064
+    },
+    {
+      "wall_s": 52.527837653999995,
+      "sim_s": 84.3,
+      "yaw_accumulated_rad": 6.258963493211789,
+      "angular_velocity_rad_s": 0.0,
+      "x": 3.4693115958153154e-15,
+      "y": 8.370249629755663e-16,
+      "minimum_observed_base_distance_m": 0.381193736365293
+    }
+  ],
+  "stop_verification_source": "wheel_odometry",
+  "physical_motion_independently_verified": false,
+  "limitations": [
+    "Wheel odometry alone cannot prove physical rotation or stopping; compare independent motion evidence.",
+    "Partial-FOV scan cannot establish unseen starting clearance.",
+    "An offset partial-FOV lidar may leave a central blind disk after rotation.",
+    "Action UUID/status and graph monitoring are cooperative, not an atomic ownership lock.",
+    "Rotation does not establish map completion, safe map cells, or search coverage."
+  ]
+}

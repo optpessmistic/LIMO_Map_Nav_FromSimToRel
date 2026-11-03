@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -eo pipefail
+cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+root="$PWD"
+bash scripts/fetch_slam_vendor.sh --check-only
+/usr/bin/python3 -B - <<'PY'
+from pathlib import Path
+import hashlib, json, shutil
+root = Path.cwd()
+native = Path('/tmp/limo-slam-steady-20261103')
+destination = root/'outputs/slam-steady-ws'
+assert not native.exists() and not destination.exists(), 'Preserve any previous attempt'
+source = root/'vendor/slam_toolbox'
+common = (source/'src/slam_toolbox_common.cpp').read_bytes()
+assert common.count(b'rclcpp::WallRate r(1.0 / transform_publish_period);') == 1
+assert b'rclcpp::Rate r(1.0 / transform_publish_period);' not in common
+shutil.copytree(source, native/'src/slam_toolbox', ignore=shutil.ignore_patterns('.git','COLCON_IGNORE'))
+destination.mkdir(parents=True)
+record = {'source_root':str(source),'build_workspace':str(native),
+          'source_files':{p.relative_to(source).as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
+                          for p in source.rglob('*') if p.is_file() and '.git' not in p.parts and p.name!='COLCON_IGNORE'},
+          'patches':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (root/'patches').glob('*slam*patch')}}
+(destination/'build-source.json').write_text(json.dumps(record,indent=2)+'\n')
+print('Prepared isolated native-filesystem build; prior overlay unchanged',flush=True)
+PY
+source /opt/ros/jazzy/setup.bash
+export CMAKE_BUILD_PARALLEL_LEVEL=2
+export MAKEFLAGS=-j2
+colcon --log-base /tmp/limo-slam-steady-20261103/log build \
+  --base-paths /tmp/limo-slam-steady-20261103/src \
+  --build-base /tmp/limo-slam-steady-20261103/build \
+  --install-base /tmp/limo-slam-steady-20261103/install \
+  --packages-select slam_toolbox --parallel-workers 1 --allow-overriding slam_toolbox \
+  --cmake-args -DBUILD_TESTING=OFF 2>&1 | tee "$root/outputs/setup/slam-steady-build.log"
+/usr/bin/python3 -B - <<'PY'
+from pathlib import Path
+import shutil
+root=Path.cwd()
+shutil.copytree('/tmp/limo-slam-steady-20261103/install',root/'outputs/slam-steady-ws/install')
+shutil.copytree('/tmp/limo-slam-steady-20261103/src',root/'outputs/slam-steady-ws/src')
+print('Copied completed install and pinned source snapshot into workspace',flush=True)
+PY
+source "$root/outputs/slam-steady-ws/install/local_setup.bash"
+ros2 pkg prefix slam_toolbox | tee "$root/outputs/setup/slam-steady-prefix.txt"
+ldd "$root/outputs/slam-steady-ws/install/slam_toolbox/lib/libtoolbox_common.so" > "$root/outputs/setup/slam-steady-common-ldd.txt"
+if grep -q 'not found' "$root/outputs/setup/slam-steady-common-ldd.txt"; then exit 1; fi
+nm -D -C "$root/outputs/slam-steady-ws/install/slam_toolbox/lib/libtoolbox_common.so" > "$root/outputs/setup/slam-steady-common-symbols.txt"
+grep -F 'rclcpp::WallRate::WallRate(double)' "$root/outputs/setup/slam-steady-common-symbols.txt"
+sha256sum "$root/outputs/slam-steady-ws/install/slam_toolbox/lib/libtoolbox_common.so" \
+  "$root/outputs/slam-steady-ws/install/slam_toolbox/lib/libkartoSlamToolbox.so" \
+  "$root/outputs/slam-steady-ws/src/slam_toolbox/src/slam_toolbox_common.cpp" \
+  > "$root/outputs/setup/slam-steady-sha256.txt"

@@ -6,9 +6,9 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-最新 run29 启用导航失败后的有限恢复等待，完成两个红色替身标注和返航，独立原生位姿的返航位置误差约 1.59 cm。11 次恢复等待均通过，但仍出现 11 次 TF 导航故障，完整探索和视觉覆盖未通过。3 组接受的 RGB-D 审计、地图导出、终态停车与自有进程退出通过，详见 [run29 结果](experiments/run29/run29-outcome-review.md) 和 [TF 时钟与容差实验](docs/tf-timing-experiment.md)。用户目前没有小车访问条件，实车验收暂缓。
+最新 run30 使用稳态时钟调度 SLAM 的 TF 发布，5 次探索导航全部成功，达到任务的地图完成判据，标注两个红色替身并返航；独立原生位姿的返航位置误差约 4.12 cm。本轮未记录 TF 导航错误，地图导出、终态停车与自有进程退出通过。多朝向观察在 360 秒预算结束时未完成，36 组接受的 RGB-D 中 3 组缺少确认的 consumer 回执，严格审计为 33/36，故 `mission_success=false`。见 [run30 结果](experiments/run30/run30-outcome-review.md) 和 [TF 时钟与容差实验](docs/tf-timing-experiment.md)。用户目前没有小车访问条件，实车验收暂缓。
 
-进一步诊断已复现 WSL 系统钟回跳使 SYSTEM Rate 暂停约 1.9–2.4 秒，而 STEADY WallRate 仍约 20 ms 调度。已增加 SLAM TF 发布循环的单行补丁及可复现证据，整车效果待新实验验证，见 [WSL 时钟与 TF](docs/wsl-clock-tf.md)。
+独立诊断复现 WSL 系统钟回跳使 SYSTEM Rate 暂停约 1.9–2.4 秒，而 STEADY WallRate 最大间隔约 21.7 ms。SLAM 发布循环的单行补丁已构建，run30 核实实际加载新库；运行期间仍观测到系统钟回跳。本轮结果支持该修复，但不能保证消除所有 TF 延迟，详见 [WSL 时钟与 TF](docs/wsl-clock-tf.md)。
 
 后续 [输入管道对照与改进](docs/writer-pipe-timing.md) 已完成，管道扩容保留原期限并通过测试、构建及 CI。run27 的启动失败完整保留；run28 新增启动计时后在 17.21 秒内就绪，三组接受的 RGB-D 均写入且没有 writer 故障。任务失败使 consumer 失效，整体留存审计仍失败，不能把文件已写入等同于整轮通过。见 [run27](experiments/run27/README.md) 与 [run28 档案](experiments/run28/README.md)。
 

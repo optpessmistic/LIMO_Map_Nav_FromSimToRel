@@ -17,8 +17,15 @@ and [rclcpp clock selection](https://github.com/ros2/rclcpp/blob/jazzy/rclcpp/in
 It leaves the TF message timestamp, `restamp_tf=false` profile, scan processing,
 publish period and every transform tolerance unchanged. It does not make delayed
 scan data fresh or remove consumer TF checks. The patch is motivated by measured
-WSL system-clock backsteps; its effect on the autonomous mission is **not yet
-validated**. Patch applicability is not a runtime timing or mission result.
+WSL system-clock backsteps. The full package has now been built in an isolated
+workspace and exercised in run30; this is limited evidence, not full mission
+acceptance. The run recorded no navigation TF error 102 or extrapolation log
+lines, completed its map criterion, marked two red surrogate targets and verified
+return. Visual coverage remained false and the strict retention audit passed only
+33/36 entries, leaving the supervisor exit code at 1.
+[Clock/build/run30 evidence and limitations](../docs/wsl-clock-tf.md) distinguish
+fewer TF receipt gaps from slower worst-case advancement of scan timestamps;
+neither zero logged errors nor the successful build proves a general timing fix.
 
 Fetch/apply and then verify without writes:
 
@@ -41,6 +48,13 @@ running experiment. Record its source hashes, build results and actually loaded
 library paths before evaluating timing. No system ROS installation is replaced.
 Retain upstream LICENSE and source notices; `vendor/slam_toolbox/COLCON_IGNORE`
 keeps the source out of ordinary project colcon discovery.
+
+The completed local build used `/tmp/limo-slam-steady-20261103`; its relocated
+installation is `outputs/slam-steady-ws/install` in the C-drive checkout. Load it
+after the F-drive runtime environment and before the current checkout's main
+`install/local_setup.bash`. The old boundary-only overlay remains available as
+the historical baseline. See the [build receipt](../experiments/run30/validation/slam-steady-build-receipt.json)
+and [current GUI startup commands](../docs/visualization.md).
 
 ## LIMO Harmonic model
 

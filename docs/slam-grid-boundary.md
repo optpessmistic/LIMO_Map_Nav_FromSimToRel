@@ -2,6 +2,8 @@
 
 核实日期：2026-10-28。本补丁仅让占用栅格包含其最大量化索引，不修改扫描、图优化、地图原点、阈值或规划算法。它不解决此前独立存在的扫描匹配漂移，也不代表自主任务已通过。
 
+2026-11-03 更新：下文保留边界补丁的历史构建与证据；当前获取脚本还会顺序应用独立的 TF 发布单调时钟补丁。新版本使用另外的 `outputs/slam-steady-ws` overlay，旧工作区不覆盖。构建及 run30 的有限结果见[时钟排查记录](wsl-clock-tf.md)，当前启动顺序见[可视化说明](visualization.md)。
+
 ## 版本与原理
 
 官方 [2.8.5](https://github.com/SteveMacenski/slam_toolbox/tree/2.8.5) 固定提交为 `ec8f7635dea317b531c419f798f87d90a336f32e`。源代码及原有许可证保存在忽略的 `vendor/slam_toolbox` 中；项目只跟踪补丁、获取脚本和回归测试。已安装原版为 `ros-jazzy-slam-toolbox 2.8.5-1noble.20260915.204151`，未被覆盖。官方 tag 的原始 Karto.h 与本机 apt 头文件 SHA256 相同：`277fd3ddbb4c655408660e7bab8ff39f49875af709bd7a83ff3d029190d44052`。

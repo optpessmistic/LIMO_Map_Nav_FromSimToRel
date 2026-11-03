@@ -1,0 +1,30 @@
+{
+  "runtime_commit": "a335f4c2104b8421bd8ae249f20229c81f9f8c54",
+  "ci_run_id": 41605303559,
+  "ci_conclusion": "success",
+  "slam_build_completion": {
+    "session_id": 94045,
+    "exit_code": 0,
+    "source": "validation/slam-steady-build-receipt.json",
+    "scope": "Full package build and relocated installation/link checks. Does not claim a new Gazebo mission result."
+  },
+  "root_exec_completion": {
+    "session_id": 96593,
+    "exit_code": 1,
+    "source": "Root completion confirmation supplied explicitly; not inferred from mission or CI."
+  },
+  "mission_flags": {
+    "status": "done",
+    "reason": "bounded_observation_wall_timeout;final_observation_checks_incomplete",
+    "mission_success": false,
+    "map_complete": true,
+    "returned_pose_verified": true,
+    "visual_coverage_complete": false
+  },
+  "original_global_process_absence": false,
+  "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+  "missing_optional_files": [
+    "outputs/ros_smoke/run30-steady-tf/mission/shutdown_20261103_010157.json",
+    "outputs/ros_smoke/run30-steady-tf/snapshot-map.failure.json"
+  ]
+}

@@ -1,0 +1,643 @@
+"""Summarize closed run30 evidence; no ROS, bag decoding, truth, or control.
+
+Run only after the experiment supervisor is terminal and its owned cleanup has
+been confirmed. Existing reports are never overwritten. Failed evidence stays
+failed; this summary is not a full visual-search or physical-robot acceptance.
+"""
+from collections import Counter
+import hashlib
+import json
+import math
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run30-steady-tf'
+OUT = ROOT / 'outputs/setup/run30-outcome-review'
+SOURCES, MISSING = {}, []
+
+
+def load(name, required=False):
+    path = RUN / name
+    if not path.is_file():
+        if required:
+            raise RuntimeError('Missing required evidence: ' + str(path))
+        MISSING.append(str(name))
+        return {}
+    if path.is_symlink() or path.stat().st_size > 256 * 1024 * 1024:
+        raise RuntimeError('Unsafe or oversized evidence: ' + str(path))
+    raw = path.read_bytes()
+    SOURCES[str(path.relative_to(ROOT))] = {
+        'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+    return json.loads(raw)
+
+
+def delta(a, b):
+    return math.atan2(math.sin(a - b), math.cos(a - b))
+
+
+def retention_ledger(mission):
+    """An explicit empty ledger is zero; an absent/malformed ledger is unknown."""
+    consumer = mission.get('frame_retention')
+    if not isinstance(consumer, dict) or not isinstance(consumer.get('windows'), list):
+        raise RuntimeError('Missing or invalid retained-frame ledger; accepted count is unknown')
+    if any(not isinstance(window, dict) or not isinstance(window.get('accepted'), list)
+           for window in consumer['windows']):
+        raise RuntimeError('Missing or invalid accepted-frame list; accepted count is unknown')
+    return consumer
+
+
+def navigation_extrapolation():
+    path = RUN / 'navigation.log'
+    if not path.is_file():
+        MISSING.append('navigation.log')
+        return {'available': False, 'matched_line_count': None}
+    if path.is_symlink() or path.stat().st_size > 256 * 1024 * 1024:
+        raise RuntimeError('Unsafe or oversized navigation log')
+    raw = path.read_bytes()
+    SOURCES[str(path.relative_to(ROOT))] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+    matches = [(number, line) for number, line in enumerate(raw.decode('utf-8', errors='replace').splitlines(), 1)
+               if 'extrapolat' in line.casefold()]
+    return {'available': True, 'match_rule': 'case-insensitive substring extrapolat; one count per matching log line',
+        'matched_line_count': len(matches),
+        'future_line_count': sum('future' in line.casefold() for _, line in matches),
+        'past_line_count': sum('past' in line.casefold() for _, line in matches),
+        'neither_future_nor_past_line_count': sum(not any(word in line.casefold() for word in ('future', 'past')) for _, line in matches),
+        'examples_first_20': [{'line_number': number, 'text': line[:2000], 'text_truncated': len(line) > 2000}
+                              for number, line in matches[:20]],
+        'scope': 'Log-line counts, not unique incidents or controller ticks; full original log archived. Missing lines or logs are not proof of no TF errors.'}
+
+
+def accepted_file_inventory(consumer, producer_by_id):
+    """Only file presence for exact accepted IDs; not a replacement strict audit."""
+    expected = ('rgb.bin', 'depth.bin', 'producer.json', 'camera_info.json', 'request.json', 'manifest.json')
+    root = RUN / 'retained'
+    if root.is_symlink() or not root.is_dir():
+        raise RuntimeError('Unsafe or missing retained root')
+    frames, seen = [], set()
+    for window in consumer.get('windows', []):
+        for entry in window.get('accepted', []):
+            rid, fingerprint = entry['request']['retention_id'], entry['request_sha256']
+            if (not isinstance(fingerprint, str) or len(fingerprint) != 64
+                    or any(c not in '0123456789abcdef' for c in fingerprint)
+                    or rid in seen or len(seen) >= 4096):
+                raise RuntimeError('Invalid or duplicate accepted frame identity')
+            seen.add(rid)
+            folder = root / fingerprint
+            if folder.is_symlink() or not folder.resolve().is_relative_to(root.resolve()):
+                raise RuntimeError('Unsafe accepted frame directory')
+            available, missing = [], []
+            for name in expected:
+                path = folder / name
+                relative = 'retained/' + fingerprint + '/' + name
+                if path.is_symlink() or (path.exists() and not path.is_file()):
+                    raise RuntimeError('Unsafe accepted frame file: ' + relative)
+                (available if path.is_file() else missing).append(relative)
+            producer = producer_by_id.get(rid, {})
+            frames.append({'retention_id': rid, 'request_sha256': fingerprint,
+                'window_number': window.get('number'), 'consumer_state': entry.get('state'),
+                'consumer_reason': entry.get('reason'), 'producer_status': producer.get('status'),
+                'producer_reason': producer.get('reason'), 'available_files': available, 'missing_files': missing})
+    return {'accepted_count': len(frames), 'frames': frames,
+        'missing_accepted_frames': [row for row in frames if row['missing_files']],
+        'not_stored_accepted_frames': [row for row in frames if row['producer_status'] != 'stored'],
+        'scope': 'Presence inventory only, not hashes, receipt validity, or a passing strict audit. Missing expected files are never fabricated.'}
+
+
+def native_delta(a, b):
+    return {'xy_distance_m': math.hypot(b['x'] - a['x'], b['y'] - a['y']),
+            'yaw_delta_rad': delta(b['yaw'], a['yaw'])}
+
+
+def timing_interval(start, end, *, clock_known, scope):
+    """Never clamp a missing/invalid/negative interval into a zero duration."""
+    row = {'start_as_recorded': start, 'end_as_recorded': end,
+           'signed_delta_s': None, 'duration_s': None, 'scope': scope}
+    if start is None or end is None:
+        row['status'] = 'unavailable'
+    elif not all(type(value) in (int, float) and math.isfinite(value) and value >= 0
+                 for value in (start, end)):
+        row['status'] = 'invalid_timestamp'
+    elif not clock_known:
+        row['status'] = 'clock_unconfirmed'
+    else:
+        row['signed_delta_s'] = end - start
+        if end < start:
+            row['status'] = 'negative_interval'
+        else:
+            row.update(status='observed_nonnegative_interval', duration_s=end - start)
+    return row
+
+
+def startup_timing_summary():
+    """Read diagnostic timing only; never convert it into motion/mission success."""
+    launch = load('launch-timing-motion.json')
+    wait = load('motion-startup-wait.json')
+    motion = load('initial-motion.json')
+    identity = load('process-motion.json')
+    collector = motion.get('startup_timing') or {}
+    if not isinstance(collector, dict):
+        raise RuntimeError('Collector startup_timing is not a mapping')
+    launch_clock = launch.get('clock') == 'CLOCK_MONOTONIC'
+    wait_clock = wait.get('clock') == 'CLOCK_MONOTONIC'
+    collector_clock = collector.get('clock') == 'time.monotonic; host wall clock, not ROS simulation time'
+    owner_keys = ('pid', 'pgid', 'sid', 'start_ticks', 'token')
+    launch_owner = launch.get('owner') or {}
+    identity_match = None
+    if (all(key in launch_owner for key in owner_keys)
+            and all(key in identity for key in owner_keys)):
+        identity_match = all(launch_owner[key] == identity[key] for key in owner_keys)
+    cross_launch_collector = launch_clock and collector_clock and identity_match is True
+    intervals = {}
+
+    def add(name, start, end, clock, scope):
+        intervals[name] = timing_interval(start, end, clock_known=clock, scope=scope)
+
+    for name, left, right, scope in (
+        ('parent_popen_call', 'popen_started_monotonic_s', 'popen_returned_monotonic_s',
+         'Parent Popen call only; child startup can continue after return.'),
+        ('parent_identity_persistence', 'identity_write_started_monotonic_s', 'identity_write_completed_monotonic_s',
+         'Parent identity write/atomic replace duration before the gate release.'),
+        ('parent_gate_write_call', 'gate_write_started_monotonic_s', 'gate_write_completed_monotonic_s',
+         'Parent samples bracket the one-byte release; neither sample is the exact child wake time.')):
+        add(name, launch.get(left), launch.get(right), launch_clock, scope)
+    add('gate_write_start_to_environment_wrapper', launch.get('gate_write_started_monotonic_s'),
+        collector.get('environment_ready'), cross_launch_collector,
+        'Contains bootstrap scheduling, bash/ROS overlay setup and lightweight wrapper startup; does not isolate overlay sourcing.')
+    add('gate_write_completed_to_environment_wrapper', launch.get('gate_write_completed_monotonic_s'),
+        collector.get('environment_ready'), cross_launch_collector,
+        'Post-write parent sample can occur after child execution; a negative interval is retained as unusable duration, never clamped to zero.')
+    add('environment_wrapper_to_main_enter', collector.get('environment_ready'), collector.get('main_enter'),
+        collector_clock and collector.get('environment_stamp_error') is None,
+        'Wrapper timestamp precedes its print/exec; includes those operations, normal interpreter startup and collector top-level imports before main entry.')
+    add('main_enter_to_runtime_load_start', collector.get('main_enter'), collector.get('runtime_load_started'),
+        collector_clock, 'Argument parsing, report setup and initial persistence/logging after main entry; excludes top-level imports.')
+    add('runtime_load', collector.get('runtime_load_started'), collector.get('runtime_load_finished'),
+        collector_clock, 'Measured load_runtime call; not per-library import profiling.')
+    add('runtime_loaded_to_subscriptions_ready', collector.get('runtime_load_finished'),
+        collector.get('subscriptions_ready'), collector_clock,
+        'ROS initialization, node/listener/subscription creation and native transport setup, before loop readiness observation.')
+    add('subscriptions_to_collector_both_streams', collector.get('subscriptions_ready'),
+        collector.get('both_streams_ready'), collector_clock,
+        'Collector loop observation of both native/odom sample buffers; not exact sensor publication or callback-arrival time.')
+    add('collector_both_streams_to_parent_observation', collector.get('both_streams_ready'),
+        wait.get('marker_observed_monotonic_s'), collector_clock and wait_clock,
+        'Between child loop observation sampled before printing and parent post-log-read observation; includes scheduling, printing and polling.')
+    add('parent_wait_to_marker_observation', wait.get('wait_started_monotonic_s'),
+        wait.get('marker_observed_monotonic_s'), wait_clock,
+        'Time consumed within the parent readiness wait; not the complete lifetime from process creation.')
+    add('parent_effective_wait_budget', wait.get('wait_started_monotonic_s'),
+        wait.get('wait_deadline_monotonic_s'), wait_clock,
+        'Effective budget after clipping to the unchanged global deadline; requested allowance is recorded separately.')
+    add('parent_observation_to_wait_deadline', wait.get('marker_observed_monotonic_s'),
+        wait.get('wait_deadline_monotonic_s'), wait_clock,
+        'Remaining observed budget if nonnegative; a negative signed difference means a late parent observation.')
+    add('gate_write_start_to_parent_observation', launch.get('gate_write_started_monotonic_s'),
+        wait.get('marker_observed_monotonic_s'), launch_clock and wait_clock and identity_match is True,
+        'Whole gate-write-start to parent readiness observation interval; the release event itself lies within its recorded bracket.')
+    waited = intervals['parent_wait_to_marker_observation']
+    effective = intervals['parent_effective_wait_budget']
+    within = None
+    if waited['duration_s'] is not None and effective['duration_s'] is not None:
+        within = waited['duration_s'] <= effective['duration_s']
+    conflicts = []
+    if wait.get('status') == 'observed_within_budget' and within is not True:
+        conflicts.append('Parent recorded observed_within_budget but finite ordered timestamps do not independently confirm it.')
+    if identity_match is False:
+        conflicts.append('Launch timing owner differs from the recorded motion process identity.')
+    return {'available': bool(launch or wait or collector),
+        'raw': {'parent_launch': launch, 'parent_wait': wait, 'collector_startup_timing': collector},
+        'motion_process_identity': identity, 'launch_owner_matches_process_identity': identity_match,
+        'declared_clock_recognized': {'parent_launch': launch_clock, 'parent_wait': wait_clock,
+                                     'collector': collector_clock},
+        'parent_recorded_wait_status': wait.get('status'), 'parent_requested_budget_s': wait.get('requested_budget_s'),
+        'parent_observation_within_recorded_budget': within,
+        'collector_environment_stamp_error': collector.get('environment_stamp_error'),
+        'collector_final_report': {key: motion.get(key) for key in ('reason', 'partial', 'collection_complete',
+            'motion_detected', 'wall_seconds', 'requested_signal')},
+        'intervals': intervals, 'inconsistent_or_unconfirmed_claims': conflicts,
+        'scope': 'Same-run declared CLOCK_MONOTONIC diagnostics only, not ROS simulation time. Missing/negative/invalid intervals have no duration. Main entry excludes top-level imports; environment wrapper time includes its startup. Parent readiness observation is not a child timestamp or motion verification.'}
+
+
+def writer_transport(checkpoint, shutdown):
+    """Summarize only actually recorded unique writer operations, never infer success."""
+    indexed, conflicts = {}, []
+    keys = ('pid', 'operation_id', 'job_id', 'started_wall', 'returncode', 'stop_reason',
+            'forced_kill', 'termination_unconfirmed', 'fault', 'stdin_pipe', 'input_transfer')
+    for source, snapshot in (('checkpoint', checkpoint), ('shutdown', shutdown)):
+        for index, raw in enumerate(snapshot.get('writer_history', [])):
+            identity = raw.get('operation_id') or source + ':' + str(index)
+            row = {key: raw.get(key) for key in keys}
+            if identity in indexed:
+                if indexed[identity]['recorded'] != row:
+                    conflicts.append({'operation_id': identity, 'source': source, 'recorded': row})
+                indexed[identity]['sources'].append(source)
+            else:
+                indexed[identity] = {'sources': [source], 'recorded': row}
+    rows = list(indexed.values())
+    for entry in rows:
+        row = entry['recorded']
+        transfer = row.get('input_transfer') or {}
+        started, first, closed = row.get('started_wall'), transfer.get('first_progress_wall'), transfer.get('stdin_closed_wall')
+        numeric = lambda value: type(value) in (int, float) and math.isfinite(value)
+        entry['owner_sample_start_to_first_progress_s'] = first - started if numeric(first) and numeric(started) else None
+        entry['owner_sample_start_to_stdin_closed_s'] = closed - started if numeric(closed) and numeric(started) else None
+    def known_remaining(entry):
+        value = (entry['recorded'].get('input_transfer') or {}).get('remaining_bytes')
+        return type(value) in (int, float) and math.isfinite(value) and value >= 0
+    stopped = [entry for entry in rows if entry['recorded'].get('stop_reason')]
+    return {'recorded_unique_operation_count': len(rows),
+        'operations_with_pipe_diagnostics': sum(isinstance(e['recorded'].get('stdin_pipe'), dict) for e in rows),
+        'actual_pipe_capacity_counts': dict(Counter(str((e['recorded'].get('stdin_pipe') or {}).get('actual_bytes')) for e in rows)),
+        'tuning_error_counts': dict(Counter(str((e['recorded'].get('stdin_pipe') or {}).get('tuning_error')) for e in rows)),
+        'stop_reason_counts': dict(Counter(str(e['recorded'].get('stop_reason')) for e in rows)),
+        'writer_wall_timeout_operations': [e for e in rows if e['recorded'].get('stop_reason') == 'writer_wall_timeout'],
+        'operations_with_unsent_bytes_at_recorded_stop': [e for e in stopped if known_remaining(e)
+            and e['recorded']['input_transfer']['remaining_bytes'] > 0],
+        'unknown_remaining_bytes_at_recorded_stop': [e for e in stopped if not known_remaining(e)],
+        'operations': rows, 'conflicting_recorded_versions': conflicts,
+        'scope': 'Union of available bounded writer_history snapshots, deduplicated by operation_id; successful checkpoint-only workers are not normally included and earlier jobs may have rolled out. Times are owner samples, not child read/import/fsync timings. Unknown is not zero; no whole-run throughput or root-cause claim.'}
+
+
+def recovery_summary(events, mission):
+    """Event-order evidence only: a ready log does not confirm a later dispatch."""
+    starts = [(i, e) for i, e in enumerate(events) if e.get('event') == 'navigation_recovery_started']
+    readies = [(i, e) for i, e in enumerate(events) if e.get('event') == 'navigation_recovery_ready']
+    terminals = [(i, e) for i, e in enumerate(events) if e.get('event') == 'goal_terminal']
+    rows = []
+    for index, start in starts:
+        end = next((i for i, _ in starts if i > index), len(events))
+        ready = [(i, e) for i, e in readies if index < i < end and e.get('token') == start.get('token')
+                 and e.get('started_wall') == start.get('started_wall')]
+        next_goal = next(((i, e) for i, e in enumerate(events)
+                          if ready and ready[0][0] < i < end and e.get('event') == 'goal_sent'), None)
+        following = [] if next_goal is None else [e for i, e in terminals
+            if i > next_goal[0] and e.get('token') == next_goal[1].get('token')]
+        rows.append({'started_event_index': index, 'started': start,
+            'configured_cooldown_interval':timing_interval(start.get('started_wall'),start.get('not_before_wall'),
+                clock_known=True,scope='Recorded monotonic recovery lower bound, not an observed dispatch delay.'),
+            'configured_recovery_interval':timing_interval(start.get('started_wall'),start.get('deadline_wall'),
+                clock_known=True,scope='Recorded monotonic recovery upper bound; original task budgets remain separate.'),
+            'ready_events': [{'event_index': i, 'event': e,
+                'start_to_ready': timing_interval(start.get('started_wall'), e.get('ready_wall'),
+                    clock_known=True, scope='Recorded time.monotonic fields; event ROS stamp is not used.')}
+                for i, e in ready],
+            'next_goal_sent_before_next_recovery_start': None if next_goal is None else {
+                'event_index':next_goal[0], 'event':next_goal[1], 'recorded_terminal_events':following,
+                'ready_to_dispatch_wall_seconds':None,
+                'wall_delay_unavailable_reason':'goal_sent has only ROS event time, not a monotonic timestamp.'}})
+    error_rows = [{'event_index':i, **{k:e.get(k) for k in
+        ('token','stamp','success','status','detail','error_code','error_msg')},
+        'status_field_recorded':'status' in e, 'error_code_field_recorded':'error_code' in e,
+        'error_msg_field_recorded':'error_msg' in e} for i, e in terminals]
+    return {'started_event_count':len(starts), 'ready_event_count':len(readies),
+        'started_unique_token_count':len({e['token'] for _, e in starts if e.get('token') is not None}),
+        'ready_unique_token_count':len({e['token'] for _, e in readies if e.get('token') is not None}),
+        'started_missing_token_count':sum(e.get('token') is None for _,e in starts),
+        'ready_missing_token_count':sum(e.get('token') is None for _,e in readies),
+        'started_intervals_with_ready':sum(bool(row['ready_events']) for row in rows),
+        'started_intervals_without_recorded_ready':sum(not row['ready_events'] for row in rows),
+        'started_intervals_with_multiple_ready_events':sum(len(row['ready_events'])>1 for row in rows),
+        'ready_without_prior_matching_start':[{'event_index':i,'event':e} for i,e in readies
+            if not any(j<i and s.get('token')==e.get('token') and s.get('started_wall')==e.get('started_wall')
+                       for j,s in starts)],
+        'intervals':rows, 'terminal_errors':error_rows,
+        'final_recovery_snapshot':mission.get('navigation_recovery'),
+        'final_recovery_snapshot_field_recorded':'navigation_recovery' in mission,
+        'terminal_status_counts':dict(Counter(str(e['status']) for e in error_rows if e['status'] is not None)),
+        'terminal_error_code_counts':dict(Counter(str(e['error_code']) for e in error_rows if e['error_code'] is not None)),
+        'terminal_unknown_status_count':sum(e['status'] is None for e in error_rows),
+        'terminal_unknown_error_code_count':sum(e['error_code'] is None for e in error_rows),
+        'terminal_unknown_error_msg_count':sum(e['error_msg'] is None for e in error_rows),
+        'explicit_recovery_timeout_events':[{'event_index':i,'event':e} for i,e in enumerate(events)
+            if e.get('reason')=='navigation_recovery_timeout'],
+        'mission_final_reason_is_recovery_timeout':mission.get('reason')=='navigation_recovery_timeout',
+        'scope':'Counts are recorded events, not independent failures. Ready is emitted before final dispatch-budget/deadline checks; only a later goal_sent confirms a dispatch. Event-order association is not a causal recovery proof. Missing terminal status/code/message stays null; STATUS_ABORTED or error_code=0 alone is not a TF diagnosis.'}
+
+
+def tf_log_summary():
+    rules = {'extrapolation':['extrapolat'], 'tf_old_data':['tf_old_data'],
+        'transform_data_too_old':['transform data too old'],
+        'transform_wait_timeout':['timed out waiting for transform','timeout waiting for transform'],
+        'failed_transform':['failed to transform','could not transform','cannot transform']}
+    reports = {}
+    for name in ('navigation.log','mission.log'):
+        path = RUN/name
+        if not path.is_file():
+            MISSING.append(name)
+            reports[name] = {'available':False,'matched_line_count':None}
+            continue
+        if path.is_symlink() or path.stat().st_size > 256*1024*1024:
+            raise RuntimeError('Unsafe or oversized TF diagnostic log: '+name)
+        raw = path.read_bytes()
+        SOURCES[str(path.relative_to(ROOT))] = {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+        counts, examples, matched = Counter(), [], 0
+        for number,line in enumerate(raw.decode('utf-8',errors='replace').splitlines(),1):
+            found = [kind for kind,fragments in rules.items() if any(s in line.casefold() for s in fragments)]
+            if found:
+                matched += 1
+                counts.update(found)
+                if len(examples)<20:
+                    examples.append({'line_number':number,'categories':found,'text':line[:2000],
+                                     'text_truncated':len(line)>2000})
+        reports[name] = {'available':True,'matched_line_count':matched,
+            'category_line_counts':{kind:counts[kind] for kind in rules},'examples_first_20':examples}
+    return {'case_insensitive_substring_rules':rules,'logs':reports,
+        'scope':'Overlapping substring categories count log lines, not unique incidents. No timestamp proximity or STATUS_ABORTED is used to assign a TF cause. Absence of matching text does not establish absence of TF faults.'}
+
+
+def run29_comparison(preparation, current):
+    paths = {'summary':ROOT/'outputs/setup/run29-outcome-review.json',
+             'preparation':ROOT/'outputs/ros_smoke/run29-navigation-recovery/preparation.json'}
+    data = {}
+    for key,path in paths.items():
+        if not path.is_file():
+            MISSING.append(str(path.relative_to(ROOT)))
+            return {'available':False,'reason':'Required run29 comparison input missing',
+                    'navigation_improved_by_steady_tf_pacing':None}
+        if path.is_symlink() or path.stat().st_size>64*1024*1024:
+            raise RuntimeError('Unsafe or oversized run29 comparison input')
+        raw = path.read_bytes()
+        SOURCES[str(path.relative_to(ROOT))] = {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+        data[key] = json.loads(raw)
+    baseline = data['summary']
+    if baseline.get('run')!='run29-navigation-recovery' or baseline.get('cleanup',{}).get('all_owned_groups_empty') is not True:
+        raise RuntimeError('Comparison input is not the closed run29 outcome')
+    def selected(report):
+        return {'mission':report.get('mission'),'navigation_by_kind':report.get('navigation',{}).get('by_kind'),
+            'navigation_extrapolation_log_lines':report.get('tf_diagnostics',{}).get('navigation_extrapolation',{}).get('matched_line_count'),
+            'base_tf_age_rejected_event_count':report.get('tf_diagnostics',{}).get('base_tf_age_rejected_event_count'),
+            'target_annotation_count':report.get('targets',{}).get('count'),
+            'retention_audit_passed':report.get('retention',{}).get('offline_audit',{}).get('passed'),
+            'native_home_to_final':report.get('return',{}).get('native',{}).get('sampled_home_to_final'),
+            'recovery':{key:report.get('navigation',{}).get('recovery',{}).get(key) for key in
+                ('started_event_count','ready_event_count','terminal_error_code_counts','terminal_unknown_error_code_count')}}
+    profile_keys = ('world_sha256','nav2_sha256','tf_profile','writer_profile','motion_startup_ready_budget_s','navigation_recovery_parameters')
+    agreement = {key:None if key not in preparation or key not in data['preparation']
+                 else preparation[key]==data['preparation'][key] for key in profile_keys}
+    return {'available':True,'run29':selected(baseline),'run30':selected(current),
+        'prepared_profile_equality':agreement,
+        'run30_configured_recovery':preparation.get('navigation_recovery_parameters'),
+        'navigation_improved_by_steady_tf_pacing':None,
+        'scope':'Descriptive before/after evidence only. Different trajectories, exposure lengths, scheduling and unreplicated outcomes prevent causal attribution from two runs. Compare success/failure counts by goal kind and original mission/return flags; no fabricated aggregate pass. Both runs preserve terminal error fields. Missing is not zero. The deliberate change is SLAM transform-publisher pacing; unchanged parameter readbacks and the actual loaded-library gate must be assessed separately.'}
+
+
+def main():
+    if OUT.with_suffix('.json').exists() or OUT.with_suffix('.md').exists():
+        raise RuntimeError('Refuse overwriting an outcome review')
+    orchestration = load('orchestration.json', required=True)
+    token_cleanup = load('run-token-final-processes.json', required=True)
+    shutdown = load('retention-shutdown.json', required=True)
+    if not (orchestration.get('status') in ('terminal_observed', 'orchestration_failed')
+            and type(orchestration.get('elapsed_wall_s')) in (int, float)
+            and math.isfinite(orchestration['elapsed_wall_s']) and orchestration['elapsed_wall_s'] > 0
+            and orchestration.get('all_owned_groups_empty') is True
+            and shutdown.get('writer') is None
+            and shutdown.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown', {}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Run closure, owned groups, and producer writer exit not confirmed')
+    # A global /proc permission failure does not preclude reading closed files.
+    # Keep its original failure and ancillary rechecks separate: never promote
+    # an incomplete global token scan to proven process absence.
+    token_recheck = load('run-token-process-recheck.json')
+    denied_context = load('denied-process-context.json')
+    terminal = orchestration.get('terminal') or {}
+    # Resolve the recorded mission filename within this run, also on Windows.
+    name = str(terminal.get('path', '')).replace('\\', '/').rsplit('/', 1)[-1]
+    mission_source = 'supervisor_terminal'
+    mission_shutdown = {}
+    if not name:
+        shutdowns = sorted((RUN / 'mission').glob('shutdown_*.json'))
+        if len(shutdowns) != 1:
+            raise RuntimeError('No exact unique mission shutdown evidence')
+        name = shutdowns[0].name.replace('shutdown_', 'mission_', 1)
+        mission_shutdown = load(Path('mission') / shutdowns[0].name, required=True)
+        if not (mission_shutdown.get('goal_terminal_verified') is True
+                and mission_shutdown.get('stop_verified') is True):
+            raise RuntimeError('Mission cancellation/stop closure not verified')
+        mission_source = 'unique_shutdown_filename_pair; not_a_supervisor_terminal'
+    if not name.startswith('mission_') or not name.endswith('.json'):
+        raise RuntimeError('No exact terminal mission path in the supervisor report')
+    mission = load(Path('mission') / name, required=True)
+    if mission.get('status') not in ('done', 'blocked'):
+        raise RuntimeError('Saved mission is not terminal')
+    observer = load('observer.json')
+    audit = load('retention-audit.json')
+    checkpoint = load('retained/checkpoint.json', required=True)
+    if not (checkpoint.get('closed') is True and checkpoint.get('writer') is None
+            and checkpoint.get('checkpoint_failed') is False
+            and checkpoint.get('core', {}).get('closed') is True
+            and checkpoint.get('core', {}).get('writer_pending') is False
+            and checkpoint.get('fault') == shutdown.get('fault')):
+        raise RuntimeError('Final checkpoint closure or preserved fault disagrees with shutdown')
+    for snapshot in (checkpoint, shutdown):
+        if any(type(row.get('returncode')) is not int or row.get('termination_unconfirmed') is not False
+               for row in snapshot.get('writer_history', [])):
+            raise RuntimeError('A recorded writer lacks exact exit confirmation')
+    preparation = load('preparation.json')
+    installed = load('installed-check.json')
+    live_provenance = load('provenance-live.json')
+    final = load('final-save.json')
+    raster = load('snapshot-map.provenance.json')
+    raster_failure = load('snapshot-map.failure.json')
+    events = mission.get('events')
+    if not isinstance(events,list) or any(not isinstance(e,dict) for e in events):
+        raise RuntimeError('Missing or malformed mission events; diagnostic counts are unknown')
+    tf_rejections = [e for e in events if e.get('event') == 'base_tf_age_rejected']
+    extrapolation = navigation_extrapolation()
+    recovery = recovery_summary(events, mission)
+    tf_logs = tf_log_summary()
+    goals = [e for e in events if e.get('event') == 'goal_sent']
+    terminals = [e for e in events if e.get('event') == 'goal_terminal']
+    terminal_by_token = {e['token']: e for e in terminals}
+    dispatches = [{**e, 'terminal': terminal_by_token.get(e['token'])} for e in goals]
+    kinds = {}
+    for kind in sorted({e['goal']['kind'] for e in goals}):
+        rows = [e for e in dispatches if e['goal']['kind'] == kind]
+        kinds[kind] = {'sent': len(rows),
+                      'terminal_success': sum((r['terminal'] or {}).get('success') is True for r in rows),
+                      'terminal_failure': sum((r['terminal'] or {}).get('success') is False for r in rows),
+                      'without_recorded_terminal': sum(r['terminal'] is None for r in rows)}
+    actions = mission.get('observation_actions') or {}
+    attempts = actions.get('attempts', [])
+    consumer = retention_ledger(mission)
+    producer_results = checkpoint.get('core', {}).get('results', [])
+    producer_by_id = {r['retention_id']: r for r in producer_results}
+    audited_by_id = {r['retention_id']: r for r in audit.get('frames', [])}
+    availability = accepted_file_inventory(consumer, producer_by_id)
+    if (availability['missing_accepted_frames'] or availability['not_stored_accepted_frames']) and audit.get('passed') is True:
+        raise RuntimeError('Passing strict audit contradicts incomplete accepted-frame evidence')
+    transport = writer_transport(checkpoint, shutdown)
+    startup = startup_timing_summary()
+    transport['configured_budgets_as_recorded'] = preparation.get('writer_profile')
+    windows = []
+    for window in consumer.get('windows', []):
+        frames = []
+        for entry in window.get('accepted', []):
+            request = entry['request']
+            rid = request['retention_id']
+            source = producer_by_id.get(rid, {})
+            seen = entry.get('result') or {}
+            frames.append({'retention_id': rid, 'accepted_ordinal': request['accepted_ordinal'],
+                'request_sha256': entry['request_sha256'], 'consumer_state': entry.get('state'),
+                'consumer_reason': entry.get('reason'), 'producer_status': source.get('status'),
+                'producer_reason': source.get('reason'),
+                'producer_request_digest_matches': bool(source) and source.get('request_sha256') == entry['request_sha256'],
+                'consumer_checkpoint_persisted': seen.get('checkpoint_persisted'),
+                'offline_audit': audited_by_id.get(rid)})
+        windows.append({key: window.get(key) for key in (
+            'number', 'binding', 'state', 'reason', 'processing_satisfied', 'ledger_accepted_count', 'late_results')}
+            | {'accepted_count': len(frames), 'frames': frames})
+    world = observer.get('world_samples', [])
+    home_event = next((e for e in events if e.get('event') == 'home_recorded'), None)
+    native_return = {'scope': 'Same native model sampled at home and final observer time; no map/world identity assumption.'}
+    if world and home_event:
+        before = [p for p in world if p['sim_s'] <= home_event['stamp']]
+        after = [p for p in world if p['sim_s'] >= home_event['stamp']]
+        if before and after:
+            left, right = max(before, key=lambda p: p['sim_s']), min(after, key=lambda p: p['sim_s'])
+            movement = native_delta(left, right)
+            same_id = left['id'] == right['id'] == world[-1]['id']
+            stationary = same_id and movement['xy_distance_m'] <= 1e-9 and abs(movement['yaw_delta_rad']) <= 1e-9
+            native_return.update(home_event_stamp=home_event['stamp'], home_bracket=[left, right],
+                home_bracket_gap_s=right['sim_s'] - left['sim_s'], home_bracket_movement=movement,
+                same_native_id=same_id, home_bracket_stationary_at_sample_endpoints=stationary,
+                final_sample=world[-1],
+                sampled_home_to_final=native_delta(left, world[-1]) if stationary else None)
+    home, pose = mission.get('home'), mission.get('final_pose')
+    map_return = None if home is None or pose is None else {
+        'xy_distance_m': math.hypot(pose[0] - home[0], pose[1] - home[1]),
+        'yaw_error_rad': abs(delta(pose[2], home[2]))}
+    flags = ('status', 'reason', 'mission_success', 'returned_pose_verified', 'map_complete',
+             'visual_coverage_complete', 'mission_timed_out', 'target_definition_verified', 'coordinates_valid')
+    report = {'schema_version': 1, 'role': 'offline_run30_outcome_summary',
+        'run': RUN.name, 'runtime_head': preparation.get('code_head'), 'map_epoch': mission.get('map_epoch'),
+        'previous_attempt': preparation.get('previous_attempt'),
+        'experiment_profile': {key: preparation.get(key) for key in ('change', 'tf_profile', 'writer_profile', 'navigation_recovery_parameters', 'comparison_scope')},
+        'validation_provenance': {'code_head': preparation.get('code_head'),
+            'scope': 'Revision and profile read from original run30 preparation; available installed-check and test/build receipts are separately archived. No fixed runtime SHA or validation success is assumed.'},
+        'slam_overlay_identity': {
+            'prepared': {key:preparation.get('slam_overlay',{}).get(key) for key in
+                ('package_prefix','libraries','source_common_sha256','tf_stamp_policy','scheduling_change')},
+            'installed_check_passed': installed.get('passed'),
+            'installed_slam_gate_passed': installed.get('slam_overlay',{}).get('passed'),
+            'live_owned_process_gate_passed': live_provenance.get('slam_overlay_gate',{}).get('passed'),
+            'live_package_prefix': live_provenance.get('slam_overlay_gate',{}).get('resolved_package_prefix'),
+            'scope': 'Original read-only gates only; full file and owned /proc/maps evidence stays in the archived installed-check/provenance-live reports. Missing stays null; library identity does not establish navigation success.'},
+        'mission': {key: mission.get(key) for key in flags},
+        'mission_evidence_source': mission_source, 'mission_shutdown': mission_shutdown,
+        'supervisor_terminal_recorded': bool(terminal),
+        'tf_diagnostics': {'base_tf_age_rejected_event_count': len(tf_rejections),
+            'base_tf_age_rejected_events': tf_rejections, 'navigation_extrapolation': extrapolation,
+            'log_summary':tf_logs,
+            'scope': 'Node logs only its first attempted age-rejection diagnostic; counts do not measure all rejected lookups and logger failure may omit an event. Decision now/age and event-emission stamp are distinct.'},
+        'navigation': {'by_kind': kinds, 'dispatches': dispatches,
+            'recovery':recovery,
+            'recorded_recovery_parameter_gate':load('navigation-recovery-parameter-gate.json'),
+            'cancel_events': [e for e in events if e.get('event') == 'cancel_requested'],
+            'note': 'Terminal failure includes cancellation; timeout classification uses explicit recorded reasons only.'},
+        'inspection': {'completed': [e for e in events if e.get('event') == 'inspection_complete'],
+            'failed': [e for e in events if e.get('event') == 'inspection_failed'],
+            'interrupted': [e for e in events if e.get('event') == 'inspection_interrupted']},
+        'observation': {'snapshot': actions, 'finished_outcomes': dict(Counter(a.get('outcome') for a in attempts)),
+            'explicit_timeout_attempts': [a for a in attempts if 'timeout' in str(a.get('reason', ''))]},
+        'retention': {'enabled': consumer.get('enabled'), 'consumer_fault': consumer.get('fault'),
+            'accepted_count': sum(w['accepted_count'] for w in windows), 'windows': windows,
+            'accepted_file_inventory': availability,
+            'producer_result_counts': dict(Counter(r.get('status') for r in producer_results)),
+            'producer_checkpoint_closed': checkpoint.get('closed'), 'producer_fault': checkpoint.get('fault'),
+            'shutdown': shutdown, 'offline_audit': audit,
+            'original_offline_audit_available': bool(audit),
+            'audit_scope': 'Existing closed-run audit result, not a second raw-image decode or independent TF-accuracy test.'},
+        'writer_transport': transport,
+        'startup_timing': startup,
+        'targets': {'count': len(mission.get('targets', [])), 'annotations': mission.get('targets', []),
+            'unconfirmed': mission.get('unconfirmed_target_candidates'), 'count_prior': mission.get('target_count_prior')},
+        'return': {'home_map_pose': home, 'final_map_pose': pose, 'map_error': map_return,
+            'native': native_return, 'stationary_tail': observer.get('final_native_tail_30sim'),
+            'runner_full_terminal_tail_verified': orchestration.get('native_terminal_tail_verified')},
+        'observer': {'errors': observer.get('errors'), 'final_status': observer.get('final_status'),
+            'native_sample_count': len(world), 'native_ids': sorted({p['id'] for p in world})},
+        'map_export': {'snapshot_and_posegraph': {key: final.get(key) for key in
+            ('passed', 'errors', 'exports', 'exported_files_at_capture', 'raster_export_mode', 'save_map_service_attempted')},
+            'separate_snapshot_raster': raster, 'separate_snapshot_raster_failure': raster_failure,
+            'terminal_evidence_collection': orchestration.get('terminal_evidence_collection'),
+            'scope': 'Separate captured OccupancyGrid raster and posegraph service; not a save_map service repair.'},
+        'cleanup': orchestration, 'run_token_cleanup': token_cleanup,
+        'run_token_cleanup_context': {'original_global_absence_verified':
+            orchestration.get('all_run_token_processes_absent'),
+            'recheck': token_recheck, 'denied_process_context': denied_context,
+            'scope': 'Ancillary evidence only; does not override the original incomplete global scan.'},
+        'limitations': ['No ROS nodes or motion commands started by this review; no truth files read.',
+            'Owned groups and the retained-frame writer have closure evidence; global token absence remains as reported, including permission failures.',
+            'A bounded queue of processed-frame windows does not establish whole-maze visual coverage or target recall.',
+            'Saved online claims and closed-run artifact audit have different scopes; missing evidence is not a pass.',
+            'Native stationary brackets/tails are sampled evidence, not a continuous-motion proof.',
+            'No physical LIMO hardware evaluated.'], 'missing_files': MISSING, 'source_files': SOURCES}
+    report['run29_comparison'] = run29_comparison(preparation, report)
+    with OUT.with_suffix('.json').open('x', encoding='utf-8') as stream:
+        json.dump(report, stream, ensure_ascii=False, indent=2, allow_nan=False)
+        stream.write('\n')
+    lines = ['# run30 离线结果摘要', '', '终态与原始证据闭合后生成；不读取目标真值，不启动 ROS。', '',
+        f"运行版本：`{preparation.get('code_head')}`；配置与测试/构建回执分开保留，不预设结果。", '',
+        '```json', json.dumps(report['mission'], ensure_ascii=False, indent=2), '```', '',
+        '| 导航类型 | 下发 | 成功终态 | 失败终态（含取消） | 无记录终态 |', '|---|---:|---:|---:|---:|']
+    for kind, counts in kinds.items():
+        lines.append('| ' + kind + ' | ' + ' | '.join(str(v) for v in counts.values()) + ' |')
+    lines += ['', f"恢复等待 started={recovery['started_event_count']}、ready={recovery['ready_event_count']}；"
+        f"最终原因为 recovery timeout：`{recovery['mission_final_reason_is_recovery_timeout']}`。",
+        f"导航终态 status 计数：`{json.dumps(recovery['terminal_status_counts'])}`；"
+        f"error_code 计数：`{json.dumps(recovery['terminal_error_code_counts'])}`；"
+        f"未知 error_code：{recovery['terminal_unknown_error_code_count']}。",
+        '每次恢复的 monotonic 等待时长、后续实际 goal_sent 和终态 error_code/error_msg 见 navigation.recovery；'
+        'ready 日志早于最终派发检查，不能单独证明已再次导航。', '',
+        'run29 对照（同类目标分别比较；不据两次运行自动判定稳态时钟发布有因果改善）：', '',
+        '| 运行 | 导航类型 | 下发 | 成功 | 失败含取消 | 缺终态 |', '|---|---|---:|---:|---:|---:|']
+    comparison = report['run29_comparison']
+    for label in ('run29','run30'):
+        for kind, counts in ((comparison.get(label) or {}).get('navigation_by_kind') or {}).items():
+            lines.append('| '+label+' | '+kind+' | '+' | '.join(str(counts.get(k)) for k in
+                ('sent','terminal_success','terminal_failure','without_recorded_terminal'))+' |')
+    lines += ['', '原始 mission/返航标志、TF extrapolation 日志行数、目标数及留存审计并列保留在 run29_comparison；'
+        '不把缺失字段计为零，也不把 error_code=0 或 ABORTED 单独解释成 TF 故障。', '']
+    lines += ['', '启动计时（CLOCK_MONOTONIC，非 ROS 仿真时钟）：', '',
+        f"父进程记录状态：`{startup['parent_recorded_wait_status']}`；请求预算：`{startup['parent_requested_budget_s']}` 秒；"
+        f"有限且有序的时间戳是否确认观察发生在预算内：`{startup['parent_observation_within_recorded_budget']}`。", '',
+        '| 阶段 | 状态 | 非负时长（秒） | 原有符号差（秒） |', '|---|---|---:|---:|']
+    for phase, timing in startup['intervals'].items():
+        lines.append(f"| {phase} | {timing['status']} | {timing['duration_s']} | {timing['signed_delta_s']} |")
+    lines += ['', '环境时间是轻量包装器入口观测，包含包装器启动成本；main_enter 不含顶层导入。'
+        '父进程读到标记的时间不同于 collector 观察双流、打印标记的时间。负差值或缺失不算零耗时，也不构成就绪或运动通过。'
+        'gate 写入前后形成释放事件的边界，子进程可能早于父进程写后采样运行；具体阶段解释和原字段见 startup_timing。', '']
+    lines += ['', f"观察动作结果：`{json.dumps(report['observation']['finished_outcomes'], ensure_ascii=False)}`。",
+        f"TF age 首次拒绝事件：{len(tf_rejections)}；navigation extrapolation 匹配日志行数：{extrapolation.get('matched_line_count')}。",
+        'TF 事件保留判据 now、TF stamp、age、阈值与 frames；日志行计数不是独立故障数，不用零条日志推断 TF 无故障。',
+        f"关闭原因：`{actions.get('close_reason')}`；显式 timeout 原因的观察动作数：{len(report['observation']['explicit_timeout_attempts'])}。", '',
+        f"保存的 consumer 原始接受数：{report['retention']['accepted_count']}；离线文件审计："
+        f"passed={audit.get('passed')}，verified={audit.get('verified_count')}/{audit.get('accepted_count')}。", '',
+        f"保留的 producer fault：`{checkpoint.get('fault')}`；缺少预期文件的 accepted 帧数：{len(availability['missing_accepted_frames'])}；producer 未 stored 的 accepted 帧数：{len(availability['not_stored_accepted_frames'])}。",
+        '缺失 ID 与逐文件路径见 JSON accepted_file_inventory；文件存在性不等于严格审计通过。严格审计可能因 producer fault 提前返回 failed 0/0，其计数不替代 mission 原始接受数。', '',
+        f"有记录的唯一 writer 操作：{transport['recorded_unique_operation_count']}；具有管道诊断：{transport['operations_with_pipe_diagnostics']}；"
+        f"实际容量分布：`{json.dumps(transport['actual_pipe_capacity_counts'])}`；"
+        f"writer 超时记录：{len(transport['writer_wall_timeout_operations'])}。",
+        '逐操作初始/请求/实际容量、扩容错误、发送/剩余字节、EAGAIN、首末进展及关闭时间、最大 poll 间隔均在 writer_transport。历史有长度上限，不代表全部任务；父端时间不等于子进程读取或写盘时间。', '',
+        f"地图内标注 {report['targets']['count']} 个目标；返航地图误差：`{json.dumps(map_return)}`。", '',
+        f"原生 home 括点到最终采样：`{json.dumps(native_return.get('sampled_home_to_final'))}`；"
+        '只有相同模型且 home 前后采样位姿相同时计算，详见 JSON 括点时间与跨度。', '',
+        f"记录的尾窗：`{json.dumps(report['return']['stationary_tail'])}`。",
+        f"编排器完整终态尾窗验证：`{orchestration.get('native_terminal_tail_verified')}`；"
+        '采样跨度及是否全部处于终态后以原始字段为准，不把部分尾窗当成完整通过。', '',
+        f"编排器状态：`{orchestration.get('status')}`；错误：`{json.dumps(orchestration.get('errors'), ensure_ascii=False)}`。",
+        f"地图快照与 posegraph 捕获：passed=`{final.get('passed')}`；错误：`{json.dumps(final.get('errors'), ensure_ascii=False)}`。",
+        f"save_map 服务是否调用：`{final.get('save_map_service_attempted')}`；独立捕获栅格导出：passed=`{raster.get('passed')}`。",
+        '独立栅格导出与原生终态尾窗结果分别保留，不互相替代，也不称为修复 save_map 服务。', '',
+        '所有具体阈值、失败原因、accepted ID、producer 状态、原始审计及来源 SHA256 见同名 JSON。', '',
+        '**本摘要不把 done、有限多朝向观察或原图留存通过解释为全迷宫视觉覆盖、正式目标识别或实车验收。**', '']
+    with OUT.with_suffix('.md').open('x', encoding='utf-8') as stream:
+        stream.write('\n'.join(lines))
+    print(json.dumps({'json': str(OUT.with_suffix('.json')), 'markdown': str(OUT.with_suffix('.md')),
+                      'mission': report['mission'], 'retention_accepted': report['retention']['accepted_count'],
+                      'offline_audit_passed': audit.get('passed')}, ensure_ascii=False, indent=2))
+
+
+if __name__ == '__main__':
+    main()

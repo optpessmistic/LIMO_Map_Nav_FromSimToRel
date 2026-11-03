@@ -1,0 +1,495 @@
+{
+  "run": "run30-steady-tf",
+  "epoch": "43dc0537-ffd4-47df-a3a5-d3b7a504bf46",
+  "status": "terminal_observed",
+  "stages": [
+    {
+      "name": "sim_start_and_sensor_check",
+      "elapsed_wall_s": 38.19881912000005
+    },
+    {
+      "name": "navigation_start_and_parameter_check",
+      "elapsed_wall_s": 102.03369907399997
+    },
+    {
+      "name": "recording_perception_and_initial_survey",
+      "elapsed_wall_s": 159.64552391099994
+    },
+    {
+      "name": "read_only_planning_and_processed_image_preflight",
+      "elapsed_wall_s": 300.967389829
+    },
+    {
+      "name": "autonomous_mission",
+      "elapsed_wall_s": 324.23872524
+    },
+    {
+      "name": "terminal_map_export_and_independent_stationary_tail",
+      "elapsed_wall_s": 1015.343780029
+    },
+    {
+      "name": "owned_shutdown",
+      "elapsed_wall_s": 1073.7040485359998
+    }
+  ],
+  "errors": [
+    "Retained-frame offline audit failed"
+  ],
+  "stops": {
+    "mission": {
+      "signals": [
+        {
+          "pid": 1696,
+          "start_ticks": 105735,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1715,
+          "start_ticks": 107273,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.0178430880000633,
+      "exit_code": 0
+    },
+    "recorder": {
+      "signals": [
+        {
+          "pid": 1448,
+          "start_ticks": 87289,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.6092371600000206,
+      "exit_code": 0
+    },
+    "observer": {
+      "signals": [
+        {
+          "pid": 1660,
+          "start_ticks": 103727,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 2.6265581939999265,
+      "exit_code": 0
+    },
+    "perception": {
+      "signals": [
+        {
+          "pid": 1449,
+          "start_ticks": 87302,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1486,
+          "start_ticks": 88213,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.808215065000013,
+      "exit_code": 0
+    },
+    "motion": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0013037810001605976,
+      "exit_code": 0
+    },
+    "survey": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.002712970000175119,
+      "exit_code": 0
+    },
+    "navigation": {
+      "signals": [
+        {
+          "pid": 1159,
+          "start_ticks": 81506,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1221,
+          "start_ticks": 82753,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1222,
+          "start_ticks": 82753,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1223,
+          "start_ticks": 82753,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1224,
+          "start_ticks": 82755,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1225,
+          "start_ticks": 82757,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1226,
+          "start_ticks": 82760,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1227,
+          "start_ticks": 82763,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1228,
+          "start_ticks": 82771,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1229,
+          "start_ticks": 82774,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1230,
+          "start_ticks": 82778,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.0108729630001108,
+      "exit_code": 0
+    },
+    "sim": {
+      "signals": [
+        {
+          "pid": 925,
+          "start_ticks": 75123,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 974,
+          "start_ticks": 76517,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 975,
+          "start_ticks": 76517,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 976,
+          "start_ticks": 76518,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.2254335490001722,
+      "exit_code": 0
+    },
+    "installed-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0012230579998231406,
+      "exit_code": 0
+    },
+    "sim-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0007558590000371623,
+      "exit_code": 0
+    },
+    "native-early": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0007424539999192348,
+      "exit_code": 0
+    },
+    "nav-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008985800000118616,
+      "exit_code": 0
+    },
+    "parameter-gate": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008268300000509043,
+      "exit_code": 0
+    },
+    "native-before-motion": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0005798030001642474,
+      "exit_code": 0
+    },
+    "preflight": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0006654910000634118,
+      "exit_code": 0
+    },
+    "save-early": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0008306010001888353,
+      "exit_code": 0
+    },
+    "provenance": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0006674539999949047,
+      "exit_code": 0
+    },
+    "native-terminal": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0007570590000796074,
+      "exit_code": 0
+    },
+    "save-final": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0006760389999271865,
+      "exit_code": 0
+    },
+    "snapshot-raster": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0006443700001454999,
+      "exit_code": 0
+    }
+  },
+  "active_wall_budget_seconds": 1800,
+  "native_terminal_tail_verified": true,
+  "supervisor_began_monotonic_s": 713.021306385,
+  "global_deadline_monotonic_s": 2513.021306385,
+  "timing_clock": "CLOCK_MONOTONIC",
+  "motion_startup_ready_budget_s": 60,
+  "cleanup_budget_note": "Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.",
+  "stage": "owned_shutdown",
+  "navigation_recovery_parameter_gate": {
+    "expected": {
+      "navigation_failure_cooldown_s": 1.0,
+      "navigation_recovery_timeout_s": 3.0
+    },
+    "actual": {
+      "navigation_failure_cooldown_s": {
+        "type": 3,
+        "value": 1.0,
+        "set": true
+      },
+      "navigation_recovery_timeout_s": {
+        "type": 3,
+        "value": 3.0,
+        "set": true
+      }
+    },
+    "passed": true,
+    "scope": "Read-only live receipt after Mission loaded/save-early; not a pre-first-goal claim."
+  },
+  "local_costmap_parameter_readback": {
+    "actual": {
+      "transform_tolerance": {
+        "type": 3,
+        "value": 0.3,
+        "set": true
+      },
+      "use_sim_time": {
+        "type": 1,
+        "value": true,
+        "set": true
+      }
+    },
+    "passed": true,
+    "parameters_modified": false,
+    "transform_tolerance_expected_value": null
+  },
+  "terminal": {
+    "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run30-steady-tf/mission/mission_20261103_010157.json",
+    "sha256": "2eb985f7c305195dd13154dbce7a4c19d3599272d0b7e83a81a6a06bd00c3724",
+    "status": "done",
+    "map_epoch": "43dc0537-ffd4-47df-a3a5-d3b7a504bf46",
+    "reported_mission_success": false
+  },
+  "same_native_instance_at_terminal": true,
+  "observed_terminal_native_tail": {
+    "wall_s": 732.0155686209998,
+    "count": 10714,
+    "tail": {
+      "sample_count": 962,
+      "first_sim_s": 416.397,
+      "last_sim_s": 446.393,
+      "span_s": 29.99599999999998,
+      "max_gap_s": 0.036000000000001364,
+      "x_span_m": 0.0,
+      "y_span_m": 0.0,
+      "yaw_span_rad": 0.0,
+      "latest_native_receipt_fresh": true,
+      "evidence_sufficient": true,
+      "stationary_within_1mm_002rad": true,
+      "entire_window_after_terminal": true,
+      "ready_for_operator_to_end_observer": true
+    }
+  },
+  "terminal_evidence_collection": {
+    "exports": [
+      {
+        "name": "snapshot_and_posegraph",
+        "passed": true
+      },
+      {
+        "name": "snapshot_raster",
+        "passed": true
+      }
+    ],
+    "tail_verified": true,
+    "errors": [],
+    "deadline_wall": 1825.120326134,
+    "passed": true
+  },
+  "shutdown_signal_poll_budget_seconds": 588,
+  "recorder_inner_recheck": {
+    "owner": {
+      "pid": 1483,
+      "pgid": 1483,
+      "sid": 1483,
+      "start_ticks": 88127,
+      "token": "2ae303c5a214416daf3c5e1d76872783"
+    },
+    "remaining": [],
+    "ownership_errors": [],
+    "remaining_check_complete": true,
+    "reported_cleanup": {
+      "signals": [
+        {
+          "pid": 1483,
+          "start_ticks": 88127,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 15.0,
+      "elapsed_wall_seconds": 0.40544810099981987
+    }
+  },
+  "elapsed_wall_s": 1081.5246421359998,
+  "all_owned_groups_empty": true,
+  "all_run_token_processes_absent": false,
+  "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+  "owned_cleanup_scope": "Verified launched process groups, nested recorder and exact writer child exit",
+  "retention_audit_passed": false,
+  "evidence_collection_complete": false
+}
