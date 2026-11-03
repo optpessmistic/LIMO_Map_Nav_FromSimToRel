@@ -1,0 +1,46 @@
+"""Fresh full simulation with bounded writer pipe tuning; never reuse run26."""
+import ast
+import hashlib
+import json
+from pathlib import Path
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+OLD = ROOT/'outputs/ros_smoke/run26-tf-tolerance'
+OUT = ROOT/'outputs/ros_smoke/run27-writer-pipe'
+NAMES = ('env.sh','process.py','param-gate.py','preflight.py','save.py','provenance.py','installed-check.py')
+assert not OUT.exists()
+assert not any((ROOT/('outputs/setup/run27-'+n)).exists() for n in NAMES)
+closed = json.loads((OLD/'orchestration.json').read_text())
+assert closed['elapsed_wall_s'] > 0 and closed['all_owned_groups_empty']
+writer = json.loads((OLD/'retention-shutdown.json').read_text())
+assert writer['writer'] is None and writer['shutdown']['owned_writer_exit_confirmed']
+previous = json.loads((OLD/'preparation.json').read_text())
+token = 'run27-'+uuid.uuid4().hex
+helpers = {}
+for name in NAMES:
+    value = (ROOT/('outputs/setup/run26-'+name)).read_text()
+    value = value.replace(previous['token'],token).replace('run26-tf-tolerance','run27-writer-pipe')
+    value = value.replace('run26','run27').replace('Run26','Run27').replace('RUN26','RUN27')
+    if name.endswith('.py'): ast.parse(value)
+    helpers[name] = value
+OUT.mkdir(parents=True)
+(OUT/'mission').mkdir()
+epoch = str(uuid.uuid4())
+(OUT/'epoch.txt').write_bytes((epoch+'\n').encode('ascii'))
+nav = (ROOT/'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml').read_bytes()
+assert nav == (OLD/'nav2-rpp-03m.yaml').read_bytes()
+(OUT/'nav2-rpp-03m.yaml').write_bytes(nav)
+for name,value in helpers.items():
+    with (ROOT/('outputs/setup/run27-'+name)).open('xb') as f: f.write(value.encode('utf-8'))
+report = {**previous,'run':OUT.name,'code_head':None,'token':token,'epoch':epoch,
+          'nav2_sha256':hashlib.sha256(nav).hexdigest(),
+          'previous_attempt':{'run':OLD.name,'status':closed['status'],'errors':closed['errors']},
+          'change':'Best-effort bounded stdin pipe capacity and fixed-size transfer diagnostics; old run26 TF profile retained.',
+          'writer_profile':{'requested_pipe_bytes':1048576,'max_bytes_per_poll':1048576,
+                            'worker_wall_seconds':5.,'request_wall_seconds':10.,'shutdown_wall_seconds':8.},
+          'comparison_scope':'Same simulator, TF values, /mnt/c output and strict raw-frame retention; no filesystem migration or deadline relaxation.'}
+(OUT/'preparation.json').write_bytes((json.dumps(report,indent=2)+'\n').encode())
+start = (ROOT/'outputs/setup/start-run26.sh').read_text().replace('run26-tf-tolerance','run27-writer-pipe').replace('run26','run27')
+with (ROOT/'outputs/setup/start-run27.sh').open('xb') as f: f.write(start.encode())
+print(json.dumps({'prepared':str(OUT),'epoch':epoch,'token':token}))

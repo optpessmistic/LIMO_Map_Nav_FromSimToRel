@@ -1,0 +1,34 @@
+"""One read-only post-exit check; never sends a signal or rewrites supervisor."""
+from pathlib import Path
+import hashlib
+import json
+import sys
+import time
+
+root = Path(__file__).resolve().parents[2]
+run = root/'outputs/ros_smoke/run27-writer-pipe'
+sys.path.insert(0, str(root/'scripts'))
+from record_bounded import scan_owned_group
+
+original = (run/'orchestration.json').read_bytes()
+report = json.loads(original)
+assert report['status'] == 'orchestration_failed' and report.get('elapsed_wall_s') is not None
+rows = []
+for path in sorted(run.glob('process-*.json')):
+    owner = json.loads(path.read_bytes())
+    members, errors = scan_owned_group(owner)
+    rows.append(dict(file=path.name, owner=owner, remaining=members,
+        ownership_errors=errors, remaining_check_complete=not errors))
+inner = report.get('recorder_inner_recheck', {}).get('owner')
+if inner:
+    members, errors = scan_owned_group(inner)
+    rows.append(dict(file='nested_recorder', owner=inner, remaining=members,
+        ownership_errors=errors, remaining_check_complete=not errors))
+result = dict(read_only=True, mono_wall=time.monotonic(),
+    original_orchestration_sha256=hashlib.sha256(original).hexdigest(),
+    original_all_owned_groups_empty=report['all_owned_groups_empty'],
+    checks=rows,
+    all_recorded_groups_empty_at_recheck=all(not r['remaining'] and r['remaining_check_complete'] for r in rows),
+    scope='Later scoped group inspection only; original uncertain shutdown remains unchanged; no global absence claim.')
+with (run/'closure-recheck.json').open('x') as out: json.dump(result, out, indent=2)
+print(json.dumps(result, indent=2))

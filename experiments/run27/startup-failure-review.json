@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "run_outcome": "startup_failed",
+  "runtime_head": "a7e489b7e260490b18220ade213a2122be4c9c84",
+  "elapsed_wall_s": 355.72369016199997,
+  "root_exec_completion": {
+    "session_id": 77575,
+    "exit_code": 1,
+    "source": "Root agent confirmation carried by required archive arguments; not derived from ROS or filesystem state."
+  },
+  "original_errors": [
+    "TimeoutError: motion readiness not observed",
+    "Retention closure audit: RuntimeError: No terminal mission result for retained-frame audit"
+  ],
+  "normal_terminal_present": false,
+  "original_all_owned_groups_empty": false,
+  "original_all_run_token_processes_absent": false,
+  "original_recorder_inner_recheck": {
+    "owner": {
+      "pid": 1442,
+      "pgid": 1442,
+      "sid": 1442,
+      "start_ticks": 63234,
+      "token": "fe71991aa3b84072a19e1e6ee77ca5e9"
+    },
+    "remaining": [],
+    "ownership_errors": [],
+    "remaining_check_complete": true,
+    "reported_cleanup": {
+      "signals": [
+        {
+          "pid": 1442,
+          "start_ticks": 63234,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 15.0,
+      "elapsed_wall_seconds": 4.2758377339999925
+    }
+  },
+  "original_stops": {
+    "recorder": {
+      "signals": [
+        {
+          "pid": 1407,
+          "start_ticks": 61915,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 4.6711681230000295,
+      "exit_code": 0
+    },
+    "perception": {
+      "signals": [
+        {
+          "pid": 1408,
+          "start_ticks": 61916,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1445,
+          "start_ticks": 63313,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.6245947070000284,
+      "exit_code": 0
+    },
+    "motion": {
+      "signals": [
+        {
+          "pid": 1498,
+          "start_ticks": 65814,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.40871406199994453,
+      "exit_code": 2
+    },
+    "navigation": {
+      "signals": [
+        {
+          "pid": 1116,
+          "start_ticks": 53325,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1180,
+          "start_ticks": 56154,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1181,
+          "start_ticks": 56154,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1182,
+          "start_ticks": 56159,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1183,
+          "start_ticks": 56163,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1184,
+          "start_ticks": 56164,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1185,
+          "start_ticks": 56166,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1186,
+          "start_ticks": 56173,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1187,
+          "start_ticks": 56175,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1188,
+          "start_ticks": 56175,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 1189,
+          "start_ticks": 56184,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.4259774680000419,
+      "exit_code": 0
+    },
+    "sim": {
+      "signals": [
+        {
+          "pid": 882,
+          "start_ticks": 40590,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 931,
+          "start_ticks": 43763,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 932,
+          "start_ticks": 43763,
+          "signal": "SIGINT"
+        },
+        {
+          "pid": 933,
+          "start_ticks": 43764,
+          "signal": "SIGINT"
+        }
+      ],
+      "ownership_errors": [
+        "ownership/read uncertain for pid 882"
+      ],
+      "remaining": [],
+      "remaining_check_complete": false,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 1.7324269260000165,
+      "exit_code": null
+    },
+    "installed-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0012095020000515433,
+      "exit_code": 0
+    },
+    "sim-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0012598239999306315,
+      "exit_code": 0
+    },
+    "native-early": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.001282785000057629,
+      "exit_code": 0
+    },
+    "nav-check": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0009344410000267089,
+      "exit_code": 0
+    },
+    "parameter-gate": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.0012321860000383822,
+      "exit_code": 0
+    },
+    "native-before-motion": {
+      "signals": [],
+      "ownership_errors": [],
+      "remaining": [],
+      "remaining_check_complete": true,
+      "forced_kill": false,
+      "terminate_used": false,
+      "cleanup_budget_seconds": 28.0,
+      "elapsed_wall_seconds": 0.001318053000090913,
+      "exit_code": 0
+    }
+  },
+  "original_token_scan": {
+    "remaining": [],
+    "errors": [
+      {
+        "pid": "460",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "461",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "882",
+        "error": "PermissionError"
+      }
+    ],
+    "signals_sent": []
+  },
+  "later_scoped_closure_recheck": {
+    "available": true,
+    "reported_all_recorded_groups_empty": true,
+    "checked_recorded_groups": 12,
+    "original_result_replaced": false,
+    "scope": "Optional later read-only scoped inspection, not original shutdown-deadline or global absence verification.",
+    "mono_wall_as_recorded": 19.669749793,
+    "time_scope": "Absolute monotonic sample without a shared boot/session clock identifier; not elapsed seconds since run termination."
+  },
+  "artifact_existence": {
+    "process-mission.json": false,
+    "process-survey.json": false,
+    "process-observer.json": false,
+    "mission.log": false,
+    "initial-survey.json": false,
+    "final-save.json": false,
+    "observer.json": false,
+    "retention-audit.json": false
+  },
+  "mission_artifacts": [],
+  "motion": {
+    "read_only": true,
+    "motion_detected": false,
+    "wall_seconds": 8.024030160999928,
+    "reason": "signal_interrupt",
+    "partial": true,
+    "requested_signal": "SIGINT",
+    "collection_complete": false,
+    "automatic_pass_verdict": false,
+    "world_summary": {
+      "count": 95,
+      "first": {
+        "sim_s": 83.201,
+        "yaw": -3.934946980797366e-20,
+        "x": -5.7924531180803355e-12,
+        "y": -1.652197329782426e-19,
+        "z": -0.005000772039637763,
+        "id": 114
+      },
+      "last": {
+        "sim_s": 86.086,
+        "yaw": -3.934946980797366e-20,
+        "x": -5.7924531180803355e-12,
+        "y": -1.652197329782426e-19,
+        "z": -0.005000772039637763,
+        "id": 114
+      },
+      "yaw_accumulated_rad": 0.0,
+      "yaw_accumulated_min_rad": 0.0,
+      "yaw_accumulated_max_rad": 0.0,
+      "max_displacement_m": 0.0
+    },
+    "odom_summary": {
+      "count": 89,
+      "first": {
+        "sim_s": 83.872,
+        "yaw": 5.6660722955063206e-18,
+        "x": 6.866921701528982e-19,
+        "y": 1.6384928330782536e-36,
+        "angular_velocity": 7.381028635948857e-20,
+        "linear_velocity": 7.343584760553515e-21
+      },
+      "last": {
+        "sim_s": 86.092,
+        "yaw": 5.845676809451538e-18,
+        "x": 7.02512100150201e-19,
+        "y": 1.7294805390725473e-36,
+        "angular_velocity": 5.0816454594354166e-20,
+        "linear_velocity": 6.6806409229028154e-21
+      },
+      "yaw_accumulated_rad": 1.796045139452176e-19,
+      "yaw_accumulated_min_rad": 0.0,
+      "yaw_accumulated_max_rad": 1.796045139452176e-19,
+      "max_displacement_m": 1.5819929997302855e-20
+    },
+    "cleanup": {
+      "status": "complete",
+      "native_unsubscribed": true,
+      "native_release_attempted": true,
+      "ros_shutdown_called": true
+    }
+  },
+  "startup_timing": {
+    "supervisor_ready_budget_s": 30,
+    "ready_line_present_in_final_log": true,
+    "ready_monotonic_timestamp_available": false,
+    "motion_wall_seconds_scope": "Post-runtime-initialization collection interval; start is reset after subscriptions are established.",
+    "outer_ready_budget_scope": "Includes gated Python startup, bash environment sourcing, script imports, ROS/Gazebo initialization and data discovery.",
+    "shutdown_order_before_motion": [
+      "recorder",
+      "perception"
+    ],
+    "recorded_prior_stop_elapsed_s": {
+      "recorder": 4.6711681230000295,
+      "perception": 1.6245947070000284
+    },
+    "limitation": "READY can be emitted during subsequent shutdown. Untimestamped READY cannot establish its exact order relative to the readiness deadline or isolate which startup phase was slow."
+  },
+  "producer": {
+    "shutdown_record": {
+      "shutdown": {
+        "elapsed_wall_s": 1.0035702430000129,
+        "owned_writer_exit_confirmed": true,
+        "final_checkpoint_persisted": true,
+        "limitation": "SIGKILL cannot guarantee bounded exit from uninterruptible kernel I/O"
+      },
+      "writer": null,
+      "fault": null,
+      "reason": "SIGINT"
+    },
+    "checkpoint_closed": true,
+    "checkpoint_fault": null,
+    "checkpoint_writer": null,
+    "checkpoint_failed": false,
+    "checkpoint_core_closed": true,
+    "checkpoint_core_writer_pending": false,
+    "checkpoint_jobs_reserved": 0,
+    "checkpoint_results": [],
+    "recorded_writer_history": [],
+    "scope": "Checkpoint/shutdown observations only. A checkpoint helper may run without a frame job. Revision fields are snapshots; no new fault is inferred from their ordering."
+  },
+  "retention": {
+    "audit_available": false,
+    "audit_passed": null,
+    "consumer_accepted_count": null,
+    "scope": "No mission/consumer ledger exists. No 0/0 strict audit or pipe/frame throughput pass is manufactured."
+  },
+  "runtime_inputs_verified": [
+    {
+      "source": "outputs/setup/run27-env.sh",
+      "sha256": "86d82e9d85535c41c2f1d14f0c5b02f7bc4a70d7ad182e913b065fd6566a0685",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run27-process.py",
+      "sha256": "e001ebcd2498d551005121c5999d4e2abcc4a8853420ae9302162fd1b8adbfb6",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run27-param-gate.py",
+      "sha256": "549fcff83b3a82311c317e34633d7e29ec7b52faf7f2bb6fe8dccefbd4d627c1",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run27-preflight.py",
+      "sha256": "521347bd1c3cd9f1c6445df9dc7302a66a1f425e617c21a4772133738af1ac1e",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/setup/run27-save.py",
+      "sha256": "dd37bbe9e753ac862fe2923ffc0c939512454b68fbb1f54f325a304fa60133a9",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/record_bounded.py",
+      "sha256": "b741853dc92f43ad868ac64194439295afe8351cbff385a8a7c419ab50b4b2c2",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/capture_motion_evidence.py",
+      "sha256": "38f270fcc33a420dd86724a58f4a11e927f44235f302f91d68bbe1f85661a83c",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/terminal_evidence.py",
+      "sha256": "f488ad6e77f9e58c1dd8d6e8a3366cbdede1f649a22505952cf088965492d898",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "tools/export_occupancy_map.py",
+      "sha256": "238269daaad3e40a052fe19d477a34cbbfad5a9a96ac7a82b4d01a1e5dde5d66",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/check_sim_runtime.py",
+      "sha256": "b27e3b7bb7dae24288357db5461ae19e5931f164245903053bac84461c6cbf66",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "scripts/odom_integrity.py",
+      "sha256": "3fc14dd8aab56f4024d2b356031483db867dc6762c9f37648128f568c6e9a78d",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "src/limo_sim_bringup/launch/sim.launch.py",
+      "sha256": "b23d77849e80021061b35359fb60e5a2c1cbb9a65318c67f72b1cbef61880312",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "src/limo_sim_bringup/scripts/spawn_once.py",
+      "sha256": "cb2fba4cea4249aec8aa09aa379537b5cb3e87e90b17a9d218f620bbe8539222",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "src/limo_sim_bringup/scripts/inspect_scene_once.py",
+      "sha256": "a86a3313a706b8e9d73689b605ad38a10c85ed0cd8508eaa142cdb49943b23d3",
+      "matches_runtime_record": true
+    },
+    {
+      "source": "outputs/ros_smoke/run27-writer-pipe/nav2-rpp-03m.yaml",
+      "sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+      "matches_runtime_record": true
+    }
+  ],
+  "limitations": [
+    "Survey and autonomous mission were never started in the recorded supervisor sequence.",
+    "Partial stationary native/odom collection is not a successful motion or terminal-tail experiment.",
+    "Autonomous TF behavior, accepted-frame pipe performance, mapping, search and return were not evaluated.",
+    "Original false aggregate cleanup, uncertain sim stop and global scan limitations remain unchanged.",
+    "Later scoped recheck cannot establish closure within the original shutdown deadline or global process absence.",
+    "Test/build/CI receipts and archive byte identity do not turn this runtime failure into success."
+  ]
+}

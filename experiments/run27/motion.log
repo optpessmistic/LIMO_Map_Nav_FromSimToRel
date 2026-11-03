@@ -1,0 +1,71 @@
+READY: native Gazebo limo world pose and ROS odom received; waiting for controlled motion; no commands published.
+{
+  "schema_version": 1,
+  "read_only": true,
+  "truth_used_only_for_offline_diagnosis": true,
+  "world_topic": "/world/limo_maze/pose/info",
+  "world_entity": "limo",
+  "motion_detected": false,
+  "wall_seconds": 8.024030160999928,
+  "requested_seconds_after_motion": 70.0,
+  "partial": true,
+  "reason": "signal_interrupt",
+  "error": null,
+  "errors": [],
+  "requested_signal": "SIGINT",
+  "automatic_pass_verdict": false,
+  "world_summary": {
+    "count": 95,
+    "first": {
+      "sim_s": 83.201,
+      "yaw": -3.934946980797366e-20,
+      "x": -5.7924531180803355e-12,
+      "y": -1.652197329782426e-19,
+      "z": -0.005000772039637763,
+      "id": 114
+    },
+    "last": {
+      "sim_s": 86.086,
+      "yaw": -3.934946980797366e-20,
+      "x": -5.7924531180803355e-12,
+      "y": -1.652197329782426e-19,
+      "z": -0.005000772039637763,
+      "id": 114
+    },
+    "yaw_accumulated_rad": 0.0,
+    "yaw_accumulated_min_rad": 0.0,
+    "yaw_accumulated_max_rad": 0.0,
+    "max_displacement_m": 0.0
+  },
+  "odom_summary": {
+    "count": 89,
+    "first": {
+      "sim_s": 83.872,
+      "yaw": 5.6660722955063206e-18,
+      "x": 6.866921701528982e-19,
+      "y": 1.6384928330782536e-36,
+      "angular_velocity": 7.381028635948857e-20,
+      "linear_velocity": 7.343584760553515e-21
+    },
+    "last": {
+      "sim_s": 86.092,
+      "yaw": 5.845676809451538e-18,
+      "x": 7.02512100150201e-19,
+      "y": 1.7294805390725473e-36,
+      "angular_velocity": 5.0816454594354166e-20,
+      "linear_velocity": 6.6806409229028154e-21
+    },
+    "yaw_accumulated_rad": 1.796045139452176e-19,
+    "yaw_accumulated_min_rad": 0.0,
+    "yaw_accumulated_max_rad": 1.796045139452176e-19,
+    "max_displacement_m": 1.5819929997302855e-20
+  },
+  "aligned_count": 61,
+  "cleanup": {
+    "status": "complete",
+    "native_unsubscribed": true,
+    "native_release_attempted": true,
+    "ros_shutdown_called": true
+  },
+  "collection_complete": false
+}

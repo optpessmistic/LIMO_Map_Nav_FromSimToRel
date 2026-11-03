@@ -27,6 +27,16 @@
 
 run27 继续使用原 Windows 挂载输出目录、run26 的 TF 参数和严格原图留存，验证完整仿真中的表现。此次没有关闭留存检查来换取实验通过。
 
+### run27 启动结果
+
+代码 `a7e489b` 已构建且安装文件与源码一致，[GitHub CI](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/41593291976) 全部通过。run27 在 355.724 wall 秒后因 `motion readiness not observed` 结束，尚未启动初始环视和自主任务；本轮不构成 TF 或 RGB-D 管道在自主任务中的验证。
+
+传感器、单实例、导航生命周期与参数检查通过；实际回读 SLAM/Nav2 使用仿真时间，RPP TF 等待为 0.5 s。motion 的外层 30 s 就绪预算包含进程启动、ROS 环境加载、导入和初始化；其报告的 8.024 s 从订阅建立后计时。最终日志中有 `READY`，但超时后先关闭其他进程，motion 仍有收集时间，且 READY 没有 monotonic 时间戳，不能追认它在原期限内就绪。95 个 native 位姿及 89 个 odom 样本没有检测到运动。
+
+原关闭报告为 `all_owned_groups_empty=false`：sim 组退出期间遇到一次身份读取不确定。后续独立只读补查确认 11 个记录组及内层 recorder 组当时为空，原始 false 和错误保持不变；这是后续范围内的检查，不是原期限内关闭或全局无进程的证明。producer 退出日志确认 writer 退出及最终 checkpoint 保存，无 fault；本轮没有任何接受帧，不存在图像存档性能结果。原始记录见 [run27 启动失败档案](../experiments/run27/README.md)。
+
+下一轮只将诊断采集器的启动就绪预算明确设为 60 s，并记录释放进程、环境加载完成、初始化完成与 READY 的单调墙钟时间。双流就绪条件、全局 1800 s、运动等待以及所有任务和存档期限保持原值。该调整尚待新一轮验证，run27 不重跑覆盖。
+
 ## 本地验证
 
 新增 10 项管道模拟测试在 Windows 与 Linux 均通过。Linux 原有 adapter/owner 回归与新增测试合计 36 项，在不加载 ROS 搜索路径的纯 Python 环境全部通过（27.585 s），测试断言与期限未修改。

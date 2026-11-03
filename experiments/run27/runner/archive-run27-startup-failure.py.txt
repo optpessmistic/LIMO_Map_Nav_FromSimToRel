@@ -1,0 +1,340 @@
+"""Archive run27's CLOSED startup failure using local file operations only.
+
+Root reported exec session 77575 ended with exit 1. The two required arguments
+explicitly carry that external confirmation; this script cannot query the exec
+service. It never runs ROS, tests, a subprocess, or the ordinary mission archive.
+Original failed/unknown cleanup and audit states are never promoted to passes.
+"""
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run27-writer-pipe'
+SETUP = ROOT / 'outputs/setup'
+DEST = ROOT / 'experiments/run27'
+MAX_SMALL_BYTES = 32 * 1024 * 1024
+MAX_COPIED_BYTES = 256 * 1024 * 1024
+TEXT_SUFFIXES = {'.json', '.log', '.yaml', '.yml', '.txt', '.urdf'}
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def safe_file(path):
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT):
+        raise RuntimeError('Unsafe or missing source: ' + str(path))
+    return path
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with safe_file(path).open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            value.update(chunk)
+    return value.hexdigest()
+
+
+def raw(path):
+    safe_file(path)
+    if path.stat().st_size > MAX_SMALL_BYTES:
+        raise RuntimeError('Unexpected large small-file artifact: ' + str(path))
+    return path.read_bytes()
+
+
+def read(path):
+    return json.loads(raw(path))
+
+
+def write(path, data):
+    payload = data if isinstance(data, bytes) else (
+        json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode('utf-8')
+    with path.open('xb') as stream:
+        stream.write(payload)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-root-session', required=True, type=int, choices=[77575])
+    parser.add_argument('--confirmed-root-exit-code', required=True, type=int, choices=[1])
+    args = parser.parse_args(argv)
+    if DEST.exists() or DEST.is_symlink():
+        raise RuntimeError('Refuse existing experiments/run27; never overwrite an archive')
+    orchestration = read(RUN / 'orchestration.json')
+    preparation = read(RUN / 'preparation.json')
+    token_scan = read(RUN / 'run-token-final-processes.json')
+    motion = read(RUN / 'initial-motion.json')
+    shutdown = read(RUN / 'retention-shutdown.json')
+    checkpoint = read(RUN / 'retained/checkpoint.json')
+    elapsed = orchestration.get('elapsed_wall_s')
+    if not (orchestration.get('status') == 'orchestration_failed'
+            and type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed > 0
+            and orchestration.get('terminal') is None
+            and orchestration.get('all_owned_groups_empty') is False
+            and 'TimeoutError: motion readiness not observed' in orchestration.get('errors', [])):
+        raise RuntimeError('Not the reviewed terminal run27 startup failure')
+    owners = {}
+    for path in sorted(RUN.glob('process-*.json')):
+        owner = read(path)
+        name = owner['name']
+        if (name in owners or owner.get('token') != preparation.get('token')
+                or not (owner.get('pid') == owner.get('pgid') == owner.get('sid'))
+                or type(owner.get('pid')) is not int or owner['pid'] <= 0):
+            raise RuntimeError('Invalid or duplicate recorded process identity: ' + path.name)
+        owners[name] = owner
+    stops = orchestration.get('stops') or {}
+    if not owners or set(owners) != set(stops) or 'motion' not in owners:
+        raise RuntimeError('Recorded owned process/stop names differ')
+    # Do not require complete owned stops: sim's original uncertain stop is the
+    # evidence being preserved, not a condition to rewrite into a successful stop.
+    absent_names = ('process-mission.json', 'process-survey.json', 'process-observer.json',
+                    'mission.log', 'initial-survey.json', 'final-save.json', 'observer.json',
+                    'retention-audit.json')
+    existence = {name: (RUN / name).exists() for name in absent_names}
+    mission_files = sorted(p.relative_to(RUN).as_posix() for p in (RUN / 'mission').rglob('*') if p.is_file())
+    if any(existence.values()) or mission_files or {'mission', 'survey', 'observer'} & set(owners):
+        raise RuntimeError('Later mission/survey evidence exists; review before startup-only archiving')
+    motion_log = raw(RUN / 'motion.log').decode('utf-8', errors='replace')
+    if not (motion.get('read_only') is True and motion.get('motion_detected') is False
+            and motion.get('partial') is True and motion.get('reason') == 'signal_interrupt'
+            and 'READY:' in motion_log):
+        raise RuntimeError('Motion evidence differs from the reviewed partial startup collection')
+
+    inputs = read(RUN / 'runner-inputs.json')
+    input_checks = []
+    for name, expected in inputs.items():
+        actual = digest(ROOT / name)
+        if actual != expected:
+            raise RuntimeError('Frozen runtime input changed: ' + name)
+        input_checks.append({'source': name, 'sha256': actual, 'matches_runtime_record': True})
+
+    recheck_path = RUN / 'closure-recheck.json'
+    recheck = read(recheck_path) if recheck_path.is_file() else None
+    recheck_summary = {'available': recheck is not None, 'reported_all_recorded_groups_empty': None,
+        'checked_recorded_groups': None, 'original_result_replaced': False,
+        'scope': 'Optional later read-only scoped inspection, not original shutdown-deadline or global absence verification.'}
+    if recheck is not None:
+        expected_owners = {'process-' + name + '.json': owner for name, owner in owners.items()}
+        inner = (orchestration.get('recorder_inner_recheck') or {}).get('owner')
+        if inner:
+            expected_owners['nested_recorder'] = inner
+        rows = recheck.get('checks') or []
+        if not (recheck.get('read_only') is True
+                and recheck.get('original_orchestration_sha256') == digest(RUN / 'orchestration.json')
+                and recheck.get('original_all_owned_groups_empty') is False
+                and len(rows) == len(expected_owners)
+                and {row.get('file') for row in rows} == set(expected_owners)
+                and all(row.get('owner') == expected_owners[row['file']] for row in rows)):
+            raise RuntimeError('Later recheck does not identify the exact original report and groups')
+        known_empty = all(row.get('remaining') == [] and row.get('ownership_errors') == []
+                          and row.get('remaining_check_complete') is True for row in rows)
+        if type(recheck.get('all_recorded_groups_empty_at_recheck')) is not bool or (
+                recheck['all_recorded_groups_empty_at_recheck'] != known_empty):
+            raise RuntimeError('Later recheck aggregate disagrees with its own rows')
+        recheck_summary.update(reported_all_recorded_groups_empty=known_empty,
+            checked_recorded_groups=len(rows), mono_wall_as_recorded=recheck.get('mono_wall'),
+            time_scope='Absolute monotonic sample without a shared boot/session clock identifier; not elapsed seconds since run termination.')
+
+    validation_names = (
+        'verify-writer-pipe.sh', 'writer-pipe-tests.log', 'writer-pipe-build.log',
+        'writer-pipe-tests-02.log', 'writer-pipe-test-diagnosis.log',
+        'verify-writer-pipe-02.sh', 'diagnose-writer-pipe-tests.py',
+        'writer-pipe-tests-03.log', 'verify-writer-pipe-03.sh',
+        'run27-code-ci.json', 'writer-pipe-git-verification.json', 'verify-writer-pipe-git.py',
+        'run27-tests.log', 'run27-build.log', 'run27-launch-args.log')
+    missing_optional = [str((SETUP / name).relative_to(ROOT)) for name in validation_names
+                        if not (SETUP / name).is_file()]
+    if recheck is None:
+        missing_optional.append(recheck_path.relative_to(ROOT).as_posix())
+    ci_path = SETUP / 'run27-code-ci.json'
+    ci = read(ci_path) if ci_path.is_file() else None
+    if ci is not None and ci.get('head_sha') != preparation.get('code_head'):
+        raise RuntimeError('CI receipt revision differs from the recorded runtime revision')
+    core = checkpoint.get('core') or {}
+    review = {'schema_version': 1, 'run_outcome': 'startup_failed',
+        'runtime_head': preparation.get('code_head'), 'elapsed_wall_s': elapsed,
+        'root_exec_completion': {'session_id': args.confirmed_root_session,
+            'exit_code': args.confirmed_root_exit_code,
+            'source': 'Root agent confirmation carried by required archive arguments; not derived from ROS or filesystem state.'},
+        'original_errors': orchestration.get('errors'), 'normal_terminal_present': False,
+        'original_all_owned_groups_empty': orchestration.get('all_owned_groups_empty'),
+        'original_all_run_token_processes_absent': orchestration.get('all_run_token_processes_absent'),
+        'original_recorder_inner_recheck': orchestration.get('recorder_inner_recheck'),
+        'original_stops': stops, 'original_token_scan': token_scan,
+        'later_scoped_closure_recheck': recheck_summary,
+        'artifact_existence': existence, 'mission_artifacts': mission_files,
+        'motion': {key: motion.get(key) for key in ('read_only', 'motion_detected', 'wall_seconds',
+            'reason', 'partial', 'requested_signal', 'collection_complete', 'automatic_pass_verdict',
+            'world_summary', 'odom_summary', 'cleanup')},
+        'startup_timing': {'supervisor_ready_budget_s': 30,
+            'ready_line_present_in_final_log': True, 'ready_monotonic_timestamp_available': False,
+            'motion_wall_seconds_scope': 'Post-runtime-initialization collection interval; start is reset after subscriptions are established.',
+            'outer_ready_budget_scope': 'Includes gated Python startup, bash environment sourcing, script imports, ROS/Gazebo initialization and data discovery.',
+            'shutdown_order_before_motion': ['recorder', 'perception'],
+            'recorded_prior_stop_elapsed_s': {name: stops[name].get('elapsed_wall_seconds')
+                                             for name in ('recorder', 'perception')},
+            'limitation': 'READY can be emitted during subsequent shutdown. Untimestamped READY cannot establish its exact order relative to the readiness deadline or isolate which startup phase was slow.'},
+        'producer': {'shutdown_record': shutdown,
+            'checkpoint_closed': checkpoint.get('closed'), 'checkpoint_fault': checkpoint.get('fault'),
+            'checkpoint_writer': checkpoint.get('writer'), 'checkpoint_failed': checkpoint.get('checkpoint_failed'),
+            'checkpoint_core_closed': core.get('closed'), 'checkpoint_core_writer_pending': core.get('writer_pending'),
+            'checkpoint_jobs_reserved': core.get('jobs_reserved'), 'checkpoint_results': core.get('results'),
+            'recorded_writer_history': checkpoint.get('writer_history'),
+            'scope': 'Checkpoint/shutdown observations only. A checkpoint helper may run without a frame job. Revision fields are snapshots; no new fault is inferred from their ordering.'},
+        'retention': {'audit_available': False, 'audit_passed': None, 'consumer_accepted_count': None,
+            'scope': 'No mission/consumer ledger exists. No 0/0 strict audit or pipe/frame throughput pass is manufactured.'},
+        'runtime_inputs_verified': input_checks,
+        'limitations': ['Survey and autonomous mission were never started in the recorded supervisor sequence.',
+            'Partial stationary native/odom collection is not a successful motion or terminal-tail experiment.',
+            'Autonomous TF behavior, accepted-frame pipe performance, mapping, search and return were not evaluated.',
+            'Original false aggregate cleanup, uncertain sim stop and global scan limitations remain unchanged.',
+            'Later scoped recheck cannot establish closure within the original shutdown deadline or global process absence.',
+            'Test/build/CI receipts and archive byte identity do not turn this runtime failure into success.']}
+
+    # Enumerate first; explicitly exclude rosbag payload even when relatively small.
+    run_sources, excluded = [], []
+    for path in sorted(RUN.rglob('*')):
+        rel = path.relative_to(RUN).as_posix()
+        if path.is_symlink() or (path.name == 'latest' and rel.startswith('ros_logs/')):
+            excluded.append({'source': path.relative_to(ROOT).as_posix(), 'archived': False,
+                             'reason': 'Symlink/log-directory convenience reference; never dereferenced.'})
+            continue
+        if not path.is_file():
+            continue
+        safe_file(path)
+        if path.suffix.lower() in TEXT_SUFFIXES:
+            if path.stat().st_size > MAX_SMALL_BYTES:
+                raise RuntimeError('Small textual evidence exceeds archive bound: ' + rel)
+            run_sources.append(path)
+        else:
+            excluded.append({'source': path.relative_to(ROOT).as_posix(), 'bytes': path.stat().st_size,
+                'sha256': digest(path), 'archived': False,
+                'reason': 'Rosbag/binary payload or unsupported artifact; retained locally, not copied.'})
+    if len(run_sources) > 2000 or sum(p.stat().st_size for p in run_sources) > MAX_COPIED_BYTES:
+        raise RuntimeError('Run small-file inventory exceeds bounded archive size')
+    initial_run_inventory = {p.relative_to(RUN).as_posix(): digest(p) for p in run_sources}
+    DEST.mkdir()
+    records, copied_source_names = [], set()
+
+    def keep(source, name):
+        payload = raw(source)
+        if sum(row['bytes'] for row in records) + len(payload) > MAX_COPIED_BYTES:
+            raise RuntimeError('Total copied evidence exceeds archive bound')
+        target = DEST / name
+        if not target.resolve().is_relative_to(DEST.resolve()):
+            raise RuntimeError('Archive destination escapes run directory')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        write(target, payload)
+        if raw(target) != payload or raw(source) != payload:
+            raise RuntimeError('Byte identity failed: ' + name)
+        records.append({'source': source.relative_to(ROOT).as_posix(), 'archive': name,
+                        'bytes': len(payload), 'sha256': sha(payload)})
+        copied_source_names.add(source.relative_to(ROOT).as_posix())
+
+    try:
+        keep(ROOT / 'experiments/run25/.gitattributes', '.gitattributes')
+        for path in run_sources:
+            keep(path, path.relative_to(RUN).as_posix())
+        for name in ('start-run27.sh', 'prepare-run27.py', 'run27-env.sh', 'run27-process.py',
+                     'run27-param-gate.py', 'run27-preflight.py', 'run27-save.py',
+                     'run27-provenance.py', 'run27-installed-check.py', 'run27-process-recheck.py',
+                     'run27-outcome-review.py', 'archive-run27.py', 'archive-run27-startup-failure.py'):
+            keep(SETUP / name, 'runner/' + name + '.txt')
+        for name in inputs:
+            if name not in copied_source_names:
+                keep(ROOT / name, 'runner/' + name.replace('/', '__') + '.txt')
+        for name in ('tests/test_retention_pipe.py', 'tests/test_frame_retention_owner_races.py',
+                     'src/limo_maze_perception/limo_maze_perception/retention_adapter.py',
+                     'src/limo_maze_perception/limo_maze_perception/retention_worker.py',
+                     'src/limo_evidence_protocol/limo_evidence_protocol/retention.py',
+                     'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml',
+                     'src/limo_maze_mission/launch/mission.launch.py',
+                     'src/limo_maze_mission/limo_maze_mission/node.py'):
+            if name not in copied_source_names:
+                keep(ROOT / name, 'runner/' + name.replace('/', '__') + '.txt')
+        for name in validation_names:
+            if (SETUP / name).is_file():
+                keep(SETUP / name, 'validation/' + name)
+        write(DEST / 'startup-failure-review.json', review)
+        readme = ('# run27: startup failure before survey and autonomous mission\n\n'
+            f"Runtime revision `{preparation.get('code_head')}`; root exec session 77575 was confirmed ended with exit 1. "
+            f"The supervisor failed after {elapsed:.3f} wall seconds with `motion readiness not observed`. "
+            'No survey, mission, final map export, terminal-tail result or strict retained-frame audit was created. '
+            'This failed attempt does not validate autonomous TF behavior, pipe/frame performance, controlled motion, mapping, search or return.\n\n'
+            '`motion.log` eventually contains READY, but its line has no wall/monotonic timestamp. '
+            'The outer 30-second READY budget includes interpreter startup, four ROS overlay loads, imports and runtime initialization. '
+            f"The collector's {motion.get('wall_seconds'):.6f} seconds starts after subscriptions are established. "
+            'Recorder and perception are stopped before motion, leaving additional collection time after the timeout. '
+            'The final READY line cannot be used to retroactively pass the readiness gate. '
+            'The partial native/odom data are stationary and preserved in full; exact READY/deadline ordering and per-phase startup costs were not recorded.\n\n'
+            'Original `all_owned_groups_empty=false`, the sim PID 882 ownership/read uncertainty, all error strings, '
+            '`all_run_token_processes_absent=false` and the global /proc-read limitations remain byte-for-byte unchanged. '
+            'If present, `closure-recheck.json` is a separate later read-only check of the exact recorded groups and nested recorder. '
+            f"Its recorded all-groups-empty result is {recheck_summary['reported_all_recorded_groups_empty']}, "
+            f"covering {recheck_summary['checked_recorded_groups']} identities. "
+            'This does not establish closure within the original deadline and does not replace the original failed/uncertain shutdown result. '
+            'The later `mono_wall` is an absolute monotonic sample without a shared boot/session identifier, not seconds elapsed since run termination. '
+            'No global absence claim is made.\n\n'
+            'The producer shutdown receipt and `retained/checkpoint.json` are preserved as separate snapshots. '
+            'The shutdown receipt reports writer exit confirmation and final checkpoint persistence; the checkpoint contains no frame jobs/results. '
+            'A checkpoint-only helper is distinct from an accepted-frame writer job. Revision differences between snapshots are not rewritten or classified as a new fault. '
+            'No mission ledger exists: consumer accepted count and strict audit status are unavailable, not a passing 0/0 audit.\n\n'
+            'All regular small JSON/log/config/text evidence, including nested ROS logs, recorder metadata, producer checkpoint, '
+            'partial motion data, run preparation, runner inputs and helpers, is copied as original bytes. '
+            'Rosbag payloads remain local with their source size and SHA256 in the manifest; they are not embedded in this archive. '
+            'Log-directory convenience links are not followed. `validation/` preserves the initial failing test output, later retries/diagnosis, '
+            'build and CI receipts when available; missing optional receipts are explicit. Receipt presence does not imply a successful runtime.\n\n'
+            'Run `sha256sum -c SHA256SUMS` to check archive byte identity. `archive-verification.json` concerns only files and indexes, '
+            'not runtime cleanup, retained-frame validity or mission success. The archive builder starts no subprocess, ROS node, simulator or test.\n')
+        write(DEST / 'README.md', readme.encode('utf-8'))
+        for row in records:
+            if digest(ROOT / row['source']) != row['sha256'] or digest(DEST / row['archive']) != row['sha256']:
+                raise RuntimeError('Source or copied evidence changed: ' + row['source'])
+        for rel, expected in initial_run_inventory.items():
+            if digest(RUN / rel) != expected:
+                raise RuntimeError('Run evidence changed while archiving: ' + rel)
+        copied_names = {row['archive'] for row in records}
+        generated = [{'archive': p.relative_to(DEST).as_posix(), 'bytes': p.stat().st_size, 'sha256': digest(p)}
+                     for p in sorted(DEST.rglob('*')) if p.is_file() and p.relative_to(DEST).as_posix() not in copied_names]
+        write(DEST / 'archive-manifest.json', {'schema_version': 1, 'run_outcome': 'startup_failed',
+            'source_run': RUN.relative_to(ROOT).as_posix(), 'runtime_head': preparation.get('code_head'),
+            'root_exec_completion': review['root_exec_completion'], 'copied': records, 'generated': generated,
+            'excluded_payloads_or_links': excluded, 'missing_optional': missing_optional,
+            'runtime_inputs_verified': input_checks, 'later_scoped_closure_recheck': recheck_summary,
+            'validation_provenance': {'ci_receipt_available': ci is not None,
+                'ci_head_sha': ci.get('head_sha') if ci else None,
+                'scope': 'Receipts preserved verbatim, including failed attempts; no validation is executed by this builder.'},
+            'index_exclusions': ['archive-manifest.json', 'archive-verification.json', 'SHA256SUMS'],
+            'scope': 'Byte-exact failure archive. Original false/unknown runtime results remain authoritative for their original scope.'})
+        for row in generated:
+            if (DEST / row['archive']).stat().st_size != row['bytes'] or digest(DEST / row['archive']) != row['sha256']:
+                raise RuntimeError('Generated artifact readback failed')
+        write(DEST / 'archive-verification.json', {'schema_version': 1, 'passed': True,
+            'scope': 'Archive byte identity only; not runtime closure, TF, motion, pipe/frame performance or mission success.',
+            'copied_source_count': len(records), 'generated_file_count': len(generated),
+            'original_run_success': False, 'original_all_owned_groups_empty': False,
+            'original_retention_audit_passed': None,
+            'manifest_sha256': digest(DEST / 'archive-manifest.json')})
+        files = sorted(p for p in DEST.rglob('*') if p.is_file())
+        sums = ''.join(digest(p) + '  ' + p.relative_to(DEST).as_posix() + '\n' for p in files)
+        write(DEST / 'SHA256SUMS', sums.encode('utf-8'))
+        for line in raw(DEST / 'SHA256SUMS').decode('utf-8').splitlines():
+            expected, name = line.split('  ', 1)
+            if digest(DEST / name) != expected:
+                raise RuntimeError('Final SHA256SUMS mismatch: ' + name)
+        print(json.dumps({'archive_identity_passed': True, 'run_outcome': 'startup_failed',
+            'archive': str(DEST), 'files': len(files) + 1, 'copied_sources': len(records),
+            'original_all_owned_groups_empty': False,
+            'later_scoped_recheck_reported_empty': recheck_summary['reported_all_recorded_groups_empty'],
+            'SHA256SUMS_sha256': digest(DEST / 'SHA256SUMS')}, indent=2))
+    except Exception as exc:
+        write(DEST / 'ARCHIVE-FAILED.json', {'passed': False, 'error': type(exc).__name__ + ': ' + str(exc),
+            'scope': 'Partial archive preserved. No earlier index establishes successful archive completion.'})
+        raise
+
+
+if __name__ == '__main__':
+    main()

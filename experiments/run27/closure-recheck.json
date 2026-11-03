@@ -1,0 +1,207 @@
+{
+  "read_only": true,
+  "mono_wall": 19.669749793,
+  "original_orchestration_sha256": "707b13570c983cd4e29d466f96cbe193e61d622009fa0573c879f45630b490e8",
+  "original_all_owned_groups_empty": false,
+  "checks": [
+    {
+      "file": "process-installed-check.json",
+      "owner": {
+        "pid": 862,
+        "pgid": 862,
+        "sid": 862,
+        "start_ticks": 36212,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "installed-check",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run27-installed-check.py"
+        ]
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-motion.json",
+      "owner": {
+        "pid": 1498,
+        "pgid": 1498,
+        "sid": 1498,
+        "start_ticks": 65814,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "motion",
+        "mode": "motion",
+        "args": []
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-native-before-motion.json",
+      "owner": {
+        "pid": 1384,
+        "pgid": 1384,
+        "sid": 1384,
+        "start_ticks": 59929,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "native-before-motion",
+        "mode": "native-check",
+        "args": [
+          "before-motion"
+        ]
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-native-early.json",
+      "owner": {
+        "pid": 1093,
+        "pgid": 1093,
+        "sid": 1093,
+        "start_ticks": 50600,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "native-early",
+        "mode": "native-check",
+        "args": [
+          "early"
+        ]
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-nav-check.json",
+      "owner": {
+        "pid": 1117,
+        "pgid": 1117,
+        "sid": 1117,
+        "start_ticks": 53338,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "nav-check",
+        "mode": "nav-check",
+        "args": []
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-navigation.json",
+      "owner": {
+        "pid": 1116,
+        "pgid": 1116,
+        "sid": 1116,
+        "start_ticks": 53325,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "navigation",
+        "mode": "navigation",
+        "args": []
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-parameter-gate.json",
+      "owner": {
+        "pid": 1354,
+        "pgid": 1354,
+        "sid": 1354,
+        "start_ticks": 57603,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "parameter-gate",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run27-param-gate.py"
+        ]
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-perception.json",
+      "owner": {
+        "pid": 1408,
+        "pgid": 1408,
+        "sid": 1408,
+        "start_ticks": 61916,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "perception",
+        "mode": "perception",
+        "args": []
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-recorder.json",
+      "owner": {
+        "pid": 1407,
+        "pgid": 1407,
+        "sid": 1407,
+        "start_ticks": 61915,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "recorder",
+        "mode": "recorder",
+        "args": []
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-sim-check.json",
+      "owner": {
+        "pid": 883,
+        "pgid": 883,
+        "sid": 883,
+        "start_ticks": 40592,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "sim-check",
+        "mode": "sim-check",
+        "args": []
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "process-sim.json",
+      "owner": {
+        "pid": 882,
+        "pgid": 882,
+        "sid": 882,
+        "start_ticks": 40590,
+        "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+        "name": "sim",
+        "mode": "sim",
+        "args": []
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "file": "nested_recorder",
+      "owner": {
+        "pid": 1442,
+        "pgid": 1442,
+        "sid": 1442,
+        "start_ticks": 63234,
+        "token": "fe71991aa3b84072a19e1e6ee77ca5e9"
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true
+    }
+  ],
+  "all_recorded_groups_empty_at_recheck": true,
+  "scope": "Later scoped group inspection only; original uncertain shutdown remains unchanged; no global absence claim."
+}

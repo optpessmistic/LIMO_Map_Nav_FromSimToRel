@@ -1,0 +1,60 @@
+{
+  "run": "run27-writer-pipe",
+  "code_head": "a7e489b7e260490b18220ade213a2122be4c9c84",
+  "token": "run27-b0b8f47d13484eb3a9892cee1821f8a5",
+  "epoch": "5e740858-be29-4956-bea6-b450fd72f0b5",
+  "world_sha256": "1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+  "nav2_sha256": "870d24aea11ec9df7d86da4fd48595ca9687eec0f53d23bb69c1b8f7dab6b622",
+  "profile": {
+    "max_jobs": 96,
+    "file_bytes": 268435456,
+    "consumer_samples": 96,
+    "consumer_metadata_bytes": 4194304,
+    "stations": 3,
+    "headings": 4,
+    "max_dispatches": 12,
+    "observation_wall_s": 360
+  },
+  "unchanged": [
+    "Nav2 XY .03m",
+    "mission XY .05m",
+    "yaw .26rad",
+    "stationarity .5s",
+    "inspection12s",
+    "writer5s",
+    "request10s",
+    "shutdown8s"
+  ],
+  "recorded_inputs": "rosbag metadata/TF/odom/map/actions and source-exact accepted RGB-D; continuous raw image topics omitted",
+  "planned_active_wall_budget_s": 1800,
+  "change": "Best-effort bounded stdin pipe capacity and fixed-size transfer diagnostics; old run26 TF profile retained.",
+  "cleanup_reporting_change": "Unreadable unrelated process environments remain explicitly uncertain; owned groups and writer exit remain mandatory",
+  "raster_export": "Separate immutable captured OccupancyGrid PGM/YAML; save_map service not attempted, serialize_map remains separate",
+  "primary_frontier_standoff_m": 0.55,
+  "fallback_frontier_standoff_m": 0.8,
+  "budgets": "All original mission900/return240/goal120/inspection12/writer5/request10/shutdown8 and observation360 bounds unchanged",
+  "previous_attempt": {
+    "run": "run26-tf-tolerance",
+    "status": "terminal_observed",
+    "errors": [
+      "Producer did not confirm clean retained-frame shutdown",
+      "Retained-frame offline audit failed"
+    ]
+  },
+  "startup_change": "Wait for Mission loaded log before creating parameter capture client; 30s readiness bound shares original global deadline. Parameter per-request6s and total17s budgets unchanged.",
+  "tf_profile": {
+    "FollowPath.transform_tolerance": 0.5,
+    "tf_max_age_s": 1.5,
+    "slam_transform_timeout": 0.2,
+    "slam_restamp_tf": false
+  },
+  "comparison_scope": "Same simulator, TF values, /mnt/c output and strict raw-frame retention; no filesystem migration or deadline relaxation.",
+  "startup_fix": "Write epoch as explicit ASCII+LF; assert exact UUID bytes before starting ROS.",
+  "writer_profile": {
+    "requested_pipe_bytes": 1048576,
+    "max_bytes_per_poll": 1048576,
+    "worker_wall_seconds": 5.0,
+    "request_wall_seconds": 10.0,
+    "shutdown_wall_seconds": 8.0
+  }
+}
