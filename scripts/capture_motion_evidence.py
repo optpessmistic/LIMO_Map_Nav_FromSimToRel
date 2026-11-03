@@ -67,6 +67,7 @@ def persist(stream, report):
 
 
 def main(argv=None, *, runtime_factory=load_runtime, monotonic=time.monotonic):
+    main_enter = monotonic()
     ap = argparse.ArgumentParser()
     ap.add_argument("--duration", type=float, default=60)
     ap.add_argument("--motion-wait", type=float, default=90)
@@ -96,7 +97,23 @@ def main(argv=None, *, runtime_factory=load_runtime, monotonic=time.monotonic):
     gz_samples, odom_samples = [], []
     lock = threading.Lock()
     state = {"accepting": True, "callback_error": False}
+    timing = {"clock": "time.monotonic; host wall clock, not ROS simulation time",
+              "main_enter": main_enter, "environment_ready": None,
+              "environment_stamp_error": None, "runtime_load_started": None,
+              "runtime_load_finished": None, "subscriptions_ready": None,
+              "both_streams_ready": None,
+              "scope": "Main entry excludes interpreter/top-level imports; READY is loop observation of both streams. Environment stamp is optional wrapper observation, including wrapper startup."}
+    environment_stamp = os.environ.get("LIMO_MOTION_ENV_READY_MONOTONIC")
+    if environment_stamp is not None:
+        try:
+            value = float(environment_stamp)
+            if not math.isfinite(value) or not 0 <= value <= main_enter:
+                raise ValueError("outside main-entry clock interval")
+            timing["environment_ready"] = value
+        except ValueError:
+            timing["environment_stamp_error"] = "invalid_or_different_clock"
     report = {"schema_version": 1, "read_only": True,
+              "startup_timing": timing,
               "truth_used_only_for_offline_diagnosis": True,
               "world_topic": topic, "world_entity": args.model,
               "motion_detected": False, "wall_seconds": 0.0,
@@ -162,7 +179,13 @@ def main(argv=None, *, runtime_factory=load_runtime, monotonic=time.monotonic):
             previous_handlers[signum] = signal.getsignal(signum)
             signal.signal(signum, request_stop)
         persist(stream, report)
+        print("STARTUP_TIMING " + json.dumps({"main_enter": main_enter,
+            "environment_ready": timing["environment_ready"]}), flush=True)
+        timing["runtime_load_started"] = monotonic()
         rt = runtime_factory()
+        timing["runtime_load_finished"] = monotonic()
+        print("STARTUP_TIMING " + json.dumps({"runtime_load_started": timing["runtime_load_started"],
+            "runtime_load_finished": timing["runtime_load_finished"]}), flush=True)
         ros = rt.rclpy
         ros.init(signal_handler_options=rt.SignalHandlerOptions.NO)
         initialized = True
@@ -177,10 +200,13 @@ def main(argv=None, *, runtime_factory=load_runtime, monotonic=time.monotonic):
         subscribed = True
         # Keep the original waiting/measurement window origin after setup.
         start = monotonic()
+        timing["subscriptions_ready"] = start
+        print("STARTUP_TIMING " + json.dumps({"subscriptions_ready": start}), flush=True)
         report["reason"] = "ros_context_stopped"
         while ros.ok() and stop["signal"] is None:
             ros.spin_once(node, timeout_sec=.05)
-            elapsed = monotonic() - start
+            poll_wall = monotonic()
+            elapsed = poll_wall - start
             with lock:
                 callback_error = state["callback_error"]
                 have_both = bool(gz_samples and odom_samples)
@@ -191,7 +217,8 @@ def main(argv=None, *, runtime_factory=load_runtime, monotonic=time.monotonic):
             if stop["signal"] is not None:
                 break
             if have_both and not ready:
-                print("READY: native Gazebo limo world pose and ROS odom received; waiting for controlled motion; no commands published.", flush=True)
+                timing["both_streams_ready"] = poll_wall
+                print(f"READY: native Gazebo limo world pose and ROS odom received; waiting for controlled motion; no commands published. monotonic={poll_wall:.9f}", flush=True)
                 ready = True
             if motion_start is None and latest_odom and (abs(latest_odom["angular_velocity"]) > .05
                                                         or latest_odom["linear_velocity"] > .01):

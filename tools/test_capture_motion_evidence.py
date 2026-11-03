@@ -11,6 +11,7 @@ import sys
 import tempfile
 from types import SimpleNamespace as NS
 import unittest
+from unittest.mock import patch
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/capture_motion_evidence.py"
@@ -166,6 +167,42 @@ class CaptureTests(unittest.TestCase):
         self.assertLess(rt.order.index("listener_unregister"), rt.order.index("ros_shutdown"))
         self.assertLess(report["world_samples"][-1]["sim_s"], 1.9)
 
+    def test_slow_runtime_load_is_recorded_without_consuming_measurement_window(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "initial-motion.json"
+            rt = FakeRuntime("no_motion", output)
+            rt.now = 10.
+            def slow_load():
+                rt.now += 20.
+                return rt.runtime
+            console = io.StringIO()
+            with patch.dict(os.environ, {"LIMO_MOTION_ENV_READY_MONOTONIC": "8.0"}), redirect_stdout(console):
+                code = capture.main(["--motion-wait", ".4", "--output", str(output)],
+                    runtime_factory=slow_load, monotonic=lambda: rt.now)
+            report = json.loads(output.read_text())
+        timing = report["startup_timing"]
+        self.assertEqual(code, 2)
+        self.assertEqual(report["reason"], "motion_wait_timeout")
+        self.assertEqual(timing["environment_ready"], 8.)
+        self.assertEqual(timing["main_enter"], 10.)
+        self.assertEqual(timing["runtime_load_finished"] - timing["runtime_load_started"], 20.)
+        self.assertEqual(timing["subscriptions_ready"], 30.)
+        self.assertGreater(timing["both_streams_ready"], timing["subscriptions_ready"])
+        self.assertGreaterEqual(report["wall_seconds"], .4)
+        self.assertLess(report["wall_seconds"], .6)
+        self.assertEqual(console.getvalue().count("READY:"), 1)
+        self.assertIn("READY: native Gazebo limo world pose and ROS odom received;", console.getvalue())
+        self.assertIn(f"monotonic={timing['both_streams_ready']:.9f}", console.getvalue())
+        self.assertFalse(report["motion_detected"])
+
+    def test_invalid_optional_environment_stamp_does_not_change_capture(self):
+        for stamp in ("not-a-clock", "nan", "inf", "-1", "100"):
+            with self.subTest(stamp=stamp), patch.dict(os.environ, {"LIMO_MOTION_ENV_READY_MONOTONIC": stamp}):
+                code, report, _ = self.run_capture()
+                self.assertEqual(code, 0)
+                self.assertIsNone(report["startup_timing"]["environment_ready"])
+                self.assertEqual(report["startup_timing"]["environment_stamp_error"], "invalid_or_different_clock")
+
     def test_sigint_and_sigterm_preserve_both_streams_as_partial(self):
         for mode in ("sigint", "sigterm"):
             with self.subTest(mode=mode):
@@ -239,6 +276,10 @@ class CaptureTests(unittest.TestCase):
         self.assertIn("ImportError", report["error"])
         self.assertEqual(report["world_summary"], {"count": 0})
         self.assertFalse(report["cleanup"]["ros_shutdown_called"])
+        timing = report["startup_timing"]
+        self.assertIsNotNone(timing["runtime_load_started"])
+        for name in ("runtime_load_finished", "subscriptions_ready", "both_streams_ready"):
+            self.assertIsNone(timing[name])
 
     def test_existing_output_refused_without_loading_runtime(self):
         with tempfile.TemporaryDirectory() as tmp:
