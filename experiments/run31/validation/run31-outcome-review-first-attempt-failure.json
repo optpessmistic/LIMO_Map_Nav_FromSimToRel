@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "scope": "Offline outcome helper execution failure, separate from the immutable run31 experiment result",
+  "source": "Root reported the first actual Windows Python outcome execution failure before retry",
+  "helper": "outputs/setup/run31-outcome-review.py",
+  "phase": "later_closure",
+  "exception_type": "KeyError",
+  "missing_key": "outputs/ros_smoke/run31-observation-route/orchestration.json",
+  "cause": "Source registry used Windows str(relative_path) backslashes while lookup used as_posix forward slashes",
+  "outcome_report_written_as_reported_by_root": false,
+  "original_experiment_evidence_changed": false,
+  "fix": "Normalize source registry and relative missing-file keys with Path.as_posix on every platform",
+  "retry_result": null
+}

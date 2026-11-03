@@ -1,0 +1,389 @@
+{
+  "schema_version": 1,
+  "run": "run31-observation-route",
+  "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+  "root_exec_completion": {
+    "session_id": 26612,
+    "exit_code": 1,
+    "source": "Actual root write_stdin completion, before this read-only check"
+  },
+  "original_orchestration_sha256": "da4346dee07ad13daed560667a806956ce08370c003e40fea26e2af730d0c543",
+  "original_all_owned_groups_empty": false,
+  "checked_monotonic_s": 955.385737392,
+  "boot_id_at_later_check": "df77d770-9ff7-48ab-9b76-33f5ff0a8ff2",
+  "groups": [
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-installed-check.json",
+      "owner_sha256": "f0273f4bbcff8e48e5d5670d311f6a9f5fcdcb7239e15245874baa136b34d8c1",
+      "owner": {
+        "pid": 934,
+        "pgid": 934,
+        "sid": 934,
+        "start_ticks": 7973,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "installed-check",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run31-installed-check.py"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-mission.json",
+      "owner_sha256": "e542e0f1a706f3e7c6c6b87e7fcb1dba569dc3c3a8b958dce7b02b74eb4a0df6",
+      "owner": {
+        "pid": 1723,
+        "pgid": 1723,
+        "sid": 1723,
+        "start_ticks": 37315,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "mission",
+        "mode": "mission",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-motion.json",
+      "owner_sha256": "f9ee93e3c7d491c38d200e882095ea182c698494173a6e3300ad609ff84ca9d5",
+      "owner": {
+        "pid": 1568,
+        "pgid": 1568,
+        "sid": 1568,
+        "start_ticks": 23611,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "motion",
+        "mode": "motion",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-native-before-motion.json",
+      "owner_sha256": "718ddc15c3d047ce99e216e30c1cb27a5a0d91eaec3e7111f829646979d3b121",
+      "owner": {
+        "pid": 1454,
+        "pgid": 1454,
+        "sid": 1454,
+        "start_ticks": 20160,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "native-before-motion",
+        "mode": "native-check",
+        "args": [
+          "before-motion"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-native-early.json",
+      "owner_sha256": "a0ffdc60dcd4e75362eef21ccb916e30feeb34e617de35270fb480401fccefb7",
+      "owner": {
+        "pid": 1165,
+        "pgid": 1165,
+        "sid": 1165,
+        "start_ticks": 15368,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "native-early",
+        "mode": "native-check",
+        "args": [
+          "early"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-native-terminal.json",
+      "owner_sha256": "38978abc18e8a5a4c38a8957b2c9fbdcde59cbf0a42c50f74e3f43057aea0704",
+      "owner": {
+        "pid": 2224,
+        "pgid": 2224,
+        "sid": 2224,
+        "start_ticks": 78962,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "native-terminal",
+        "mode": "native-check",
+        "args": [
+          "terminal"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-nav-check.json",
+      "owner_sha256": "3948902b351cc8afc40721bfb2ade318b08358bf001dbf353ba06b67487c30d1",
+      "owner": {
+        "pid": 1189,
+        "pgid": 1189,
+        "sid": 1189,
+        "start_ticks": 16605,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "nav-check",
+        "mode": "nav-check",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-navigation.json",
+      "owner_sha256": "ae370af742ff5c3e6934aaace875be2d925cbf31a6facd726a45735175b26edc",
+      "owner": {
+        "pid": 1188,
+        "pgid": 1188,
+        "sid": 1188,
+        "start_ticks": 16586,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "navigation",
+        "mode": "navigation",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-observer.json",
+      "owner_sha256": "1541bd067333872f7f8e78e73c3b691c8d47830e85f163906e213d51c356db5b",
+      "owner": {
+        "pid": 1687,
+        "pgid": 1687,
+        "sid": 1687,
+        "start_ticks": 35907,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "observer",
+        "mode": "observer",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-parameter-gate.json",
+      "owner_sha256": "4e13121f2529a1c571c9011bf21eaccea3fe497aee70bd390eed725a34869e41",
+      "owner": {
+        "pid": 1424,
+        "pgid": 1424,
+        "sid": 1424,
+        "start_ticks": 18775,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "parameter-gate",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run31-param-gate.py"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-perception.json",
+      "owner_sha256": "54eac460edabb6634a8d66467fa53e3dc266a270a2c63a228fd46e651d702f3b",
+      "owner": {
+        "pid": 1478,
+        "pgid": 1478,
+        "sid": 1478,
+        "start_ticks": 21507,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "perception",
+        "mode": "perception",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-preflight.json",
+      "owner_sha256": "81660c662901b9493f0fa30c68a347586d031c64de0257eb6421a7014b3c6f99",
+      "owner": {
+        "pid": 1657,
+        "pgid": 1657,
+        "sid": 1657,
+        "start_ticks": 33979,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "preflight",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run31-preflight.py",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run31-observation-route/preflight.json"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-provenance.json",
+      "owner_sha256": "1b3b9370eeceed9a0117d45cd8d0ed761bfeff39400d71078e2d424cea50208a",
+      "owner": {
+        "pid": 1807,
+        "pgid": 1807,
+        "sid": 1807,
+        "start_ticks": 41617,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "provenance",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run31-provenance.py",
+          "--output",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run31-observation-route/provenance-live.json"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-recorder.json",
+      "owner_sha256": "6a144bc9ab519be2741f919db6473e48dfabf5353105e00d03a9d2ee38d3fe1d",
+      "owner": {
+        "pid": 1477,
+        "pgid": 1477,
+        "sid": 1477,
+        "start_ticks": 21506,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "recorder",
+        "mode": "recorder",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-save-early.json",
+      "owner_sha256": "c6cf47ed2f38a86ec802816d881409c12e62826704088ab82fc343645e857dbe",
+      "owner": {
+        "pid": 1756,
+        "pgid": 1756,
+        "sid": 1756,
+        "start_ticks": 39408,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "save-early",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run31-save.py",
+          "--parameters-only"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-save-final.json",
+      "owner_sha256": "2e8583956bf3f570b8ae89ace1fb4a08d40f2dc5386bc66d23ebe48a14cbd966",
+      "owner": {
+        "pid": 2247,
+        "pgid": 2247,
+        "sid": 2247,
+        "start_ticks": 80553,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "save-final",
+        "mode": "python",
+        "args": [
+          "outputs/setup/run31-save.py",
+          "--final"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-sim-check.json",
+      "owner_sha256": "d029e2ad4dd1dc4c125da3a7098a6b8146a2acf04ebfe2d824f357dba597bcbf",
+      "owner": {
+        "pid": 955,
+        "pgid": 955,
+        "sid": 955,
+        "start_ticks": 10533,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "sim-check",
+        "mode": "sim-check",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-sim.json",
+      "owner_sha256": "734a8eba69c4303cb2fffd098a7131039ab0b3850add21746afa4a012c84c838",
+      "owner": {
+        "pid": 954,
+        "pgid": 954,
+        "sid": 954,
+        "start_ticks": 10532,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "sim",
+        "mode": "sim",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-snapshot-raster.json",
+      "owner_sha256": "d801dc44a4e7a4512ece563819555e18daeea27b2af7d2e9dd06360abfce58b4",
+      "owner": {
+        "pid": 2277,
+        "pgid": 2277,
+        "sid": 2277,
+        "start_ticks": 82779,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "snapshot-raster",
+        "mode": "python",
+        "args": [
+          "tools/export_occupancy_map.py",
+          "--snapshot",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run31-observation-route/final-save.json",
+          "--output-prefix",
+          "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run31-observation-route/snapshot-map"
+        ]
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    },
+    {
+      "owner_file": "outputs/ros_smoke/run31-observation-route/process-survey.json",
+      "owner_sha256": "a60d877fdfd17457287d5c159bd591001cf686ba8ca8c69286bf1de4ccf34628",
+      "owner": {
+        "pid": 1604,
+        "pgid": 1604,
+        "sid": 1604,
+        "start_ticks": 25001,
+        "token": "run31-427383601d1f45dda66e70b3b25f19a9",
+        "name": "survey",
+        "mode": "survey",
+        "args": []
+      },
+      "remaining": [],
+      "errors": [],
+      "remaining_check_complete": true
+    }
+  ],
+  "all_owned_groups_empty_at_later_check": true,
+  "signals_sent": [],
+  "scope": "Later read-only /proc scan using original group/session, leader start ticks and run token. Does not alter the original shutdown result or imply that its deadline succeeded. No global process-absence claim."
+}

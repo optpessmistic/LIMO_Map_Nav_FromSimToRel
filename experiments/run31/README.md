@@ -1,0 +1,15 @@
+# Run31 compact diagnostic archive
+
+Mission, navigation-recovery diagnostics, parameter readbacks and original navigation logs are retained here. Original failure/unknown values remain unchanged; CI success and a stationary stop do not imply mission success.
+
+Runtime revision: `acf3419cfaa78ae994b704f009c3d9cb6d337609`; external CI receipt: `41611348134`. The actual root session exit is recorded separately in `external-receipts.json`.
+
+**Original shutdown did not confirm all owned groups empty**: `orchestration.json` retains `all_owned_groups_empty=false`, `errors=[]`, and root session 26612 retains exit code 1. The separate later `postclosure-check.json` confirms only the exact listed original groups were empty at that later check; original identity files and the read-only check script are included. It sends no signals, does not repair the original shutdown deadline/result, and does not claim global process absence.
+
+**This is not a complete retained-frame archive.** RGB-D binaries and metadata remain at `outputs/ros_smoke/run31-observation-route/retained`. `external-evidence.json` lists their exact paths, sizes and SHA256. MCAP/DB3, posegraph/data and full observer data are also hash-only references. No image tar or bag copy is included. Keep those original directories to rerun the strict audit; the existing audit result is preserved without reinterpretation.
+
+See `run31-outcome-review.md` for the run30 comparison and `run31-outcome-review.json` for original mission flags, recovery started/ready, actual later goal dispatches and terminal error fields. Ready alone is not dispatch success; the full frozen observation denominator retains skipped/failed/pending views. Retired storage receipts keep their original deadline and do not grant observation or new-window credit. Two runs cannot isolate route-ordering and receipt-handling effects. Missing files are listed explicitly.
+
+`runner/` contains exact small helper snapshots as `.txt`; restore original filenames in the repository before reuse. Production/test source hashes are bound by preparation and the separate navigation-recovery validation archive. The closed SLAM build receipt (94045), build script/log, source binding, prefix, SHA list, ldd and full nm output are retained under `validation/`; the nm text is lossless gzip, with original and archived hashes in the manifest. Build/CI success is separate from actual loaded-library identity and mission outcome. Focused observation/retention build, install and pure-test receipts are included; the full separate validation archive is referenced by hash. Callback credit flags are not logged; outcome summaries do not manufacture them. This archive does not claim a new decoded-bag TF timing comparison or a new wall-clock probe. No full node source, shared-library binary or repeated recovery validation logs are copied here.
+
+Verify archived bytes with `sha256sum -c SHA256SUMS` from this directory. Archive-local `.gitattributes` disables text conversion. External source hashes require the originals and are not validated by that archive-only command.

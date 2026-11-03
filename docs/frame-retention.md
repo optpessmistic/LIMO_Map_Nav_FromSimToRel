@@ -48,6 +48,8 @@ ros2 run limo_maze_perception red_rgbd_detector --ros-args \
 
 此修改来自 run30 的三个未确认槽位：源端在旧窗口重置后、原截止前完成写入，旧逻辑则忽略退休窗口回执。原记录只有迟到回执总数，缺少逐帧消费端接收时刻，因此仍保留 run30 的 33/36 审计失败，不能事后追认。
 
+后续 run31 的 11 个窗口共 33 组原始 RGB-D 全部通过严格审计，writer 关闭与最终 checkpoint 保存通过，producer 无 fault。本轮没有退休窗口；新分支的证据仍来自[独立真实 DDS 测试](../experiments/observation-retention-20261103/README.md)，不能把 run31 的 33/33 解释成退休回执已经在该整车场景触发。观察缺口和原进程关闭失败见 [run31 记录](../experiments/run31/run31-outcome-review.md)。
+
 早先任务 JSON 内的成功回执不能覆盖源端后来出现的身份冲突、写入失败或未闭合检查点。关闭后未收到的失败需要用最终检查点发现。文件审计通过只证明接受清单与保存字节一致；TF 的测量精度、实际停车、完整可见区域覆盖、物品类别和召回率还需要单独验证。有限观察队列和存档成功都不会自动把完整任务成功设为 true。
 
 Gazebo/RViz 的打开方式见[可视化界面](visualization.md)。

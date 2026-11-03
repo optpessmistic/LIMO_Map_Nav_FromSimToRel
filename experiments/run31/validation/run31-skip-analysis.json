@@ -1,0 +1,1868 @@
+{
+  "schema_version": 1,
+  "run": "run31-observation-route",
+  "runtime_head": "acf3419cfaa78ae994b704f009c3d9cb6d337609",
+  "read_only": true,
+  "script_sha256": "b8882f9d2923bb349321fee37ba5c144a242956f6d717d19929e964ee255379b",
+  "sources": {
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\mission\\mission_20261103_014821.json": "e3fb7e29973f2faf24f67802cd8cd9982e9dc99d648fe05967b11c19a8d2c902",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\preparation.json": "6b3e988a4ed490a3d3bc199d8dc2dfe24b414626d72de88f86d53a186ffbc777",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\parameters-early.json": "2622bd034cc4d47a1352900e7e407d5ebd501f599ca774b3ce36883c87738059",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\setup\\run31-postclosure-check.json": "5806642ba303b16e3f13d0793f822d2c6796e73b6dbaa28b1ffcd5767da47721",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\src\\limo_maze_mission\\limo_maze_mission\\observation.py": "8ba8ef18856750b552e29231ed06d1e45b5b813b2b7242af2baea6273a886720",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\src\\limo_maze_mission\\limo_maze_mission\\core.py": "44295e9560023829669f7dfeff07bc2f0a9021e5a7ce78111d936055179ff774",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\observer-snapshots\\0032-phase-observation_select.json": "4b402135965c479911b68266ad006705b62fb0fa20c3aa46ddce3a009085c73e",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\observer-snapshots\\0053-phase-observation_navigating.json": "8f0ce77d21088ba6ea5422d53a4a3d6270f6ab3c785574c3c68e95c5f375e946",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\observer-snapshots\\0054-goal-terminal-receipt.json": "fb7218a3acb9a84f9d7fc03182d025e62317a0a0ffa7daafefd212d13f80f8ef",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\observer-snapshots\\0057-phase-inspecting.json": "c7d9a378b70ab63a9c0007e780fb15b8b6c5e20edf09e665b4392bdd58ce001d",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\observer-snapshots\\0058-phase-canceling.json": "7e25c93247abf13ff9186fe0525c3c83dd1692e1b1832c4401ae38ab19ca4bcf",
+    "C:\\Users\\Admin\\.codex\\worktrees\\0dd9\\Personal_Plan\\LIMO_Map_Nav_FromSimToRel\\outputs\\ros_smoke\\run31-observation-route\\observer-snapshots\\0064-observer-final.json": "1238169d5ce1bdbb171cdd7992eb6c0ddd2474b2464100dcefe5221bac33761d"
+  },
+  "source_sha_matches_runtime_preparation": {
+    "src/limo_maze_mission/limo_maze_mission/observation.py": true,
+    "src/limo_maze_mission/limo_maze_mission/core.py": true
+  },
+  "inputs_read_scope": "Six small observer snapshots and mission/parameter/preparation/closure receipts; no observer.json, costmaps, bag, ROS or simulation.",
+  "closure": {
+    "root_exec_session": 26612,
+    "root_exit_code": 1,
+    "later_groups_all_empty": true,
+    "original_all_owned_groups_empty": false,
+    "original_evidence_modified": false
+  },
+  "policy": {
+    "robot_radius_m": 0.25,
+    "arrival_margin_m": 0.05,
+    "station_spacing_m": 1.0,
+    "max_stations": 3,
+    "headings_per_station": 4,
+    "max_dispatches": 12,
+    "max_attempts_per_view": 1,
+    "max_grid_cells": 250000
+  },
+  "denominator": 12,
+  "completed": 5,
+  "skipped": 7,
+  "observed_final_queue": {
+    "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+    "invalidated": false,
+    "invalid_reason": null,
+    "active_action_id": null,
+    "active_dispatch_id": null,
+    "cancel_required": false,
+    "planned_stations": 3,
+    "planned_views": 12,
+    "dispatches": 5,
+    "dispatch_budget": 12,
+    "pending_views": 0,
+    "state_counts": {
+      "completed": 5,
+      "skipped_unsafe_or_unreachable": 7
+    },
+    "all_planned_actions_completed": false,
+    "visual_coverage_claimed": false,
+    "mission_success_claimed": false,
+    "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+  },
+  "reconstruction": {
+    "initial_snapshot": "0032-phase-observation_select.json",
+    "actual_view_matches": [
+      {
+        "action_id": "observation-0001",
+        "all_view_fields_match": true
+      },
+      {
+        "action_id": "observation-0004",
+        "all_view_fields_match": true
+      },
+      {
+        "action_id": "observation-0010",
+        "all_view_fields_match": true
+      },
+      {
+        "action_id": "observation-0007",
+        "all_view_fields_match": true
+      },
+      {
+        "action_id": "observation-0009",
+        "all_view_fields_match": true
+      }
+    ],
+    "stations": [
+      [
+        1.6306719515916006,
+        -1.4942623538121556
+      ],
+      [
+        3.1806719746884005,
+        -0.04426233220547182
+      ],
+      [
+        0.33067193222009106,
+        0.005737668539586238
+      ]
+    ],
+    "initial_execution_order": [
+      "observation-0001",
+      "observation-0004",
+      "observation-0010",
+      "observation-0007",
+      "observation-0009",
+      "observation-0003",
+      "observation-0006",
+      "observation-0012",
+      "observation-0011",
+      "observation-0005",
+      "observation-0002",
+      "observation-0008"
+    ],
+    "pending_after_five_actual_successes": [
+      "observation-0003",
+      "observation-0006",
+      "observation-0012",
+      "observation-0011",
+      "observation-0005",
+      "observation-0002",
+      "observation-0008"
+    ],
+    "history_construction_scope": "Production take_next/finish on the initial safe snapshot with actual outcomes constructs queue state only; historical per-dispatch map identity is not claimed.",
+    "final_snapshot": "0058-phase-canceling.json",
+    "production_decision": {
+      "state": "exhausted",
+      "view": null,
+      "reason": "remaining_views_unsafe_or_unreachable",
+      "dispatch_id": null
+    },
+    "final_queue_matches_recorded": true,
+    "views": [
+      {
+        "action_id": "observation-0001",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 0,
+        "heading_index": 0,
+        "goal": {
+          "x": 1.6306719515916006,
+          "y": -1.4942623538121556,
+          "yaw": 0.0,
+          "kind": "observation_queue",
+          "anchor": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ]
+        },
+        "reconstructed_final_state": "completed",
+        "actual_dispatch_id": 1,
+        "actual_outcome": "inspection_satisfied",
+        "provenance": "Actual dispatched view matched exactly"
+      },
+      {
+        "action_id": "observation-0002",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 1,
+        "heading_index": 0,
+        "goal": {
+          "x": 3.1806719746884005,
+          "y": -0.04426233220547182,
+          "yaw": 0.0,
+          "kind": "observation_queue",
+          "anchor": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ]
+        },
+        "reconstructed_final_state": "skipped_unsafe_or_unreachable",
+        "actual_dispatch_id": null,
+        "actual_outcome": null,
+        "provenance": "Undispatched view reconstructed from initial observer snapshot; not independently persisted by MissionNode"
+      },
+      {
+        "action_id": "observation-0003",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 2,
+        "heading_index": 0,
+        "goal": {
+          "x": 0.33067193222009106,
+          "y": 0.005737668539586238,
+          "yaw": 0.0,
+          "kind": "observation_queue",
+          "anchor": [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        },
+        "reconstructed_final_state": "skipped_unsafe_or_unreachable",
+        "actual_dispatch_id": null,
+        "actual_outcome": null,
+        "provenance": "Undispatched view reconstructed from initial observer snapshot; not independently persisted by MissionNode"
+      },
+      {
+        "action_id": "observation-0004",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 0,
+        "heading_index": 1,
+        "goal": {
+          "x": 1.6306719515916006,
+          "y": -1.4942623538121556,
+          "yaw": 1.5707963267948966,
+          "kind": "observation_queue",
+          "anchor": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ]
+        },
+        "reconstructed_final_state": "completed",
+        "actual_dispatch_id": 2,
+        "actual_outcome": "inspection_satisfied",
+        "provenance": "Actual dispatched view matched exactly"
+      },
+      {
+        "action_id": "observation-0005",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 1,
+        "heading_index": 1,
+        "goal": {
+          "x": 3.1806719746884005,
+          "y": -0.04426233220547182,
+          "yaw": 1.5707963267948966,
+          "kind": "observation_queue",
+          "anchor": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ]
+        },
+        "reconstructed_final_state": "skipped_unsafe_or_unreachable",
+        "actual_dispatch_id": null,
+        "actual_outcome": null,
+        "provenance": "Undispatched view reconstructed from initial observer snapshot; not independently persisted by MissionNode"
+      },
+      {
+        "action_id": "observation-0006",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 2,
+        "heading_index": 1,
+        "goal": {
+          "x": 0.33067193222009106,
+          "y": 0.005737668539586238,
+          "yaw": 1.5707963267948966,
+          "kind": "observation_queue",
+          "anchor": [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        },
+        "reconstructed_final_state": "skipped_unsafe_or_unreachable",
+        "actual_dispatch_id": null,
+        "actual_outcome": null,
+        "provenance": "Undispatched view reconstructed from initial observer snapshot; not independently persisted by MissionNode"
+      },
+      {
+        "action_id": "observation-0007",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 0,
+        "heading_index": 3,
+        "goal": {
+          "x": 1.6306719515916006,
+          "y": -1.4942623538121556,
+          "yaw": -1.5707963267948966,
+          "kind": "observation_queue",
+          "anchor": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ]
+        },
+        "reconstructed_final_state": "completed",
+        "actual_dispatch_id": 4,
+        "actual_outcome": "inspection_satisfied",
+        "provenance": "Actual dispatched view matched exactly"
+      },
+      {
+        "action_id": "observation-0008",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 1,
+        "heading_index": 3,
+        "goal": {
+          "x": 3.1806719746884005,
+          "y": -0.04426233220547182,
+          "yaw": -1.5707963267948966,
+          "kind": "observation_queue",
+          "anchor": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ]
+        },
+        "reconstructed_final_state": "skipped_unsafe_or_unreachable",
+        "actual_dispatch_id": null,
+        "actual_outcome": null,
+        "provenance": "Undispatched view reconstructed from initial observer snapshot; not independently persisted by MissionNode"
+      },
+      {
+        "action_id": "observation-0009",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 2,
+        "heading_index": 3,
+        "goal": {
+          "x": 0.33067193222009106,
+          "y": 0.005737668539586238,
+          "yaw": -1.5707963267948966,
+          "kind": "observation_queue",
+          "anchor": [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        },
+        "reconstructed_final_state": "completed",
+        "actual_dispatch_id": 5,
+        "actual_outcome": "inspection_satisfied",
+        "provenance": "Actual dispatched view matched exactly"
+      },
+      {
+        "action_id": "observation-0010",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 0,
+        "heading_index": 2,
+        "goal": {
+          "x": 1.6306719515916006,
+          "y": -1.4942623538121556,
+          "yaw": -3.141592653589793,
+          "kind": "observation_queue",
+          "anchor": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ]
+        },
+        "reconstructed_final_state": "completed",
+        "actual_dispatch_id": 3,
+        "actual_outcome": "inspection_satisfied",
+        "provenance": "Actual dispatched view matched exactly"
+      },
+      {
+        "action_id": "observation-0011",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 1,
+        "heading_index": 2,
+        "goal": {
+          "x": 3.1806719746884005,
+          "y": -0.04426233220547182,
+          "yaw": -3.141592653589793,
+          "kind": "observation_queue",
+          "anchor": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ]
+        },
+        "reconstructed_final_state": "skipped_unsafe_or_unreachable",
+        "actual_dispatch_id": null,
+        "actual_outcome": null,
+        "provenance": "Undispatched view reconstructed from initial observer snapshot; not independently persisted by MissionNode"
+      },
+      {
+        "action_id": "observation-0012",
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "station_id": 2,
+        "heading_index": 2,
+        "goal": {
+          "x": 0.33067193222009106,
+          "y": 0.005737668539586238,
+          "yaw": -3.141592653589793,
+          "kind": "observation_queue",
+          "anchor": [
+            0.33067193222009106,
+            0.005737668539586238
+          ]
+        },
+        "reconstructed_final_state": "skipped_unsafe_or_unreachable",
+        "actual_dispatch_id": null,
+        "actual_outcome": null,
+        "provenance": "Undispatched view reconstructed from initial observer snapshot; not independently persisted by MissionNode"
+      }
+    ]
+  },
+  "findings": {
+    "snapshot_supported_branch": "endpoint_clearance; robot-radius connectivity remains true",
+    "origin_delta_xy_yaw": [
+      -0.007539167445276718,
+      0.0,
+      0.0
+    ],
+    "goal_cell_indices_changed": false,
+    "offset_alone_explains_failure": false,
+    "exact_world_center_same_reserve_stations_1_2_clear": [
+      false,
+      false
+    ],
+    "observed_revalidation_ros_stamp": 278.805,
+    "decision_time_map_and_pose_not_persisted": true,
+    "station_1_safe_again_at_final_snapshot": true,
+    "station_2_safe_at_final_snapshot": false
+  },
+  "snapshots": [
+    {
+      "file": "0032-phase-observation_select.json",
+      "observer_wall_elapsed_s": 246.951484052,
+      "observer_ros_s": 221.74,
+      "map": {
+        "stamp": 221.375,
+        "frame": "map",
+        "width": 84,
+        "height": 52,
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.4943280800733669,
+          -2.1192623631253813,
+          0.0
+        ]
+      },
+      "pose": {
+        "stamp": 221.734,
+        "xyz": [
+          1.6533863400688626,
+          -1.4897378131757795,
+          8.326672684688674e-17
+        ],
+        "yaw": 0.44104131256456147
+      },
+      "map_data_sha256": "6c819cab7c4402ca0b94d4b39787f8bb182f04936f76b467e22cd15a7b1bf1c3",
+      "map_age_ros_s": 0.3650000000000091,
+      "pose_age_ros_s": 0.006000000000000227,
+      "reachable_cells": 794,
+      "stations": [
+        {
+          "station_id": 0,
+          "world_goal_xy": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "goal_cell": [
+            42,
+            12
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "offset_ceil_m": 0.0,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              1.6306719515916006,
+              -1.4942623538121556
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.6250000093132257,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                49,
+                17
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.39528471341124854,
+              "radius_minus_distance_m": -0.05992937382508556
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 1,
+          "world_goal_xy": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "goal_cell": [
+            73,
+            41
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "offset_ceil_m": 0.0,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.5250000078231096,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                73,
+                33
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.37500000558793545,
+              "radius_minus_distance_m": -0.039644666001772466
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 2,
+          "world_goal_xy": [
+            0.33067193222009106,
+            0.005737668539586238
+          ],
+          "goal_cell": [
+            16,
+            42
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            0.33067193222009106,
+            0.005737668539586238
+          ],
+          "offset_ceil_m": 0.0,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.335355339586163,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.47500000707805157,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                13,
+                35
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.34820971211833196,
+              "radius_minus_distance_m": -0.012854372532168978
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        }
+      ],
+      "queue_status_received": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": null,
+        "active_dispatch_id": null,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 0,
+        "dispatch_budget": 12,
+        "pending_views": 12,
+        "state_counts": {
+          "pending": 12
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      }
+    },
+    {
+      "file": "0053-phase-observation_navigating.json",
+      "observer_wall_elapsed_s": 298.68726791800003,
+      "observer_ros_s": 245.3,
+      "map": {
+        "stamp": 245.125,
+        "frame": "map",
+        "width": 84,
+        "height": 52,
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.4972537519452527,
+          -2.1192623631253813,
+          0.0
+        ]
+      },
+      "pose": {
+        "stamp": 245.294,
+        "xyz": [
+          1.653439724349078,
+          -1.489468858835771,
+          -2.7755575615628914e-17
+        ],
+        "yaw": -1.6946359956958967
+      },
+      "map_data_sha256": "08c81ed6f24df331d5b97cca1949b82b814e3b337bdd0c0558e8dd9549df6fa2",
+      "map_age_ros_s": 0.17500000000001137,
+      "pose_age_ros_s": 0.006000000000000227,
+      "reachable_cells": 793,
+      "stations": [
+        {
+          "station_id": 0,
+          "world_goal_xy": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "goal_cell": [
+            42,
+            12
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            1.6277462797197149,
+            -1.4942623538121556
+          ],
+          "offset_ceil_m": 0.002925672,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.33828101158616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              1.6306719515916006,
+              -1.4942623538121556
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.6250000093132257,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                49,
+                17
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.39288277827801504,
+              "radius_minus_distance_m": -0.05752743869185206
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 1,
+          "world_goal_xy": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "goal_cell": [
+            73,
+            41
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            3.177746302816515,
+            -0.04426233220547182
+          ],
+          "offset_ceil_m": 0.002925672,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.33828101158616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.5220743359512241,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                81,
+                41
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.3720743337160499,
+              "radius_minus_distance_m": -0.03671899412988694
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 2,
+          "world_goal_xy": [
+            0.33067193222009106,
+            0.005737668539586238
+          ],
+          "goal_cell": [
+            16,
+            42
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            0.3277462603482053,
+            0.005737668539586238
+          ],
+          "offset_ceil_m": 0.002925672,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.33828101158616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.47500000707805157,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                13,
+                35
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.349270641692519,
+              "radius_minus_distance_m": -0.013915302106355998
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        }
+      ],
+      "queue_status_received": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": "observation-0009",
+        "active_dispatch_id": 5,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "pending_views": 7,
+        "state_counts": {
+          "completed": 4,
+          "pending": 7,
+          "active": 1
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      }
+    },
+    {
+      "file": "0054-goal-terminal-receipt.json",
+      "observer_wall_elapsed_s": 365.31125526500006,
+      "observer_ros_s": 276.25,
+      "map": {
+        "stamp": 275.875,
+        "frame": "map",
+        "width": 84,
+        "height": 53,
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.5018672475186436,
+          -2.1192623631253813,
+          0.0
+        ]
+      },
+      "pose": {
+        "stamp": 276.244,
+        "xyz": [
+          0.3581072950764752,
+          -0.002343355980425837,
+          -2.7755575615628914e-17
+        ],
+        "yaw": -1.7978736951452166
+      },
+      "map_data_sha256": "dd0ea3dc40984ae8bdbc78e7cefb9d1a9c2fceb7e636958786d3ac3b04673ed4",
+      "map_age_ros_s": 0.375,
+      "pose_age_ros_s": 0.005999999999971806,
+      "reachable_cells": 783,
+      "stations": [
+        {
+          "station_id": 0,
+          "world_goal_xy": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "goal_cell": [
+            42,
+            12
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            1.623132784146324,
+            -1.4942623538121556
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              1.6306719515916006,
+              -1.4942623538121556
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.6250000093132257,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                49,
+                17
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.38910973360985,
+              "radius_minus_distance_m": -0.053754394023687035
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 1,
+          "world_goal_xy": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "goal_cell": [
+            73,
+            41
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            3.1731328072431237,
+            -0.04426233220547182
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": false,
+          "production_endpoint_clear": false,
+          "production_skip_on_this_snapshot": true,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": false,
+            "outside_map_distance_m": 0.5174608403778329,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [
+              {
+                "cell": [
+                  75,
+                  48
+                ],
+                "occupancy_value": 100,
+                "distance_m": 0.3319276536048683,
+                "radius_minus_distance_m": 0.0034276859812946703
+              }
+            ],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.3319276536048683,
+              "radius_minus_distance_m": 0.0034276859812946703
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [
+            {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                3.27313280873324,
+                0.3057376730099346
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ],
+          "effective_endpoint_blockers": [
+            {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                3.27313280873324,
+                0.3057376730099346
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ]
+        },
+        {
+          "station_id": 2,
+          "world_goal_xy": [
+            0.33067193222009106,
+            0.005737668539586238
+          ],
+          "goal_cell": [
+            16,
+            42
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            0.32313276477481434,
+            0.005737668539586238
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": false,
+          "production_endpoint_clear": false,
+          "production_skip_on_this_snapshot": true,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": false,
+            "outside_map_distance_m": 0.5250000078231096,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [
+              {
+                "cell": [
+                  14,
+                  35
+                ],
+                "occupancy_value": 100,
+                "distance_m": 0.33531733849432716,
+                "radius_minus_distance_m": 3.800109183582645e-05
+              }
+            ],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.33531733849432716,
+              "radius_minus_distance_m": 3.800109183582645e-05
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ],
+          "effective_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ]
+        }
+      ],
+      "queue_status_received": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": "observation-0009",
+        "active_dispatch_id": 5,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "pending_views": 7,
+        "state_counts": {
+          "completed": 4,
+          "pending": 7,
+          "active": 1
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      }
+    },
+    {
+      "file": "0057-phase-inspecting.json",
+      "observer_wall_elapsed_s": 366.91585036199996,
+      "observer_ros_s": 277.1,
+      "map": {
+        "stamp": 276.875,
+        "frame": "map",
+        "width": 84,
+        "height": 53,
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.5018672475186436,
+          -2.1192623631253813,
+          0.0
+        ]
+      },
+      "pose": {
+        "stamp": 277.075,
+        "xyz": [
+          0.3523893105171874,
+          -0.0034605950960583335,
+          5.551115123125783e-17
+        ],
+        "yaw": -1.6960736951306485
+      },
+      "map_data_sha256": "dd0ea3dc40984ae8bdbc78e7cefb9d1a9c2fceb7e636958786d3ac3b04673ed4",
+      "map_age_ros_s": 0.22500000000002274,
+      "pose_age_ros_s": 0.025000000000034106,
+      "reachable_cells": 783,
+      "stations": [
+        {
+          "station_id": 0,
+          "world_goal_xy": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "goal_cell": [
+            42,
+            12
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            1.623132784146324,
+            -1.4942623538121556
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              1.6306719515916006,
+              -1.4942623538121556
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.6250000093132257,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                49,
+                17
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.38910973360985,
+              "radius_minus_distance_m": -0.053754394023687035
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 1,
+          "world_goal_xy": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "goal_cell": [
+            73,
+            41
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            3.1731328072431237,
+            -0.04426233220547182
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": false,
+          "production_endpoint_clear": false,
+          "production_skip_on_this_snapshot": true,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": false,
+            "outside_map_distance_m": 0.5174608403778329,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [
+              {
+                "cell": [
+                  75,
+                  48
+                ],
+                "occupancy_value": 100,
+                "distance_m": 0.3319276536048683,
+                "radius_minus_distance_m": 0.0034276859812946703
+              }
+            ],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.3319276536048683,
+              "radius_minus_distance_m": 0.0034276859812946703
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [
+            {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                3.27313280873324,
+                0.3057376730099346
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ],
+          "effective_endpoint_blockers": [
+            {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                3.27313280873324,
+                0.3057376730099346
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ]
+        },
+        {
+          "station_id": 2,
+          "world_goal_xy": [
+            0.33067193222009106,
+            0.005737668539586238
+          ],
+          "goal_cell": [
+            16,
+            42
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            0.32313276477481434,
+            0.005737668539586238
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": false,
+          "production_endpoint_clear": false,
+          "production_skip_on_this_snapshot": true,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": false,
+            "outside_map_distance_m": 0.5250000078231096,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [
+              {
+                "cell": [
+                  14,
+                  35
+                ],
+                "occupancy_value": 100,
+                "distance_m": 0.33531733849432716,
+                "radius_minus_distance_m": 3.800109183582645e-05
+              }
+            ],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.33531733849432716,
+              "radius_minus_distance_m": 3.800109183582645e-05
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ],
+          "effective_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ]
+        }
+      ],
+      "queue_status_received": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": "observation-0009",
+        "active_dispatch_id": 5,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "pending_views": 7,
+        "state_counts": {
+          "completed": 4,
+          "pending": 7,
+          "active": 1
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      }
+    },
+    {
+      "file": "0058-phase-canceling.json",
+      "observer_wall_elapsed_s": 370.712518256,
+      "observer_ros_s": 278.9,
+      "map": {
+        "stamp": 278.25,
+        "frame": "map",
+        "width": 84,
+        "height": 53,
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.5018672475186436,
+          -2.1192623631253813,
+          0.0
+        ]
+      },
+      "pose": {
+        "stamp": 278.894,
+        "xyz": [
+          0.3523893105171874,
+          -0.0034605950960583335,
+          5.551115123125783e-17
+        ],
+        "yaw": -1.6960736951306485
+      },
+      "map_data_sha256": "dd0ea3dc40984ae8bdbc78e7cefb9d1a9c2fceb7e636958786d3ac3b04673ed4",
+      "map_age_ros_s": 0.6499999999999773,
+      "pose_age_ros_s": 0.005999999999971806,
+      "reachable_cells": 783,
+      "stations": [
+        {
+          "station_id": 0,
+          "world_goal_xy": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "goal_cell": [
+            42,
+            12
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            1.623132784146324,
+            -1.4942623538121556
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              1.6306719515916006,
+              -1.4942623538121556
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.6250000093132257,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                49,
+                17
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.38910973360985,
+              "radius_minus_distance_m": -0.053754394023687035
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 1,
+          "world_goal_xy": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "goal_cell": [
+            73,
+            41
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            3.1731328072431237,
+            -0.04426233220547182
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": false,
+          "production_endpoint_clear": false,
+          "production_skip_on_this_snapshot": true,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": false,
+            "outside_map_distance_m": 0.5174608403778329,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [
+              {
+                "cell": [
+                  75,
+                  48
+                ],
+                "occupancy_value": 100,
+                "distance_m": 0.3319276536048683,
+                "radius_minus_distance_m": 0.0034276859812946703
+              }
+            ],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.3319276536048683,
+              "radius_minus_distance_m": 0.0034276859812946703
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [
+            {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                3.27313280873324,
+                0.3057376730099346
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ],
+          "effective_endpoint_blockers": [
+            {
+              "cell": [
+                75,
+                48
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                3.27313280873324,
+                0.3057376730099346
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ]
+        },
+        {
+          "station_id": 2,
+          "world_goal_xy": [
+            0.33067193222009106,
+            0.005737668539586238
+          ],
+          "goal_cell": [
+            16,
+            42
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            0.32313276477481434,
+            0.005737668539586238
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": false,
+          "production_endpoint_clear": false,
+          "production_skip_on_this_snapshot": true,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": false,
+            "outside_map_distance_m": 0.5250000078231096,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [
+              {
+                "cell": [
+                  14,
+                  35
+                ],
+                "occupancy_value": 100,
+                "distance_m": 0.33531733849432716,
+                "radius_minus_distance_m": 3.800109183582645e-05
+              }
+            ],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.33531733849432716,
+              "radius_minus_distance_m": 3.800109183582645e-05
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ],
+          "effective_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ]
+        }
+      ],
+      "queue_status_received": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": null,
+        "active_dispatch_id": null,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "pending_views": 0,
+        "state_counts": {
+          "completed": 5,
+          "skipped_unsafe_or_unreachable": 7
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      }
+    },
+    {
+      "file": "0064-observer-final.json",
+      "observer_wall_elapsed_s": 490.42935360200005,
+      "observer_ros_s": 336.198,
+      "map": {
+        "stamp": 335.625,
+        "frame": "map",
+        "width": 84,
+        "height": 53,
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.5018672475186436,
+          -2.1192623631253813,
+          0.0
+        ]
+      },
+      "pose": {
+        "stamp": 336.194,
+        "xyz": [
+          0.002278429011291146,
+          -0.007485989475389869,
+          -1.3877787807814457e-16
+        ],
+        "yaw": 0.07506109326830337
+      },
+      "map_data_sha256": "f809d660f0ef76a47086dabfe64318334a5c13089c2d9d48f181a85bee850586",
+      "map_age_ros_s": 0.5729999999999791,
+      "pose_age_ros_s": 0.003999999999962256,
+      "reachable_cells": 785,
+      "stations": [
+        {
+          "station_id": 0,
+          "world_goal_xy": [
+            1.6306719515916006,
+            -1.4942623538121556
+          ],
+          "goal_cell": [
+            42,
+            12
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            1.623132784146324,
+            -1.4942623538121556
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              1.6306719515916006,
+              -1.4942623538121556
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.6250000093132257,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                49,
+                17
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.38910973360985,
+              "radius_minus_distance_m": -0.053754394023687035
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 1,
+          "world_goal_xy": [
+            3.1806719746884005,
+            -0.04426233220547182
+          ],
+          "goal_cell": [
+            73,
+            41
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            3.1731328072431237,
+            -0.04426233220547182
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": true,
+          "production_endpoint_clear": true,
+          "production_skip_on_this_snapshot": false,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              3.1806719746884005,
+              -0.04426233220547182
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": true,
+            "outside_map_distance_m": 0.5174608403778329,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                77,
+                48
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.3656065295658267,
+              "radius_minus_distance_m": -0.030251189979663695
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [],
+          "effective_endpoint_blockers": []
+        },
+        {
+          "station_id": 2,
+          "world_goal_xy": [
+            0.33067193222009106,
+            0.005737668539586238
+          ],
+          "goal_cell": [
+            16,
+            42
+          ],
+          "goal_cell_value": 0,
+          "goal_cell_center_world": [
+            0.32313276477481434,
+            0.005737668539586238
+          ],
+          "offset_ceil_m": 0.007539168,
+          "robot_radius_component_reachable": true,
+          "base_endpoint_radius_m": 0.335355339586163,
+          "effective_endpoint_radius_m": 0.34289450758616297,
+          "base_endpoint_clear_without_offset": false,
+          "production_endpoint_clear": false,
+          "production_skip_on_this_snapshot": true,
+          "exact_world_center_diagnostic": {
+            "diagnostic_only": true,
+            "world_center": [
+              0.33067193222009106,
+              0.005737668539586238
+            ],
+            "unchanged_radius_m": 0.335355339586163,
+            "circle_clear": false,
+            "outside_map_distance_m": 0.5250000078231096,
+            "outside_map_intersects": false,
+            "nonfree_rectangles_intersected": [
+              {
+                "cell": [
+                  14,
+                  35
+                ],
+                "occupancy_value": 100,
+                "distance_m": 0.33531733849432716,
+                "radius_minus_distance_m": 3.800109183582645e-05
+              }
+            ],
+            "nearest_nonfree_rectangle": {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "distance_m": 0.33531733849432716,
+              "radius_minus_distance_m": 3.800109183582645e-05
+            },
+            "scope": "Exact frozen world center with unchanged robot+arrival+half-cell-diagonal reserve. No motion authority or physical submillimeter accuracy claim."
+          },
+          "base_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ],
+          "effective_endpoint_blockers": [
+            {
+              "cell": [
+                14,
+                35
+              ],
+              "occupancy_value": 100,
+              "inside": true,
+              "disk_center_to_cell_rectangle_distance_m": 0.33354160657331555,
+              "world_cell_center": [
+                0.22313276328469822,
+                -0.3442623366758202
+              ],
+              "initial_value_at_same_grid_index": 0,
+              "same_index_caveat": "Origin differs: equal indices are not exactly equal world rectangles."
+            }
+          ]
+        }
+      ],
+      "queue_status_received": {
+        "epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+        "invalidated": false,
+        "invalid_reason": null,
+        "active_action_id": null,
+        "active_dispatch_id": null,
+        "cancel_required": false,
+        "planned_stations": 3,
+        "planned_views": 12,
+        "dispatches": 5,
+        "dispatch_budget": 12,
+        "pending_views": 0,
+        "state_counts": {
+          "completed": 5,
+          "skipped_unsafe_or_unreachable": 7
+        },
+        "all_planned_actions_completed": false,
+        "visual_coverage_claimed": false,
+        "mission_success_claimed": false,
+        "sampling_scope": "Frozen known-map snapshot; no newly revealed cells are automatically added."
+      }
+    }
+  ],
+  "limitations": [
+    "Observer snapshots are independently received, not atomic MissionNode decision inputs.",
+    "All five dispatched views match exactly; never-dispatched station1 geometry is reconstructed.",
+    "Changed map occupancy does not establish physical obstacle motion versus SLAM/raster changes.",
+    "Base endpoint reserve already fails without the additional origin-offset reserve on late snapshots.",
+    "All 12 views remain in the denominator. Five completions do not establish visual coverage or mission success."
+  ],
+  "next_evidence": "Bounded per-skip action/station IDs, map stamp/hash/geometry, current pose, goal cell, reachable and clearance booleans, effective radius. Preserve safety thresholds and finite budget."
+}

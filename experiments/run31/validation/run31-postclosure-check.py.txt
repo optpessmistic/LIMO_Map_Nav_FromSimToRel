@@ -1,0 +1,47 @@
+"""Read-only later process check; preserves the original failed shutdown."""
+import hashlib
+import json
+from pathlib import Path
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT / 'outputs/ros_smoke/run31-observation-route'
+OUT = ROOT / 'outputs/setup/run31-postclosure-check.json'
+sys.path.insert(0, str(ROOT / 'scripts'))
+from record_bounded import scan_owned_group, proc_stat
+
+if OUT.exists():
+    raise RuntimeError('Do not overwrite an existing later check')
+original = (RUN / 'orchestration.json').read_bytes()
+report = json.loads(original)
+if report.get('status') != 'terminal_observed' or report.get('stage') != 'owned_shutdown':
+    raise RuntimeError('Supervisor terminal receipt required')
+groups = []
+for path in sorted(RUN.glob('process-*.json')):
+    raw = path.read_bytes()
+    owner = json.loads(raw)
+    members, errors = scan_owned_group(owner)
+    groups.append({'owner_file': path.relative_to(ROOT).as_posix(),
+                   'owner_sha256': hashlib.sha256(raw).hexdigest(),
+                   'owner': owner, 'remaining': members, 'errors': errors,
+                   'remaining_check_complete': not errors})
+later = {
+    'schema_version': 1, 'run': RUN.name, 'epoch': report['epoch'],
+    'root_exec_completion': {'session_id': 26612, 'exit_code': 1,
+        'source': 'Actual root write_stdin completion, before this read-only check'},
+    'original_orchestration_sha256': hashlib.sha256(original).hexdigest(),
+    'original_all_owned_groups_empty': report.get('all_owned_groups_empty'),
+    'checked_monotonic_s': time.monotonic(),
+    'boot_id_at_later_check': Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+    'groups': groups,
+    'all_owned_groups_empty_at_later_check': bool(groups) and all(
+        g['remaining_check_complete'] and not g['remaining'] for g in groups),
+    'signals_sent': [],
+    'scope': 'Later read-only /proc scan using original group/session, leader start ticks and run token. Does not alter the original shutdown result or imply that its deadline succeeded. No global process-absence claim.'}
+OUT.write_text(json.dumps(later, indent=2) + '\n')
+print(json.dumps({k: later[k] for k in ('run', 'root_exec_completion',
+    'original_all_owned_groups_empty', 'all_owned_groups_empty_at_later_check', 'signals_sent')}))
+if not later['all_owned_groups_empty_at_later_check']:
+    print(json.dumps([g for g in groups if g['remaining'] or g['errors']]))
+    sys.exit(1)

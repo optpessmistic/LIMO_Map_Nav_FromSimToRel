@@ -1,0 +1,273 @@
+"""Prepare, never launch, run31 from the closed run30 templates.
+
+Execute only after the reviewed mission changes are built and committed. The
+existing steady SLAM overlay and its live identity gates are retained. No ROS nodes or robot processes are started here.
+"""
+import argparse
+import ast
+import hashlib
+import json
+import math
+from pathlib import Path
+import subprocess
+import sys
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT / 'outputs/setup'
+OLD = ROOT / 'outputs/ros_smoke/run30-steady-tf'
+OUT = ROOT / 'outputs/ros_smoke/run31-observation-route'
+SLAM = ROOT / 'outputs/slam-steady-ws'
+NAMES = ('env.sh', 'process.py', 'param-gate.py', 'preflight.py', 'save.py',
+         'provenance.py', 'installed-check.py')
+RECOVERY = {'navigation_failure_cooldown_s': 1.0, 'navigation_recovery_timeout_s': 3.0}
+SOURCE_ROOTS = ('src', 'scripts', 'tools', 'config', 'worlds', 'patches')
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+def replace_once(source, old, new):
+    if source.count(old) != 1:
+        raise RuntimeError('Expected exactly one frozen template anchor: ' + old[:120])
+    return source.replace(old, new, 1)
+
+
+def template(previous, name):
+    path = SETUP / name
+    raw = path.read_bytes()
+    expected = previous['prepared_helper_sha256'][path.relative_to(ROOT).as_posix()]
+    if sha(raw) != expected:
+        raise RuntimeError('Frozen run30 helper changed: ' + name)
+    return raw.decode('utf-8').replace('\r\n', '\n')
+
+
+def slam_snapshot():
+    build = read(SLAM / 'build-source.json')
+    source = SLAM / 'src/slam_toolbox'
+    common = source / 'src/slam_toolbox_common.cpp'
+    raw = common.read_bytes()
+    if (raw.count(b'rclcpp::WallRate r(1.0 / transform_publish_period);') != 1
+            or b'rclcpp::Rate r(1.0 / transform_publish_period);' in raw):
+        raise RuntimeError('New SLAM source is not the steady transform-publisher profile')
+    files = {}
+    for name, expected in build['source_files'].items():
+        path = source / name
+        if not path.resolve(strict=True).is_relative_to(source.resolve(strict=True)):
+            raise RuntimeError('Source snapshot escapes new overlay: ' + name)
+        actual = sha(path.read_bytes())
+        if actual != expected:
+            raise RuntimeError('Build source receipt mismatch: ' + name)
+        files[path.relative_to(ROOT).as_posix()] = actual
+    for name, expected in build['patches'].items():
+        if sha((ROOT / 'patches' / name).read_bytes()) != expected:
+            raise RuntimeError('Built patch differs from current input: ' + name)
+    prefix = SLAM / 'install/slam_toolbox'
+    libraries = {}
+    for name in ('libtoolbox_common.so', 'libkartoSlamToolbox.so'):
+        path = prefix / 'lib' / name
+        resolved = path.resolve(strict=True)
+        if not resolved.is_relative_to(SLAM.resolve(strict=True)):
+            raise RuntimeError('New SLAM library resolves outside the new overlay: ' + name)
+        checksum = sha(path.read_bytes())
+        files[path.relative_to(ROOT).as_posix()] = checksum
+        libraries[name] = {'path': str(path), 'resolved_path': str(resolved), 'sha256': checksum}
+    for path in (SLAM / 'build-source.json', SLAM / 'install/local_setup.bash'):
+        files[path.relative_to(ROOT).as_posix()] = sha(path.read_bytes())
+    return {'overlay': str(SLAM), 'package_prefix': str(prefix),
+            'source_common_sha256': sha(raw),
+            'source_karto_header_sha256': sha((source / 'lib/karto_sdk/include/karto_sdk/Karto.h').read_bytes()),
+            'libraries': libraries, 'files_sha256': files,
+            'tf_stamp_policy': 'Unchanged ROS scan stamp plus transform_timeout; restamp_tf=false.',
+            'scheduling_change': 'Only transform-publisher rclcpp::Rate -> rclcpp::WallRate.'}
+
+
+def render_helpers(previous, token):
+    """Copy hash-bound run30 helpers; change only run paths/tokens/identifiers."""
+    helpers = {}
+    for name in NAMES:
+        value = template(previous, 'run30-' + name)
+        value = value.replace(previous['token'], token).replace(OLD.name, OUT.name)
+        value = value.replace('run30', 'run31').replace('Run30', 'Run31').replace('RUN30', 'RUN31')
+        helpers[name] = value
+    process = helpers['process.py']
+    for fragment in ('wait_motion_startup(60)', "wait_ready('observer','READY:',25)",
+                     'deadline = began+1800', "run('save-early',60,", "run('parameter-gate',45,",
+                     "run('provenance',90,", "'retention_worker_timeout_s':5.0,'retention_request_timeout_s':10.0",
+                     "'retention_shutdown_timeout_s':8.0"):
+        if fragment not in process:
+            raise RuntimeError('Unchanged runtime bound missing: '+fragment)
+    for fragment in ('--duration 70 --motion-wait 90', '-p tf_max_age_s:=1.5',
+                     '-p mission_timeout_s:=900.0', '-p return_timeout_s:=240.0',
+                     '-p goal_timeout_s:=120.0', '-p observation_stage_timeout_s:=360.0',
+                     '-p observation_max_stations:=3', '-p observation_headings_per_station:=4',
+                     '-p observation_max_dispatches:=12', '-p require_retained_inspection:=true',
+                     '-p retention_enabled:=true', '-p retention_max_jobs:=96',
+                     '-p navigation_failure_cooldown_s:=1.0', '-p navigation_recovery_timeout_s:=3.0',
+                     'source "$LIMO_RUN_ROOT/outputs/slam-steady-ws/install/local_setup.bash"'):
+        if fragment not in helpers['env.sh']:
+            raise RuntimeError('Unchanged runtime setting missing: '+fragment)
+    for name, fragments in {
+            'provenance.py': ('def check_slam_overlay(', "result['slam_overlay_gate'] = check_slam_overlay(result, args.run_dir)",
+                              'matches_mapped_inode_and_device', 'run31_ownership_verified'),
+            'installed-check.py': ('limo_maze_mission.node', 'limo_maze_mission.observation',
+                                   'limo_maze_mission.retention', 'slam_overlay', 'slam_passed')}.items():
+        if any(fragment not in helpers[name] for fragment in fragments):
+            raise RuntimeError('Preserved source/install or live SLAM identity gate missing: '+name)
+    for name, value in helpers.items():
+        if '\r' in value or 'slam-boundary-ws' in value or 'run30' in value or 'RUN30' in value:
+            raise RuntimeError('Stale overlay/run or non-LF helper: '+name)
+        if name.endswith('.py'):
+            ast.parse(value, filename='run31-'+name)
+    return helpers
+
+
+def render_start(previous):
+    start = template(previous, 'start-run30.sh').replace(OLD.name, OUT.name).replace('run30', 'run31')
+    start = replace_once(start, "['session_id'] == 50176", "['session_id'] == 96593")
+    start = replace_once(start, "['exit_code'] == 0", "['exit_code'] == 1")
+    # Run30's audit failed. Carry that original result; it is not a closure gate.
+    start = replace_once(start,
+        "assert report['previous_attempt']['retention_audit_passed'] is True",
+        "prior = root/'outputs/ros_smoke/run30-steady-tf'\n"
+        "assert hashlib.sha256((prior/'orchestration.json').read_bytes()).hexdigest() == report['previous_attempt']['original_orchestration_sha256']\n"
+        "terminal = report['previous_attempt']['terminal_mission']\n"
+        "assert hashlib.sha256((root/terminal['path']).read_bytes()).hexdigest() == terminal['sha256']\n"
+        "assert report['previous_attempt']['retention_audit_passed'] == json.loads((prior/'orchestration.json').read_bytes())['retention_audit_passed']")
+    embedded = start.split("<<'PY'\n", 1)[1].split('\nPY\n', 1)[0]
+    ast.parse(embedded, filename='start-run31.sh:embedded-python')
+    return start
+
+
+def previous_run_evidence():
+    closed = read(OLD / 'orchestration.json')
+    elapsed = closed.get('elapsed_wall_s')
+    if not (closed.get('status') == 'terminal_observed' and closed.get('terminal')
+            and type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed > 0
+            and closed.get('all_owned_groups_empty') is True):
+        raise RuntimeError('Run30 terminal and owned closure receipt missing')
+    stops, nested = closed.get('stops') or {}, closed.get('recorder_inner_recheck') or {}
+    if not (stops and all(row.get('remaining') == [] and row.get('ownership_errors') == []
+                        and row.get('remaining_check_complete') is True for row in stops.values())
+            and nested.get('remaining') == [] and nested.get('ownership_errors') == []
+            and nested.get('remaining_check_complete') is True):
+        raise RuntimeError('Run30 recorded group/nested-recorder closure incomplete')
+    writer = read(OLD / 'retention-shutdown.json')
+    if not (writer.get('writer') is None and writer.get('fault') is None
+            and writer.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and writer.get('shutdown', {}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Run30 writer exit and final checkpoint not confirmed')
+    previous = read(OLD / 'preparation.json')
+    if previous.get('run') != OLD.name or not previous.get('code_head'):
+        raise RuntimeError('Run30 preparation identity missing')
+    if (OLD/'epoch.txt').read_bytes() != (previous['epoch']+'\n').encode('ascii'):
+        raise RuntimeError('Run30 epoch bytes do not match preparation')
+    if sha((SETUP/'prepare-run30.py').read_bytes()) != previous['preparation_script_sha256']:
+        raise RuntimeError('Frozen run30 preparation script changed')
+    terminal = closed['terminal']
+    name = str(terminal.get('path', '')).replace('\\', '/').rsplit('/', 1)[-1]
+    if not name.startswith('mission_') or not name.endswith('.json'):
+        raise RuntimeError('Run30 exact mission filename missing')
+    mission_path = OLD/'mission'/name
+    raw = mission_path.read_bytes()
+    mission = json.loads(raw)
+    if (sha(raw) != terminal.get('sha256') or mission.get('status') not in ('done', 'blocked')
+            or mission.get('status') != terminal.get('status')
+            or mission.get('map_epoch') != previous.get('epoch')
+            or terminal.get('map_epoch') != previous.get('epoch')
+            or mission.get('mission_success') != terminal.get('reported_mission_success')):
+        raise RuntimeError('Run30 original terminal mission hash/epoch/state disagrees')
+    return closed, writer, previous, {
+        'path': mission_path.relative_to(ROOT).as_posix(), 'sha256': sha(raw),
+        'status': mission['status'], 'mission_success': mission.get('mission_success'),
+        'map_complete': mission.get('map_complete'),
+        'visual_coverage_complete': mission.get('visual_coverage_complete')}
+
+
+
+def source_snapshot():
+    if subprocess.check_output(['git','status','--porcelain','--untracked-files=normal'], cwd=ROOT):
+        raise RuntimeError('Commit reviewed changes and use a clean tree before preparation')
+    head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT, text=True).strip()
+    names = subprocess.check_output(['git','ls-files','-z','--',*SOURCE_ROOTS], cwd=ROOT)
+    paths = sorted(name.decode('utf-8') for name in names.split(b'\0') if name)
+    if not paths:
+        raise RuntimeError('No tracked runtime source files found')
+    return head, {name: sha((ROOT / name).read_bytes()) for name in paths}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-previous-root-session', type=int, choices=[96593], required=True)
+    parser.add_argument('--confirmed-previous-root-exit-code', type=int, choices=[1], required=True)
+    args = parser.parse_args(argv)
+    if sys.platform != 'linux':
+        raise RuntimeError('Run this preparation in WSL so bound library paths match the Linux runtime')
+    targets = [SETUP / ('run31-' + name) for name in NAMES] + [SETUP / 'start-run31.sh']
+    if OUT.exists() or OUT.is_symlink() or any(path.exists() or path.is_symlink() for path in targets):
+        raise RuntimeError('Refuse any existing run31 output/helper; no restart or overwrite')
+    closed, writer, previous, prior_mission = previous_run_evidence()
+    nav = (ROOT / 'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml').read_bytes()
+    world = (ROOT / 'worlds/smoke_maze.world').read_bytes()
+    if nav != (OLD / 'nav2-rpp-03m.yaml').read_bytes() or sha(nav) != previous['nav2_sha256']:
+        raise RuntimeError('Nav2/TF profile changed from run30')
+    if sha(world) != previous['world_sha256']:
+        raise RuntimeError('Comparison world changed from run30')
+    slam_params = 'src/limo_maze_bringup/config/slam_smoke_experimental.yaml'
+    if sha((ROOT / slam_params).read_bytes()) != previous['prepared_source_sha256'][slam_params]:
+        raise RuntimeError('SLAM parameter profile changed from run30')
+    head, sources = source_snapshot()
+    collector = (ROOT / 'scripts/capture_motion_evidence.py').read_bytes()
+    if sha(collector) != previous['collector_source_sha256_at_preparation']:
+        raise RuntimeError('Motion collector changed from run30')
+    binding = slam_snapshot()
+    if binding != previous.get('slam_overlay'):
+        raise RuntimeError('Steady SLAM source/library binding changed from run30')
+    token, epoch = 'run31-' + uuid.uuid4().hex, str(uuid.uuid4())
+    helpers, start = render_helpers(previous, token), render_start(previous)
+    payloads = {SETUP / ('run31-' + name): value.encode('utf-8') for name, value in helpers.items()}
+    payloads[SETUP / 'start-run31.sh'] = start.encode('utf-8')
+    report = {**previous, 'run': OUT.name, 'code_head': None, 'prepared_head_actual': head,
+        'token': token, 'epoch': epoch, 'navigation_recovery_parameters': RECOVERY,
+        'slam_overlay': binding, 'prepared_source_sha256': sources,
+        'prepared_helper_sha256': {path.relative_to(ROOT).as_posix(): sha(data) for path,data in payloads.items()},
+        'preparation_script_sha256': sha(Path(__file__).read_bytes()),
+        'previous_attempt': {'run': OLD.name, 'status': closed['status'], 'errors': closed['errors'],
+            'original_all_owned_groups_empty': closed['all_owned_groups_empty'],
+            'original_orchestration_sha256': sha((OLD / 'orchestration.json').read_bytes()),
+            'retention_shutdown_sha256': sha((OLD / 'retention-shutdown.json').read_bytes()),
+            'retention_audit_passed': closed['retention_audit_passed'],
+            'terminal_mission': prior_mission,
+            'all_run_token_processes_absent': closed.get('all_run_token_processes_absent'),
+            'global_scan_limitation': closed.get('global_scan_limitation'),
+            'owned_writer_exit_confirmed': writer['shutdown']['owned_writer_exit_confirmed'],
+            'final_checkpoint_persisted': writer['shutdown']['final_checkpoint_persisted'],
+            'scope': 'Original owned-group closure and writer receipt; no global process-absence or mission success claim.',
+            'root_exec_completion': {'session_id': args.confirmed_previous_root_session,
+                'exit_code': args.confirmed_previous_root_exit_code,
+                'source': 'Root confirmation supplied as explicit prepare arguments.'}},
+        'change': 'Frozen observation actions reordered station-first using known-safe grid paths; retired old windows may accept only storage receipts received before their original deadline. No new-window credit or added viewpoints.',
+        'startup_change': 'None relative to run30: motion collector outer readiness remains 60 s under global 1800 s.',
+        'comparison_scope': 'Same run30 world, Nav2/SLAM parameters and steady overlay, recovery1/3, /mnt/c output, strict retention and startup60. All mission/return/goal/observation/inspection/writer/request/shutdown budgets and 3 stations/4 headings/12 dispatches unchanged. Only frozen-action ordering and retired-window storage-only receipt handling change; no visual-coverage or mission-success claim.'}
+    # All validation precedes exclusive writes; partial preparation is never reused.
+    if source_snapshot() != (head, sources) or slam_snapshot() != binding:
+        raise RuntimeError('Source or SLAM artifacts changed while preparing run31')
+    OUT.mkdir(parents=True)
+    (OUT / 'mission').mkdir()
+    for path, data in ((OUT / 'epoch.txt', (epoch+'\n').encode('ascii')),
+                       (OUT / 'nav2-rpp-03m.yaml', nav), *payloads.items(),
+                       (OUT / 'preparation.json', (json.dumps(report,indent=2,allow_nan=False)+'\n').encode('utf-8'))):
+        with path.open('xb') as stream:
+            stream.write(data)
+    print(json.dumps({'prepared':str(OUT),'epoch':epoch,'token':token,'prepared_head_actual':head,
+        'launched':False,'navigation_recovery_parameters':RECOVERY,
+        'slam_overlay':{key:binding[key] for key in ('overlay','source_common_sha256','libraries')}},indent=2))
+
+
+if __name__ == '__main__':
+    main()

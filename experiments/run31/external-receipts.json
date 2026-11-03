@@ -1,0 +1,38 @@
+{
+  "runtime_commit": "acf3419cfaa78ae994b704f009c3d9cb6d337609",
+  "ci_run_id": 41611348134,
+  "ci_conclusion": "success",
+  "slam_build_completion": {
+    "session_id": 94045,
+    "exit_code": 0,
+    "source": "validation/slam-steady-build-receipt.json",
+    "scope": "Full package build and relocated installation/link checks. Does not claim a new Gazebo mission result."
+  },
+  "root_exec_completion": {
+    "session_id": 26612,
+    "exit_code": 1,
+    "source": "Root completion confirmation supplied explicitly; not inferred from mission or CI."
+  },
+  "original_all_owned_groups_empty": false,
+  "later_scoped_group_closure": {
+    "source": "postclosure-check.json",
+    "all_owned_groups_empty_at_later_check": true,
+    "validated_owner_file_count": 20,
+    "original_result_replaced": false,
+    "scope": "Later read-only /proc scan using original group/session, leader start ticks and run token. Does not alter the original shutdown result or imply that its deadline succeeded. No global process-absence claim."
+  },
+  "mission_flags": {
+    "status": "done",
+    "reason": "bounded_observation_exhausted;final_observation_checks_incomplete",
+    "mission_success": false,
+    "map_complete": true,
+    "returned_pose_verified": true,
+    "visual_coverage_complete": false
+  },
+  "original_global_process_absence": false,
+  "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+  "missing_optional_files": [
+    "outputs/ros_smoke/run31-observation-route/mission/shutdown_20261103_014821.json",
+    "outputs/ros_smoke/run31-observation-route/snapshot-map.failure.json"
+  ]
+}

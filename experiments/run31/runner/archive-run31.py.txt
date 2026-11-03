@@ -1,0 +1,344 @@
+"""Create one compact run31 diagnostic archive only after root session closure.
+
+No ROS, Git, tests, bag decoding or image decoding. Raw retained files and large
+recordings remain external: their locations and hashes are recorded, not copied.
+This archive cannot independently replace the complete retained-frame evidence.
+"""
+import argparse
+import gzip
+import hashlib
+import json
+import math
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT/'outputs/setup'
+RUN = ROOT/'outputs/ros_smoke/run31-observation-route'
+DEST = ROOT/'experiments/run31'
+CI_ID = 41611348134
+BUILD_SESSION_ID = 94045
+SOURCE_STATS = {}
+RUN_FILES = (
+    'retention-audit.json','parameters-early.json','parameter-gate.json',
+    'navigation-recovery-parameter-gate.json','installed-check.json','runner-inputs.json',
+    'provenance-live.json','final-save.json','nav2-rpp-03m.yaml',
+    'snapshot-map.yaml','snapshot-map.pgm','snapshot-map.provenance.json','snapshot-map.failure.json',
+    'navigation.log','mission.log','perception.log','motion-startup-wait.json',
+    'initial-survey.json','initial-motion.json','recording/supervisor.json','recording/bag/metadata.yaml')
+HELPERS = ('prepare-run31.py','start-run31.sh','run31-env.sh','run31-process.py',
+    'run31-param-gate.py','run31-preflight.py','run31-save.py','run31-provenance.py',
+    'run31-installed-check.py','run31-outcome-review.py','archive-run31.py')
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def encoded(value):
+    return (json.dumps(value,indent=2,ensure_ascii=False,allow_nan=False)+'\n').encode('utf-8')
+
+
+def safe(path):
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError('Missing, linked or unsafe file: '+str(path))
+    return path
+
+
+def stat_key(value):
+    return value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns
+
+
+def remember_stat(path, before, after):
+    value = stat_key(after)
+    if stat_key(before) != value or path in SOURCE_STATS and SOURCE_STATS[path] != value:
+        raise RuntimeError('Input changed during/between reads: '+str(path))
+    SOURCE_STATS[path] = value
+
+
+def small(path):
+    safe(path)
+    before=path.stat()
+    if before.st_size>32*1024*1024:
+        raise RuntimeError('Selected diagnostic file unexpectedly exceeds 32 MiB: '+str(path))
+    raw=path.read_bytes()
+    after=path.stat()
+    remember_stat(path,before,after)
+    if len(raw)!=after.st_size:raise RuntimeError('Input length changed: '+str(path))
+    return raw
+
+
+def fingerprint(path):
+    """Hash one external file without loading it into memory or decoding it."""
+    safe(path)
+    before=path.stat()
+    h=hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda:stream.read(1024*1024),b''):
+            h.update(chunk)
+    after=path.stat()
+    remember_stat(path,before,after)
+    return {'path':path.relative_to(ROOT).as_posix(),'bytes':after.st_size,
+            'sha256':h.hexdigest(),'copied':False,'stat_stable_during_hash':True}
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-root-session',type=int,choices=[26612],required=True)
+    parser.add_argument('--confirmed-root-exit-code',type=int,choices=[1],required=True)
+    args=parser.parse_args(argv)
+    if DEST.exists() or DEST.is_symlink() or not DEST.parent.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError('Refuse existing or unsafe archive destination')
+    payloads, records, missing, originals = {}, [], [], {}
+
+    def keep(path, name, required=True, compressed=False):
+        if not path.exists() and not path.is_symlink():
+            if required:raise RuntimeError('Missing required evidence: '+str(path))
+            missing.append(path.relative_to(ROOT).as_posix())
+            return None
+        raw=small(path)
+        if name in payloads or Path(name).is_absolute() or '..' in Path(name).parts:
+            raise RuntimeError('Duplicate or unsafe archive member: '+name)
+        archived = gzip.compress(raw,mtime=0) if compressed else raw
+        if compressed and gzip.decompress(archived)!=raw:
+            raise RuntimeError('Lossless compression verification failed: '+name)
+        payloads[name]=archived
+        originals[path]=raw
+        records.append({'source':path.relative_to(ROOT).as_posix(),'archive':name,
+                        'bytes':len(raw),'sha256':sha(raw),
+                        'archive_bytes':len(archived),'archive_sha256':sha(archived),
+                        'encoding':'gzip' if compressed else 'identity'})
+        return raw
+
+    for name in ('orchestration.json','preparation.json','epoch.txt',
+                 'retention-shutdown.json','run-token-final-processes.json'):
+        keep(RUN/name,name)
+    orchestration=json.loads(payloads['orchestration.json'])
+    preparation=json.loads(payloads['preparation.json'])
+    shutdown=json.loads(payloads['retention-shutdown.json'])
+    elapsed=orchestration.get('elapsed_wall_s')
+    if not (orchestration.get('status') in ('terminal_observed','orchestration_failed')
+            and type(elapsed) in (int,float) and math.isfinite(elapsed) and elapsed>0
+            and shutdown.get('writer') is None
+            and shutdown.get('shutdown',{}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown',{}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Terminal supervisor and writer closure are not confirmed')
+    later=json.loads(keep(SETUP/'run31-postclosure-check.json','postclosure-check.json'))
+    keep(SETUP/'run31-postclosure-check.py','validation/run31-postclosure-check.py.txt')
+    completion=later.get('root_exec_completion') or {}
+    expected_owners={}
+    for path in sorted(RUN.glob('process-*.json')):
+        raw=keep(path,'process-identities/'+path.name)
+        expected_owners[path.relative_to(ROOT).as_posix()]=(sha(raw),json.loads(raw))
+    rows=later.get('groups')
+    mono=later.get('checked_monotonic_s')
+    if not (later.get('run')==RUN.name and later.get('epoch')==orchestration.get('epoch')
+            and isinstance(later.get('epoch'),str) and later['epoch']
+            and (completion.get('session_id'),completion.get('exit_code'))==(
+                args.confirmed_root_session,args.confirmed_root_exit_code)
+            and isinstance(completion.get('source'),str) and completion['source']
+            and later.get('original_orchestration_sha256')==sha(payloads['orchestration.json'])
+            and later.get('original_all_owned_groups_empty') is orchestration.get('all_owned_groups_empty')
+            and orchestration.get('all_owned_groups_empty') is False
+            and type(mono) in (int,float) and math.isfinite(mono) and mono>=0
+            and isinstance(later.get('boot_id_at_later_check'),str) and later['boot_id_at_later_check']
+            and later.get('signals_sent')==[] and expected_owners
+            and isinstance(rows,list) and len(rows)==len(expected_owners)
+            and all(isinstance(row,dict) for row in rows)
+            and {row.get('owner_file') for row in rows}==set(expected_owners)):
+        raise RuntimeError('Later check does not bind the original root exit/report/owner files')
+    for row in rows:
+        fingerprint_expected,owner=expected_owners[row['owner_file']]
+        if (row.get('owner_sha256')!=fingerprint_expected or row.get('owner')!=owner
+                or row.get('remaining_check_complete') is not True
+                or row.get('remaining')!=[] or row.get('errors')!=[]):
+            raise RuntimeError('Later exact-owner scoped closure not confirmed')
+    if later.get('all_owned_groups_empty_at_later_check') is not True:
+        raise RuntimeError('Later scoped group check did not pass')
+    runtime_head=preparation.get('code_head')
+    if (preparation.get('run')!=RUN.name or not isinstance(runtime_head,str)
+            or len(runtime_head)!=40 or any(c not in '0123456789abcdef' for c in runtime_head)):
+        raise RuntimeError('Preparation lacks the exact run31 runtime revision')
+    epoch=preparation.get('epoch')
+    if not isinstance(epoch,str) or payloads['epoch.txt']!=(epoch+'\n').encode('ascii'):
+        raise RuntimeError('Run epoch bytes disagree with preparation')
+    terminal=orchestration.get('terminal') or {}
+    filename=str(terminal.get('path','')).replace('\\','/').rsplit('/',1)[-1]
+    if filename:
+        mission_path=RUN/'mission'/filename
+    else:
+        candidates=sorted((RUN/'mission').glob('mission_*.json'))
+        if len(candidates)!=1:raise RuntimeError('No exact unique mission result for this compact archive')
+        mission_path=candidates[0]
+    mission_raw=keep(mission_path,'mission/'+mission_path.name)
+    if terminal.get('sha256') and terminal['sha256']!=sha(mission_raw):
+        raise RuntimeError('Mission result differs from recorded terminal hash')
+    mission=json.loads(mission_raw)
+    if mission.get('map_epoch')!=epoch or mission.get('status') not in ('done','blocked'):
+        raise RuntimeError('Mission epoch or terminal state is not confirmed')
+    shutdown_path=mission_path.with_name(mission_path.name.replace('mission_','shutdown_',1))
+    keep(shutdown_path,'mission/'+shutdown_path.name,False)
+    keep(RUN/'retained/checkpoint.json','retained-checkpoint.json')
+    for name in RUN_FILES:
+        keep(RUN/name,name,False)
+    for suffix in ('.json','.md'):
+        keep(SETUP/('run31-outcome-review'+suffix),'run31-outcome-review'+suffix)
+    outcome=json.loads(payloads['run31-outcome-review.json'])
+    if outcome.get('run')!=RUN.name or outcome.get('map_epoch')!=epoch or outcome.get('runtime_head')!=runtime_head or outcome.get('mission')!={
+            key:mission.get(key) for key in outcome.get('mission',{})}:
+        raise RuntimeError('Outcome does not preserve this original mission')
+    if outcome.get('cleanup')!=orchestration:
+        raise RuntimeError('Outcome predates the final supervisor closure receipt')
+    supplement=outcome.get('closure_supplement') or {}
+    if (supplement.get('postclosure_check')!=later or supplement.get('root_exec_completion')!=completion
+            or supplement.get('original_result_replaced') is not False
+            or supplement.get('validated_owner_file_count')!=len(expected_owners)):
+        raise RuntimeError('Outcome lacks the same independent postclosure evidence')
+    for name in HELPERS:
+        raw=keep(SETUP/name,'runner/'+name+'.txt')
+        key='outputs/setup/'+name
+        expected=preparation.get('prepared_helper_sha256',{}).get(key)
+        if name=='prepare-run31.py':expected=preparation.get('preparation_script_sha256')
+        if expected is not None and sha(raw)!=expected:
+            raise RuntimeError('Runtime helper differs from preparation: '+name)
+    ci=json.loads(keep(SETUP/'observation-retention-ci.json','validation/observation-retention-ci.json'))
+    if (ci.get('id'),ci.get('head_sha'),ci.get('status'),ci.get('conclusion'))!=(CI_ID,runtime_head,'completed','success'):
+        raise RuntimeError('CI receipt differs from the root-reported revision/success')
+
+    build=json.loads(keep(SETUP/'slam-steady-build-receipt.json','validation/slam-steady-build-receipt.json'))
+    if (build.get('exec_session_id'),build.get('exit_code'),build.get('status'))!=(BUILD_SESSION_ID,0,'completed'):
+        raise RuntimeError('SLAM build is not the confirmed closed 94045 success')
+    for name in ('build-slam-steady.sh','slam-steady-build.log','slam-steady-sha256.txt',
+                 'slam-steady-prefix.txt','slam-steady-common-ldd.txt'):
+        keep(SETUP/name,'validation/'+name)
+    keep(SETUP/'slam-steady-common-symbols.txt','validation/slam-steady-common-symbols.txt.gz',compressed=True)
+    source_raw=keep(ROOT/'outputs/slam-steady-ws/build-source.json','validation/slam-steady-build-source.json')
+    binding=preparation.get('slam_overlay',{})
+    if (sha(source_raw)!=binding.get('files_sha256',{}).get('outputs/slam-steady-ws/build-source.json')
+            or payloads['validation/slam-steady-prefix.txt'].decode('utf-8').strip()!=binding.get('package_prefix')):
+        raise RuntimeError('Build source or package prefix differs from runtime preparation')
+    for name in ('libtoolbox_common.so','libkartoSlamToolbox.so'):
+        if build.get('library_checks',{}).get(name)!=binding.get('libraries',{}).get(name,{}).get('sha256'):
+            raise RuntimeError('Build library receipt differs from runtime preparation: '+name)
+    # Focused validation is already archived separately; keep the new run compact.
+    for name in ('observation-retention-build.log','observation-retention-installed.json',
+                 'observation-retention-pure.json'):
+        keep(SETUP/name,'validation/'+name)
+    for name in ('run31-outcome-review-first-attempt-failure.json',
+                 'run31-skip-analysis.md','run31-skip-analysis.json'):
+        keep(SETUP/name,'validation/'+name,False)
+    keep(SETUP/'analyze-run31-skips.py','validation/analyze-run31-skips.py.txt')
+    for name in ('0032-phase-observation_select.json',
+                 '0053-phase-observation_navigating.json',
+                 '0054-goal-terminal-receipt.json','0057-phase-inspecting.json',
+                 '0058-phase-canceling.json','0064-observer-final.json'):
+        keep(RUN/'observer-snapshots'/name,'observer-snapshots/'+name)
+
+    retained_root=RUN/'retained'
+    if retained_root.is_symlink() or not retained_root.is_dir():
+        raise RuntimeError('Missing or unsafe external retained directory')
+    retained_paths=sorted(p for p in retained_root.rglob('*') if p.is_file() or p.is_symlink())
+    if len(retained_paths)>4096:raise RuntimeError('Unexpected retained evidence file count')
+    retained_files=[fingerprint(path) for path in retained_paths]
+    large_paths=set(RUN.glob('*.posegraph'))|set(RUN.glob('*.data'))
+    large_paths.update((RUN/'recording').rglob('*.mcap'))
+    large_paths.update((RUN/'recording').rglob('*.db3'))
+    if (RUN/'observer.json').exists():large_paths.add(RUN/'observer.json')
+    large_files=[fingerprint(path) for path in sorted(large_paths)]
+    external_validation=[]
+    for name in ('source-binding.json','results.json','manifest.json','SHA256SUMS'):
+        external_validation.append(fingerprint(ROOT/'experiments/navigation-recovery-20261103'/name))
+    external_clock_validation=[fingerprint(ROOT/'experiments/wsl-clock-tf-20261103'/name)
+        for name in ('manifest.json','SHA256SUMS')]
+    external_observation_validation=[fingerprint(ROOT/'experiments/observation-retention-20261103'/name)
+        for name in ('results.json','manifest.json','SHA256SUMS')]
+    references={'schema_version':1,'raw_retained_evidence_copied':False,
+        'complete_retention_archive':False,
+        'retained_directory':retained_root.relative_to(ROOT).as_posix(),
+        'retained_directory_at_archive':str(retained_root),
+        'retained_files':retained_files,'retained_file_count':len(retained_files),
+        'retained_total_bytes':sum(row['bytes'] for row in retained_files),
+        'large_recordings_posegraphs_observer':large_files,
+        'separate_recovery_validation_archive':external_validation,
+        'separate_clock_diagnostic_archive':external_clock_validation,
+        'separate_observation_retention_validation_archive':external_observation_validation,
+        'original_retention_audit_file':'retention-audit.json' if 'retention-audit.json' in payloads else None,
+        'scope':'External files were hashed without decoding after recorded closure. They remain in ignored output directories; this diagnostic archive alone cannot rerun the strict retained-frame audit. File hashes do not promote the original audit to passed.'}
+    receipt={'runtime_commit':runtime_head,'ci_run_id':CI_ID,'ci_conclusion':'success',
+        'slam_build_completion':{'session_id':build['exec_session_id'],'exit_code':build['exit_code'],
+            'source':'validation/slam-steady-build-receipt.json','scope':build.get('scope')},
+        'root_exec_completion':{'session_id':args.confirmed_root_session,'exit_code':args.confirmed_root_exit_code,
+            'source':'Root completion confirmation supplied explicitly; not inferred from mission or CI.'},
+        'original_all_owned_groups_empty':orchestration.get('all_owned_groups_empty'),
+        'later_scoped_group_closure':{'source':'postclosure-check.json',
+            'all_owned_groups_empty_at_later_check':later['all_owned_groups_empty_at_later_check'],
+            'validated_owner_file_count':len(expected_owners),'original_result_replaced':False,
+            'scope':later.get('scope')},
+        'mission_flags':{key:mission.get(key) for key in ('status','reason','mission_success','map_complete',
+                                                       'returned_pose_verified','visual_coverage_complete')},
+        'original_global_process_absence':orchestration.get('all_run_token_processes_absent'),
+        'global_scan_limitation':orchestration.get('global_scan_limitation'),
+        'missing_optional_files':missing}
+    payloads['external-evidence.json']=encoded(references)
+    payloads['external-receipts.json']=encoded(receipt)
+    payloads['.gitattributes']=b'* -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol\n'
+    payloads['README.md']=("# Run31 compact diagnostic archive\n\n"
+        "Mission, navigation-recovery diagnostics, parameter readbacks and original navigation logs are retained here. "
+        "Original failure/unknown values remain unchanged; CI success and a stationary stop do not imply mission success.\n\n"
+        "Runtime revision: `"+runtime_head+"`; external CI receipt: `"+str(CI_ID)+"`. "
+        "The actual root session exit is recorded separately in `external-receipts.json`.\n\n"
+        "**Original shutdown did not confirm all owned groups empty**: `orchestration.json` retains "
+        "`all_owned_groups_empty=false`, `errors=[]`, and root session 26612 retains exit code 1. "
+        "The separate later `postclosure-check.json` confirms only the exact listed original groups were empty "
+        "at that later check; original identity files and the read-only check script are included. "
+        "It sends no signals, does not repair the original shutdown deadline/result, and does not claim global process absence.\n\n"
+        "**This is not a complete retained-frame archive.** RGB-D binaries and metadata remain at `"+
+        retained_root.relative_to(ROOT).as_posix()+"`. `external-evidence.json` lists their exact paths, sizes and SHA256. "
+        "MCAP/DB3, posegraph/data and full observer data are also hash-only references. No image tar or bag copy is included. "
+        "Keep those original directories to rerun the strict audit; the existing audit result is preserved without reinterpretation.\n\n"
+        "See `run31-outcome-review.md` for the run30 comparison and `run31-outcome-review.json` for original mission flags, "
+        "recovery started/ready, actual later goal dispatches and terminal error fields. Ready alone is not dispatch success; "
+        "the full frozen observation denominator retains skipped/failed/pending views. Retired storage receipts keep their original deadline and do not grant observation or new-window credit. Two runs cannot isolate route-ordering and receipt-handling effects. Missing files are listed explicitly.\n\n"
+        "`runner/` contains exact small helper snapshots as `.txt`; restore original filenames in the repository before reuse. "
+        "Production/test source hashes are bound by preparation and the separate navigation-recovery validation archive. "
+        "The closed SLAM build receipt (94045), build script/log, source binding, prefix, SHA list, ldd and full nm output "
+        "are retained under `validation/`; the nm text is lossless gzip, with original and archived hashes in the manifest. "
+        "Build/CI success is separate from actual loaded-library identity and mission outcome. "
+        "Focused observation/retention build, install and pure-test receipts are included; the full separate validation "
+        "archive is referenced by hash. Callback credit flags are not logged; outcome summaries do not manufacture them. "
+        "This archive does not claim a new decoded-bag TF timing comparison or a new wall-clock probe. "
+        "No full node source, shared-library binary or repeated recovery validation logs are copied here.\n\n"
+        "Verify archived bytes with `sha256sum -c SHA256SUMS` from this directory. Archive-local `.gitattributes` disables "
+        "text conversion. External source hashes require the originals and are not validated by that archive-only command.\n").encode('utf-8')
+    payloads['manifest.json']=encoded({'raw_copies':records,'missing_optional_files':missing,
+        'scope':'SHA256SUMS covers archive members except itself. This manifest lists raw sources and their archive encodings/hashes, not itself or generated indexes.'})
+    # No destination is created until required inputs, closure and identities
+    # pass. Failures after creation preserve the partial archive for inspection.
+    for path,raw in originals.items():
+        if small(path)!=raw:raise RuntimeError('Input changed before archive creation: '+str(path))
+    if retained_paths!=sorted(p for p in retained_root.rglob('*') if p.is_file() or p.is_symlink()):
+        raise RuntimeError('External retained directory membership changed while hashing')
+    if set(expected_owners)!={path.relative_to(ROOT).as_posix() for path in RUN.glob('process-*.json')}:
+        raise RuntimeError('Recorded owner-file membership changed during archive preparation')
+    for path,expected_stat in SOURCE_STATS.items():
+        safe(path)
+        if stat_key(path.stat())!=expected_stat:
+            raise RuntimeError('Input changed before archive creation: '+str(path))
+    DEST.mkdir(parents=True)
+    for name,raw in payloads.items():
+        path=DEST/name
+        path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open('xb') as stream:stream.write(raw)
+        if path.read_bytes()!=raw:raise RuntimeError('Copied bytes differ: '+name)
+    checksum=''.join(sha(raw)+'  '+name+'\n' for name,raw in sorted(payloads.items()))
+    with (DEST/'SHA256SUMS').open('xb') as stream:stream.write(checksum.encode('utf-8'))
+    for name,raw in payloads.items():
+        if sha((DEST/name).read_bytes())!=sha(raw):raise RuntimeError('Final archive hash mismatch: '+name)
+    print(json.dumps({'archive':str(DEST),'files':len(payloads)+1,
+        'bytes':sum(len(raw) for raw in payloads.values())+len(checksum.encode('utf-8')),
+        'sha256sums_sha256':sha((DEST/'SHA256SUMS').read_bytes()),
+        'complete_retention_archive':False,'retained_external_file_count':len(retained_files),
+        'mission_flags':receipt['mission_flags'],'verified_archived_bytes':True},indent=2))
+
+
+if __name__=='__main__':
+    main()
