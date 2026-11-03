@@ -18,11 +18,17 @@ import threading
 import time
 import uuid
 
+try:
+    import fcntl
+except ImportError:  # Pure protocol/tests remain importable on non-Linux hosts.
+    fcntl = None
+
 import limo_evidence_protocol.retention as retention_protocol
 from limo_evidence_protocol.retention import Core, Policy, canonical, sha, validate_request
 
 MAX_CHECKPOINT = 4 * 1024 * 1024
 MAX_REPLY = 32768
+STDIN_PIPE_TARGET_BYTES = 1024 * 1024
 
 
 @dataclass(frozen=True)
@@ -55,6 +61,13 @@ class OwnedWriter:
         if job is not None:
             segments += tuple(raw for _, raw in job.files) + (job.manifest, job.receipt)
         self.segments = deque(memoryview(raw) for raw in segments)
+        self.input_total_bytes = sum(len(raw) for raw in segments)
+        self.input_sent_bytes = self.input_eagain_count = 0
+        self.input_first_progress_wall = self.input_last_progress_wall = None
+        self.stdin_closed_wall = None
+        self.last_poll_wall, self.max_poll_gap_s = now, 0.
+        self.stdin_pipe = dict(initial_bytes=None, requested_bytes=None, actual_bytes=None,
+                               tuning_error=None, readback_error=None)
         self.output, self.errors = bytearray(), bytearray()
         self.fault = self.stop_reason = None
         self.stop_started = self.killed_at = None
@@ -85,6 +98,36 @@ class OwnedWriter:
             self.setup_error = self.fault = 'writer_setup_failed:' + type(exc).__name__
             for stream in (self.process.stdin, self.process.stdout, self.process.stderr):
                 stream.close()
+        else:
+            self._tune_stdin_pipe()
+
+    def _tune_stdin_pipe(self):
+        """Optional capacity improvement, never a failure of child ownership."""
+        if fcntl is None or not hasattr(fcntl, 'F_GETPIPE_SZ'):
+            self.stdin_pipe['tuning_error'] = 'unsupported'
+            return
+        try:
+            fd = self.process.stdin.fileno()
+            initial = fcntl.fcntl(fd, fcntl.F_GETPIPE_SZ)
+            self.stdin_pipe['initial_bytes'] = self.stdin_pipe['actual_bytes'] = initial
+            if initial >= STDIN_PIPE_TARGET_BYTES:
+                return  # Do not shrink a pipe that already has enough capacity.
+            if not hasattr(fcntl, 'F_SETPIPE_SZ'):
+                self.stdin_pipe['tuning_error'] = 'unsupported'
+                return
+            self.stdin_pipe['requested_bytes'] = STDIN_PIPE_TARGET_BYTES
+            fcntl.fcntl(fd, fcntl.F_SETPIPE_SZ, STDIN_PIPE_TARGET_BYTES)
+        except Exception as exc:
+            # Tuning is optional: EPERM/unsupported kernels must keep the same
+            # live child and original deadline, rather than abandon ownership.
+            self.stdin_pipe['tuning_error'] = (type(exc).__name__ +
+                ':errno=' + str(getattr(exc, 'errno', None)))[:128]
+        try:
+            self.stdin_pipe['actual_bytes'] = fcntl.fcntl(self.process.stdin.fileno(), fcntl.F_GETPIPE_SZ)
+        except Exception as exc:
+            self.stdin_pipe['actual_bytes'] = None
+            self.stdin_pipe['readback_error'] = (type(exc).__name__ +
+                ':errno=' + str(getattr(exc, 'errno', None)))[:128]
 
     def signal(self, sig):
         if self.process.poll() is None:
@@ -117,6 +160,8 @@ class OwnedWriter:
             target.extend(raw[:max(0, limit - len(target))])
 
     def poll(self, now):
+        self.max_poll_gap_s = max(self.max_poll_gap_s, now - self.last_poll_wall)
+        self.last_poll_wall = now
         if self.setup_error:
             self.returncode = self.process.poll()
             if self.returncode is not None:
@@ -130,17 +175,24 @@ class OwnedWriter:
             try:
                 sent = os.write(self.process.stdin.fileno(), view[:min(65536, remaining)])
             except BlockingIOError:
+                self.input_eagain_count = min(self.input_eagain_count + 1, 2**63 - 1)
                 break
             except (BrokenPipeError, OSError) as exc:
                 self.fault = self.fault or 'writer_input_closed:' + type(exc).__name__
                 break
             remaining -= sent
+            self.input_sent_bytes += sent
+            if sent:
+                if self.input_first_progress_wall is None:
+                    self.input_first_progress_wall = now
+                self.input_last_progress_wall = now
             if sent == len(view):
                 self.segments.popleft()
             else:
                 self.segments[0] = view[sent:]
         if not self.segments and not self.process.stdin.closed:
             self.process.stdin.close()
+            self.stdin_closed_wall = now
         self._drain(self.process.stdout, self.output, MAX_REPLY)
         self._drain(self.process.stderr, self.errors, 4096)
         self.returncode = self.process.poll()
@@ -175,6 +227,14 @@ class OwnedWriter:
                     job_id=self.job.request_id if self.job else None, returncode=self.returncode,
                     stop_reason=self.stop_reason, forced_kill=self.killed_at is not None,
                     termination_unconfirmed=self.unconfirmed, fault=self.fault,
+                    stdin_pipe=dict(self.stdin_pipe),
+                    # Wall values are owner poll samples, not child read/fsync times.
+                    input_transfer=dict(total_bytes=self.input_total_bytes, sent_bytes=self.input_sent_bytes,
+                        remaining_bytes=self.input_total_bytes - self.input_sent_bytes,
+                        eagain_count=self.input_eagain_count,
+                        first_progress_wall=self.input_first_progress_wall,
+                        last_progress_wall=self.input_last_progress_wall,
+                        stdin_closed_wall=self.stdin_closed_wall, max_poll_gap_s=self.max_poll_gap_s),
                     stderr=self.errors.decode(errors='replace'))
 
     def dispose(self):

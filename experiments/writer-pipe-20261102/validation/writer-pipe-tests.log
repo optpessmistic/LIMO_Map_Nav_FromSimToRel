@@ -1,0 +1,67 @@
+test_backpressure_partial_send_and_original_five_second_timeout_evidence (test_retention_pipe.RetentionPipeTests.test_backpressure_partial_send_and_original_five_second_timeout_evidence) ... ok
+test_existing_larger_pipe_is_not_shrunk_or_reported_as_a_new_request (test_retention_pipe.RetentionPipeTests.test_existing_larger_pipe_is_not_shrunk_or_reported_as_a_new_request) ... ok
+test_failed_readback_does_not_claim_requested_capacity (test_retention_pipe.RetentionPipeTests.test_failed_readback_does_not_claim_requested_capacity) ... ok
+test_get_capacity_failure_preserves_ownership_and_reports_unknown_actual (test_retention_pipe.RetentionPipeTests.test_get_capacity_failure_preserves_ownership_and_reports_unknown_actual) ... ok
+test_large_payload_keeps_one_mib_tick_budget_and_exact_sent_bytes (test_retention_pipe.RetentionPipeTests.test_large_payload_keeps_one_mib_tick_budget_and_exact_sent_bytes) ... ok
+test_missing_fcntl_module_or_linux_constants_is_safe (test_retention_pipe.RetentionPipeTests.test_missing_fcntl_module_or_linux_constants_is_safe) ... ok
+test_permission_denied_keeps_original_pipe_and_owned_child (test_retention_pipe.RetentionPipeTests.test_permission_denied_keeps_original_pipe_and_owned_child) ... ok
+test_required_setup_failure_is_still_fatal_and_skips_optional_tuning (test_retention_pipe.RetentionPipeTests.test_required_setup_failure_is_still_fatal_and_skips_optional_tuning) ... ok
+test_snapshots_do_not_expose_mutable_diagnostic_state (test_retention_pipe.RetentionPipeTests.test_snapshots_do_not_expose_mutable_diagnostic_state) ... ok
+test_tuning_occurs_after_pidfd_and_nonblocking_and_reads_actual_capacity (test_retention_pipe.RetentionPipeTests.test_tuning_occurs_after_pidfd_and_nonblocking_and_reads_actual_capacity) ... ok
+test_checkpoint_failure_is_explicit_and_no_infinite_retry (test_frame_retention_adapter.AdapterTests.test_checkpoint_failure_is_explicit_and_no_infinite_retry) ... ok
+test_default_off_main_callback_exception_is_not_swallowed (test_frame_retention_adapter.AdapterTests.test_default_off_main_callback_exception_is_not_swallowed) ... ok
+test_epoch_change_keeps_owned_job_and_cannot_receive_late_success (test_frame_retention_adapter.AdapterTests.test_epoch_change_keeps_owned_job_and_cannot_receive_late_success) ... ok
+test_existing_output_and_off_owner_calls_rejected (test_frame_retention_adapter.AdapterTests.test_existing_output_and_off_owner_calls_rejected) ... ok
+test_global_admission_fault_is_durable_not_reset_by_epoch (test_frame_retention_adapter.AdapterTests.test_global_admission_fault_is_durable_not_reset_by_epoch) ... ok
+test_ignored_term_escalates_only_owned_child_and_final_failure_checkpoint (test_frame_retention_adapter.AdapterTests.test_ignored_term_escalates_only_owned_child_and_final_failure_checkpoint) ... ok
+test_late_source_conflict_overrides_durable_stored (test_frame_retention_adapter.AdapterTests.test_late_source_conflict_overrides_durable_stored) ... ok
+test_missing_ready_assertion_still_flushes_worker_and_closes_pipes (test_frame_retention_adapter.AdapterTests.test_missing_ready_assertion_still_flushes_worker_and_closes_pipes) ... FAIL
+test_pidfd_setup_failure_retains_child_until_confirmed_exit (test_frame_retention_adapter.AdapterTests.test_pidfd_setup_failure_retains_child_until_confirmed_exit) ... ok
+test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) ... 
+  test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) (signal=<Signals.SIGINT: 2>) ... FAIL
+  test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) (signal=<Signals.SIGTERM: 15>) ... FAIL
+test_real_worker_ignores_ambient_site_packages_and_python_startup_overrides (test_frame_retention_adapter.AdapterTests.test_real_worker_ignores_ambient_site_packages_and_python_startup_overrides) ... ok
+test_roundtrip_durable_gate_and_source_padding_no_idle_checkpoint_loop (test_frame_retention_adapter.AdapterTests.test_roundtrip_durable_gate_and_source_padding_no_idle_checkpoint_loop) ... ok
+test_short_shutdown_reports_unconfirmed_writer_not_success (test_frame_retention_adapter.AdapterTests.test_short_shutdown_reports_unconfirmed_writer_not_success) ... ok
+test_signal_style_shutdown_is_bounded_flush_not_success (test_frame_retention_adapter.AdapterTests.test_signal_style_shutdown_is_bounded_flush_not_success) ... ok
+test_spawn_failure_does_not_leave_fictitious_writer_or_retry_budget (test_frame_retention_adapter.AdapterTests.test_spawn_failure_does_not_leave_fictitious_writer_or_retry_budget) ... ok
+test_ttl_failure_persists_and_same_id_never_turns_green (test_frame_retention_adapter.AdapterTests.test_ttl_failure_persists_and_same_id_never_turns_green) ... ok
+test_valid_request_before_epoch_closes_run_instead_of_later_resurrection (test_frame_retention_adapter.AdapterTests.test_valid_request_before_epoch_closes_run_instead_of_later_resurrection) ... ok
+test_write_error_never_publishes_stored (test_frame_retention_adapter.AdapterTests.test_write_error_never_publishes_stored) ... ok
+test_default_off_hook_keeps_original_record_publication (test_frame_retention_adapter.SourceHookTests.test_default_off_hook_keeps_original_record_publication) ... ok
+test_finish_offer_same_callback_raw_then_publish_unchanged_metadata (test_frame_retention_adapter.SourceHookTests.test_finish_offer_same_callback_raw_then_publish_unchanged_metadata) ... ok
+test_pre_epoch_rejected_pair_does_not_prematurely_close_retention (test_frame_retention_adapter.SourceHookTests.test_pre_epoch_rejected_pair_does_not_prematurely_close_retention) ... ok
+test_unconfirmed_writer_identity_is_in_exit_log (test_frame_retention_adapter.SourceHookTests.test_unconfirmed_writer_identity_is_in_exit_log) ... ok
+test_closed_owner_new_fault_advances_checkpoint_revision (test_frame_retention_owner_races.OwnerRaceTests.test_closed_owner_new_fault_advances_checkpoint_revision) ... ok
+test_global_fault_cannot_borrow_old_stored_checkpoint_flag (test_frame_retention_owner_races.OwnerRaceTests.test_global_fault_cannot_borrow_old_stored_checkpoint_flag) ... ok
+test_reply_written_between_first_drain_and_exit_poll_is_collected (test_frame_retention_owner_races.OwnerRaceTests.test_reply_written_between_first_drain_and_exit_poll_is_collected) ... ok
+test_valid_json_nonobject_completion_is_rejected_without_unwinding_owner (test_frame_retention_owner_races.OwnerRaceTests.test_valid_json_nonobject_completion_is_rejected_without_unwinding_owner) ... ok
+
+======================================================================
+FAIL: test_missing_ready_assertion_still_flushes_worker_and_closes_pipes (test_frame_retention_adapter.AdapterTests.test_missing_ready_assertion_still_flushes_worker_and_closes_pipes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_frame_retention_adapter.py", line 480, in test_missing_ready_assertion_still_flushes_worker_and_closes_pipes
+    self.assertTrue(Path(str(output)+'.worker-ready').exists(), 'Controlled worker must be running')
+AssertionError: False is not true : Controlled worker must be running
+
+======================================================================
+FAIL: test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) (signal=<Signals.SIGINT: 2>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_frame_retention_adapter.py", line 452, in test_real_signals_use_extracted_main_and_leave_no_owned_writer
+    self.assertIn(b'READY\n', captured)
+AssertionError: b'READY\n' not found in bytearray(b'')
+
+======================================================================
+FAIL: test_real_signals_use_extracted_main_and_leave_no_owned_writer (test_frame_retention_adapter.AdapterTests.test_real_signals_use_extracted_main_and_leave_no_owned_writer) (signal=<Signals.SIGTERM: 15>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/tests/test_frame_retention_adapter.py", line 452, in test_real_signals_use_extracted_main_and_leave_no_owned_writer
+    self.assertIn(b'READY\n', captured)
+AssertionError: b'READY\n' not found in bytearray(b'')
+
+----------------------------------------------------------------------
+Ran 36 tests in 38.652s
+
+FAILED (failures=3)

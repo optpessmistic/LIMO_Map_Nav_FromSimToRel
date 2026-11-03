@@ -31,6 +31,12 @@ class OwnerRaceTests(unittest.TestCase):
     def stub_writer(self, raw, *, arrives_at_poll=False):
         writer = OwnedWriter.__new__(OwnedWriter)
         writer.segments = deque()
+        writer.input_total_bytes = writer.input_sent_bytes = writer.input_eagain_count = 0
+        writer.input_first_progress_wall = writer.input_last_progress_wall = None
+        writer.stdin_closed_wall = None
+        writer.last_poll_wall, writer.max_poll_gap_s = 0., 0.
+        writer.stdin_pipe = dict(initial_bytes=None, requested_bytes=None, actual_bytes=None,
+                                 tuning_error=None, readback_error=None)
         writer.stop_reason = writer.stop_started = writer.killed_at = writer.fault = None
         writer.setup_error = None
         writer.output = bytearray()

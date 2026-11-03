@@ -1,0 +1,5976 @@
+{
+  "variant": "drvfs-default",
+  "errors": [],
+  "source_request_offsets_s": [
+    0.0,
+    0.0962173890000031,
+    0.2918245770000567
+  ],
+  "original_consumer_remaining_from_first_request_s": 9.861276770000018,
+  "polling_interval_s": 0.05,
+  "max_tick_transfer_bytes": 1048576,
+  "worker_timeout_s": 5.0,
+  "request_timeout_s": 10.0,
+  "shutdown_timeout_s": 8.0,
+  "candidate_change": null,
+  "limitations": [
+    "No Gazebo, ROS executor, image processing, or concurrent camera load.",
+    "Constructor duration is Popen cost, not full interpreter startup.",
+    "Input drain includes scheduling/backpressure; no child phase or fsync instrumentation.",
+    "One attempt per variant in baseline-then-candidate order; cache/order effects are not controlled."
+  ],
+  "initial_checkpoint_ready_wall": 54.020222006,
+  "all_durable_elapsed_s": 8.306701818,
+  "would_meet_original_consumer_deadline": true,
+  "durable_results": [
+    {
+      "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+      "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+      "status": "stored",
+      "reason": null,
+      "writer_owned": false,
+      "requested_wall": 54.024213707,
+      "completed_wall": 56.082237954,
+      "receipt": {
+        "directory": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "fb780a82d0727f146da684ec6147ba75c1ee5e30ddf6a1086626fd09a7179fb6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "d4fe977558d833a6f6275c357fc6a7d9e7b090d0bbcd57011804898c82270292"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "4ee4b93c8a5fbf839b0721a96fb5b308a02bf26b38264b47172b2b6beec7ead2"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+      },
+      "checkpoint_persisted": true
+    },
+    {
+      "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+      "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+      "status": "stored",
+      "reason": null,
+      "writer_owned": false,
+      "requested_wall": 54.15799135,
+      "completed_wall": 59.026422551,
+      "receipt": {
+        "directory": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "9c960625f4235e546252e56d4fa3a248d7817baf46aaf3967a6f5d7041c2dec6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1362,
+            "sha256": "8f08581672c16a10aa6a4e639e9f7e4faf602b703e07203ef4b5e3781efbfbca"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "cd6cea962477cea2a768f92f7a309a63ce3cfca36f5094e2231b634cc651efcf"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+      },
+      "checkpoint_persisted": true
+    },
+    {
+      "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+      "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+      "status": "stored",
+      "reason": null,
+      "writer_owned": false,
+      "requested_wall": 54.365159246,
+      "completed_wall": 61.282889951,
+      "receipt": {
+        "directory": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+        "file_fsync_completed": true,
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "b6e6eb9a412486276389a49f36a0fa2451f9adbb2ecf6a13ebe89b89f9a4a410"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "65c22b20852e1fdaf76d521c397234f7181f2cc75dc3424bff7a79234817cabd"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "e24ff64434cd6810f609570081163ce57b82a4fc6e97219b1dc1fb0c94fbc234"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+      },
+      "checkpoint_persisted": true
+    }
+  ],
+  "before_shutdown": {
+    "schema_version": 1,
+    "session_id": "79b52434-72b4-4ee7-811b-69437523dfcd",
+    "closed": false,
+    "reason": null,
+    "fault": null,
+    "revision": 15,
+    "persisted_revision": 15,
+    "checkpoint_failed": false,
+    "protocol_rejections": 0,
+    "last_protocol_error": null,
+    "writer": null,
+    "writer_history": [
+      {
+        "pid": 960,
+        "operation_id": "4a04b1a249474e23a6167923cdfb794e",
+        "owner_token": "a82d8c38af6d415498dd972cc74de5b2",
+        "started_wall": 54.02567361,
+        "job_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+        "returncode": 0,
+        "stop_reason": null,
+        "forced_kill": false,
+        "termination_unconfirmed": false,
+        "fault": null,
+        "stderr": ""
+      },
+      {
+        "pid": 962,
+        "operation_id": "cb3605fe27dc45cdb6c856ad7c3de6c6",
+        "owner_token": "a78971c931034d6f96fb817b780740a6",
+        "started_wall": 56.082237954,
+        "job_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+        "returncode": 0,
+        "stop_reason": null,
+        "forced_kill": false,
+        "termination_unconfirmed": false,
+        "fault": null,
+        "stderr": ""
+      },
+      {
+        "pid": 964,
+        "operation_id": "412231b823de44f5b5da60d1e05d9bcf",
+        "owner_token": "6b3878ffe7b04d1d8f2fb18c8b9dd204",
+        "started_wall": 59.026422551,
+        "job_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+        "returncode": 0,
+        "stop_reason": null,
+        "forced_kill": false,
+        "termination_unconfirmed": false,
+        "fault": null,
+        "stderr": ""
+      }
+    ],
+    "core": {
+      "schema_version": 1,
+      "closed": false,
+      "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+      "detector_session_id": "79b52434-72b4-4ee7-811b-69437523dfcd",
+      "wall": 62.3263998,
+      "candidate_count": 3,
+      "payload_bytes_reserved": 6468932,
+      "jobs_reserved": 3,
+      "file_bytes_reserved": 6466412,
+      "writer_pending": false,
+      "admission": {
+        "closed": false,
+        "fault": null,
+        "scope": "all_unrecorded_ids_denied_after_history_budget; rejected_identities_not_retained"
+      },
+      "results": [
+        {
+          "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+          "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+          "status": "stored",
+          "reason": null,
+          "writer_owned": false,
+          "requested_wall": 54.024213707,
+          "completed_wall": 56.082237954,
+          "receipt": {
+            "directory": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+            "file_fsync_completed": true,
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "fb780a82d0727f146da684ec6147ba75c1ee5e30ddf6a1086626fd09a7179fb6"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1363,
+                "sha256": "d4fe977558d833a6f6275c357fc6a7d9e7b090d0bbcd57011804898c82270292"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "4ee4b93c8a5fbf839b0721a96fb5b308a02bf26b38264b47172b2b6beec7ead2"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+          }
+        },
+        {
+          "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+          "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+          "status": "stored",
+          "reason": null,
+          "writer_owned": false,
+          "requested_wall": 54.15799135,
+          "completed_wall": 59.026422551,
+          "receipt": {
+            "directory": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+            "file_fsync_completed": true,
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "9c960625f4235e546252e56d4fa3a248d7817baf46aaf3967a6f5d7041c2dec6"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1362,
+                "sha256": "8f08581672c16a10aa6a4e639e9f7e4faf602b703e07203ef4b5e3781efbfbca"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "cd6cea962477cea2a768f92f7a309a63ce3cfca36f5094e2231b634cc651efcf"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+          }
+        },
+        {
+          "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+          "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+          "status": "stored",
+          "reason": null,
+          "writer_owned": false,
+          "requested_wall": 54.365159246,
+          "completed_wall": 61.282889951,
+          "receipt": {
+            "directory": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+            "file_fsync_completed": true,
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "b6e6eb9a412486276389a49f36a0fa2451f9adbb2ecf6a13ebe89b89f9a4a410"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1363,
+                "sha256": "65c22b20852e1fdaf76d521c397234f7181f2cc75dc3424bff7a79234817cabd"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "e24ff64434cd6810f609570081163ce57b82a4fc6e97219b1dc1fb0c94fbc234"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+          }
+        }
+      ],
+      "events": [],
+      "scope": "in_memory_checkpoint_requires_owner_persistence; no process cleanup claim"
+    },
+    "scope": "source_bytes_retention_only; no_artifact_audit_or_mission_success_claim"
+  },
+  "shutdown": {
+    "schema_version": 1,
+    "session_id": "79b52434-72b4-4ee7-811b-69437523dfcd",
+    "closed": true,
+    "reason": "shutdown",
+    "fault": null,
+    "revision": 17,
+    "persisted_revision": 17,
+    "checkpoint_failed": false,
+    "protocol_rejections": 0,
+    "last_protocol_error": null,
+    "writer": null,
+    "writer_history": [
+      {
+        "pid": 960,
+        "operation_id": "4a04b1a249474e23a6167923cdfb794e",
+        "owner_token": "a82d8c38af6d415498dd972cc74de5b2",
+        "started_wall": 54.02567361,
+        "job_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+        "returncode": 0,
+        "stop_reason": null,
+        "forced_kill": false,
+        "termination_unconfirmed": false,
+        "fault": null,
+        "stderr": ""
+      },
+      {
+        "pid": 962,
+        "operation_id": "cb3605fe27dc45cdb6c856ad7c3de6c6",
+        "owner_token": "a78971c931034d6f96fb817b780740a6",
+        "started_wall": 56.082237954,
+        "job_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+        "returncode": 0,
+        "stop_reason": null,
+        "forced_kill": false,
+        "termination_unconfirmed": false,
+        "fault": null,
+        "stderr": ""
+      },
+      {
+        "pid": 964,
+        "operation_id": "412231b823de44f5b5da60d1e05d9bcf",
+        "owner_token": "6b3878ffe7b04d1d8f2fb18c8b9dd204",
+        "started_wall": 59.026422551,
+        "job_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+        "returncode": 0,
+        "stop_reason": null,
+        "forced_kill": false,
+        "termination_unconfirmed": false,
+        "fault": null,
+        "stderr": ""
+      }
+    ],
+    "core": {
+      "schema_version": 1,
+      "closed": true,
+      "map_epoch": "66d9ca31-0403-4be7-905c-c63a13ed7a2d",
+      "detector_session_id": "79b52434-72b4-4ee7-811b-69437523dfcd",
+      "wall": 66.763061642,
+      "candidate_count": 0,
+      "payload_bytes_reserved": 9902,
+      "jobs_reserved": 3,
+      "file_bytes_reserved": 6466412,
+      "writer_pending": false,
+      "admission": {
+        "closed": false,
+        "fault": null,
+        "scope": "all_unrecorded_ids_denied_after_history_budget; rejected_identities_not_retained"
+      },
+      "results": [
+        {
+          "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+          "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+          "status": "stored",
+          "reason": null,
+          "writer_owned": false,
+          "requested_wall": 54.024213707,
+          "completed_wall": 56.082237954,
+          "receipt": {
+            "directory": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e",
+            "file_fsync_completed": true,
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "fb780a82d0727f146da684ec6147ba75c1ee5e30ddf6a1086626fd09a7179fb6"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1363,
+                "sha256": "d4fe977558d833a6f6275c357fc6a7d9e7b090d0bbcd57011804898c82270292"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "4ee4b93c8a5fbf839b0721a96fb5b308a02bf26b38264b47172b2b6beec7ead2"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "request_sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+          }
+        },
+        {
+          "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+          "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+          "status": "stored",
+          "reason": null,
+          "writer_owned": false,
+          "requested_wall": 54.15799135,
+          "completed_wall": 59.026422551,
+          "receipt": {
+            "directory": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262",
+            "file_fsync_completed": true,
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "9c960625f4235e546252e56d4fa3a248d7817baf46aaf3967a6f5d7041c2dec6"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1362,
+                "sha256": "8f08581672c16a10aa6a4e639e9f7e4faf602b703e07203ef4b5e3781efbfbca"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "cd6cea962477cea2a768f92f7a309a63ce3cfca36f5094e2231b634cc651efcf"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "request_sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+          }
+        },
+        {
+          "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+          "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+          "status": "stored",
+          "reason": null,
+          "writer_owned": false,
+          "requested_wall": 54.365159246,
+          "completed_wall": 61.282889951,
+          "receipt": {
+            "directory": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2",
+            "file_fsync_completed": true,
+            "files": {
+              "camera_info.json": {
+                "bytes": 549,
+                "sha256": "b6e6eb9a412486276389a49f36a0fa2451f9adbb2ecf6a13ebe89b89f9a4a410"
+              },
+              "depth.bin": {
+                "bytes": 1228800,
+                "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+              },
+              "manifest.json": {
+                "bytes": 1363,
+                "sha256": "65c22b20852e1fdaf76d521c397234f7181f2cc75dc3424bff7a79234817cabd"
+              },
+              "producer.json": {
+                "bytes": 2061,
+                "sha256": "e24ff64434cd6810f609570081163ce57b82a4fc6e97219b1dc1fb0c94fbc234"
+              },
+              "request.json": {
+                "bytes": 1098,
+                "sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+              },
+              "rgb.bin": {
+                "bytes": 921600,
+                "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+              }
+            },
+            "request_sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+          }
+        }
+      ],
+      "events": [
+        {
+          "wall": 62.326956997,
+          "reason": "closed_unpinned",
+          "sequence": 1378
+        },
+        {
+          "wall": 62.326956997,
+          "reason": "closed_unpinned",
+          "sequence": 1379
+        },
+        {
+          "wall": 62.326956997,
+          "reason": "closed_unpinned",
+          "sequence": 1380
+        }
+      ],
+      "scope": "in_memory_checkpoint_requires_owner_persistence; no process cleanup claim"
+    },
+    "scope": "source_bytes_retention_only; no_artifact_audit_or_mission_success_claim",
+    "shutdown": {
+      "elapsed_wall_s": 4.436428119999995,
+      "owned_writer_exit_confirmed": true,
+      "final_checkpoint_persisted": true,
+      "limitation": "SIGKILL cannot guarantee bounded exit from uninterruptible kernel I/O"
+    }
+  },
+  "emergency_cleanup": [],
+  "all_owned_helpers_closed": true,
+  "elapsed_wall_s": 16.898721044,
+  "workers": [
+    {
+      "pid": 956,
+      "job_id": null,
+      "operation_id": "991545ce1e264c92bc79cbc2a68770f7",
+      "started_wall": 49.88027303,
+      "constructor_start_wall": 49.8803842,
+      "constructor_end_wall": 49.896556071,
+      "initial_wire_bytes": 1008,
+      "input_drained_wall": 49.946840524,
+      "terminal_observed_wall": 54.019994545,
+      "polls": [
+        {
+          "wall": 49.946698149,
+          "entered": 49.946736256,
+          "exited": 49.946840524,
+          "bytes_sent": 1008,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 49.996966794,
+          "entered": 49.996994192,
+          "exited": 49.99704043,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.04720559,
+          "entered": 50.04723147,
+          "exited": 50.047280542,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.097399516,
+          "entered": 50.097435828,
+          "exited": 50.097486483,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.147608201,
+          "entered": 50.147641537,
+          "exited": 50.147702162,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.197819912,
+          "entered": 50.197856891,
+          "exited": 50.197921118,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.248112386,
+          "entered": 50.248150145,
+          "exited": 50.24821275,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.298420336,
+          "entered": 50.298463686,
+          "exited": 50.298530765,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.34868409,
+          "entered": 50.348739309,
+          "exited": 50.348963484,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.399136925,
+          "entered": 50.399171161,
+          "exited": 50.399231116,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.449448665,
+          "entered": 50.449491154,
+          "exited": 50.44958554,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.4998048,
+          "entered": 50.499846334,
+          "exited": 50.499916346,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.550139434,
+          "entered": 50.550183754,
+          "exited": 50.550262836,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.600478428,
+          "entered": 50.600521244,
+          "exited": 50.600584789,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.650713744,
+          "entered": 50.65074673,
+          "exited": 50.65080554,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.701067003,
+          "entered": 50.701105455,
+          "exited": 50.701170692,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.751305397,
+          "entered": 50.751347231,
+          "exited": 50.751425391,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.801558892,
+          "entered": 50.801606499,
+          "exited": 50.801670694,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.851846427,
+          "entered": 50.851887815,
+          "exited": 50.851959043,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.902194414,
+          "entered": 50.902245221,
+          "exited": 50.902339218,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 50.952560269,
+          "entered": 50.952601967,
+          "exited": 50.952669636,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.002902568,
+          "entered": 51.002946453,
+          "exited": 51.003017409,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.053222126,
+          "entered": 51.053268993,
+          "exited": 51.053330825,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.103523617,
+          "entered": 51.103569502,
+          "exited": 51.103648517,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.153866538,
+          "entered": 51.153940074,
+          "exited": 51.154024907,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.204216741,
+          "entered": 51.204259221,
+          "exited": 51.204331133,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.2545191,
+          "entered": 51.25455903,
+          "exited": 51.254629189,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.304815058,
+          "entered": 51.304861032,
+          "exited": 51.304934803,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.355113402,
+          "entered": 51.35515741,
+          "exited": 51.355222143,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.405410076,
+          "entered": 51.40544941,
+          "exited": 51.405522393,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.455693749,
+          "entered": 51.455731145,
+          "exited": 51.455799983,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.505942053,
+          "entered": 51.505975167,
+          "exited": 51.50603406,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.556176378,
+          "entered": 51.556213038,
+          "exited": 51.556273911,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.606406,
+          "entered": 51.606439944,
+          "exited": 51.606505398,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.656678111,
+          "entered": 51.656716869,
+          "exited": 51.656778482,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.706998172,
+          "entered": 51.707064808,
+          "exited": 51.707129282,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.757359328,
+          "entered": 51.757393974,
+          "exited": 51.757456535,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.807648637,
+          "entered": 51.807686429,
+          "exited": 51.807746946,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.857966844,
+          "entered": 51.858002414,
+          "exited": 51.858072245,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.908253406,
+          "entered": 51.908288683,
+          "exited": 51.908354838,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 51.958566124,
+          "entered": 51.958603496,
+          "exited": 51.958671811,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.008875191,
+          "entered": 52.008912217,
+          "exited": 52.008984896,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.059147393,
+          "entered": 52.059188406,
+          "exited": 52.059246445,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.109425857,
+          "entered": 52.109459614,
+          "exited": 52.109517272,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.159660253,
+          "entered": 52.159697582,
+          "exited": 52.159759124,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.209933793,
+          "entered": 52.209982828,
+          "exited": 52.210070384,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.260259918,
+          "entered": 52.260315127,
+          "exited": 52.260399802,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.310592701,
+          "entered": 52.310636435,
+          "exited": 52.310703783,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.360889135,
+          "entered": 52.360933136,
+          "exited": 52.361002242,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.411183347,
+          "entered": 52.411229437,
+          "exited": 52.411313049,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.461561018,
+          "entered": 52.461618449,
+          "exited": 52.461744261,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.511924797,
+          "entered": 52.511971195,
+          "exited": 52.512097505,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.562301852,
+          "entered": 52.5623431,
+          "exited": 52.562414806,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.612623329,
+          "entered": 52.61267091,
+          "exited": 52.612750554,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.662914433,
+          "entered": 52.662954284,
+          "exited": 52.66301557,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.713214509,
+          "entered": 52.713252343,
+          "exited": 52.713317875,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.763521117,
+          "entered": 52.763569279,
+          "exited": 52.763642565,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.813760521,
+          "entered": 52.813794415,
+          "exited": 52.813850485,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.864076715,
+          "entered": 52.864116311,
+          "exited": 52.86418106,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.914296296,
+          "entered": 52.91432799,
+          "exited": 52.914377832,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 52.964534826,
+          "entered": 52.964569983,
+          "exited": 52.96462364,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.014780339,
+          "entered": 53.01481526,
+          "exited": 53.014875425,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.065038874,
+          "entered": 53.065079421,
+          "exited": 53.065142704,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.115267671,
+          "entered": 53.115299801,
+          "exited": 53.115356733,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.165491091,
+          "entered": 53.165529493,
+          "exited": 53.165591456,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.215881461,
+          "entered": 53.21592,
+          "exited": 53.215977823,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.266153468,
+          "entered": 53.266197165,
+          "exited": 53.266257756,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.316393084,
+          "entered": 53.316431598,
+          "exited": 53.316486012,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.366643265,
+          "entered": 53.366693599,
+          "exited": 53.366774755,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.41689939,
+          "entered": 53.416937966,
+          "exited": 53.416997181,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.467158782,
+          "entered": 53.467207242,
+          "exited": 53.467271562,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.517379306,
+          "entered": 53.517411567,
+          "exited": 53.517461045,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.567570916,
+          "entered": 53.5675987,
+          "exited": 53.567650329,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.617817643,
+          "entered": 53.617856137,
+          "exited": 53.617920603,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.668100371,
+          "entered": 53.668138894,
+          "exited": 53.668196356,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.718310155,
+          "entered": 53.718341777,
+          "exited": 53.718400719,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.768534645,
+          "entered": 53.768571257,
+          "exited": 53.768634246,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.818778811,
+          "entered": 53.818818599,
+          "exited": 53.818882989,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.869008006,
+          "entered": 53.869042888,
+          "exited": 53.869104155,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.919206687,
+          "entered": 53.919235499,
+          "exited": 53.919287967,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 53.969423407,
+          "entered": 53.969459449,
+          "exited": 53.969531662,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 54.019776343,
+          "entered": 54.019824183,
+          "exited": 54.019994545,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": true
+        }
+      ],
+      "final_returncode": 0
+    },
+    {
+      "pid": 960,
+      "job_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+      "operation_id": "4a04b1a249474e23a6167923cdfb794e",
+      "started_wall": 54.02567361,
+      "constructor_start_wall": 54.025917447,
+      "constructor_end_wall": 54.104088902,
+      "initial_wire_bytes": 2158055,
+      "input_drained_wall": 55.931042935,
+      "terminal_observed_wall": 56.082400168,
+      "polls": [
+        {
+          "wall": 54.159298417,
+          "entered": 54.15931113,
+          "exited": 54.159393268,
+          "bytes_sent": 63184,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.209589727,
+          "entered": 54.209630148,
+          "exited": 54.209699307,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.259919575,
+          "entered": 54.259949401,
+          "exited": 54.259998101,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.310222282,
+          "entered": 54.310257076,
+          "exited": 54.310308268,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.366492079,
+          "entered": 54.36650607,
+          "exited": 54.366556204,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.416689614,
+          "entered": 54.416727863,
+          "exited": 54.416782862,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.467030543,
+          "entered": 54.4670724,
+          "exited": 54.46716369,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.517450313,
+          "entered": 54.517486592,
+          "exited": 54.517543401,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.567748672,
+          "entered": 54.567778909,
+          "exited": 54.567824282,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.618026429,
+          "entered": 54.618065,
+          "exited": 54.618124146,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.668347623,
+          "entered": 54.668378418,
+          "exited": 54.668427251,
+          "bytes_sent": 0,
+          "remaining": 2094871,
+          "done": false
+        },
+        {
+          "wall": 54.71875115,
+          "entered": 54.71879065,
+          "exited": 54.718960265,
+          "bytes_sent": 65536,
+          "remaining": 2029335,
+          "done": false
+        },
+        {
+          "wall": 54.769268532,
+          "entered": 54.769307735,
+          "exited": 54.769501411,
+          "bytes_sent": 65536,
+          "remaining": 1963799,
+          "done": false
+        },
+        {
+          "wall": 54.819802007,
+          "entered": 54.819845164,
+          "exited": 54.820025538,
+          "bytes_sent": 65536,
+          "remaining": 1898263,
+          "done": false
+        },
+        {
+          "wall": 54.870314978,
+          "entered": 54.870358498,
+          "exited": 54.870503658,
+          "bytes_sent": 65536,
+          "remaining": 1832727,
+          "done": false
+        },
+        {
+          "wall": 54.92072038,
+          "entered": 54.920760765,
+          "exited": 54.920928352,
+          "bytes_sent": 65536,
+          "remaining": 1767191,
+          "done": false
+        },
+        {
+          "wall": 54.971165073,
+          "entered": 54.971202995,
+          "exited": 54.971323751,
+          "bytes_sent": 65536,
+          "remaining": 1701655,
+          "done": false
+        },
+        {
+          "wall": 55.021556641,
+          "entered": 55.021603763,
+          "exited": 55.021779425,
+          "bytes_sent": 65536,
+          "remaining": 1636119,
+          "done": false
+        },
+        {
+          "wall": 55.072058651,
+          "entered": 55.072097699,
+          "exited": 55.072219732,
+          "bytes_sent": 65536,
+          "remaining": 1570583,
+          "done": false
+        },
+        {
+          "wall": 55.122523215,
+          "entered": 55.122560072,
+          "exited": 55.122686067,
+          "bytes_sent": 65536,
+          "remaining": 1505047,
+          "done": false
+        },
+        {
+          "wall": 55.17295229,
+          "entered": 55.172991315,
+          "exited": 55.173163353,
+          "bytes_sent": 65536,
+          "remaining": 1439511,
+          "done": false
+        },
+        {
+          "wall": 55.22344552,
+          "entered": 55.223491756,
+          "exited": 55.22365337,
+          "bytes_sent": 65536,
+          "remaining": 1373975,
+          "done": false
+        },
+        {
+          "wall": 55.273880615,
+          "entered": 55.273918605,
+          "exited": 55.274084667,
+          "bytes_sent": 65536,
+          "remaining": 1308439,
+          "done": false
+        },
+        {
+          "wall": 55.324322566,
+          "entered": 55.324361106,
+          "exited": 55.324532557,
+          "bytes_sent": 65536,
+          "remaining": 1242903,
+          "done": false
+        },
+        {
+          "wall": 55.374759152,
+          "entered": 55.374795428,
+          "exited": 55.37494237,
+          "bytes_sent": 73728,
+          "remaining": 1169175,
+          "done": false
+        },
+        {
+          "wall": 55.425181611,
+          "entered": 55.425224825,
+          "exited": 55.42541637,
+          "bytes_sent": 65536,
+          "remaining": 1103639,
+          "done": false
+        },
+        {
+          "wall": 55.475701955,
+          "entered": 55.475742196,
+          "exited": 55.475888895,
+          "bytes_sent": 65536,
+          "remaining": 1038103,
+          "done": false
+        },
+        {
+          "wall": 55.526190634,
+          "entered": 55.526231157,
+          "exited": 55.526354957,
+          "bytes_sent": 65536,
+          "remaining": 972567,
+          "done": false
+        },
+        {
+          "wall": 55.576592724,
+          "entered": 55.576632299,
+          "exited": 55.576749437,
+          "bytes_sent": 65536,
+          "remaining": 907031,
+          "done": false
+        },
+        {
+          "wall": 55.627016665,
+          "entered": 55.62706098,
+          "exited": 55.627268151,
+          "bytes_sent": 65536,
+          "remaining": 841495,
+          "done": false
+        },
+        {
+          "wall": 55.677590784,
+          "entered": 55.677633059,
+          "exited": 55.677782357,
+          "bytes_sent": 65536,
+          "remaining": 775959,
+          "done": false
+        },
+        {
+          "wall": 55.728105935,
+          "entered": 55.728158085,
+          "exited": 55.728321442,
+          "bytes_sent": 65536,
+          "remaining": 710423,
+          "done": false
+        },
+        {
+          "wall": 55.778584112,
+          "entered": 55.778625696,
+          "exited": 55.778769815,
+          "bytes_sent": 65536,
+          "remaining": 644887,
+          "done": false
+        },
+        {
+          "wall": 55.829067361,
+          "entered": 55.829122273,
+          "exited": 55.829289268,
+          "bytes_sent": 65536,
+          "remaining": 579351,
+          "done": false
+        },
+        {
+          "wall": 55.879558755,
+          "entered": 55.87960947,
+          "exited": 55.879778701,
+          "bytes_sent": 65536,
+          "remaining": 513815,
+          "done": false
+        },
+        {
+          "wall": 55.930140487,
+          "entered": 55.930237942,
+          "exited": 55.931042935,
+          "bytes_sent": 513815,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 55.981348929,
+          "entered": 55.981411477,
+          "exited": 55.981500131,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 56.031822497,
+          "entered": 56.031869192,
+          "exited": 56.031927798,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 56.082237954,
+          "entered": 56.082280854,
+          "exited": 56.082400168,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": true
+        }
+      ],
+      "final_returncode": 0
+    },
+    {
+      "pid": 962,
+      "job_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+      "operation_id": "cb3605fe27dc45cdb6c856ad7c3de6c6",
+      "started_wall": 56.082237954,
+      "constructor_start_wall": 56.082653175,
+      "constructor_end_wall": 56.09791269,
+      "initial_wire_bytes": 2159820,
+      "input_drained_wall": 58.168737769,
+      "terminal_observed_wall": 59.02662126,
+      "polls": [
+        {
+          "wall": 56.148178212,
+          "entered": 56.148217996,
+          "exited": 56.148322424,
+          "bytes_sent": 64950,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.198554755,
+          "entered": 56.198590872,
+          "exited": 56.198636543,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.248877483,
+          "entered": 56.248927434,
+          "exited": 56.248988584,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.299273731,
+          "entered": 56.299314293,
+          "exited": 56.299367484,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.349593425,
+          "entered": 56.349627237,
+          "exited": 56.349672315,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.399964565,
+          "entered": 56.400044783,
+          "exited": 56.400110085,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.450397509,
+          "entered": 56.450432157,
+          "exited": 56.450480584,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.500695968,
+          "entered": 56.500725822,
+          "exited": 56.500766365,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.550997329,
+          "entered": 56.551031845,
+          "exited": 56.551076544,
+          "bytes_sent": 0,
+          "remaining": 2094870,
+          "done": false
+        },
+        {
+          "wall": 56.601313505,
+          "entered": 56.601357892,
+          "exited": 56.601497492,
+          "bytes_sent": 65536,
+          "remaining": 2029334,
+          "done": false
+        },
+        {
+          "wall": 56.651875696,
+          "entered": 56.651911628,
+          "exited": 56.652047067,
+          "bytes_sent": 65536,
+          "remaining": 1963798,
+          "done": false
+        },
+        {
+          "wall": 56.702348514,
+          "entered": 56.702391322,
+          "exited": 56.702528764,
+          "bytes_sent": 65536,
+          "remaining": 1898262,
+          "done": false
+        },
+        {
+          "wall": 56.752869752,
+          "entered": 56.752917763,
+          "exited": 56.753079711,
+          "bytes_sent": 65536,
+          "remaining": 1832726,
+          "done": false
+        },
+        {
+          "wall": 56.803662276,
+          "entered": 56.80373672,
+          "exited": 56.80391629,
+          "bytes_sent": 65536,
+          "remaining": 1767190,
+          "done": false
+        },
+        {
+          "wall": 56.85427986,
+          "entered": 56.854325014,
+          "exited": 56.854466165,
+          "bytes_sent": 65536,
+          "remaining": 1701654,
+          "done": false
+        },
+        {
+          "wall": 56.904786308,
+          "entered": 56.904824416,
+          "exited": 56.904954315,
+          "bytes_sent": 65536,
+          "remaining": 1636118,
+          "done": false
+        },
+        {
+          "wall": 56.955265723,
+          "entered": 56.955312872,
+          "exited": 56.955460119,
+          "bytes_sent": 65536,
+          "remaining": 1570582,
+          "done": false
+        },
+        {
+          "wall": 57.005777131,
+          "entered": 57.005823572,
+          "exited": 57.005966527,
+          "bytes_sent": 65536,
+          "remaining": 1505046,
+          "done": false
+        },
+        {
+          "wall": 57.056290253,
+          "entered": 57.056331025,
+          "exited": 57.056455677,
+          "bytes_sent": 65536,
+          "remaining": 1439510,
+          "done": false
+        },
+        {
+          "wall": 57.106808809,
+          "entered": 57.106853229,
+          "exited": 57.10700561,
+          "bytes_sent": 65536,
+          "remaining": 1373974,
+          "done": false
+        },
+        {
+          "wall": 57.15730764,
+          "entered": 57.157352043,
+          "exited": 57.1574863,
+          "bytes_sent": 65536,
+          "remaining": 1308438,
+          "done": false
+        },
+        {
+          "wall": 57.207821173,
+          "entered": 57.207861557,
+          "exited": 57.207983712,
+          "bytes_sent": 65536,
+          "remaining": 1242902,
+          "done": false
+        },
+        {
+          "wall": 57.258274923,
+          "entered": 57.258315242,
+          "exited": 57.25843409,
+          "bytes_sent": 65536,
+          "remaining": 1177366,
+          "done": false
+        },
+        {
+          "wall": 57.308748761,
+          "entered": 57.308795708,
+          "exited": 57.308948439,
+          "bytes_sent": 65536,
+          "remaining": 1111830,
+          "done": false
+        },
+        {
+          "wall": 57.359245991,
+          "entered": 57.359285456,
+          "exited": 57.35940948,
+          "bytes_sent": 65536,
+          "remaining": 1046294,
+          "done": false
+        },
+        {
+          "wall": 57.409682481,
+          "entered": 57.409723857,
+          "exited": 57.409847918,
+          "bytes_sent": 65536,
+          "remaining": 980758,
+          "done": false
+        },
+        {
+          "wall": 57.460134487,
+          "entered": 57.460178831,
+          "exited": 57.460304512,
+          "bytes_sent": 65536,
+          "remaining": 915222,
+          "done": false
+        },
+        {
+          "wall": 57.510570806,
+          "entered": 57.510616966,
+          "exited": 57.510812359,
+          "bytes_sent": 65536,
+          "remaining": 849686,
+          "done": false
+        },
+        {
+          "wall": 57.561141113,
+          "entered": 57.561180234,
+          "exited": 57.561311934,
+          "bytes_sent": 65536,
+          "remaining": 784150,
+          "done": false
+        },
+        {
+          "wall": 57.611599791,
+          "entered": 57.611654899,
+          "exited": 57.611818561,
+          "bytes_sent": 65536,
+          "remaining": 718614,
+          "done": false
+        },
+        {
+          "wall": 57.662156341,
+          "entered": 57.662204251,
+          "exited": 57.662337589,
+          "bytes_sent": 65536,
+          "remaining": 653078,
+          "done": false
+        },
+        {
+          "wall": 57.712654923,
+          "entered": 57.712705847,
+          "exited": 57.71288911,
+          "bytes_sent": 65536,
+          "remaining": 587542,
+          "done": false
+        },
+        {
+          "wall": 57.763204669,
+          "entered": 57.763267974,
+          "exited": 57.763556928,
+          "bytes_sent": 65536,
+          "remaining": 522006,
+          "done": false
+        },
+        {
+          "wall": 57.81386269,
+          "entered": 57.813918523,
+          "exited": 57.814051401,
+          "bytes_sent": 65536,
+          "remaining": 456470,
+          "done": false
+        },
+        {
+          "wall": 57.864342827,
+          "entered": 57.864393114,
+          "exited": 57.864553675,
+          "bytes_sent": 65536,
+          "remaining": 390934,
+          "done": false
+        },
+        {
+          "wall": 57.914962253,
+          "entered": 57.915028996,
+          "exited": 57.915351233,
+          "bytes_sent": 65536,
+          "remaining": 325398,
+          "done": false
+        },
+        {
+          "wall": 57.96578809,
+          "entered": 57.965844332,
+          "exited": 57.966047096,
+          "bytes_sent": 65536,
+          "remaining": 259862,
+          "done": false
+        },
+        {
+          "wall": 58.016466858,
+          "entered": 58.016531245,
+          "exited": 58.016721926,
+          "bytes_sent": 65536,
+          "remaining": 194326,
+          "done": false
+        },
+        {
+          "wall": 58.067104602,
+          "entered": 58.067171259,
+          "exited": 58.06735966,
+          "bytes_sent": 65536,
+          "remaining": 128790,
+          "done": false
+        },
+        {
+          "wall": 58.117774217,
+          "entered": 58.117829978,
+          "exited": 58.118002235,
+          "bytes_sent": 65536,
+          "remaining": 63254,
+          "done": false
+        },
+        {
+          "wall": 58.168356185,
+          "entered": 58.168417019,
+          "exited": 58.168737769,
+          "bytes_sent": 63254,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.219096273,
+          "entered": 58.219162077,
+          "exited": 58.219242903,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.269540526,
+          "entered": 58.269591829,
+          "exited": 58.269668449,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.320096003,
+          "entered": 58.320148196,
+          "exited": 58.32022096,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.370550911,
+          "entered": 58.370598204,
+          "exited": 58.370667461,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.421034987,
+          "entered": 58.421079347,
+          "exited": 58.421131468,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.47142137,
+          "entered": 58.471471649,
+          "exited": 58.471537494,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.52185202,
+          "entered": 58.521897016,
+          "exited": 58.521958029,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.572251913,
+          "entered": 58.572297265,
+          "exited": 58.572359926,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.622721629,
+          "entered": 58.622767405,
+          "exited": 58.622829395,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.673174202,
+          "entered": 58.673220685,
+          "exited": 58.673280344,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.723678076,
+          "entered": 58.723732331,
+          "exited": 58.723833785,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.774179985,
+          "entered": 58.774223504,
+          "exited": 58.774282239,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.824601357,
+          "entered": 58.824651764,
+          "exited": 58.824715464,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.875026856,
+          "entered": 58.875068585,
+          "exited": 58.875126082,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.925412725,
+          "entered": 58.925463155,
+          "exited": 58.925528358,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 58.975891481,
+          "entered": 58.975945734,
+          "exited": 58.976088484,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 59.026422551,
+          "entered": 59.026479722,
+          "exited": 59.02662126,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": true
+        }
+      ],
+      "final_returncode": 0
+    },
+    {
+      "pid": 964,
+      "job_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+      "operation_id": "412231b823de44f5b5da60d1e05d9bcf",
+      "started_wall": 59.026422551,
+      "constructor_start_wall": 59.027018768,
+      "constructor_end_wall": 59.214398272,
+      "initial_wire_bytes": 2160999,
+      "input_drained_wall": 61.081470103,
+      "terminal_observed_wall": 61.283068406,
+      "polls": [
+        {
+          "wall": 59.264710228,
+          "entered": 59.26477169,
+          "exited": 59.264883629,
+          "bytes_sent": 62032,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.315196866,
+          "entered": 59.315242232,
+          "exited": 59.315302762,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.365590657,
+          "entered": 59.365638459,
+          "exited": 59.365703717,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.416060932,
+          "entered": 59.416126908,
+          "exited": 59.416214767,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.466559611,
+          "entered": 59.466614808,
+          "exited": 59.466693518,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.517041045,
+          "entered": 59.517102209,
+          "exited": 59.517187522,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.567531277,
+          "entered": 59.567580757,
+          "exited": 59.567652177,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.617966147,
+          "entered": 59.618014353,
+          "exited": 59.618076233,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.668324322,
+          "entered": 59.668360794,
+          "exited": 59.668415311,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.718661104,
+          "entered": 59.718698521,
+          "exited": 59.718752748,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.769024646,
+          "entered": 59.769066127,
+          "exited": 59.769127349,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.81947648,
+          "entered": 59.819520174,
+          "exited": 59.819582178,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.869885536,
+          "entered": 59.869929905,
+          "exited": 59.869987961,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.920255514,
+          "entered": 59.920287699,
+          "exited": 59.920335224,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 59.970602557,
+          "entered": 59.970648268,
+          "exited": 59.970708811,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 60.020954841,
+          "entered": 60.020993199,
+          "exited": 60.021042027,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 60.071274725,
+          "entered": 60.071308118,
+          "exited": 60.071353552,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 60.121588164,
+          "entered": 60.121631065,
+          "exited": 60.12168242,
+          "bytes_sent": 0,
+          "remaining": 2098967,
+          "done": false
+        },
+        {
+          "wall": 60.171934306,
+          "entered": 60.171976522,
+          "exited": 60.172797542,
+          "bytes_sent": 929792,
+          "remaining": 1169175,
+          "done": false
+        },
+        {
+          "wall": 60.223072174,
+          "entered": 60.223112672,
+          "exited": 60.223233861,
+          "bytes_sent": 65536,
+          "remaining": 1103639,
+          "done": false
+        },
+        {
+          "wall": 60.273543869,
+          "entered": 60.27358771,
+          "exited": 60.27373462,
+          "bytes_sent": 65536,
+          "remaining": 1038103,
+          "done": false
+        },
+        {
+          "wall": 60.324071037,
+          "entered": 60.324113935,
+          "exited": 60.324238497,
+          "bytes_sent": 65536,
+          "remaining": 972567,
+          "done": false
+        },
+        {
+          "wall": 60.374521703,
+          "entered": 60.374567034,
+          "exited": 60.374700183,
+          "bytes_sent": 65536,
+          "remaining": 907031,
+          "done": false
+        },
+        {
+          "wall": 60.425009238,
+          "entered": 60.425054004,
+          "exited": 60.425187177,
+          "bytes_sent": 65536,
+          "remaining": 841495,
+          "done": false
+        },
+        {
+          "wall": 60.475485182,
+          "entered": 60.475537702,
+          "exited": 60.475688804,
+          "bytes_sent": 65536,
+          "remaining": 775959,
+          "done": false
+        },
+        {
+          "wall": 60.525980115,
+          "entered": 60.526019608,
+          "exited": 60.52613965,
+          "bytes_sent": 65536,
+          "remaining": 710423,
+          "done": false
+        },
+        {
+          "wall": 60.5764739,
+          "entered": 60.57651244,
+          "exited": 60.576641256,
+          "bytes_sent": 65536,
+          "remaining": 644887,
+          "done": false
+        },
+        {
+          "wall": 60.626925007,
+          "entered": 60.626963267,
+          "exited": 60.627124847,
+          "bytes_sent": 65536,
+          "remaining": 579351,
+          "done": false
+        },
+        {
+          "wall": 60.677435401,
+          "entered": 60.677480756,
+          "exited": 60.677635905,
+          "bytes_sent": 65536,
+          "remaining": 513815,
+          "done": false
+        },
+        {
+          "wall": 60.727925331,
+          "entered": 60.727964929,
+          "exited": 60.728122731,
+          "bytes_sent": 65536,
+          "remaining": 448279,
+          "done": false
+        },
+        {
+          "wall": 60.778476087,
+          "entered": 60.778522616,
+          "exited": 60.778654682,
+          "bytes_sent": 65536,
+          "remaining": 382743,
+          "done": false
+        },
+        {
+          "wall": 60.828961942,
+          "entered": 60.829006423,
+          "exited": 60.829153721,
+          "bytes_sent": 65536,
+          "remaining": 317207,
+          "done": false
+        },
+        {
+          "wall": 60.879461077,
+          "entered": 60.879506124,
+          "exited": 60.879645636,
+          "bytes_sent": 65536,
+          "remaining": 251671,
+          "done": false
+        },
+        {
+          "wall": 60.929940257,
+          "entered": 60.929981649,
+          "exited": 60.930098812,
+          "bytes_sent": 65536,
+          "remaining": 186135,
+          "done": false
+        },
+        {
+          "wall": 60.980419742,
+          "entered": 60.980458837,
+          "exited": 60.980573964,
+          "bytes_sent": 65536,
+          "remaining": 120599,
+          "done": false
+        },
+        {
+          "wall": 61.030870628,
+          "entered": 61.03090973,
+          "exited": 61.031025278,
+          "bytes_sent": 65536,
+          "remaining": 55063,
+          "done": false
+        },
+        {
+          "wall": 61.081303843,
+          "entered": 61.081343321,
+          "exited": 61.081470103,
+          "bytes_sent": 55063,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.131779096,
+          "entered": 61.131807745,
+          "exited": 61.131847187,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.182130519,
+          "entered": 61.182164344,
+          "exited": 61.182207463,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.232444895,
+          "entered": 61.232483514,
+          "exited": 61.232535203,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.282889951,
+          "entered": 61.282942513,
+          "exited": 61.283068406,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": true
+        }
+      ],
+      "final_returncode": 0
+    },
+    {
+      "pid": 965,
+      "job_id": null,
+      "operation_id": "87f911f8bfed43829054706f74579d17",
+      "started_wall": 61.282889951,
+      "constructor_start_wall": 61.28336589,
+      "constructor_end_wall": 61.318628667,
+      "initial_wire_bytes": 5435,
+      "input_drained_wall": 61.369131332,
+      "terminal_observed_wall": 62.326595183,
+      "polls": [
+        {
+          "wall": 61.368941393,
+          "entered": 61.369000304,
+          "exited": 61.369131332,
+          "bytes_sent": 5435,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.419492255,
+          "entered": 61.419545333,
+          "exited": 61.419605539,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.469904902,
+          "entered": 61.469937605,
+          "exited": 61.469986565,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.520251208,
+          "entered": 61.52029088,
+          "exited": 61.52034169,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.570591941,
+          "entered": 61.570625769,
+          "exited": 61.570670463,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.620900078,
+          "entered": 61.620935636,
+          "exited": 61.620981701,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.671289628,
+          "entered": 61.671318095,
+          "exited": 61.671357672,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.721631134,
+          "entered": 61.721662368,
+          "exited": 61.721708022,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.7719414,
+          "entered": 61.771980222,
+          "exited": 61.772061317,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.822346155,
+          "entered": 61.822390881,
+          "exited": 61.822452315,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.87270722,
+          "entered": 61.872747246,
+          "exited": 61.872804588,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.923085763,
+          "entered": 61.923121966,
+          "exited": 61.923173196,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 61.973454716,
+          "entered": 61.973497707,
+          "exited": 61.973549931,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.023855393,
+          "entered": 62.023895133,
+          "exited": 62.02395133,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.074270635,
+          "entered": 62.074306184,
+          "exited": 62.074353357,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.124604279,
+          "entered": 62.124651778,
+          "exited": 62.124706895,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.175017895,
+          "entered": 62.175061156,
+          "exited": 62.175130205,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.225420734,
+          "entered": 62.22548172,
+          "exited": 62.22556335,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.275854206,
+          "entered": 62.275902975,
+          "exited": 62.275970821,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.3263998,
+          "entered": 62.326449862,
+          "exited": 62.326595183,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": true
+        }
+      ],
+      "final_returncode": 0
+    },
+    {
+      "pid": 966,
+      "job_id": null,
+      "operation_id": "6ffbe99318ca4e7ea7fbcef2cc2b20e4",
+      "started_wall": 62.327057184,
+      "constructor_start_wall": 62.327245254,
+      "constructor_end_wall": 62.3592828,
+      "initial_wire_bytes": 5630,
+      "input_drained_wall": 62.36967291,
+      "terminal_observed_wall": 66.763198821,
+      "polls": [
+        {
+          "wall": 62.369489386,
+          "entered": 62.369539987,
+          "exited": 62.36967291,
+          "bytes_sent": 5630,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.379801576,
+          "entered": 62.379849128,
+          "exited": 62.379916527,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.390026215,
+          "entered": 62.390060072,
+          "exited": 62.390104219,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.400209543,
+          "entered": 62.400246192,
+          "exited": 62.400299751,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.410426595,
+          "entered": 62.41046554,
+          "exited": 62.41052518,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.420640155,
+          "entered": 62.4206793,
+          "exited": 62.420729495,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.430842704,
+          "entered": 62.430876249,
+          "exited": 62.430929175,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.441079225,
+          "entered": 62.441110649,
+          "exited": 62.441160111,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.451262489,
+          "entered": 62.451289233,
+          "exited": 62.451336349,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.461457391,
+          "entered": 62.461496694,
+          "exited": 62.461555558,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.471684297,
+          "entered": 62.471716391,
+          "exited": 62.471767876,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.481879782,
+          "entered": 62.481914978,
+          "exited": 62.481969139,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.492085949,
+          "entered": 62.49212625,
+          "exited": 62.492207124,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.502361263,
+          "entered": 62.502409147,
+          "exited": 62.502468099,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.51259723,
+          "entered": 62.512624608,
+          "exited": 62.512666227,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.522789122,
+          "entered": 62.522825578,
+          "exited": 62.522885124,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.533010834,
+          "entered": 62.53304695,
+          "exited": 62.533100774,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.543222561,
+          "entered": 62.543264286,
+          "exited": 62.543328126,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.553496854,
+          "entered": 62.553538276,
+          "exited": 62.553612334,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.563768337,
+          "entered": 62.563805267,
+          "exited": 62.563873354,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.574032486,
+          "entered": 62.574064029,
+          "exited": 62.574111417,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.58421368,
+          "entered": 62.58424045,
+          "exited": 62.584282454,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.594404694,
+          "entered": 62.59443571,
+          "exited": 62.594486139,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.604651137,
+          "entered": 62.604691457,
+          "exited": 62.604743419,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.614865237,
+          "entered": 62.614903909,
+          "exited": 62.61495789,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.625067068,
+          "entered": 62.625099633,
+          "exited": 62.625152453,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.635278521,
+          "entered": 62.635326186,
+          "exited": 62.635400164,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.645522184,
+          "entered": 62.645555684,
+          "exited": 62.645608785,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.655732507,
+          "entered": 62.655774889,
+          "exited": 62.655829111,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.665942753,
+          "entered": 62.665976831,
+          "exited": 62.666028101,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.676140458,
+          "entered": 62.676176054,
+          "exited": 62.676233664,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.686399998,
+          "entered": 62.686461159,
+          "exited": 62.686551792,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.696699158,
+          "entered": 62.696730011,
+          "exited": 62.696781639,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.706889442,
+          "entered": 62.706921447,
+          "exited": 62.706966778,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.717069819,
+          "entered": 62.71710154,
+          "exited": 62.717148846,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.727254246,
+          "entered": 62.727280689,
+          "exited": 62.727320463,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.737471407,
+          "entered": 62.737518881,
+          "exited": 62.737582374,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.747700179,
+          "entered": 62.747741339,
+          "exited": 62.747795195,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.757911379,
+          "entered": 62.757945438,
+          "exited": 62.757999371,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.768112384,
+          "entered": 62.768142512,
+          "exited": 62.768187111,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.778348068,
+          "entered": 62.778391371,
+          "exited": 62.778455467,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.788592798,
+          "entered": 62.788623691,
+          "exited": 62.788671601,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.79877857,
+          "entered": 62.798811671,
+          "exited": 62.798860896,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.808984308,
+          "entered": 62.809022997,
+          "exited": 62.80908948,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.819224698,
+          "entered": 62.819272053,
+          "exited": 62.819341722,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.829498653,
+          "entered": 62.829542894,
+          "exited": 62.829605138,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.839764072,
+          "entered": 62.839806746,
+          "exited": 62.83988482,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.85001331,
+          "entered": 62.850047257,
+          "exited": 62.850106684,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.860298951,
+          "entered": 62.860357518,
+          "exited": 62.860438092,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.87062166,
+          "entered": 62.870674559,
+          "exited": 62.8707502,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.880909259,
+          "entered": 62.880939781,
+          "exited": 62.880990493,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.89110805,
+          "entered": 62.891147939,
+          "exited": 62.891209386,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.901337761,
+          "entered": 62.901373943,
+          "exited": 62.901432483,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.911613907,
+          "entered": 62.911666523,
+          "exited": 62.911736433,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.921875431,
+          "entered": 62.921915734,
+          "exited": 62.921974448,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.932114058,
+          "entered": 62.932158434,
+          "exited": 62.932231411,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.942428194,
+          "entered": 62.942466117,
+          "exited": 62.942535599,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.952688098,
+          "entered": 62.952742943,
+          "exited": 62.952816898,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.96295469,
+          "entered": 62.963004882,
+          "exited": 62.963077937,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.97328077,
+          "entered": 62.973318508,
+          "exited": 62.97338328,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.9835372,
+          "entered": 62.983582903,
+          "exited": 62.983651064,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 62.993821342,
+          "entered": 62.993870511,
+          "exited": 62.993943716,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.00412861,
+          "entered": 63.004178749,
+          "exited": 63.00424709,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.014435187,
+          "entered": 63.014471103,
+          "exited": 63.014526895,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.024685027,
+          "entered": 63.024728564,
+          "exited": 63.024794593,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.034951838,
+          "entered": 63.034991321,
+          "exited": 63.035044468,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.045228177,
+          "entered": 63.0452732,
+          "exited": 63.045337073,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.055530319,
+          "entered": 63.055572039,
+          "exited": 63.055644586,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.065831388,
+          "entered": 63.065871726,
+          "exited": 63.065929674,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.076120913,
+          "entered": 63.076158241,
+          "exited": 63.076220189,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.086507526,
+          "entered": 63.086566545,
+          "exited": 63.086659719,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.096912041,
+          "entered": 63.096959728,
+          "exited": 63.097029421,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.107205443,
+          "entered": 63.107243353,
+          "exited": 63.107303378,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.117506074,
+          "entered": 63.117542651,
+          "exited": 63.117600775,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.127802524,
+          "entered": 63.127846051,
+          "exited": 63.127911637,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.13808984,
+          "entered": 63.138131606,
+          "exited": 63.138185161,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.148376802,
+          "entered": 63.148415178,
+          "exited": 63.148474692,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.158695711,
+          "entered": 63.158733985,
+          "exited": 63.158788843,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.169019435,
+          "entered": 63.169064408,
+          "exited": 63.169139926,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.179337186,
+          "entered": 63.179377888,
+          "exited": 63.179441959,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.189719793,
+          "entered": 63.189772753,
+          "exited": 63.189870932,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.200115681,
+          "entered": 63.200152333,
+          "exited": 63.200219124,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.210419695,
+          "entered": 63.210457214,
+          "exited": 63.210519525,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.220754867,
+          "entered": 63.220807877,
+          "exited": 63.220883415,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.231057487,
+          "entered": 63.231094539,
+          "exited": 63.2311574,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.241320885,
+          "entered": 63.241357416,
+          "exited": 63.241420261,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.251583044,
+          "entered": 63.251618875,
+          "exited": 63.251682564,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.261882262,
+          "entered": 63.261933365,
+          "exited": 63.262004044,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.272197436,
+          "entered": 63.272231654,
+          "exited": 63.27228321,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.282448895,
+          "entered": 63.282485753,
+          "exited": 63.282557167,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.292688687,
+          "entered": 63.29272581,
+          "exited": 63.292784594,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.302947928,
+          "entered": 63.30299827,
+          "exited": 63.303067242,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.313246917,
+          "entered": 63.313286313,
+          "exited": 63.313350254,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.323496574,
+          "entered": 63.323539419,
+          "exited": 63.323608999,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.333754138,
+          "entered": 63.33379418,
+          "exited": 63.333875951,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.344035744,
+          "entered": 63.344069397,
+          "exited": 63.344124354,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.354336121,
+          "entered": 63.354395528,
+          "exited": 63.354505055,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.364706438,
+          "entered": 63.364755127,
+          "exited": 63.364828838,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.374960864,
+          "entered": 63.37500386,
+          "exited": 63.375062732,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.385196111,
+          "entered": 63.385238088,
+          "exited": 63.385294947,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.395474841,
+          "entered": 63.395528996,
+          "exited": 63.395608,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.405765296,
+          "entered": 63.405802821,
+          "exited": 63.405862875,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.416066655,
+          "entered": 63.416129403,
+          "exited": 63.416217926,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.426421766,
+          "entered": 63.426516944,
+          "exited": 63.426651609,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.436819775,
+          "entered": 63.436866445,
+          "exited": 63.436938965,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.447110041,
+          "entered": 63.447146586,
+          "exited": 63.44720464,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.457351689,
+          "entered": 63.457390825,
+          "exited": 63.457450905,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.467587796,
+          "entered": 63.467628918,
+          "exited": 63.467694129,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.477861614,
+          "entered": 63.477899478,
+          "exited": 63.477955946,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.488161259,
+          "entered": 63.488219364,
+          "exited": 63.488321242,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.498513934,
+          "entered": 63.498553557,
+          "exited": 63.498615085,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.508776343,
+          "entered": 63.508823742,
+          "exited": 63.508893387,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.519048581,
+          "entered": 63.519099117,
+          "exited": 63.519171315,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.529353664,
+          "entered": 63.529400891,
+          "exited": 63.529476588,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.53963676,
+          "entered": 63.539688437,
+          "exited": 63.539760052,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.549943429,
+          "entered": 63.549981975,
+          "exited": 63.550044611,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.560253433,
+          "entered": 63.560306503,
+          "exited": 63.560381879,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.570578487,
+          "entered": 63.570623758,
+          "exited": 63.570693054,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.580859786,
+          "entered": 63.580894966,
+          "exited": 63.58095636,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.591142758,
+          "entered": 63.591184613,
+          "exited": 63.591250884,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.601396209,
+          "entered": 63.60143787,
+          "exited": 63.601512333,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.611674119,
+          "entered": 63.611754667,
+          "exited": 63.611823032,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.622010524,
+          "entered": 63.622055015,
+          "exited": 63.62212749,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.632291713,
+          "entered": 63.632327591,
+          "exited": 63.632383851,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.642547436,
+          "entered": 63.642589672,
+          "exited": 63.642649869,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.652867432,
+          "entered": 63.652917868,
+          "exited": 63.652997786,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.663184268,
+          "entered": 63.663233632,
+          "exited": 63.663311974,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.673541076,
+          "entered": 63.673591741,
+          "exited": 63.673670501,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.683870686,
+          "entered": 63.683915509,
+          "exited": 63.683984185,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.69415481,
+          "entered": 63.694201766,
+          "exited": 63.69428559,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.704492143,
+          "entered": 63.704542644,
+          "exited": 63.704613754,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.714939041,
+          "entered": 63.71498169,
+          "exited": 63.715046226,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.725246219,
+          "entered": 63.725290828,
+          "exited": 63.72536216,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.735556547,
+          "entered": 63.735597556,
+          "exited": 63.735664653,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.745850782,
+          "entered": 63.745899607,
+          "exited": 63.745975733,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.756205773,
+          "entered": 63.756250234,
+          "exited": 63.75632579,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.766503803,
+          "entered": 63.766541107,
+          "exited": 63.766601551,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.776750457,
+          "entered": 63.776816992,
+          "exited": 63.776886064,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.787090157,
+          "entered": 63.787135662,
+          "exited": 63.78721483,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.797438339,
+          "entered": 63.797479923,
+          "exited": 63.797546002,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.807800818,
+          "entered": 63.807842781,
+          "exited": 63.807915018,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.81813673,
+          "entered": 63.818176969,
+          "exited": 63.818237953,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.828420476,
+          "entered": 63.828461999,
+          "exited": 63.828532505,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.838930005,
+          "entered": 63.838974617,
+          "exited": 63.83905111,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.849280024,
+          "entered": 63.849315237,
+          "exited": 63.849375614,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.859597932,
+          "entered": 63.859647445,
+          "exited": 63.859717778,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.869926396,
+          "entered": 63.869982219,
+          "exited": 63.870064933,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.880191381,
+          "entered": 63.880229232,
+          "exited": 63.880289202,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.89047928,
+          "entered": 63.890526763,
+          "exited": 63.890602449,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.900815769,
+          "entered": 63.900857906,
+          "exited": 63.900923221,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.911108981,
+          "entered": 63.911146654,
+          "exited": 63.911205574,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.921412679,
+          "entered": 63.921465445,
+          "exited": 63.921551967,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.931781936,
+          "entered": 63.931827223,
+          "exited": 63.931892242,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.942030436,
+          "entered": 63.94207295,
+          "exited": 63.942132062,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.952338169,
+          "entered": 63.952377716,
+          "exited": 63.952447205,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.962680929,
+          "entered": 63.962732187,
+          "exited": 63.962806341,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.973011077,
+          "entered": 63.973040144,
+          "exited": 63.973093317,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.983282509,
+          "entered": 63.983317653,
+          "exited": 63.983373424,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 63.993646392,
+          "entered": 63.993690374,
+          "exited": 63.993756756,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.003971303,
+          "entered": 64.004099421,
+          "exited": 64.004181246,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.014389096,
+          "entered": 64.014423546,
+          "exited": 64.014483587,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.024693113,
+          "entered": 64.02474562,
+          "exited": 64.024832735,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.03504116,
+          "entered": 64.035078292,
+          "exited": 64.035136693,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.045354413,
+          "entered": 64.045399127,
+          "exited": 64.045469742,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.055658933,
+          "entered": 64.055697864,
+          "exited": 64.055759866,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.065950154,
+          "entered": 64.065985968,
+          "exited": 64.066043593,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.076247757,
+          "entered": 64.076285877,
+          "exited": 64.076346814,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.086570142,
+          "entered": 64.086629625,
+          "exited": 64.086732115,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.096866492,
+          "entered": 64.096910747,
+          "exited": 64.096971874,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.107118783,
+          "entered": 64.1071546,
+          "exited": 64.107209704,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.117361504,
+          "entered": 64.117410531,
+          "exited": 64.117478716,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.12761927,
+          "entered": 64.127660827,
+          "exited": 64.127721784,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.137896182,
+          "entered": 64.137943467,
+          "exited": 64.138007514,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.148135726,
+          "entered": 64.148168106,
+          "exited": 64.148215367,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.158337415,
+          "entered": 64.15837367,
+          "exited": 64.158428927,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.168582626,
+          "entered": 64.168617763,
+          "exited": 64.16867211,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.178833573,
+          "entered": 64.178878072,
+          "exited": 64.178951478,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.189093377,
+          "entered": 64.189133131,
+          "exited": 64.189194874,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.199391943,
+          "entered": 64.199428271,
+          "exited": 64.199501991,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.209667861,
+          "entered": 64.209702072,
+          "exited": 64.209760483,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.21994649,
+          "entered": 64.220057425,
+          "exited": 64.220137763,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.230297649,
+          "entered": 64.230350727,
+          "exited": 64.230419433,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.240567827,
+          "entered": 64.240613481,
+          "exited": 64.240691335,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.250887878,
+          "entered": 64.250930327,
+          "exited": 64.250994354,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.261186669,
+          "entered": 64.261222337,
+          "exited": 64.261278654,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.271415011,
+          "entered": 64.271467055,
+          "exited": 64.271540766,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.281745545,
+          "entered": 64.281780463,
+          "exited": 64.281839972,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.292062688,
+          "entered": 64.29210137,
+          "exited": 64.292158949,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.302352971,
+          "entered": 64.302400335,
+          "exited": 64.302475619,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.312675104,
+          "entered": 64.312719495,
+          "exited": 64.312782967,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.32300465,
+          "entered": 64.323057551,
+          "exited": 64.323154667,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.333301007,
+          "entered": 64.33334076,
+          "exited": 64.333403684,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.343591516,
+          "entered": 64.343640078,
+          "exited": 64.343710545,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.353894913,
+          "entered": 64.353949322,
+          "exited": 64.354027482,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.364191297,
+          "entered": 64.364232805,
+          "exited": 64.364297798,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.374471325,
+          "entered": 64.374509911,
+          "exited": 64.374557433,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.384773415,
+          "entered": 64.384801744,
+          "exited": 64.384850132,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.395020839,
+          "entered": 64.395078489,
+          "exited": 64.395164739,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.405325208,
+          "entered": 64.405358775,
+          "exited": 64.405418653,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.415781192,
+          "entered": 64.415821534,
+          "exited": 64.415883084,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.426174346,
+          "entered": 64.42621231,
+          "exited": 64.426270986,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.43655498,
+          "entered": 64.436602533,
+          "exited": 64.436667353,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.446903268,
+          "entered": 64.446950663,
+          "exited": 64.447028484,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.457179415,
+          "entered": 64.457233818,
+          "exited": 64.457308757,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.467847661,
+          "entered": 64.46788736,
+          "exited": 64.467944859,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.478941922,
+          "entered": 64.478981234,
+          "exited": 64.479044419,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.490116796,
+          "entered": 64.490172815,
+          "exited": 64.490260486,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.501258879,
+          "entered": 64.501303093,
+          "exited": 64.501372049,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.512375452,
+          "entered": 64.512437568,
+          "exited": 64.512525587,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.523538429,
+          "entered": 64.523580241,
+          "exited": 64.523643705,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.534624064,
+          "entered": 64.53466638,
+          "exited": 64.534743586,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.54572628,
+          "entered": 64.545765331,
+          "exited": 64.545822894,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.556809318,
+          "entered": 64.55685766,
+          "exited": 64.556927547,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.567909532,
+          "entered": 64.567954288,
+          "exited": 64.568077755,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.579095559,
+          "entered": 64.579135418,
+          "exited": 64.579200669,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.590238604,
+          "entered": 64.590280074,
+          "exited": 64.590340367,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.601396465,
+          "entered": 64.601429965,
+          "exited": 64.601484038,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.612552476,
+          "entered": 64.61259571,
+          "exited": 64.6126627,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.623683532,
+          "entered": 64.623734191,
+          "exited": 64.623805,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.634763087,
+          "entered": 64.634800322,
+          "exited": 64.634860109,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.64584456,
+          "entered": 64.645884166,
+          "exited": 64.645949082,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.656959791,
+          "entered": 64.657028153,
+          "exited": 64.657118572,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.667326329,
+          "entered": 64.667367165,
+          "exited": 64.667452164,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.677570932,
+          "entered": 64.677608517,
+          "exited": 64.67766656,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.688644995,
+          "entered": 64.688684252,
+          "exited": 64.688745885,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.699784524,
+          "entered": 64.699901083,
+          "exited": 64.699978545,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.710953566,
+          "entered": 64.711006007,
+          "exited": 64.711086348,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.722063019,
+          "entered": 64.722108686,
+          "exited": 64.722169461,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.733255353,
+          "entered": 64.73330266,
+          "exited": 64.733366197,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.744338032,
+          "entered": 64.744379897,
+          "exited": 64.744436992,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.755458753,
+          "entered": 64.755507901,
+          "exited": 64.755572414,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.76657765,
+          "entered": 64.766622799,
+          "exited": 64.766679624,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.777657356,
+          "entered": 64.777701464,
+          "exited": 64.77777133,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.78876747,
+          "entered": 64.788806883,
+          "exited": 64.788871845,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.799879486,
+          "entered": 64.799919075,
+          "exited": 64.799978027,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.810957761,
+          "entered": 64.811001725,
+          "exited": 64.811066238,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.822139364,
+          "entered": 64.8221803,
+          "exited": 64.82224824,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.833204999,
+          "entered": 64.833244163,
+          "exited": 64.83330315,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.844290521,
+          "entered": 64.844330115,
+          "exited": 64.844390663,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.855399867,
+          "entered": 64.855461769,
+          "exited": 64.855549189,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.865827811,
+          "entered": 64.86587413,
+          "exited": 64.865946301,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.876942169,
+          "entered": 64.876976503,
+          "exited": 64.8770314,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.887359544,
+          "entered": 64.887400127,
+          "exited": 64.887468213,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.898468804,
+          "entered": 64.898521981,
+          "exited": 64.898610053,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.908814677,
+          "entered": 64.908853354,
+          "exited": 64.908914479,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.919959881,
+          "entered": 64.920004628,
+          "exited": 64.920141813,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.931134572,
+          "entered": 64.931184343,
+          "exited": 64.931258046,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.942267826,
+          "entered": 64.942306656,
+          "exited": 64.942366093,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.953364763,
+          "entered": 64.953409135,
+          "exited": 64.953472411,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.964540369,
+          "entered": 64.964631285,
+          "exited": 64.964742205,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.975798487,
+          "entered": 64.975830686,
+          "exited": 64.975886132,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.986905456,
+          "entered": 64.986942106,
+          "exited": 64.987000384,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 64.99797387,
+          "entered": 64.998015641,
+          "exited": 64.998077759,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.009056001,
+          "entered": 65.009098498,
+          "exited": 65.009167528,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.020161178,
+          "entered": 65.020223823,
+          "exited": 65.020291489,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.031258881,
+          "entered": 65.031303498,
+          "exited": 65.031370519,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.042441297,
+          "entered": 65.042482076,
+          "exited": 65.042551656,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.05354243,
+          "entered": 65.053598878,
+          "exited": 65.053690452,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.064685102,
+          "entered": 65.064745917,
+          "exited": 65.064819832,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.075842572,
+          "entered": 65.075883177,
+          "exited": 65.075946333,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.086950301,
+          "entered": 65.086989029,
+          "exited": 65.087045205,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.098026572,
+          "entered": 65.098069225,
+          "exited": 65.098135292,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.109152069,
+          "entered": 65.109211359,
+          "exited": 65.10929541,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.120356315,
+          "entered": 65.120392643,
+          "exited": 65.12045262,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.131503454,
+          "entered": 65.131537212,
+          "exited": 65.131604071,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.142652711,
+          "entered": 65.142697844,
+          "exited": 65.142776342,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.153798514,
+          "entered": 65.153844596,
+          "exited": 65.153920075,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.164486125,
+          "entered": 65.1645256,
+          "exited": 65.164583299,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.175553639,
+          "entered": 65.175590245,
+          "exited": 65.175654365,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.186636239,
+          "entered": 65.186677562,
+          "exited": 65.186739709,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.19775872,
+          "entered": 65.197799447,
+          "exited": 65.197862019,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.208842252,
+          "entered": 65.208880843,
+          "exited": 65.208944785,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.219997912,
+          "entered": 65.220097098,
+          "exited": 65.220184462,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.231150143,
+          "entered": 65.231186381,
+          "exited": 65.231244398,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.242255948,
+          "entered": 65.24229879,
+          "exited": 65.242362255,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.25344118,
+          "entered": 65.25347671,
+          "exited": 65.253532178,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.26455853,
+          "entered": 65.264605048,
+          "exited": 65.264673484,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.275714827,
+          "entered": 65.275754887,
+          "exited": 65.275823649,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.286867507,
+          "entered": 65.286905833,
+          "exited": 65.286985995,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.298031109,
+          "entered": 65.298071631,
+          "exited": 65.298137091,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.308617345,
+          "entered": 65.308689024,
+          "exited": 65.308772522,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.319441033,
+          "entered": 65.31947885,
+          "exited": 65.319536212,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.330660635,
+          "entered": 65.330752232,
+          "exited": 65.330883143,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.341960576,
+          "entered": 65.342011752,
+          "exited": 65.342077225,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.353101625,
+          "entered": 65.353138006,
+          "exited": 65.35319968,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.364199509,
+          "entered": 65.364239753,
+          "exited": 65.364297973,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.375272422,
+          "entered": 65.375308392,
+          "exited": 65.37536569,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.386405134,
+          "entered": 65.386445809,
+          "exited": 65.386500175,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.396696741,
+          "entered": 65.396738005,
+          "exited": 65.39679716,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.407257796,
+          "entered": 65.407300469,
+          "exited": 65.407372826,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.417668147,
+          "entered": 65.417704792,
+          "exited": 65.417766194,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.42804216,
+          "entered": 65.428078962,
+          "exited": 65.428134925,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.438337969,
+          "entered": 65.438374705,
+          "exited": 65.438433953,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.448576522,
+          "entered": 65.448613213,
+          "exited": 65.448666038,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.458930848,
+          "entered": 65.458978315,
+          "exited": 65.459045518,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.470072296,
+          "entered": 65.470116088,
+          "exited": 65.470185636,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.481162958,
+          "entered": 65.481203093,
+          "exited": 65.481264276,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.492240342,
+          "entered": 65.492285837,
+          "exited": 65.49235668,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.503347081,
+          "entered": 65.503386009,
+          "exited": 65.503447731,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.514518299,
+          "entered": 65.514562796,
+          "exited": 65.514635986,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.52563241,
+          "entered": 65.52567576,
+          "exited": 65.525745442,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.536763896,
+          "entered": 65.536817566,
+          "exited": 65.536899581,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.547855789,
+          "entered": 65.547895421,
+          "exited": 65.547955022,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.558937313,
+          "entered": 65.558996574,
+          "exited": 65.559071517,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.570078256,
+          "entered": 65.570141144,
+          "exited": 65.57023782,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.581236847,
+          "entered": 65.581281456,
+          "exited": 65.581355091,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.592360097,
+          "entered": 65.592402307,
+          "exited": 65.592460408,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.603430769,
+          "entered": 65.603484438,
+          "exited": 65.603549801,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.614543294,
+          "entered": 65.614589013,
+          "exited": 65.614664581,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.625637419,
+          "entered": 65.625676806,
+          "exited": 65.625742083,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.636722809,
+          "entered": 65.636759613,
+          "exited": 65.63681766,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.647806185,
+          "entered": 65.647843112,
+          "exited": 65.647902118,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.658909714,
+          "entered": 65.658979049,
+          "exited": 65.659048091,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.66999962,
+          "entered": 65.670054606,
+          "exited": 65.670140992,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.681135321,
+          "entered": 65.681176595,
+          "exited": 65.681242856,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.692257857,
+          "entered": 65.69230077,
+          "exited": 65.692361433,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.703356418,
+          "entered": 65.703411786,
+          "exited": 65.703495276,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.714479535,
+          "entered": 65.714518293,
+          "exited": 65.714576649,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.725530661,
+          "entered": 65.725559688,
+          "exited": 65.725607541,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.736567326,
+          "entered": 65.736609233,
+          "exited": 65.736692655,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.747721146,
+          "entered": 65.747762542,
+          "exited": 65.747827126,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.75887122,
+          "entered": 65.758907177,
+          "exited": 65.758970567,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.769981911,
+          "entered": 65.770022829,
+          "exited": 65.770092939,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.781106996,
+          "entered": 65.781148523,
+          "exited": 65.78121179,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.792207605,
+          "entered": 65.792248348,
+          "exited": 65.792335906,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.80333031,
+          "entered": 65.803370657,
+          "exited": 65.803437986,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.814436889,
+          "entered": 65.814489804,
+          "exited": 65.814567665,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.825569155,
+          "entered": 65.825607622,
+          "exited": 65.825666858,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.836669612,
+          "entered": 65.836727469,
+          "exited": 65.836809376,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.847878781,
+          "entered": 65.84791424,
+          "exited": 65.847967289,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.858997621,
+          "entered": 65.859038175,
+          "exited": 65.859096491,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.870077952,
+          "entered": 65.870121837,
+          "exited": 65.870184148,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.881151518,
+          "entered": 65.881194754,
+          "exited": 65.881257256,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.892262923,
+          "entered": 65.892298379,
+          "exited": 65.89237815,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.903373619,
+          "entered": 65.903434224,
+          "exited": 65.903515985,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.91390011,
+          "entered": 65.913936058,
+          "exited": 65.913994291,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.924945783,
+          "entered": 65.924984314,
+          "exited": 65.925040625,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.93599493,
+          "entered": 65.936058774,
+          "exited": 65.936118815,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.947083288,
+          "entered": 65.947121422,
+          "exited": 65.947181344,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.958182835,
+          "entered": 65.958238035,
+          "exited": 65.958321949,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.969310232,
+          "entered": 65.969358154,
+          "exited": 65.969428049,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.980410904,
+          "entered": 65.980454926,
+          "exited": 65.98051709,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 65.991505037,
+          "entered": 65.991542427,
+          "exited": 65.991604269,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.00256656,
+          "entered": 66.002609252,
+          "exited": 66.002677863,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.013657162,
+          "entered": 66.013694726,
+          "exited": 66.013754044,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.024701043,
+          "entered": 66.024733668,
+          "exited": 66.024784683,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.035736586,
+          "entered": 66.035776606,
+          "exited": 66.035830272,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.046798634,
+          "entered": 66.046844799,
+          "exited": 66.046915588,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.057871567,
+          "entered": 66.057905661,
+          "exited": 66.05795828,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.068918764,
+          "entered": 66.06895545,
+          "exited": 66.069020151,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.079988798,
+          "entered": 66.080046424,
+          "exited": 66.080099372,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.091049041,
+          "entered": 66.091088316,
+          "exited": 66.091155909,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.102140156,
+          "entered": 66.10219949,
+          "exited": 66.102275236,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.113316842,
+          "entered": 66.113360689,
+          "exited": 66.11342212,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.124416829,
+          "entered": 66.124455685,
+          "exited": 66.124526556,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.135504312,
+          "entered": 66.135532863,
+          "exited": 66.135576534,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.146599734,
+          "entered": 66.14664363,
+          "exited": 66.146702665,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.157693086,
+          "entered": 66.157733182,
+          "exited": 66.157808195,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.16848407,
+          "entered": 66.168520378,
+          "exited": 66.168583589,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.179533855,
+          "entered": 66.179569506,
+          "exited": 66.179622558,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.190624647,
+          "entered": 66.19066154,
+          "exited": 66.190717606,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.201676235,
+          "entered": 66.201718352,
+          "exited": 66.201780916,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.212747032,
+          "entered": 66.212781827,
+          "exited": 66.212838036,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.223780133,
+          "entered": 66.223813285,
+          "exited": 66.223861391,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.234813966,
+          "entered": 66.234845158,
+          "exited": 66.234898944,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.245891079,
+          "entered": 66.24592431,
+          "exited": 66.245976059,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.256931719,
+          "entered": 66.256968078,
+          "exited": 66.257025792,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.26803576,
+          "entered": 66.268072289,
+          "exited": 66.268124304,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.279111472,
+          "entered": 66.279149411,
+          "exited": 66.279204882,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.290215116,
+          "entered": 66.290257057,
+          "exited": 66.290318497,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.301298589,
+          "entered": 66.301342352,
+          "exited": 66.301412065,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.312372835,
+          "entered": 66.312404679,
+          "exited": 66.312457971,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.323468704,
+          "entered": 66.323505437,
+          "exited": 66.323564898,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.334121306,
+          "entered": 66.334152631,
+          "exited": 66.334204554,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.345171939,
+          "entered": 66.345208581,
+          "exited": 66.34526604,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.356231463,
+          "entered": 66.356271302,
+          "exited": 66.356336206,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.367273913,
+          "entered": 66.367317228,
+          "exited": 66.367362041,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.378331375,
+          "entered": 66.378370314,
+          "exited": 66.378434852,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.389389573,
+          "entered": 66.389421726,
+          "exited": 66.389476453,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.399765899,
+          "entered": 66.399801621,
+          "exited": 66.39985261,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.4101439,
+          "entered": 66.410193151,
+          "exited": 66.410263508,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.420726963,
+          "entered": 66.420752642,
+          "exited": 66.420794161,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.431732166,
+          "entered": 66.431760403,
+          "exited": 66.431808713,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.442753411,
+          "entered": 66.442782827,
+          "exited": 66.442828775,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.453774319,
+          "entered": 66.453801955,
+          "exited": 66.453846344,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.464820932,
+          "entered": 66.464861243,
+          "exited": 66.464930205,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.475886905,
+          "entered": 66.475922857,
+          "exited": 66.475976627,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.486914516,
+          "entered": 66.48694552,
+          "exited": 66.486995864,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.497938762,
+          "entered": 66.497964048,
+          "exited": 66.498007216,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.509038366,
+          "entered": 66.509102243,
+          "exited": 66.509196809,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.520158779,
+          "entered": 66.520200611,
+          "exited": 66.520259977,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.531219132,
+          "entered": 66.531249894,
+          "exited": 66.531291986,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.542275016,
+          "entered": 66.542318791,
+          "exited": 66.54241231,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.553391181,
+          "entered": 66.553437612,
+          "exited": 66.553515865,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.56449402,
+          "entered": 66.56453877,
+          "exited": 66.564603367,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.575591943,
+          "entered": 66.575632693,
+          "exited": 66.575692147,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.586649957,
+          "entered": 66.586683878,
+          "exited": 66.586739772,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.597695989,
+          "entered": 66.597729249,
+          "exited": 66.597786185,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.608783179,
+          "entered": 66.608826071,
+          "exited": 66.608893475,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.619893388,
+          "entered": 66.619935845,
+          "exited": 66.620038563,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.631014256,
+          "entered": 66.631063223,
+          "exited": 66.631149136,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.642098649,
+          "entered": 66.642135409,
+          "exited": 66.642190338,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.653148038,
+          "entered": 66.65317684,
+          "exited": 66.653224573,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.663390619,
+          "entered": 66.663428187,
+          "exited": 66.663480987,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.674456045,
+          "entered": 66.674496272,
+          "exited": 66.674553137,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.685500771,
+          "entered": 66.685532202,
+          "exited": 66.685577635,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.696535637,
+          "entered": 66.696579443,
+          "exited": 66.696640231,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.707651454,
+          "entered": 66.707692661,
+          "exited": 66.707756176,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.718715394,
+          "entered": 66.718747159,
+          "exited": 66.718794338,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.729756239,
+          "entered": 66.729812136,
+          "exited": 66.729876991,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.740848372,
+          "entered": 66.740887141,
+          "exited": 66.740946283,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.751917735,
+          "entered": 66.751947672,
+          "exited": 66.7520462,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": false
+        },
+        {
+          "wall": 66.763061642,
+          "entered": 66.763098107,
+          "exited": 66.763198821,
+          "bytes_sent": 0,
+          "remaining": 0,
+          "done": true
+        }
+      ],
+      "final_returncode": 0
+    }
+  ],
+  "source_bytes_verification": {
+    "passed": true,
+    "frames": [
+      {
+        "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "fb780a82d0727f146da684ec6147ba75c1ee5e30ddf6a1086626fd09a7179fb6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "d4fe977558d833a6f6275c357fc6a7d9e7b090d0bbcd57011804898c82270292"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "4ee4b93c8a5fbf839b0721a96fb5b308a02bf26b38264b47172b2b6beec7ead2"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      },
+      {
+        "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "9c960625f4235e546252e56d4fa3a248d7817baf46aaf3967a6f5d7041c2dec6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1362,
+            "sha256": "8f08581672c16a10aa6a4e639e9f7e4faf602b703e07203ef4b5e3781efbfbca"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "cd6cea962477cea2a768f92f7a309a63ce3cfca36f5094e2231b634cc651efcf"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      },
+      {
+        "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "b6e6eb9a412486276389a49f36a0fa2451f9adbb2ecf6a13ebe89b89f9a4a410"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "65c22b20852e1fdaf76d521c397234f7181f2cc75dc3424bff7a79234817cabd"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "e24ff64434cd6810f609570081163ce57b82a4fc6e97219b1dc1fb0c94fbc234"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      }
+    ],
+    "scope": "reopened benchmark files; source bytes and request identities only; not run21 mission success"
+  }
+}

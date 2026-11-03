@@ -1,0 +1,208 @@
+{
+  "variant": "drvfs-large-pipe",
+  "output": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/writer-fs-pipe-20261102/drvfs-large-pipe",
+  "pipe_probes": [
+    {
+      "pid": 978,
+      "operation_id": "2924e2969cd741d7ba02dc87346974ff",
+      "requested_bytes": 1048576,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 1048576
+    },
+    {
+      "pid": 989,
+      "operation_id": "58277f77983c4dc688258eeb6c824787",
+      "requested_bytes": 1048576,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 1048576
+    },
+    {
+      "pid": 990,
+      "operation_id": "36394edc64a7479ca1af46d554f75654",
+      "requested_bytes": 1048576,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 1048576
+    },
+    {
+      "pid": 991,
+      "operation_id": "c70f3e2bf5724a12b6fd547a5949930f",
+      "requested_bytes": 1048576,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 1048576
+    },
+    {
+      "pid": 992,
+      "operation_id": "df93637407634e7aa312a295c53b7f76",
+      "requested_bytes": 1048576,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 1048576
+    },
+    {
+      "pid": 993,
+      "operation_id": "776ad931ebcd49fc8a36045dd77bde0b",
+      "requested_bytes": 1048576,
+      "resize_error": null,
+      "initial_bytes": 65536,
+      "actual_bytes": 1048576
+    }
+  ],
+  "transfer": [
+    {
+      "operation_id": "2924e2969cd741d7ba02dc87346974ff",
+      "job_id": null,
+      "wire_bytes": 1009,
+      "input_drain_s": 0.1856618239999932,
+      "total_s": 1.140758286999997,
+      "max_tick_gap_s": 0.050392376999994326
+    },
+    {
+      "operation_id": "58277f77983c4dc688258eeb6c824787",
+      "job_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+      "wire_bytes": 2158056,
+      "input_drain_s": 0.6999013029999901,
+      "total_s": 0.851306644999994,
+      "max_tick_gap_s": 0.05612646299999824
+    },
+    {
+      "operation_id": "36394edc64a7479ca1af46d554f75654",
+      "job_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+      "wire_bytes": 2159823,
+      "input_drain_s": 0.680458655999999,
+      "total_s": 0.8316776449999992,
+      "max_tick_gap_s": 0.05151037899999267
+    },
+    {
+      "operation_id": "c70f3e2bf5724a12b6fd547a5949930f",
+      "job_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+      "wire_bytes": 2161001,
+      "input_drain_s": 0.5256739539999984,
+      "total_s": 0.6774010179999976,
+      "max_tick_gap_s": 0.05156976000000668
+    },
+    {
+      "operation_id": "df93637407634e7aa312a295c53b7f76",
+      "job_id": null,
+      "wire_bytes": 5437,
+      "input_drain_s": 0.07189458700000273,
+      "total_s": 0.5256826480000001,
+      "max_tick_gap_s": 0.050529585000006705
+    },
+    {
+      "operation_id": "776ad931ebcd49fc8a36045dd77bde0b",
+      "job_id": null,
+      "wire_bytes": 5632,
+      "input_drain_s": 0.0287880059999992,
+      "total_s": 2.18673553699999,
+      "max_tick_gap_s": 0.010650239000000283
+    }
+  ],
+  "errors": [],
+  "all_durable_elapsed_s": 2.891489781000004,
+  "would_meet_original_consumer_deadline": true,
+  "all_owned_helpers_closed": true,
+  "elapsed_wall_s": 6.536599281999997,
+  "source_bytes_verification": {
+    "passed": true,
+    "frames": [
+      {
+        "retention_id": "retain-645d94b2e3e4da9cb5ae76b53092c6c89cb62dc4c002ed5dbcc1b8debb4dcbd0",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "fb780a82d0727f146da684ec6147ba75c1ee5e30ddf6a1086626fd09a7179fb6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "f0eabfbf57ecda0c13e5c57d34927bbd60f847d19a082b96a27edac24157b6c1"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "4ee4b93c8a5fbf839b0721a96fb5b308a02bf26b38264b47172b2b6beec7ead2"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "ec3ed5ef18ca80ee79c9bef5d7456e9fbc967cf9da9e85bd746cea5f61e9365e"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      },
+      {
+        "retention_id": "retain-40df32877822868698741806662de02186364c3be26e484bb61647fc1592bbb4",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "9c960625f4235e546252e56d4fa3a248d7817baf46aaf3967a6f5d7041c2dec6"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "b48478a1e374440fb22ffe2bb9d173426ca9c16de3624b9454a5b45338d1d555"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "cd6cea962477cea2a768f92f7a309a63ce3cfca36f5094e2231b634cc651efcf"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "5e6255fdf7c977b2f97234dc31b47cdbaed9a6439665ce0167c5eaa7f89d1262"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      },
+      {
+        "retention_id": "retain-e684b61bf73cbb7e866b15c978522db7342976b3116869655c5260931397a294",
+        "errors": [],
+        "files": {
+          "camera_info.json": {
+            "bytes": 549,
+            "sha256": "b6e6eb9a412486276389a49f36a0fa2451f9adbb2ecf6a13ebe89b89f9a4a410"
+          },
+          "depth.bin": {
+            "bytes": 1228800,
+            "sha256": "0cacefa1df0cef506c5365d70272d0f7c5c75a2f9cccc826a343e78aaf978c8e"
+          },
+          "manifest.json": {
+            "bytes": 1363,
+            "sha256": "45948a95b68de613fa408009e97365de373817c3c067f48d3a712c285b49b326"
+          },
+          "producer.json": {
+            "bytes": 2061,
+            "sha256": "e24ff64434cd6810f609570081163ce57b82a4fc6e97219b1dc1fb0c94fbc234"
+          },
+          "request.json": {
+            "bytes": 1098,
+            "sha256": "9b956dbd361571261106706bda777c2c33ed753215cc5e302785622836fd7cb2"
+          },
+          "rgb.bin": {
+            "bytes": 921600,
+            "sha256": "363875ac94955b1f17ac9d3ce8519c13ca71ab2d2c77dde634645b293f4089f7"
+          }
+        },
+        "verified": true
+      }
+    ],
+    "scope": "reopened benchmark files; source bytes and request identities only; not run21 mission success"
+  }
+}
