@@ -1,0 +1,25 @@
+{
+  "scope": "source patch applicability and fetch-script guards only; no build, ROS node or mission run",
+  "upstream_commit": "ec8f7635dea317b531c419f798f87d90a336f32e",
+  "initial_state": "exact 0002 boundary patch only",
+  "command": "wsl -d Ubuntu-24.04 -- bash --noprofile --norc /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/setup/verify-slam-steady-patch.sh",
+  "exec_session_id": 23926,
+  "exit_code": 0,
+  "checks_passed": [
+    "bash syntax",
+    "0003 git apply --check on pinned common.cpp",
+    "boundary-only --check-only rejection preserves both source hashes",
+    "unknown untracked file rejected and preserved before any patch write",
+    "missing 0003 applied to exact 0002 prefix",
+    "repeated fetch succeeds without changing either source hash",
+    "both patches --check-only succeeds",
+    "0003 git apply --reverse --check",
+    "vendor git diff --check"
+  ],
+  "temporary_untracked_probe_removed": true,
+  "karto_header_sha256": "3a91277a6fb16bd5796f41d484c2d405384f9bcfef6956f90511fa7c4391512c",
+  "common_cpp_before_sha256": "7ee09d3669435b1936e1c6aca5e4d1d916d5712c08ba00148d9f8e96a612a9d0",
+  "common_cpp_after_sha256": "c1b96ccf0e516cc83dc7628047c0114b489f566d0516c0c3291b7310f7cddfdf",
+  "not_executed": ["pristine-prefix application", "out-of-order-state rejection fixture", "compilation", "runtime timing validation", "autonomous mission"],
+  "runtime_F_drive_modified": false
+}

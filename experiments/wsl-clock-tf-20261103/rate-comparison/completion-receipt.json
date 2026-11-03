@@ -1,0 +1,95 @@
+{
+  "tool_exec_completion": [
+    {
+      "session_id": 94413,
+      "role": "read installed Jazzy compiler/header/link metadata",
+      "exit_code": 0
+    },
+    {
+      "session_id": 65656,
+      "role": "standalone CMake build",
+      "exit_code": 0
+    },
+    {
+      "session_id": 71575,
+      "role": "Rate/WallRate measurement",
+      "exit_code": 0
+    }
+  ],
+  "requested_steady_seconds": 65,
+  "program_actual_steady_seconds": 65.001842,
+  "external_timeout": {
+    "term_after_s": 84,
+    "kill_after_term_s": 1,
+    "triggered": false
+  },
+  "ros_nodes_created": 0,
+  "system_time_modified": false,
+  "csv_checks": [
+    {
+      "file": "rate-sleeps.csv",
+      "rows": 3039,
+      "summary_count_and_max_verified": true
+    },
+    {
+      "file": "wallrate-sleeps.csv",
+      "rows": 3250,
+      "summary_count_and_max_verified": true
+    }
+  ],
+  "source_and_output_files": [
+    {
+      "path": "CMakeLists.txt",
+      "bytes": 387,
+      "sha256": "e7ddaa7d342685fe8faaf08ccd86818d56f987ba16f7d6d62869fe47527fa95e"
+    },
+    {
+      "path": "rate_probe.cpp",
+      "bytes": 8830,
+      "sha256": "67a871174761ead002e186277a98f0076a50fb4bb7e13c5a8dd033f2441710d3"
+    },
+    {
+      "path": "build.sh",
+      "bytes": 475,
+      "sha256": "188b958ec60945e27eeb60cd48e780d49065960485fe72e584d59ae4b7ddb0ee"
+    },
+    {
+      "path": "run.sh",
+      "bytes": 562,
+      "sha256": "db873c7d964a866c41fdc482666a1d28a8ce5f263f8d983e96bf1adeede9bfe5"
+    },
+    {
+      "path": "build.log",
+      "bytes": 2707,
+      "sha256": "b39e94636f66cc2fbccb9d2e274006422958c35f1eb19327b32f0be92473ef8f"
+    },
+    {
+      "path": "run.log",
+      "bytes": 1723,
+      "sha256": "f2443c6493bde4094edf7f1d7e03be77d3998d7cba9daa427b8fe072a2f442ce"
+    },
+    {
+      "path": "binary/rate_probe",
+      "bytes": 94768,
+      "sha256": "71e57a6bdd5fe9edc703aa8745dcd68855384315a51ee284ccd2843363eb0581"
+    },
+    {
+      "path": "results/summary.json",
+      "bytes": 1649,
+      "sha256": "6e23df4fc1c1c715135f13837daff9cecac8b7cc1ea3ca1141e5f0326795dc1f"
+    },
+    {
+      "path": "results/rate-sleeps.csv",
+      "bytes": 541026,
+      "sha256": "157259c1123e16b329f3c0d4002aa8c7c4ac3fa8d15a44110c0db1b8b14eac22"
+    },
+    {
+      "path": "results/wallrate-sleeps.csv",
+      "bytes": 581387,
+      "sha256": "c32b6c7a759ef202d5765bf9bdffe0e0a8af40c0bd768d6b5f61d4b2ee45fe7b"
+    }
+  ],
+  "rclcpp_library_sha256_as_recorded_by_build": "7800244b4f0ec3cfb1e4f08de8f60c60c8f2331b7efdc6a1d5064fe336c62fb3",
+  "interpretation": "In this concurrent same-host sample, both clock observers saw system/steady offset changes; only SYSTEM Rate had >0.1s sleep durations. No SLAM, Gazebo or full-navigation success is claimed.",
+  "timeout_limitation": "Samples are written after join; an externally timed-out attempt would be incomplete, not quantitative pause evidence."
+}

@@ -6,7 +6,8 @@
 *.xml text eol=lf
 *.world text eol=lf
 *.sdf text eol=lf
-*.patch text eol=lf
+# Unified-diff blank context lines contain a required single space.
+*.patch text eol=lf whitespace=-blank-at-eol
 # Preserve selected closed-run evidence byte-for-byte, including source hashes.
 experiments/run14/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/run14/*.yaml -text

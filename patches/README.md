@@ -1,12 +1,46 @@
 # Pinned upstream patches
 
-`0002-slam-toolbox-inclusive-grid.patch` applies to official SLAM Toolbox 2.8.5,
-commit `ec8f7635dea317b531c419f798f87d90a336f32e`. It adds one cell to each
+Both SLAM patches apply in order to official SLAM Toolbox 2.8.5,
+commit `ec8f7635dea317b531c419f798f87d90a336f32e`.
+
+`0002-slam-toolbox-inclusive-grid.patch` adds one cell to each
 occupancy-grid dimension so the maximum quantized scan endpoint is valid. The
-origin, scans, matching and thresholds are unchanged. Fetch and verify with
-`scripts/fetch_slam_vendor.sh`; build in the separate overlay documented in
-[the boundary investigation](../docs/slam-grid-boundary.md). It does not replace
-the system ROS installation. Retain upstream LICENSE and source notices.
+origin, scans, matching and thresholds are unchanged. Its prior validation is
+recorded in [the boundary investigation](../docs/slam-grid-boundary.md).
+
+`0003-slam-toolbox-steady-transform-publish.patch` changes exactly one line in
+`SlamToolbox::publishTransformLoop`: `rclcpp::Rate` becomes `rclcpp::WallRate`.
+In Jazzy, this changes the publication-loop sleep clock from `SYSTEM_TIME` to
+`STEADY_TIME`, so a backward system-clock adjustment cannot extend that sleep.
+See [the pinned loop](https://github.com/SteveMacenski/slam_toolbox/blob/ec8f7635dea317b531c419f798f87d90a336f32e/src/slam_toolbox_common.cpp#L484)
+and [rclcpp clock selection](https://github.com/ros2/rclcpp/blob/jazzy/rclcpp/include/rclcpp/rate.hpp).
+It leaves the TF message timestamp, `restamp_tf=false` profile, scan processing,
+publish period and every transform tolerance unchanged. It does not make delayed
+scan data fresh or remove consumer TF checks. The patch is motivated by measured
+WSL system-clock backsteps; its effect on the autonomous mission is **not yet
+validated**. Patch applicability is not a runtime timing or mission result.
+
+Fetch/apply and then verify without writes:
+
+```bash
+bash scripts/fetch_slam_vendor.sh
+bash scripts/fetch_slam_vendor.sh --check-only
+```
+
+The script accepts only the exact pinned pristine checkout, the exact `0002`
+prefix, or both exact patches. It applies missing patches in order, refuses
+unknown/out-of-order edits before applying anything, and never resets an existing
+checkout. `--check-only` requires both patches and `COLCON_IGNORE` to exist.
+
+Build a **new, separate overlay** from this validated source; preserve the existing
+`outputs/slam-boundary-ws` as the historical boundary-only baseline. For example,
+use a fresh `outputs/slam-steady-ws` source snapshot and the isolated colcon
+procedure in the boundary document, changing its workspace path accordingly.
+Do not reuse an existing destination or silently source the new overlay into a
+running experiment. Record its source hashes, build results and actually loaded
+library paths before evaluating timing. No system ROS installation is replaced.
+Retain upstream LICENSE and source notices; `vendor/slam_toolbox/COLCON_IGNORE`
+keeps the source out of ordinary project colcon discovery.
 
 ## LIMO Harmonic model
 

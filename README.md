@@ -8,6 +8,8 @@
 
 最新 run29 启用导航失败后的有限恢复等待，完成两个红色替身标注和返航，独立原生位姿的返航位置误差约 1.59 cm。11 次恢复等待均通过，但仍出现 11 次 TF 导航故障，完整探索和视觉覆盖未通过。3 组接受的 RGB-D 审计、地图导出、终态停车与自有进程退出通过，详见 [run29 结果](experiments/run29/run29-outcome-review.md) 和 [TF 时钟与容差实验](docs/tf-timing-experiment.md)。用户目前没有小车访问条件，实车验收暂缓。
 
+进一步诊断已复现 WSL 系统钟回跳使 SYSTEM Rate 暂停约 1.9–2.4 秒，而 STEADY WallRate 仍约 20 ms 调度。已增加 SLAM TF 发布循环的单行补丁及可复现证据，整车效果待新实验验证，见 [WSL 时钟与 TF](docs/wsl-clock-tf.md)。
+
 后续 [输入管道对照与改进](docs/writer-pipe-timing.md) 已完成，管道扩容保留原期限并通过测试、构建及 CI。run27 的启动失败完整保留；run28 新增启动计时后在 17.21 秒内就绪，三组接受的 RGB-D 均写入且没有 writer 故障。任务失败使 consumer 失效，整体留存审计仍失败，不能把文件已写入等同于整轮通过。见 [run27](experiments/run27/README.md) 与 [run28 档案](experiments/run28/README.md)。
 
 此前 run22 已通过五次停车观察，15 组实际接受的原始 RGB-D 在关闭后全部通过文件审计，并通过返航位姿检查、标注两个红色替身；地图覆盖和整轮收尾仍未通过，详见 [run22 记录](docs/run22-retention-verification.md)。留存回执超时的历史失败和单次性能对照保留在 [run21 记录](docs/run21-retention-deadline.md)。

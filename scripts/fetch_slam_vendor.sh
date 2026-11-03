@@ -8,8 +8,15 @@ upstream_url="https://github.com/SteveMacenski/slam_toolbox.git"
 upstream_tag="2.8.5"
 upstream_commit="ec8f7635dea317b531c419f798f87d90a336f32e"
 header_path="lib/karto_sdk/include/karto_sdk/Karto.h"
+original_header_sha256="277fd3ddbb4c655408660e7bab8ff39f49875af709bd7a83ff3d029190d44052"
 patched_header_sha256="3a91277a6fb16bd5796f41d484c2d405384f9bcfef6956f90511fa7c4391512c"
-patch_path="$project_root/patches/0002-slam-toolbox-inclusive-grid.patch"
+source_path="src/slam_toolbox_common.cpp"
+original_source_sha256="7ee09d3669435b1936e1c6aca5e4d1d916d5712c08ba00148d9f8e96a612a9d0"
+patched_source_sha256="c1b96ccf0e516cc83dc7628047c0114b489f566d0516c0c3291b7310f7cddfdf"
+patches=(
+  "$project_root/patches/0002-slam-toolbox-inclusive-grid.patch"
+  "$project_root/patches/0003-slam-toolbox-steady-transform-publish.patch"
+)
 check_only=false
 if [[ "${1:-}" == "--check-only" && $# -eq 1 ]]; then
   check_only=true
@@ -24,7 +31,9 @@ git -C "$project_root" check-ignore -q vendor/slam_toolbox || {
   printf 'vendor/slam_toolbox must be ignored by project Git.\n' >&2
   exit 1
 }
-test -f "$patch_path"
+for patch_path in "${patches[@]}"; do
+  test -f "$patch_path"
+done
 if [[ ! -d "$vendor_path/.git" ]]; then
   if "$check_only" || [[ -e "$vendor_path" ]]; then
     printf 'Missing checkout or pre-existing non-Git directory preserved: %s\n' "$vendor_path" >&2
@@ -56,23 +65,49 @@ git -C "$vendor_path" diff --cached --quiet || {
   printf 'Staged vendor changes found; refusing to modify them.\n' >&2; exit 1;
 }
 
-if git -C "$vendor_path" diff --quiet; then
-  if "$check_only"; then
-    printf 'The inclusive grid patch has not been applied.\n' >&2
+# Validate the entire working tree before applying any missing patch. Accept
+# only exact prefixes: pristine, 0002, or 0002+0003. A matching hunk alone is
+# insufficient: unrelated edits elsewhere in either file must be preserved.
+while IFS= read -r changed_path; do
+  [[ "$changed_path" == "$header_path" || "$changed_path" == "$source_path" ]] || {
+    printf 'Unexpected vendor modification preserved: %s\n' "$changed_path" >&2
     exit 1
-  fi
-  git -C "$vendor_path" apply --check "$patch_path"
-  git -C "$vendor_path" apply "$patch_path"
-fi
-[[ "$(git -C "$vendor_path" diff --name-only)" == "$header_path" ]] || {
-  printf 'Unexpected vendor modifications; checkout preserved.\n' >&2; exit 1;
+  }
+done < <(git -C "$vendor_path" diff --name-only)
+[[ -z "$(git -C "$vendor_path" diff --summary)" ]] || {
+  printf 'Unexpected vendor file mode/type changes; checkout preserved.\n' >&2; exit 1;
 }
-git -C "$vendor_path" apply --reverse --check "$patch_path"
-[[ "$(sha256sum "$vendor_path/$header_path" | cut -d ' ' -f 1)" == "$patched_header_sha256" ]] || {
-  printf 'Patched header differs from the expected two-line change.\n' >&2; exit 1;
+header_sha256="$(sha256sum "$vendor_path/$header_path" | cut -d ' ' -f 1)"
+source_sha256="$(sha256sum "$vendor_path/$source_path" | cut -d ' ' -f 1)"
+case "$header_sha256:$source_sha256" in
+  "$original_header_sha256:$original_source_sha256") applied=0 ;;
+  "$patched_header_sha256:$original_source_sha256") applied=1 ;;
+  "$patched_header_sha256:$patched_source_sha256") applied=2 ;;
+  *) printf 'Unknown or out-of-order vendor patch state; checkout preserved.\n' >&2; exit 1 ;;
+esac
+for ((i=0; i<applied; i++)); do
+  git -C "$vendor_path" apply --reverse --check "${patches[i]}"
+done
+if "$check_only" && ((applied != ${#patches[@]})); then
+  printf 'Both pinned SLAM patches are required; %s of %s applied.\n' "$applied" "${#patches[@]}" >&2
+  exit 1
+fi
+# Preflight every missing patch before the first write. The files are disjoint;
+# both checks therefore work on the pristine tree as well as the 0002 prefix.
+for ((i=applied; i<${#patches[@]}; i++)); do
+  git -C "$vendor_path" apply --check "${patches[i]}"
+done
+for ((i=applied; i<${#patches[@]}; i++)); do
+  git -C "$vendor_path" apply "${patches[i]}"
+done
+[[ "$(git -C "$vendor_path" diff --name-only)" == "$header_path"$'\n'"$source_path" &&
+   "$(sha256sum "$vendor_path/$header_path" | cut -d ' ' -f 1)" == "$patched_header_sha256" &&
+   "$(sha256sum "$vendor_path/$source_path" | cut -d ' ' -f 1)" == "$patched_source_sha256" ]] || {
+  printf 'Vendor result differs from the exact two pinned patches; inspect before proceeding.\n' >&2
+  exit 1
 }
 
-# Build an explicit source snapshot in outputs/slam-boundary-ws instead. This
+# Build an explicit source snapshot in a separate outputs workspace instead. This
 # prevents plain colcon discovery from silently changing the main ROS overlay.
 if "$check_only"; then
   test -f "$vendor_path/COLCON_IGNORE"
@@ -80,5 +115,5 @@ else
   touch "$vendor_path/COLCON_IGNORE"
 fi
 printf 'Validated upstream: %s @ %s (%s)\n' "$upstream_url" "$upstream_commit" "$upstream_tag"
-printf 'Patch: %s\n' "$patch_path"
-printf 'Isolated build instructions: docs/slam-grid-boundary.md\n'
+printf 'Patch: %s\n' "${patches[@]}"
+printf 'Isolated overlay / validation scope: patches/README.md\n'

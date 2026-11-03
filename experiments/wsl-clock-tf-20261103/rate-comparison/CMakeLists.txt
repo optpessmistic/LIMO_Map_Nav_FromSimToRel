@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.16)
+project(rclcpp_rate_comparison LANGUAGES CXX)
+find_package(rclcpp REQUIRED)
+find_package(Threads REQUIRED)
+add_executable(rate_probe rate_probe.cpp)
+target_compile_features(rate_probe PRIVATE cxx_std_17)
+target_compile_options(rate_probe PRIVATE -O2 -Wall -Wextra -Wpedantic)
+target_link_libraries(rate_probe PRIVATE rclcpp::rclcpp Threads::Threads)
