@@ -1,0 +1,66 @@
+"""Read-only 65-second SYSTEM/STEADY sample, bound to run34 startup."""
+import hashlib
+import json
+from pathlib import Path
+import time
+
+root = Path(__file__).resolve().parents[2]
+run = root/'outputs/ros_smoke/run34-lifecycle-readiness'
+out = root/'outputs/setup/run34-wsl-system-steady-clock-probe.json'
+assert not out.exists()
+state = json.loads((run/'orchestration.json').read_bytes())
+assert state.get('elapsed_wall_s') is None and state.get('stage') == 'navigation_start_and_parameter_check'
+assert (run/'process-navigation.json').is_file(), 'Navigation process identity must exist'
+owner = json.loads((run/'process-navigation.json').read_bytes())
+stat = Path('/proc')/str(owner['pid'])/'stat'
+fields = stat.read_text().rsplit(')', 1)[1].split()
+assert int(fields[19]) == owner['start_ticks'] and int(fields[2]) == owner['pgid']
+assert int(fields[3]) == owner['sid'] and fields[0] not in ('Z','X')
+raw = (run/'preparation.json').read_bytes()
+preparation = json.loads(raw)
+assert state['epoch'] == preparation['epoch']
+assert state['run'] == preparation['run'] == run.name
+assert (run/'epoch.txt').read_text().strip() == preparation['epoch']
+assert owner['token'] == preparation['token'] and owner['name'] == owner['mode'] == 'navigation'
+launch = json.loads((run/'launch-timing-navigation.json').read_bytes())
+boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+samples = []
+began = time.monotonic_ns()
+launch_age_s = began/1e9-launch['gate_write_completed_monotonic_s']
+closed = False
+while time.monotonic_ns()-began < 65_000_000_000:
+    before = time.monotonic_ns()
+    real = time.time_ns()
+    after = time.monotonic_ns()
+    samples.append({'monotonic_before_ns': before, 'realtime_ns': real,
+                    'monotonic_after_ns': after, 'offset_ns': real-(before+after)//2})
+    current = json.loads((run/'orchestration.json').read_bytes())
+    assert current['epoch'] == preparation['epoch']
+    closed = current.get('elapsed_wall_s') is not None or current.get('stage') == 'owned_shutdown'
+    if closed:
+        break
+    time.sleep(.1)
+jumps = []
+for i, (a,b) in enumerate(zip(samples,samples[1:]),1):
+    shift = b['offset_ns']-a['offset_ns']
+    if abs(shift) > 50_000_000:
+        jumps.append({'sample':i, 'offset_change_s':shift/1e9,
+            'realtime_step_s':(b['realtime_ns']-a['realtime_ns'])/1e9,
+            'monotonic_step_s':(b['monotonic_before_ns']-a['monotonic_before_ns'])/1e9,
+            'bracket_s':(b['monotonic_after_ns']-b['monotonic_before_ns'])/1e9})
+report = {'scope':'Read-only WSL SYSTEM/STEADY sample for nominally 65 seconds from probe entry, observed during navigation startup. Last sample may precede or overlap an observed shutdown boundary. Not the entire mission or a ROS clock trace; offset shifts do not establish their cause.',
+    'epoch':preparation['epoch'], 'prepared_head':preparation['prepared_head_actual'],
+    'preparation_sha256':hashlib.sha256(raw).hexdigest(), 'boot_id':boot,
+    'navigation_process_identity_at_start':owner, 'stage_at_start':state.get('stage'),
+    'stage_at_end':current.get('stage'),
+    'navigation_launch_gate_age_at_probe_start_s':launch_age_s,
+    'duration_monotonic_s':(time.monotonic_ns()-began)/1e9,
+    'navigation_identity_verified_at_start':True, 'shutdown_or_completion_observed':closed,
+    'completion_observed':current.get('elapsed_wall_s') is not None,
+    'shutdown_stage_observed':current.get('stage') == 'owned_shutdown',
+    'samples':samples, 'jumps':jumps,
+    'max_sampling_bracket_s':max(s['monotonic_after_ns']-s['monotonic_before_ns'] for s in samples)/1e9}
+assert Path('/proc/sys/kernel/random/boot_id').read_text().strip() == boot
+with out.open('x') as handle:
+    json.dump(report,handle,indent=2)
+print(json.dumps({k:v for k,v in report.items() if k!='samples'},indent=2))

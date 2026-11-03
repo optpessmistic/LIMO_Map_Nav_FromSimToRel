@@ -1,0 +1,247 @@
+"""Archive the closed run34 failure; leave README and final SHA256SUMS to root.
+
+One-shot local byte copies/hashes only. No ROS, subprocesses, replay, image decode,
+or edits to the original run. Runtime source identity comes from preparation,
+not the current working tree or a later patch/build.
+"""
+import argparse
+import math
+import gzip
+import hashlib
+import io
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT/'outputs/setup'
+RUN = ROOT/'outputs/ros_smoke/run34-lifecycle-readiness'
+OUT = ROOT/'experiments/run34'
+RUNTIME = 'c411fcbe86c1c27ce302593b73fba405a603e002'
+COPIES, SOURCES = [], {}
+
+
+def fingerprint(path):
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError('Unsafe source: '+str(path))
+    before = path.stat()
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda:stream.read(1024*1024),b''):
+            digest.update(chunk)
+    after = path.stat()
+    stamp = lambda st:(st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns)
+    if stamp(before) != stamp(after):
+        raise RuntimeError('Source changed during hash: '+str(path))
+    row = {'bytes':before.st_size,'sha256':digest.hexdigest()}
+    name = path.relative_to(ROOT).as_posix()
+    if name in SOURCES and row != SOURCES[name]:
+        raise RuntimeError('Previously read source changed: '+name)
+    SOURCES[name] = row
+    return row
+
+
+def read(path):
+    fingerprint(path)
+    return json.loads(path.read_bytes())
+
+
+def add(source, destination, compress=False):
+    destination = Path(destination)
+    if destination.is_absolute() or '..' in destination.parts or any(r['destination'] == destination.as_posix() for r in COPIES):
+        raise RuntimeError('Unsafe or duplicate archive destination')
+    original = fingerprint(source)
+    COPIES.append({'source':source.relative_to(ROOT).as_posix(),
+        'destination':destination.as_posix(),'transform':'gzip_mtime_0' if compress else 'raw_bytes',
+        'original':original})
+
+
+def write_json(path,value):
+    with path.open('x',encoding='utf-8',newline='\n') as stream:
+        stream.write(json.dumps(value,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-root-session',type=int,choices=[22438],required=True)
+    parser.add_argument('--confirmed-root-exit-code',type=int,choices=[1],required=True)
+    args = parser.parse_args()
+    if OUT.exists() or OUT.is_symlink():
+        raise RuntimeError('Refuse existing experiments/run34; no overwrite/restart')
+    prep, closed = read(RUN/'preparation.json'), read(RUN/'orchestration.json')
+    completion = read(SETUP/'run34-root-completion.json')
+    outcome = read(SETUP/'run34-outcome-review.json')
+    root_receipt = completion.get('root_exec_completion') or {}
+    if not (prep.get('code_head') == prep.get('prepared_head_actual') == RUNTIME
+            and prep.get('run') == closed.get('run') == completion.get('run') == outcome.get('run') == RUN.name
+            and prep.get('epoch') == closed.get('epoch') == completion.get('epoch') == outcome.get('epoch') == 'ea53a5de-b919-4f52-aa28-ea6d8ec571c8'
+            and prep.get('token') == 'run34-fbc7f96364474fc49e89f384d770cc76'
+            and closed.get('status') in ('terminal_observed','orchestration_failed')
+            and closed.get('stage') == 'owned_shutdown' and closed.get('all_owned_groups_empty') is True
+            and type(closed.get('elapsed_wall_s')) in (int,float) and math.isfinite(closed['elapsed_wall_s'])
+            and closed['elapsed_wall_s'] > 0 and completion.get('orchestration_elapsed_wall_s') == closed['elapsed_wall_s']
+            and root_receipt.get('session_id') == args.confirmed_root_session
+            and root_receipt.get('exit_code') == args.confirmed_root_exit_code
+            and outcome.get('root_completion',{}).get('session_id') == args.confirmed_root_session
+            and outcome.get('root_completion',{}).get('exit_code') == args.confirmed_root_exit_code):
+        raise RuntimeError('Exact actual closed run34/root22438/outcome identity required')
+    if (RUN/'epoch.txt').read_bytes() != (prep['epoch']+'\n').encode('ascii'):
+        raise RuntimeError('Run epoch bytes changed')
+    stops, nested = closed.get('stops') or {}, closed.get('recorder_inner_recheck') or {}
+    if not (stops and all(s.get('remaining') == [] and s.get('ownership_errors') == []
+            and s.get('remaining_check_complete') is True for s in stops.values())
+            and nested.get('remaining') == [] and nested.get('ownership_errors') == []
+            and nested.get('remaining_check_complete') is True):
+        raise RuntimeError('Owned groups or independent nested recorder are not confirmed closed')
+    shutdown, checkpoint = read(RUN/'retention-shutdown.json'), read(RUN/'retained/checkpoint.json')
+    if not (shutdown.get('writer') is None and shutdown.get('shutdown',{}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown',{}).get('final_checkpoint_persisted') is True
+            and checkpoint.get('closed') is True and checkpoint.get('writer') is None
+            and checkpoint.get('core',{}).get('closed') is True and checkpoint.get('core',{}).get('writer_pending') is False):
+        raise RuntimeError('Retained writer/final checkpoint not closed')
+    terminal = closed.get('terminal') or {}
+    mission_name = str(terminal.get('path','')).replace('\\','/').rsplit('/',1)[-1]
+    missions = sorted((RUN/'mission').glob('mission_*.json'))
+    if [p.name for p in missions] != [mission_name]:
+        raise RuntimeError('Exact unique hash-bound terminal mission required')
+    mission = read(missions[0])
+    if not (fingerprint(missions[0])['sha256'] == terminal.get('sha256')
+            and mission.get('map_epoch') == terminal.get('map_epoch') == prep['epoch']
+            and mission.get('status') == terminal.get('status') and mission.get('status') in ('done','blocked')
+            and mission.get('mission_success') == terminal.get('reported_mission_success')):
+        raise RuntimeError('Original mission identity/status mismatch')
+    if any(mission.get(key) != value for key,value in outcome['mission'].items()):
+        raise RuntimeError('Outcome mission flags differ from raw terminal')
+    audit = read(RUN/'retention-audit.json')
+    if audit.get('passed') != closed.get('retention_audit_passed') or any(
+            audit.get(key) != value for key,value in outcome['retention']['original_audit'].items()):
+        raise RuntimeError('Original retention audit differs from recorded summary')
+    # No pass gate: an original failed audit stays failed and is archived intact.
+    verified_bindings = []
+    for name,expected in outcome['inputs'].items():
+        if name.startswith(RUN.relative_to(ROOT).as_posix()+'/') or name.startswith('outputs/setup/'):
+            actual = fingerprint(ROOT/name)
+            if actual != expected:
+                raise RuntimeError('Frozen outcome input changed: '+name)
+            verified_bindings.append({'source':name,**actual})
+    keep = '''epoch.txt preparation.json orchestration.json runner-inputs.json
+parameters-early.json parameter-gate.json navigation-recovery-parameter-gate.json
+observation-relocation-parameter-gate.json installed-check.json provenance-live.json
+retention-audit.json retention-shutdown.json retained/checkpoint.json
+recorder-ready.json recording/supervisor.json recording/recorder.log recording/bag/metadata.yaml
+native-scene-early.json native-scene-before-motion.json native-scene-terminal.json
+final-save.json snapshot-map.pgm snapshot-map.yaml snapshot-map.provenance.json
+nav2-rpp-03m.yaml run-token-final-processes.json isolation.json gazebo-isolation.json
+navigation-runtime.json sim-runtime.json preflight.json initial-survey.json motion-startup-wait.json
+mission.log navigation.log sim.log perception.log observer.log motion.log survey.log'''.split()
+    for name in keep:
+        add(RUN/name,name)
+    for p in sorted((RUN/'mission').glob('*.json')):
+        add(p,Path('mission')/p.name)
+    for p in sorted(RUN.glob('process-*.json')):
+        add(p,Path('ownership')/p.name)
+    for p in sorted((RUN/'observer-snapshots').glob('[0-9][0-9][0-9][0-9]-*.json')):
+        add(p,Path('observer-snapshots')/p.name)
+    for name in ('observer.json','initial-motion.json'):
+        add(RUN/name,name+'.gz',compress=True)
+    for name,expected in prep['prepared_helper_sha256'].items():
+        if fingerprint(ROOT/name)['sha256'] != expected:
+            raise RuntimeError('Frozen runtime helper changed: '+name)
+        add(ROOT/name,Path('runner')/(Path(name).name+'.txt'))
+    prepare = SETUP/'prepare-run34.py'
+    if fingerprint(prepare)['sha256'] != prep['preparation_script_sha256']:
+        raise RuntimeError('Frozen preparation script changed')
+    add(prepare,'runner/prepare-run34.py.txt')
+    survey_source = ROOT/'scripts/initial_survey.py'
+    if fingerprint(survey_source)['sha256'] != prep['prepared_source_sha256']['scripts/initial_survey.py']:
+        raise RuntimeError('Current survey source differs from runtime; retrieve exact committed bytes separately')
+    add(survey_source,'runner/initial_survey.py.txt')
+    for name in ('run34-outcome-review.json','run34-outcome-review.md','run34-root-completion.json'):
+        add(SETUP/name,Path('analysis')/name)
+    add(SETUP/'run34-outcome-review.py','analysis/run34-outcome-review.py.txt')
+    # The completed clock probe is independent read-only evidence, not ROS/bag analysis.
+    clock_receipt = completion.get('clock_probe_exec_completion') or {}
+    if clock_receipt.get('session_id') != 34124 or clock_receipt.get('exit_code') != 0:
+        raise RuntimeError('Actual completed independent clock probe receipt missing')
+    read(SETUP/'run34-wsl-system-steady-clock-probe.json')
+    add(SETUP/'run34-wsl-system-steady-clock-probe.json','clock/run34-wsl-system-steady-clock-probe.json')
+    add(SETUP/'probe-run34-wsl-clocks.py','clock/probe-run34-wsl-clocks.py.txt')
+    ci = prep['reviewed_ci']
+    if not (ci.get('head_sha') == RUNTIME and ci.get('status') == 'completed' and ci.get('conclusion') == 'success'):
+        raise RuntimeError('Runtime CI receipt mismatch')
+    bindings = [ci,*[prep['slam_build_validation'][key] for key in ('build_receipt','incremental_recheck','installation_check')]]
+    for row in bindings:
+        if fingerprint(ROOT/row['path'])['sha256'] != row['sha256']:
+            raise RuntimeError('Runtime CI/build receipt changed: '+row['path'])
+        add(ROOT/row['path'],Path('provenance')/Path(row['path']).name)
+    add(Path(__file__).resolve(),'runner/archive-run34.py.txt')
+    external_paths = [p for p in (RUN/'recording/bag').iterdir() if p.is_file() and p.name != 'metadata.yaml']
+    external_paths += [p for p in (RUN/'final-map.posegraph',RUN/'final-map.data') if p.is_file()]
+    external_paths += [p for p in (RUN/'retained').rglob('*') if p.is_file() and p.name != 'checkpoint.json']
+    external = [{'source':p.relative_to(ROOT).as_posix(),'absolute_local_path':str(p),**fingerprint(p)} for p in sorted(external_paths)]
+    OUT.mkdir()
+    for entry in COPIES:
+        source, destination = ROOT/entry['source'], OUT/entry['destination']
+        raw = source.read_bytes()
+        if len(raw) != entry['original']['bytes'] or hashlib.sha256(raw).hexdigest() != entry['original']['sha256']:
+            raise RuntimeError('Source changed before copy: '+str(source))
+        destination.parent.mkdir(parents=True,exist_ok=True)
+        payload = raw
+        if entry['transform'] == 'gzip_mtime_0':
+            buffer = io.BytesIO()
+            with gzip.GzipFile(filename='',mode='wb',fileobj=buffer,compresslevel=9,mtime=0) as zipped:
+                zipped.write(raw)
+            payload = buffer.getvalue()
+        with destination.open('xb') as stream:
+            stream.write(payload)
+        reopened = destination.read_bytes()
+        if reopened != payload or (gzip.decompress(reopened) if entry['transform'] == 'gzip_mtime_0' else reopened) != raw:
+            raise RuntimeError('Archive byte verification failed: '+str(destination))
+        entry['archived'] = {'bytes':len(reopened),'sha256':hashlib.sha256(reopened).hexdigest()}
+        entry['reopened_bytes_verified'] = True
+    with (OUT/'.gitattributes').open('x',encoding='ascii',newline='\n') as stream:
+        stream.write('* -text\n')
+    write_json(OUT/'external-inputs.json',{'scope':'Original external files only; MCAP, retained RGB-D directories and posegraph/data are not copied. Not a complete replay/image archive.',
+        'files':external,'total_bytes':sum(r['bytes'] for r in external),
+        'excluded_costmap_snapshot_count':len(list((RUN/'observer-snapshots').glob('costmap-*.json'))),
+        'raw_costmap_snapshot_bytes_copied':False})
+    write_json(OUT/'archive-provenance.json',{'schema_version':1,'run':RUN.name,'epoch':prep['epoch'],
+        'runtime_head_from_original_preparation':prep['code_head'],'root_exec_completion':root_receipt,
+        'clock_probe_exec_completion':clock_receipt,'copied_files':COPIES,
+        'reverified_original_analysis_bindings':verified_bindings,
+        'scope':'Closed raw-byte archive only; original failures and unknowns unchanged. No new selection/bag analysis. No next experiment launched.',
+        'self_reference_policy':'Copy manifest excludes generated provenance, external-inputs, validation, .gitattributes and future root README/SHA256SUMS; final manifest binds these.'})
+    for entry in COPIES:
+        archived = (OUT/entry['destination']).read_bytes()
+        if hashlib.sha256(archived).hexdigest() != entry['archived']['sha256'] or fingerprint(ROOT/entry['source']) != entry['original']:
+            raise RuntimeError('Copied or original file changed before archive completion')
+    for row in external:
+        if fingerprint(ROOT/row['source']) != {'bytes':row['bytes'],'sha256':row['sha256']}:
+            raise RuntimeError('External input changed during archive')
+    validation = {'archive_copy_validation_passed':True,'copy_count':len(COPIES),
+        'reopened_and_sha_verified_copy_count':len(COPIES),'gzip_count':sum(r['transform'] == 'gzip_mtime_0' for r in COPIES),
+        'external_file_count':len(external),'external_file_bytes':sum(r['bytes'] for r in external),
+        'original_root_session':args.confirmed_root_session,'original_root_exit_code':args.confirmed_root_exit_code,
+        'original_mission':outcome['mission'],'navigation_as_recorded':outcome['navigation']['by_kind'],
+        'observation_queue_created':outcome['observation_queue']['queue_created'],
+        'planned_views_denominator':outcome['observation_queue']['planned_views_denominator'],
+        'consumer_accepted_count':outcome['retention']['consumer_accepted_count'],
+        'consumer_stored_state_count':outcome['retention']['consumer_stored_state_count'],
+        'consumer_fault':outcome['retention']['consumer_fault'],'strict_retention_audit_as_recorded':audit,
+        'map_export_as_recorded':outcome['map_export']['final_save'],
+        'native_terminal_tail_verified_as_recorded':closed.get('native_terminal_tail_verified'),
+        'original_all_owned_groups_empty':closed['all_owned_groups_empty'],
+        'all_run_token_processes_absent_as_recorded':closed.get('all_run_token_processes_absent'),
+        'global_process_scan_limitation':closed.get('global_scan_limitation'),
+        'selection_audit':'not_run; no new selection/bag analysis in this archive',
+        'scope':'Copy integrity passed, not mission, return, relocation, coverage or strict-retention success. Root adds README and final manifest; user requested stopping after this round.'}
+    write_json(OUT/'archive-validation.json',validation)
+    files = [p for p in OUT.rglob('*') if p.is_file()]
+    if (OUT/'README.md').exists() or (OUT/'SHA256SUMS').exists():
+        raise RuntimeError('Root finalization files unexpectedly present')
+    print(json.dumps({'archive':str(OUT),'files':len(files),'bytes':sum(p.stat().st_size for p in files),
+        'raw_or_gzip_copies_verified':len(COPIES),'external_file_count':len(external),
+        'external_bytes':sum(r['bytes'] for r in external),'README_and_SHA256SUMS_deferred':True},indent=2))
+
+
+if __name__ == '__main__':
+    main()
