@@ -25,4 +25,4 @@ run28 出现 TF 外推后，Nav2 立即终止目标，任务在同一 tick 或�
 
 跳过的 ROS 启动用例随后单独通过（1/1），包括实际节点构造、参数默认值与覆盖值、spin 和关闭。任务包构建成功，安装后的 node/launch 与源码逐字节一致。原始日志与源码摘要见 [恢复逻辑验证档案](../experiments/navigation-recovery-20261103/README.md)；分次验证不会改写原日志中的 skip。
 
-任务缓存中 TF 时间推进不保证 Nav2 的独立缓存已同步；这项改动仍需要新的 Gazebo 运行验证。下一轮只启用 `1.0/3.0`，沿用 run28 的 RPP 等待 0.5 s、任务 TF 年龄 1.5 s及其他预算，并补读 local costmap 的实际 TF 参数。run28 原失败不被覆盖。
+任务缓存中 TF 时间推进不保证 Nav2 的独立缓存已同步。随后 [run29](../experiments/run29/run29-outcome-review.md) 只启用 `1.0/3.0`，沿用 run28 的 RPP 等待 0.5 s、任务 TF 年龄 1.5 s及其他预算，并读回 local costmap 容差 0.3 s。11 次恢复均 ready，最后一次返航成功，但仍有 11 次 TF 导航失败，完整探索未完成。因此该等待机制已在 Gazebo 触发验证，尚不能称为 TF 根因修复；默认仍关闭。

@@ -1,0 +1,3760 @@
+{
+  "schema_version": 1,
+  "role": "offline_run29_outcome_summary",
+  "run": "run29-navigation-recovery",
+  "runtime_head": "9e0a32687abe52eca1751a1e0e24771618835c38",
+  "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+  "previous_attempt": {
+    "run": "run28-startup-timing",
+    "status": "terminal_observed",
+    "errors": [
+      "Retained-frame offline audit failed"
+    ],
+    "original_all_owned_groups_empty": true,
+    "original_orchestration_sha256": "f4edb4eddfd43c05d8561ccb2276d7ecc36b915ebb7debe6494f7f888b650da1",
+    "retention_shutdown_sha256": "4a2ead135604738ff51839eab9919340f7085a1496cc709330d126a917a53c08",
+    "retention_audit_passed": false,
+    "all_run_token_processes_absent": false,
+    "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+    "owned_writer_exit_confirmed": true,
+    "final_checkpoint_persisted": true,
+    "scope": "Original owned-group closure and writer receipt; no global process-absence claim or success rewrite.",
+    "root_exec_completion": {
+      "session_id": 74367,
+      "exit_code": 1,
+      "source": "Root confirmation supplied as explicit prepare arguments."
+    }
+  },
+  "experiment_profile": {
+    "change": "Only mission navigation_failure_cooldown_s=1.0 and navigation_recovery_timeout_s=3.0; add read-only local-costmap parameter receipts.",
+    "writer_profile": {
+      "requested_pipe_bytes": 1048576,
+      "max_bytes_per_poll": 1048576,
+      "worker_wall_seconds": 5.0,
+      "request_wall_seconds": 10.0,
+      "shutdown_wall_seconds": 8.0
+    },
+    "comparison_scope": "Same run28 world, TF/RPP values, /mnt/c output, strict raw-frame retention and startup60. Mission900/return240/goal120/observation360/inspection12/writer5/request10/shutdown8 unchanged; only mission recovery values change."
+  },
+  "validation_provenance": {
+    "code_head": "9e0a32687abe52eca1751a1e0e24771618835c38",
+    "scope": "Revision and profile read from original run29 preparation; available installed-check and test/build receipts are separately archived. No fixed runtime SHA or validation success is assumed."
+  },
+  "mission": {
+    "status": "done",
+    "reason": "perception_unverified_incomplete;home_frontier_return_attempts_exhausted;final_observation_checks_incomplete",
+    "mission_success": false,
+    "returned_pose_verified": true,
+    "map_complete": false,
+    "visual_coverage_complete": false,
+    "mission_timed_out": false,
+    "target_definition_verified": false,
+    "coordinates_valid": true
+  },
+  "mission_evidence_source": "supervisor_terminal",
+  "mission_shutdown": {},
+  "supervisor_terminal_recorded": true,
+  "tf_diagnostics": {
+    "base_tf_age_rejected_event_count": 0,
+    "base_tf_age_rejected_events": [],
+    "navigation_extrapolation": {
+      "available": true,
+      "match_rule": "case-insensitive substring extrapolat; one count per matching log line",
+      "matched_line_count": 11,
+      "future_line_count": 11,
+      "past_line_count": 0,
+      "neither_future_nor_past_line_count": 0,
+      "examples_first_20": [
+        {
+          "line_number": 251,
+          "text": "[controller_server-3] [ERROR] [1793693969.844783141] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 130.225000 but the latest data is at time 130.200000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 314,
+          "text": "[controller_server-3] [ERROR] [1793694000.947077170] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 142.595000 but the latest data is at time 142.575000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 366,
+          "text": "[controller_server-3] [ERROR] [1793694032.202000646] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 154.995000 but the latest data is at time 154.950000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 426,
+          "text": "[controller_server-3] [ERROR] [1793694063.173400947] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 167.365000 but the latest data is at time 167.325000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 483,
+          "text": "[controller_server-3] [ERROR] [1793694094.653288795] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 180.095000 but the latest data is at time 180.075000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 545,
+          "text": "[controller_server-3] [ERROR] [1793694125.751642716] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 192.215000 but the latest data is at time 192.200000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 605,
+          "text": "[controller_server-3] [ERROR] [1793694157.001662423] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 204.335000 but the latest data is at time 204.325000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 666,
+          "text": "[controller_server-3] [ERROR] [1793694188.093020779] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 216.245000 but the latest data is at time 216.200000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 726,
+          "text": "[controller_server-3] [ERROR] [1793694219.131725915] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 227.495000 but the latest data is at time 227.450000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 784,
+          "text": "[controller_server-3] [ERROR] [1793694249.766748201] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 238.965000 but the latest data is at time 238.950000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        },
+        {
+          "line_number": 898,
+          "text": "[controller_server-3] [ERROR] [1793694311.805497749] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 262.095000 but the latest data is at time 262.075000, when looking up transform from frame [odom] to frame [map]",
+          "text_truncated": false
+        }
+      ],
+      "scope": "Log-line counts, not unique incidents or controller ticks; full original log archived. Missing lines or logs are not proof of no TF errors."
+    },
+    "log_summary": {
+      "case_insensitive_substring_rules": {
+        "extrapolation": [
+          "extrapolat"
+        ],
+        "tf_old_data": [
+          "tf_old_data"
+        ],
+        "transform_data_too_old": [
+          "transform data too old"
+        ],
+        "transform_wait_timeout": [
+          "timed out waiting for transform",
+          "timeout waiting for transform"
+        ],
+        "failed_transform": [
+          "failed to transform",
+          "could not transform",
+          "cannot transform"
+        ]
+      },
+      "logs": {
+        "navigation.log": {
+          "available": true,
+          "matched_line_count": 11,
+          "category_line_counts": {
+            "extrapolation": 11,
+            "tf_old_data": 0,
+            "transform_data_too_old": 0,
+            "transform_wait_timeout": 0,
+            "failed_transform": 0
+          },
+          "examples_first_20": [
+            {
+              "line_number": 251,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793693969.844783141] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 130.225000 but the latest data is at time 130.200000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 314,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694000.947077170] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 142.595000 but the latest data is at time 142.575000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 366,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694032.202000646] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 154.995000 but the latest data is at time 154.950000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 426,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694063.173400947] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 167.365000 but the latest data is at time 167.325000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 483,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694094.653288795] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 180.095000 but the latest data is at time 180.075000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 545,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694125.751642716] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 192.215000 but the latest data is at time 192.200000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 605,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694157.001662423] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 204.335000 but the latest data is at time 204.325000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 666,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694188.093020779] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 216.245000 but the latest data is at time 216.200000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 726,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694219.131725915] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 227.495000 but the latest data is at time 227.450000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 784,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694249.766748201] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 238.965000 but the latest data is at time 238.950000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 898,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[controller_server-3] [ERROR] [1793694311.805497749] [RPPPathHandler]: Exception in transformPose: Lookup would require extrapolation into the future.  Requested time 262.095000 but the latest data is at time 262.075000, when looking up transform from frame [odom] to frame [map]",
+              "text_truncated": false
+            }
+          ]
+        },
+        "mission.log": {
+          "available": true,
+          "matched_line_count": 56,
+          "category_line_counts": {
+            "extrapolation": 56,
+            "tf_old_data": 0,
+            "transform_data_too_old": 0,
+            "transform_wait_timeout": 0,
+            "failed_transform": 0
+          },
+          "examples_first_20": [
+            {
+              "line_number": 4,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693944.018193196] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 120.500000 but the latest data is at time 120.265000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 5,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693944.051074872] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 120.600000 but the latest data is at time 120.275000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 6,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693968.902304409] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 130.300000 but the latest data is at time 130.200000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 7,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693969.375180178] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 130.500000 but the latest data is at time 130.200000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 10,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693970.037398017] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 130.700000 but the latest data is at time 130.200000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 13,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693972.783240646] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 131.300000 but the latest data is at time 131.125000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 14,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693972.816324203] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 131.400000 but the latest data is at time 131.125000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 15,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793693972.864479798] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 131.500000 but the latest data is at time 131.125000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 16,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694000.387846448] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 142.700000 but the latest data is at time 142.575000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 19,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694001.037310886] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 143.000000 but the latest data is at time 142.575000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 20,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694001.280557887] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 143.100000 but the latest data is at time 142.575000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 25,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694028.144459705] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 152.900000 but the latest data is at time 152.745000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 26,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694028.175876378] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 153.000000 but the latest data is at time 152.745000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 30,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694031.192145552] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 155.000000 but the latest data is at time 154.950000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 31,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694031.447883014] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 155.100000 but the latest data is at time 154.950000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 32,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694031.723606125] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 155.200000 but the latest data is at time 154.950000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 33,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694031.998061969] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 155.300000 but the latest data is at time 154.950000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 36,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694032.380165831] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 155.400000 but the latest data is at time 154.950000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 39,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694062.436944291] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 167.500000 but the latest data is at time 167.325000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            },
+            {
+              "line_number": 40,
+              "categories": [
+                "extrapolation"
+              ],
+              "text": "[WARN] [1793694062.709692568] [limo_maze_mission]: Rejected target observation: Lookup would require extrapolation into the future.  Requested time 167.600000 but the latest data is at time 167.325000, when looking up transform from frame [camera_optical_frame] to frame [map]",
+              "text_truncated": false
+            }
+          ]
+        }
+      },
+      "scope": "Overlapping substring categories count log lines, not unique incidents. No timestamp proximity or STATUS_ABORTED is used to assign a TF cause. Absence of matching text does not establish absence of TF faults."
+    },
+    "scope": "Node logs only its first attempted age-rejection diagnostic; counts do not measure all rejected lookups and logger failure may omit an event. Decision now/age and event-emission stamp are distinct."
+  },
+  "navigation": {
+    "by_kind": {
+      "frontier": {
+        "sent": 9,
+        "terminal_success": 1,
+        "terminal_failure": 8,
+        "without_recorded_terminal": 0
+      },
+      "home": {
+        "sent": 4,
+        "terminal_success": 1,
+        "terminal_failure": 3,
+        "without_recorded_terminal": 0
+      }
+    },
+    "dispatches": [
+      {
+        "stamp": 120.058,
+        "event": "goal_sent",
+        "token": 1,
+        "goal": {
+          "x": 0.251660711675113,
+          "y": 0.03717320726579787,
+          "yaw": -2.9441970937399127,
+          "kind": "frontier",
+          "anchor": [
+            0.001660707949822704,
+            -0.01282679347926019
+          ]
+        },
+        "terminal": {
+          "stamp": 130.75,
+          "event": "goal_terminal",
+          "token": 1,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 131.125,
+        "event": "goal_sent",
+        "token": 2,
+        "goal": {
+          "x": 0.9016607213608678,
+          "y": 0.00725559413994914,
+          "yaw": -0.8519663271732721,
+          "kind": "frontier",
+          "anchor": [
+            1.2516607265762743,
+            -0.39274441182051534
+          ]
+        },
+        "terminal": {
+          "stamp": 143.1,
+          "event": "goal_terminal",
+          "token": 2,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 143.484,
+        "event": "goal_sent",
+        "token": 3,
+        "goal": {
+          "x": 1.1516607250861581,
+          "y": 0.010990696284257417,
+          "yaw": -1.3521273809209546,
+          "kind": "frontier",
+          "anchor": [
+            1.2516607265762743,
+            -0.4390093104212651
+          ]
+        },
+        "terminal": {
+          "stamp": 152.053,
+          "event": "goal_terminal",
+          "token": 3,
+          "success": true,
+          "detail": "4:",
+          "status": 4,
+          "error_code": 0,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 154.6,
+        "event": "goal_sent",
+        "token": 4,
+        "goal": {
+          "x": 1.5516607310466226,
+          "y": -0.1937053407777909,
+          "yaw": -2.432966381462123,
+          "kind": "frontier",
+          "anchor": [
+            1.2016607258312162,
+            -0.49370534524813925
+          ]
+        },
+        "terminal": {
+          "stamp": 155.5,
+          "event": "goal_terminal",
+          "token": 4,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 155.9,
+        "event": "goal_sent",
+        "token": 5,
+        "goal": {
+          "x": 1.6016607317916807,
+          "y": -0.5437053459931973,
+          "yaw": -2.289626326416521,
+          "kind": "frontier",
+          "anchor": [
+            1.2516607265762743,
+            -0.9437053519536618
+          ]
+        },
+        "terminal": {
+          "stamp": 167.875,
+          "event": "goal_terminal",
+          "token": 5,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 168.875,
+        "event": "goal_sent",
+        "token": 6,
+        "goal": {
+          "x": 1.6016607317916807,
+          "y": -1.1461736089361132,
+          "yaw": -2.922923707715851,
+          "kind": "frontier",
+          "anchor": [
+            1.1516607250861581,
+            -1.2461736104262293
+          ]
+        },
+        "terminal": {
+          "stamp": 180.6,
+          "event": "goal_terminal",
+          "token": 6,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 180.9,
+        "event": "goal_sent",
+        "token": 7,
+        "goal": {
+          "x": 1.4516363848016691,
+          "y": -1.5461736148965777,
+          "yaw": 2.279422598922567,
+          "kind": "frontier",
+          "anchor": [
+            1.1516363803313208,
+            -1.1961736096811713
+          ]
+        },
+        "terminal": {
+          "stamp": 192.75,
+          "event": "goal_terminal",
+          "token": 7,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 193.155,
+        "event": "goal_sent",
+        "token": 8,
+        "goal": {
+          "x": 1.7950906797065087,
+          "y": -1.5461736148965777,
+          "yaw": 0.862170054667226,
+          "kind": "frontier",
+          "anchor": [
+            2.0950906841768573,
+            -1.1961736096811713
+          ]
+        },
+        "terminal": {
+          "stamp": 204.868,
+          "event": "goal_terminal",
+          "token": 8,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 205.25,
+        "event": "goal_sent",
+        "token": 9,
+        "goal": {
+          "x": 3.0450906983329604,
+          "y": -1.6108456930425832,
+          "yaw": 0.8519663271732721,
+          "kind": "frontier",
+          "anchor": [
+            3.395090703548367,
+            -1.2108456870821187
+          ]
+        },
+        "terminal": {
+          "stamp": 216.75,
+          "event": "goal_terminal",
+          "token": 9,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 217.177,
+        "event": "goal_sent",
+        "token": 10,
+        "goal": {
+          "x": 0.00884839980788424,
+          "y": 0.008657285581196052,
+          "yaw": -0.03960325806191402,
+          "kind": "home",
+          "anchor": [
+            0.00884839980788424,
+            0.008657285581196052
+          ]
+        },
+        "terminal": {
+          "stamp": 228.0,
+          "event": "goal_terminal",
+          "token": 10,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 228.4,
+        "event": "goal_sent",
+        "token": 11,
+        "goal": {
+          "x": 0.00884839980788424,
+          "y": 0.008657285581196052,
+          "yaw": -0.03960325806191402,
+          "kind": "home",
+          "anchor": [
+            0.00884839980788424,
+            0.008657285581196052
+          ]
+        },
+        "terminal": {
+          "stamp": 239.654,
+          "event": "goal_terminal",
+          "token": 11,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 240.1,
+        "event": "goal_sent",
+        "token": 12,
+        "goal": {
+          "x": 0.00884839980788424,
+          "y": 0.008657285581196052,
+          "yaw": -0.03960325806191402,
+          "kind": "home",
+          "anchor": [
+            0.00884839980788424,
+            0.008657285581196052
+          ]
+        },
+        "terminal": {
+          "stamp": 262.8,
+          "event": "goal_terminal",
+          "token": 12,
+          "success": false,
+          "detail": "6:",
+          "status": 6,
+          "error_code": 102,
+          "error_msg": ""
+        }
+      },
+      {
+        "stamp": 263.286,
+        "event": "goal_sent",
+        "token": 13,
+        "goal": {
+          "x": 0.00884839980788424,
+          "y": 0.008657285581196052,
+          "yaw": -0.03960325806191402,
+          "kind": "home",
+          "anchor": [
+            0.00884839980788424,
+            0.008657285581196052
+          ]
+        },
+        "terminal": {
+          "stamp": 265.75,
+          "event": "goal_terminal",
+          "token": 13,
+          "success": true,
+          "detail": "4:",
+          "status": 4,
+          "error_code": 0,
+          "error_msg": ""
+        }
+      }
+    ],
+    "recovery": {
+      "started_event_count": 11,
+      "ready_event_count": 11,
+      "started_unique_token_count": 11,
+      "ready_unique_token_count": 11,
+      "started_missing_token_count": 0,
+      "ready_missing_token_count": 0,
+      "started_intervals_with_ready": 11,
+      "started_intervals_without_recorded_ready": 0,
+      "started_intervals_with_multiple_ready_events": 0,
+      "ready_without_prior_matching_start": [],
+      "intervals": [
+        {
+          "started_event_index": 3,
+          "started": {
+            "stamp": 130.75,
+            "event": "navigation_recovery_started",
+            "token": 1,
+            "detail": "6:",
+            "started_wall": 524.550511644,
+            "not_before_wall": 525.550511644,
+            "deadline_wall": 527.550511644,
+            "failed_map_odom_stamp_ns": 130200000000,
+            "latest_map_odom_stamp_ns": 130200000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 524.550511644,
+            "end_as_recorded": 525.550511644,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 524.550511644,
+            "end_as_recorded": 527.550511644,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 4,
+              "event": {
+                "stamp": 131.125,
+                "event": "navigation_recovery_ready",
+                "token": 1,
+                "detail": "6:",
+                "started_wall": 524.550511644,
+                "not_before_wall": 525.550511644,
+                "deadline_wall": 527.550511644,
+                "failed_map_odom_stamp_ns": 130200000000,
+                "latest_map_odom_stamp_ns": 131200000000,
+                "ready_wall": 525.612558883
+              },
+              "start_to_ready": {
+                "start_as_recorded": 524.550511644,
+                "end_as_recorded": 525.612558883,
+                "signed_delta_s": 1.0620472389999804,
+                "duration_s": 1.0620472389999804,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 5,
+            "event": {
+              "stamp": 131.125,
+              "event": "goal_sent",
+              "token": 2,
+              "goal": {
+                "x": 0.9016607213608678,
+                "y": 0.00725559413994914,
+                "yaw": -0.8519663271732721,
+                "kind": "frontier",
+                "anchor": [
+                  1.2516607265762743,
+                  -0.39274441182051534
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 143.1,
+                "event": "goal_terminal",
+                "token": 2,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 7,
+          "started": {
+            "stamp": 143.1,
+            "event": "navigation_recovery_started",
+            "token": 2,
+            "detail": "6:",
+            "started_wall": 557.309819054,
+            "not_before_wall": 558.309819054,
+            "deadline_wall": 560.309819054,
+            "failed_map_odom_stamp_ns": 142575000000,
+            "latest_map_odom_stamp_ns": 142575000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 557.309819054,
+            "end_as_recorded": 558.309819054,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 557.309819054,
+            "end_as_recorded": 560.309819054,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 8,
+              "event": {
+                "stamp": 143.484,
+                "event": "navigation_recovery_ready",
+                "token": 2,
+                "detail": "6:",
+                "started_wall": 557.309819054,
+                "not_before_wall": 558.309819054,
+                "deadline_wall": 560.309819054,
+                "failed_map_odom_stamp_ns": 142575000000,
+                "latest_map_odom_stamp_ns": 143575000000,
+                "ready_wall": 558.312563547
+              },
+              "start_to_ready": {
+                "start_as_recorded": 557.309819054,
+                "end_as_recorded": 558.312563547,
+                "signed_delta_s": 1.0027444930000229,
+                "duration_s": 1.0027444930000229,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 9,
+            "event": {
+              "stamp": 143.484,
+              "event": "goal_sent",
+              "token": 3,
+              "goal": {
+                "x": 1.1516607250861581,
+                "y": 0.010990696284257417,
+                "yaw": -1.3521273809209546,
+                "kind": "frontier",
+                "anchor": [
+                  1.2516607265762743,
+                  -0.4390093104212651
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 152.053,
+                "event": "goal_terminal",
+                "token": 3,
+                "success": true,
+                "detail": "4:",
+                "status": 4,
+                "error_code": 0,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 16,
+          "started": {
+            "stamp": 155.5,
+            "event": "navigation_recovery_started",
+            "token": 4,
+            "detail": "6:",
+            "started_wall": 590.546364403,
+            "not_before_wall": 591.546364403,
+            "deadline_wall": 593.546364403,
+            "failed_map_odom_stamp_ns": 154950000000,
+            "latest_map_odom_stamp_ns": 154950000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 590.546364403,
+            "end_as_recorded": 591.546364403,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 590.546364403,
+            "end_as_recorded": 593.546364403,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 17,
+              "event": {
+                "stamp": 155.9,
+                "event": "navigation_recovery_ready",
+                "token": 4,
+                "detail": "6:",
+                "started_wall": 590.546364403,
+                "not_before_wall": 591.546364403,
+                "deadline_wall": 593.546364403,
+                "failed_map_odom_stamp_ns": 154950000000,
+                "latest_map_odom_stamp_ns": 155950000000,
+                "ready_wall": 591.612561974
+              },
+              "start_to_ready": {
+                "start_as_recorded": 590.546364403,
+                "end_as_recorded": 591.612561974,
+                "signed_delta_s": 1.0661975709999751,
+                "duration_s": 1.0661975709999751,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 18,
+            "event": {
+              "stamp": 155.9,
+              "event": "goal_sent",
+              "token": 5,
+              "goal": {
+                "x": 1.6016607317916807,
+                "y": -0.5437053459931973,
+                "yaw": -2.289626326416521,
+                "kind": "frontier",
+                "anchor": [
+                  1.2516607265762743,
+                  -0.9437053519536618
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 167.875,
+                "event": "goal_terminal",
+                "token": 5,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 20,
+          "started": {
+            "stamp": 167.875,
+            "event": "navigation_recovery_started",
+            "token": 5,
+            "detail": "6:",
+            "started_wall": 624.846613884,
+            "not_before_wall": 625.846613884,
+            "deadline_wall": 627.846613884,
+            "failed_map_odom_stamp_ns": 167325000000,
+            "latest_map_odom_stamp_ns": 167325000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 624.846613884,
+            "end_as_recorded": 625.846613884,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 624.846613884,
+            "end_as_recorded": 627.846613884,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 21,
+              "event": {
+                "stamp": 168.875,
+                "event": "navigation_recovery_ready",
+                "token": 5,
+                "detail": "6:",
+                "started_wall": 624.846613884,
+                "not_before_wall": 625.846613884,
+                "deadline_wall": 627.846613884,
+                "failed_map_odom_stamp_ns": 167325000000,
+                "latest_map_odom_stamp_ns": 168950000000,
+                "ready_wall": 625.912527564
+              },
+              "start_to_ready": {
+                "start_as_recorded": 624.846613884,
+                "end_as_recorded": 625.912527564,
+                "signed_delta_s": 1.0659136799999942,
+                "duration_s": 1.0659136799999942,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 22,
+            "event": {
+              "stamp": 168.875,
+              "event": "goal_sent",
+              "token": 6,
+              "goal": {
+                "x": 1.6016607317916807,
+                "y": -1.1461736089361132,
+                "yaw": -2.922923707715851,
+                "kind": "frontier",
+                "anchor": [
+                  1.1516607250861581,
+                  -1.2461736104262293
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 180.6,
+                "event": "goal_terminal",
+                "token": 6,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 24,
+          "started": {
+            "stamp": 180.6,
+            "event": "navigation_recovery_started",
+            "token": 6,
+            "detail": "6:",
+            "started_wall": 656.363216063,
+            "not_before_wall": 657.363216063,
+            "deadline_wall": 659.363216063,
+            "failed_map_odom_stamp_ns": 180075000000,
+            "latest_map_odom_stamp_ns": 180075000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 656.363216063,
+            "end_as_recorded": 657.363216063,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 656.363216063,
+            "end_as_recorded": 659.363216063,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 25,
+              "event": {
+                "stamp": 180.9,
+                "event": "navigation_recovery_ready",
+                "token": 6,
+                "detail": "6:",
+                "started_wall": 656.363216063,
+                "not_before_wall": 657.363216063,
+                "deadline_wall": 659.363216063,
+                "failed_map_odom_stamp_ns": 180075000000,
+                "latest_map_odom_stamp_ns": 180950000000,
+                "ready_wall": 657.412790371
+              },
+              "start_to_ready": {
+                "start_as_recorded": 656.363216063,
+                "end_as_recorded": 657.412790371,
+                "signed_delta_s": 1.0495743080000466,
+                "duration_s": 1.0495743080000466,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 26,
+            "event": {
+              "stamp": 180.9,
+              "event": "goal_sent",
+              "token": 7,
+              "goal": {
+                "x": 1.4516363848016691,
+                "y": -1.5461736148965777,
+                "yaw": 2.279422598922567,
+                "kind": "frontier",
+                "anchor": [
+                  1.1516363803313208,
+                  -1.1961736096811713
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 192.75,
+                "event": "goal_terminal",
+                "token": 7,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 28,
+          "started": {
+            "stamp": 192.75,
+            "event": "navigation_recovery_started",
+            "token": 7,
+            "detail": "6:",
+            "started_wall": 689.678256611,
+            "not_before_wall": 690.678256611,
+            "deadline_wall": 692.678256611,
+            "failed_map_odom_stamp_ns": 192200000000,
+            "latest_map_odom_stamp_ns": 192200000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 689.678256611,
+            "end_as_recorded": 690.678256611,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 689.678256611,
+            "end_as_recorded": 692.678256611,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 29,
+              "event": {
+                "stamp": 193.155,
+                "event": "navigation_recovery_ready",
+                "token": 7,
+                "detail": "6:",
+                "started_wall": 689.678256611,
+                "not_before_wall": 690.678256611,
+                "deadline_wall": 692.678256611,
+                "failed_map_odom_stamp_ns": 192200000000,
+                "latest_map_odom_stamp_ns": 193200000000,
+                "ready_wall": 690.712412873
+              },
+              "start_to_ready": {
+                "start_as_recorded": 689.678256611,
+                "end_as_recorded": 690.712412873,
+                "signed_delta_s": 1.0341562619998967,
+                "duration_s": 1.0341562619998967,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 30,
+            "event": {
+              "stamp": 193.155,
+              "event": "goal_sent",
+              "token": 8,
+              "goal": {
+                "x": 1.7950906797065087,
+                "y": -1.5461736148965777,
+                "yaw": 0.862170054667226,
+                "kind": "frontier",
+                "anchor": [
+                  2.0950906841768573,
+                  -1.1961736096811713
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 204.868,
+                "event": "goal_terminal",
+                "token": 8,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 32,
+          "started": {
+            "stamp": 204.868,
+            "event": "navigation_recovery_started",
+            "token": 8,
+            "detail": "6:",
+            "started_wall": 722.411525589,
+            "not_before_wall": 723.411525589,
+            "deadline_wall": 725.411525589,
+            "failed_map_odom_stamp_ns": 204325000000,
+            "latest_map_odom_stamp_ns": 204325000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 722.411525589,
+            "end_as_recorded": 723.411525589,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 722.411525589,
+            "end_as_recorded": 725.411525589,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 33,
+              "event": {
+                "stamp": 205.25,
+                "event": "navigation_recovery_ready",
+                "token": 8,
+                "detail": "6:",
+                "started_wall": 722.411525589,
+                "not_before_wall": 723.411525589,
+                "deadline_wall": 725.411525589,
+                "failed_map_odom_stamp_ns": 204325000000,
+                "latest_map_odom_stamp_ns": 205325000000,
+                "ready_wall": 723.413438703
+              },
+              "start_to_ready": {
+                "start_as_recorded": 722.411525589,
+                "end_as_recorded": 723.413438703,
+                "signed_delta_s": 1.00191311399999,
+                "duration_s": 1.00191311399999,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 34,
+            "event": {
+              "stamp": 205.25,
+              "event": "goal_sent",
+              "token": 9,
+              "goal": {
+                "x": 3.0450906983329604,
+                "y": -1.6108456930425832,
+                "yaw": 0.8519663271732721,
+                "kind": "frontier",
+                "anchor": [
+                  3.395090703548367,
+                  -1.2108456870821187
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 216.75,
+                "event": "goal_terminal",
+                "token": 9,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 36,
+          "started": {
+            "stamp": 216.75,
+            "event": "navigation_recovery_started",
+            "token": 9,
+            "detail": "6:",
+            "started_wall": 755.482715972,
+            "not_before_wall": 756.482715972,
+            "deadline_wall": 758.482715972,
+            "failed_map_odom_stamp_ns": 216200000000,
+            "latest_map_odom_stamp_ns": 216200000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 755.482715972,
+            "end_as_recorded": 756.482715972,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 755.482715972,
+            "end_as_recorded": 758.482715972,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 37,
+              "event": {
+                "stamp": 217.1,
+                "event": "navigation_recovery_ready",
+                "token": 9,
+                "detail": "6:",
+                "started_wall": 755.482715972,
+                "not_before_wall": 756.482715972,
+                "deadline_wall": 758.482715972,
+                "failed_map_odom_stamp_ns": 216200000000,
+                "latest_map_odom_stamp_ns": 217075000000,
+                "ready_wall": 756.512830914
+              },
+              "start_to_ready": {
+                "start_as_recorded": 755.482715972,
+                "end_as_recorded": 756.512830914,
+                "signed_delta_s": 1.0301149419999547,
+                "duration_s": 1.0301149419999547,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 39,
+            "event": {
+              "stamp": 217.177,
+              "event": "goal_sent",
+              "token": 10,
+              "goal": {
+                "x": 0.00884839980788424,
+                "y": 0.008657285581196052,
+                "yaw": -0.03960325806191402,
+                "kind": "home",
+                "anchor": [
+                  0.00884839980788424,
+                  0.008657285581196052
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 228.0,
+                "event": "goal_terminal",
+                "token": 10,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 41,
+          "started": {
+            "stamp": 228.0,
+            "event": "navigation_recovery_started",
+            "token": 10,
+            "detail": "6:",
+            "started_wall": 788.349779129,
+            "not_before_wall": 789.349779129,
+            "deadline_wall": 791.349779129,
+            "failed_map_odom_stamp_ns": 227450000000,
+            "latest_map_odom_stamp_ns": 227450000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 788.349779129,
+            "end_as_recorded": 789.349779129,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 788.349779129,
+            "end_as_recorded": 791.349779129,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 43,
+              "event": {
+                "stamp": 228.4,
+                "event": "navigation_recovery_ready",
+                "token": 10,
+                "detail": "6:",
+                "started_wall": 788.349779129,
+                "not_before_wall": 789.349779129,
+                "deadline_wall": 791.349779129,
+                "failed_map_odom_stamp_ns": 227450000000,
+                "latest_map_odom_stamp_ns": 228450000000,
+                "ready_wall": 789.413114323
+              },
+              "start_to_ready": {
+                "start_as_recorded": 788.349779129,
+                "end_as_recorded": 789.413114323,
+                "signed_delta_s": 1.063335193999933,
+                "duration_s": 1.063335193999933,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 44,
+            "event": {
+              "stamp": 228.4,
+              "event": "goal_sent",
+              "token": 11,
+              "goal": {
+                "x": 0.00884839980788424,
+                "y": 0.008657285581196052,
+                "yaw": -0.03960325806191402,
+                "kind": "home",
+                "anchor": [
+                  0.00884839980788424,
+                  0.008657285581196052
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 239.654,
+                "event": "goal_terminal",
+                "token": 11,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 46,
+          "started": {
+            "stamp": 239.654,
+            "event": "navigation_recovery_started",
+            "token": 11,
+            "detail": "6:",
+            "started_wall": 821.204093837,
+            "not_before_wall": 822.204093837,
+            "deadline_wall": 824.204093837,
+            "failed_map_odom_stamp_ns": 238950000000,
+            "latest_map_odom_stamp_ns": 238950000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 821.204093837,
+            "end_as_recorded": 822.204093837,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 821.204093837,
+            "end_as_recorded": 824.204093837,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 48,
+              "event": {
+                "stamp": 240.1,
+                "event": "navigation_recovery_ready",
+                "token": 11,
+                "detail": "6:",
+                "started_wall": 821.204093837,
+                "not_before_wall": 822.204093837,
+                "deadline_wall": 824.204093837,
+                "failed_map_odom_stamp_ns": 238950000000,
+                "latest_map_odom_stamp_ns": 240075000000,
+                "ready_wall": 822.213153829
+              },
+              "start_to_ready": {
+                "start_as_recorded": 821.204093837,
+                "end_as_recorded": 822.213153829,
+                "signed_delta_s": 1.0090599920000614,
+                "duration_s": 1.0090599920000614,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 49,
+            "event": {
+              "stamp": 240.1,
+              "event": "goal_sent",
+              "token": 12,
+              "goal": {
+                "x": 0.00884839980788424,
+                "y": 0.008657285581196052,
+                "yaw": -0.03960325806191402,
+                "kind": "home",
+                "anchor": [
+                  0.00884839980788424,
+                  0.008657285581196052
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 262.8,
+                "event": "goal_terminal",
+                "token": 12,
+                "success": false,
+                "detail": "6:",
+                "status": 6,
+                "error_code": 102,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        },
+        {
+          "started_event_index": 51,
+          "started": {
+            "stamp": 262.8,
+            "event": "navigation_recovery_started",
+            "token": 12,
+            "detail": "6:",
+            "started_wall": 887.126025378,
+            "not_before_wall": 888.126025378,
+            "deadline_wall": 890.126025378,
+            "failed_map_odom_stamp_ns": 262075000000,
+            "latest_map_odom_stamp_ns": 262075000000
+          },
+          "configured_cooldown_interval": {
+            "start_as_recorded": 887.126025378,
+            "end_as_recorded": 888.126025378,
+            "signed_delta_s": 1.0,
+            "duration_s": 1.0,
+            "scope": "Recorded monotonic recovery lower bound, not an observed dispatch delay.",
+            "status": "observed_nonnegative_interval"
+          },
+          "configured_recovery_interval": {
+            "start_as_recorded": 887.126025378,
+            "end_as_recorded": 890.126025378,
+            "signed_delta_s": 3.0,
+            "duration_s": 3.0,
+            "scope": "Recorded monotonic recovery upper bound; original task budgets remain separate.",
+            "status": "observed_nonnegative_interval"
+          },
+          "ready_events": [
+            {
+              "event_index": 53,
+              "event": {
+                "stamp": 263.286,
+                "event": "navigation_recovery_ready",
+                "token": 12,
+                "detail": "6:",
+                "started_wall": 887.126025378,
+                "not_before_wall": 888.126025378,
+                "deadline_wall": 890.126025378,
+                "failed_map_odom_stamp_ns": 262075000000,
+                "latest_map_odom_stamp_ns": 262950000000,
+                "ready_wall": 888.184223663
+              },
+              "start_to_ready": {
+                "start_as_recorded": 887.126025378,
+                "end_as_recorded": 888.184223663,
+                "signed_delta_s": 1.0581982850000031,
+                "duration_s": 1.0581982850000031,
+                "scope": "Recorded time.monotonic fields; event ROS stamp is not used.",
+                "status": "observed_nonnegative_interval"
+              }
+            }
+          ],
+          "next_goal_sent_before_next_recovery_start": {
+            "event_index": 54,
+            "event": {
+              "stamp": 263.286,
+              "event": "goal_sent",
+              "token": 13,
+              "goal": {
+                "x": 0.00884839980788424,
+                "y": 0.008657285581196052,
+                "yaw": -0.03960325806191402,
+                "kind": "home",
+                "anchor": [
+                  0.00884839980788424,
+                  0.008657285581196052
+                ]
+              }
+            },
+            "recorded_terminal_events": [
+              {
+                "stamp": 265.75,
+                "event": "goal_terminal",
+                "token": 13,
+                "success": true,
+                "detail": "4:",
+                "status": 4,
+                "error_code": 0,
+                "error_msg": ""
+              }
+            ],
+            "ready_to_dispatch_wall_seconds": null,
+            "wall_delay_unavailable_reason": "goal_sent has only ROS event time, not a monotonic timestamp."
+          }
+        }
+      ],
+      "terminal_errors": [
+        {
+          "event_index": 2,
+          "token": 1,
+          "stamp": 130.75,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 6,
+          "token": 2,
+          "stamp": 143.1,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 10,
+          "token": 3,
+          "stamp": 152.053,
+          "success": true,
+          "status": 4,
+          "detail": "4:",
+          "error_code": 0,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 15,
+          "token": 4,
+          "stamp": 155.5,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 19,
+          "token": 5,
+          "stamp": 167.875,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 23,
+          "token": 6,
+          "stamp": 180.6,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 27,
+          "token": 7,
+          "stamp": 192.75,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 31,
+          "token": 8,
+          "stamp": 204.868,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 35,
+          "token": 9,
+          "stamp": 216.75,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 40,
+          "token": 10,
+          "stamp": 228.0,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 45,
+          "token": 11,
+          "stamp": 239.654,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 50,
+          "token": 12,
+          "stamp": 262.8,
+          "success": false,
+          "status": 6,
+          "detail": "6:",
+          "error_code": 102,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        },
+        {
+          "event_index": 55,
+          "token": 13,
+          "stamp": 265.75,
+          "success": true,
+          "status": 4,
+          "detail": "4:",
+          "error_code": 0,
+          "error_msg": "",
+          "status_field_recorded": true,
+          "error_code_field_recorded": true,
+          "error_msg_field_recorded": true
+        }
+      ],
+      "final_recovery_snapshot": null,
+      "final_recovery_snapshot_field_recorded": true,
+      "terminal_status_counts": {
+        "6": 11,
+        "4": 2
+      },
+      "terminal_error_code_counts": {
+        "102": 11,
+        "0": 2
+      },
+      "terminal_unknown_status_count": 0,
+      "terminal_unknown_error_code_count": 0,
+      "terminal_unknown_error_msg_count": 0,
+      "explicit_recovery_timeout_events": [],
+      "mission_final_reason_is_recovery_timeout": false,
+      "scope": "Counts are recorded events, not independent failures. Ready is emitted before final dispatch-budget/deadline checks; only a later goal_sent confirms a dispatch. Event-order association is not a causal recovery proof. Missing terminal status/code/message stays null; STATUS_ABORTED or error_code=0 alone is not a TF diagnosis."
+    },
+    "recorded_recovery_parameter_gate": {
+      "expected": {
+        "navigation_failure_cooldown_s": 1.0,
+        "navigation_recovery_timeout_s": 3.0
+      },
+      "actual": {
+        "navigation_failure_cooldown_s": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "navigation_recovery_timeout_s": {
+          "type": 3,
+          "value": 3.0,
+          "set": true
+        }
+      },
+      "passed": true,
+      "scope": "Read-only live receipt after Mission loaded/save-early; not a pre-first-goal claim."
+    },
+    "cancel_events": [
+      {
+        "stamp": 217.1,
+        "event": "cancel_requested",
+        "next_phase": "returning",
+        "reason": "perception_unverified_incomplete"
+      }
+    ],
+    "note": "Terminal failure includes cancellation; timeout classification uses explicit recorded reasons only."
+  },
+  "inspection": {
+    "completed": [
+      {
+        "stamp": 154.6,
+        "event": "inspection_complete",
+        "evidence": {
+          "request_id": "goal-3",
+          "status": "satisfied",
+          "reason": "processed_frame_window",
+          "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+          "ready": true,
+          "after_stamp_ns": 153320000000,
+          "deadline_wall": 593.333387175,
+          "expected_pose": [
+            1.1516607250861581,
+            0.010990696284257417,
+            -1.3521273809209546
+          ],
+          "required_frames": 3,
+          "min_span_ns": 200000000,
+          "accepted_frames": 3,
+          "first_rgb_stamp_ns": 153400000000,
+          "last_rgb_stamp_ns": 153900000000,
+          "first_depth_stamp_ns": 153400000000,
+          "last_depth_stamp_ns": 153900000000,
+          "producer_identity": [
+            "6220d164-1139-4106-bfe9-75967d87c6d7",
+            "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+            "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+            "camera_optical_frame"
+          ],
+          "reset_count": 1,
+          "rejection_counts": {
+            "sample_before_barrier": 1
+          },
+          "last_evidence": {
+            "rgb_stamp_ns": 153900000000,
+            "depth_stamp_ns": 153900000000,
+            "processed_stamp_ns": 154000000000,
+            "sequence": 620,
+            "rgb_sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6",
+            "depth_sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691",
+            "base_pose": [
+              1.1276055777305154,
+              0.013237583793573612,
+              -1.2263103446226291
+            ],
+            "camera_pose": [
+              1.15597346158512,
+              -0.06582734626781107,
+              0.030000000000000082,
+              0.12119285519633892,
+              -0.6966435902592939,
+              0.6966435902592942,
+              -0.12119285519633896
+            ],
+            "candidate_count": 0,
+            "detection_count": 0,
+            "unlocalized_candidate_count": 0
+          },
+          "visual_coverage_claimed": false,
+          "goal_token": 3,
+          "sampling_after_stamp_ns": 153320000000,
+          "conditions": {
+            "stamp_ns": 154600000000,
+            "phase": "inspecting",
+            "blocking_condition": null,
+            "current_pose": [
+              1.1276055777305154,
+              0.013237583793573612,
+              -1.2263103446226291
+            ],
+            "distance_m": 0.02415985550000676,
+            "yaw_error_rad": 0.12581703629832575,
+            "position_tolerance_m": 0.05,
+            "yaw_tolerance_rad": 0.26,
+            "pose_within_tolerance": true,
+            "pose_stable_wall_s": 5.603823035999994,
+            "odom_stamp_ns": 154595000000,
+            "odom_wall_age_s": 0.07760019899990311,
+            "odom_ros_age_s": 0.005,
+            "odom_fresh": true,
+            "odom_sample_stationary": true,
+            "odom_stationary_count": 152,
+            "stop_confirmed": true
+          },
+          "frame_retention": {
+            "enabled": true,
+            "fault": null,
+            "current_window": 1,
+            "state": "complete",
+            "selected_count": 3,
+            "stored_count": 3,
+            "total_selected_count": 3,
+            "window_count": 1,
+            "offline_artifacts_verified": false
+          }
+        }
+      }
+    ],
+    "failed": [],
+    "interrupted": []
+  },
+  "observation": {
+    "snapshot": {
+      "mode": "bounded_processed_frames",
+      "closed": true,
+      "close_reason": "perception_unverified_incomplete",
+      "started_wall": null,
+      "deadline_wall": null,
+      "queue": null,
+      "active": null,
+      "attempts": [],
+      "continuation": {
+        "home_frontier_resumes": 0,
+        "resume_limit": 1,
+        "resume_active": false,
+        "return_started_wall": 756.617985237,
+        "return_deadline_wall": 996.617985237,
+        "return_reserve_s": 15.0,
+        "return_attempts": 4,
+        "return_attempt_limit": 4,
+        "decisions": [
+          {
+            "wall": 898.834539732,
+            "resumed": false,
+            "reason": "home_frontier_return_attempts_exhausted",
+            "selection": {
+              "state": "goal",
+              "goal": {
+                "x": 3.1752059682763236,
+                "y": -0.02894398039271362,
+                "yaw": -0.8519663271732721,
+                "kind": "frontier",
+                "anchor": [
+                  3.52520597349173,
+                  -0.4289439863531781
+                ]
+              },
+              "frontier_count": 1,
+              "uncovered_count": 2577,
+              "reachable_count": 2577,
+              "unobserved_count": 0
+            },
+            "resume_count_before": 0,
+            "return_deadline_wall": 996.617985237,
+            "return_attempts": 4
+          }
+        ]
+      },
+      "visual_coverage_claimed": false,
+      "validation_scope": "processed_frame_windows_only"
+    },
+    "finished_outcomes": {},
+    "explicit_timeout_attempts": []
+  },
+  "retention": {
+    "enabled": true,
+    "consumer_fault": null,
+    "accepted_count": 3,
+    "windows": [
+      {
+        "number": 1,
+        "binding": {
+          "after_stamp_ns": 153320000000,
+          "goal_token": 3,
+          "inspection_request_id": "goal-3",
+          "map_epoch": "25683868-155b-4018-abf3-bee99edf0473"
+        },
+        "state": "complete",
+        "reason": null,
+        "processing_satisfied": true,
+        "ledger_accepted_count": 3,
+        "late_results": 0,
+        "accepted_count": 3,
+        "frames": [
+          {
+            "retention_id": "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+            "accepted_ordinal": 1,
+            "request_sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+              "request_sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+            "accepted_ordinal": 2,
+            "request_sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+              "request_sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba",
+              "verified": true
+            }
+          },
+          {
+            "retention_id": "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972",
+            "accepted_ordinal": 3,
+            "request_sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311",
+            "consumer_state": "stored",
+            "consumer_reason": null,
+            "producer_status": "stored",
+            "producer_reason": null,
+            "producer_request_digest_matches": true,
+            "consumer_checkpoint_persisted": true,
+            "offline_audit": {
+              "retention_id": "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972",
+              "request_sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311",
+              "verified": true
+            }
+          }
+        ]
+      }
+    ],
+    "accepted_file_inventory": {
+      "accepted_count": 3,
+      "frames": [
+        {
+          "retention_id": "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+          "request_sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b",
+          "window_number": 1,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b/rgb.bin",
+            "retained/c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b/depth.bin",
+            "retained/c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b/producer.json",
+            "retained/c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b/camera_info.json",
+            "retained/c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b/request.json",
+            "retained/c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+          "request_sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba",
+          "window_number": 1,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba/rgb.bin",
+            "retained/d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba/depth.bin",
+            "retained/d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba/producer.json",
+            "retained/d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba/camera_info.json",
+            "retained/d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba/request.json",
+            "retained/d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba/manifest.json"
+          ],
+          "missing_files": []
+        },
+        {
+          "retention_id": "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972",
+          "request_sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311",
+          "window_number": 1,
+          "consumer_state": "stored",
+          "consumer_reason": null,
+          "producer_status": "stored",
+          "producer_reason": null,
+          "available_files": [
+            "retained/271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311/rgb.bin",
+            "retained/271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311/depth.bin",
+            "retained/271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311/producer.json",
+            "retained/271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311/camera_info.json",
+            "retained/271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311/request.json",
+            "retained/271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311/manifest.json"
+          ],
+          "missing_files": []
+        }
+      ],
+      "missing_accepted_frames": [],
+      "not_stored_accepted_frames": [],
+      "scope": "Presence inventory only, not hashes, receipt validity, or a passing strict audit. Missing expected files are never fabricated."
+    },
+    "producer_result_counts": {
+      "stored": 3
+    },
+    "producer_checkpoint_closed": true,
+    "producer_fault": null,
+    "shutdown": {
+      "shutdown": {
+        "elapsed_wall_s": 0.4533706480000319,
+        "owned_writer_exit_confirmed": true,
+        "final_checkpoint_persisted": true,
+        "limitation": "SIGKILL cannot guarantee bounded exit from uninterruptible kernel I/O"
+      },
+      "writer": null,
+      "fault": null,
+      "reason": "SIGINT"
+    },
+    "offline_audit": {
+      "schema_version": 1,
+      "passed": true,
+      "accepted_count": 3,
+      "verified_count": 3,
+      "errors": [],
+      "frames": [
+        {
+          "retention_id": "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+          "request_sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+          "request_sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba",
+          "verified": true
+        },
+        {
+          "retention_id": "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972",
+          "request_sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311",
+          "verified": true
+        }
+      ],
+      "scope": "exact_accepted_files_reopened_and_hashed; supplied_TF_identity_only; does_not_verify_process_exit_scene_coverage_target_recall_or_motion"
+    },
+    "original_offline_audit_available": true,
+    "audit_scope": "Existing closed-run audit result, not a second raw-image decode or independent TF-accuracy test."
+  },
+  "writer_transport": {
+    "recorded_unique_operation_count": 3,
+    "operations_with_pipe_diagnostics": 3,
+    "actual_pipe_capacity_counts": {
+      "1048576": 3
+    },
+    "tuning_error_counts": {
+      "None": 3
+    },
+    "stop_reason_counts": {
+      "None": 3
+    },
+    "writer_wall_timeout_operations": [],
+    "operations_with_unsent_bytes_at_recorded_stop": [],
+    "unknown_remaining_bytes_at_recorded_stop": [],
+    "operations": [
+      {
+        "sources": [
+          "checkpoint"
+        ],
+        "recorded": {
+          "pid": 1887,
+          "operation_id": "d9806e83334f44c8a02c4b739994ac0f",
+          "job_id": "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+          "started_wall": 585.532642294,
+          "returncode": 0,
+          "stop_reason": null,
+          "forced_kill": false,
+          "termination_unconfirmed": false,
+          "fault": null,
+          "stdin_pipe": {
+            "actual_bytes": 1048576,
+            "initial_bytes": 65536,
+            "readback_error": null,
+            "requested_bytes": 1048576,
+            "tuning_error": null
+          },
+          "input_transfer": {
+            "eagain_count": 10,
+            "first_progress_wall": 585.583115169,
+            "last_progress_wall": 586.133500948,
+            "max_poll_gap_s": 0.06215602800000397,
+            "remaining_bytes": 0,
+            "sent_bytes": 2166165,
+            "stdin_closed_wall": 586.133500948,
+            "total_bytes": 2166165
+          }
+        },
+        "owner_sample_start_to_first_progress_s": 0.05047287500008224,
+        "owner_sample_start_to_stdin_closed_s": 0.6008586540000351
+      },
+      {
+        "sources": [
+          "checkpoint"
+        ],
+        "recorded": {
+          "pid": 1888,
+          "operation_id": "26b9b8f18b2c444194590a543579ed55",
+          "job_id": "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+          "started_wall": 586.283031147,
+          "returncode": 0,
+          "stop_reason": null,
+          "forced_kill": false,
+          "termination_unconfirmed": false,
+          "fault": null,
+          "stdin_pipe": {
+            "actual_bytes": 1048576,
+            "initial_bytes": 65536,
+            "readback_error": null,
+            "requested_bytes": 1048576,
+            "tuning_error": null
+          },
+          "input_transfer": {
+            "eagain_count": 10,
+            "first_progress_wall": 586.332905314,
+            "last_progress_wall": 586.882539608,
+            "max_poll_gap_s": 0.09020530199995846,
+            "remaining_bytes": 0,
+            "sent_bytes": 2168011,
+            "stdin_closed_wall": 586.882539608,
+            "total_bytes": 2168011
+          }
+        },
+        "owner_sample_start_to_first_progress_s": 0.04987416699998448,
+        "owner_sample_start_to_stdin_closed_s": 0.5995084610000276
+      },
+      {
+        "sources": [
+          "checkpoint"
+        ],
+        "recorded": {
+          "pid": 1889,
+          "operation_id": "75c5427f9c1747ffb3c09f78b136ceb6",
+          "job_id": "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972",
+          "started_wall": 587.033886106,
+          "returncode": 0,
+          "stop_reason": null,
+          "forced_kill": false,
+          "termination_unconfirmed": false,
+          "fault": null,
+          "stdin_pipe": {
+            "actual_bytes": 1048576,
+            "initial_bytes": 65536,
+            "readback_error": null,
+            "requested_bytes": 1048576,
+            "tuning_error": null
+          },
+          "input_transfer": {
+            "eagain_count": 9,
+            "first_progress_wall": 587.083116631,
+            "last_progress_wall": 587.582852058,
+            "max_poll_gap_s": 0.09279291500001818,
+            "remaining_bytes": 0,
+            "sent_bytes": 2169859,
+            "stdin_closed_wall": 587.582852058,
+            "total_bytes": 2169859
+          }
+        },
+        "owner_sample_start_to_first_progress_s": 0.04923052500009817,
+        "owner_sample_start_to_stdin_closed_s": 0.5489659520000032
+      }
+    ],
+    "conflicting_recorded_versions": [],
+    "scope": "Union of available bounded writer_history snapshots, deduplicated by operation_id; successful checkpoint-only workers are not normally included and earlier jobs may have rolled out. Times are owner samples, not child read/import/fsync timings. Unknown is not zero; no whole-run throughput or root-cause claim.",
+    "configured_budgets_as_recorded": {
+      "requested_pipe_bytes": 1048576,
+      "max_bytes_per_poll": 1048576,
+      "worker_wall_seconds": 5.0,
+      "request_wall_seconds": 10.0,
+      "shutdown_wall_seconds": 8.0
+    }
+  },
+  "startup_timing": {
+    "available": true,
+    "raw": {
+      "parent_launch": {
+        "clock": "CLOCK_MONOTONIC",
+        "start_entered_monotonic_s": 311.553393031,
+        "scope": "Parent samples around process creation, identity persistence and one-byte gate release; exact child scheduling is not inferred.",
+        "popen_started_monotonic_s": 311.558621838,
+        "popen_returned_monotonic_s": 311.559252583,
+        "identity_write_started_monotonic_s": 311.559421165,
+        "identity_write_completed_monotonic_s": 311.643385643,
+        "gate_write_started_monotonic_s": 311.643388955,
+        "gate_write_completed_monotonic_s": 311.643420986,
+        "gate_bytes_written": 1,
+        "identity_persisted_before_gate_write": true,
+        "name": "motion",
+        "owner": {
+          "pid": 1555,
+          "pgid": 1555,
+          "sid": 1555,
+          "start_ticks": 31155,
+          "token": "run29-febc819218ba419e81f22b3b1c2db0b5"
+        }
+      },
+      "parent_wait": {
+        "clock": "CLOCK_MONOTONIC",
+        "requested_budget_s": 60,
+        "wait_started_monotonic_s": 311.683621853,
+        "wait_deadline_monotonic_s": 371.683621853,
+        "global_deadline_monotonic_s": 1916.367326457,
+        "status": "observed_within_budget",
+        "marker_observed_monotonic_s": 328.612184385,
+        "last_log_read_completed_monotonic_s": 328.612184385,
+        "scope": "Parent observation of the collector dual-stream readiness marker; not child emission time or motion verification."
+      },
+      "collector_startup_timing": {
+        "clock": "time.monotonic; host wall clock, not ROS simulation time",
+        "main_enter": 325.903178726,
+        "environment_ready": 323.706343951,
+        "environment_stamp_error": null,
+        "runtime_load_started": 326.176967494,
+        "runtime_load_finished": 327.948574323,
+        "subscriptions_ready": 328.421021592,
+        "both_streams_ready": 328.546026562,
+        "scope": "Main entry excludes interpreter/top-level imports; READY is loop observation of both streams. Environment stamp is optional wrapper observation, including wrapper startup."
+      }
+    },
+    "motion_process_identity": {
+      "pid": 1555,
+      "pgid": 1555,
+      "sid": 1555,
+      "start_ticks": 31155,
+      "token": "run29-febc819218ba419e81f22b3b1c2db0b5",
+      "name": "motion",
+      "mode": "motion",
+      "args": []
+    },
+    "launch_owner_matches_process_identity": true,
+    "declared_clock_recognized": {
+      "parent_launch": true,
+      "parent_wait": true,
+      "collector": true
+    },
+    "parent_recorded_wait_status": "observed_within_budget",
+    "parent_requested_budget_s": 60,
+    "parent_observation_within_recorded_budget": true,
+    "collector_environment_stamp_error": null,
+    "collector_final_report": {
+      "reason": "duration_complete",
+      "partial": false,
+      "collection_complete": true,
+      "motion_detected": true,
+      "wall_seconds": 93.18655603799999,
+      "requested_signal": null
+    },
+    "intervals": {
+      "parent_popen_call": {
+        "start_as_recorded": 311.558621838,
+        "end_as_recorded": 311.559252583,
+        "signed_delta_s": 0.0006307449999667369,
+        "duration_s": 0.0006307449999667369,
+        "scope": "Parent Popen call only; child startup can continue after return.",
+        "status": "observed_nonnegative_interval"
+      },
+      "parent_identity_persistence": {
+        "start_as_recorded": 311.559421165,
+        "end_as_recorded": 311.643385643,
+        "signed_delta_s": 0.08396447799998441,
+        "duration_s": 0.08396447799998441,
+        "scope": "Parent identity write/atomic replace duration before the gate release.",
+        "status": "observed_nonnegative_interval"
+      },
+      "parent_gate_write_call": {
+        "start_as_recorded": 311.643388955,
+        "end_as_recorded": 311.643420986,
+        "signed_delta_s": 3.20310000461177e-05,
+        "duration_s": 3.20310000461177e-05,
+        "scope": "Parent samples bracket the one-byte release; neither sample is the exact child wake time.",
+        "status": "observed_nonnegative_interval"
+      },
+      "gate_write_start_to_environment_wrapper": {
+        "start_as_recorded": 311.643388955,
+        "end_as_recorded": 323.706343951,
+        "signed_delta_s": 12.06295499600003,
+        "duration_s": 12.06295499600003,
+        "scope": "Contains bootstrap scheduling, bash/ROS overlay setup and lightweight wrapper startup; does not isolate overlay sourcing.",
+        "status": "observed_nonnegative_interval"
+      },
+      "gate_write_completed_to_environment_wrapper": {
+        "start_as_recorded": 311.643420986,
+        "end_as_recorded": 323.706343951,
+        "signed_delta_s": 12.062922964999984,
+        "duration_s": 12.062922964999984,
+        "scope": "Post-write parent sample can occur after child execution; a negative interval is retained as unusable duration, never clamped to zero.",
+        "status": "observed_nonnegative_interval"
+      },
+      "environment_wrapper_to_main_enter": {
+        "start_as_recorded": 323.706343951,
+        "end_as_recorded": 325.903178726,
+        "signed_delta_s": 2.1968347750000135,
+        "duration_s": 2.1968347750000135,
+        "scope": "Wrapper timestamp precedes its print/exec; includes those operations, normal interpreter startup and collector top-level imports before main entry.",
+        "status": "observed_nonnegative_interval"
+      },
+      "main_enter_to_runtime_load_start": {
+        "start_as_recorded": 325.903178726,
+        "end_as_recorded": 326.176967494,
+        "signed_delta_s": 0.2737887679999744,
+        "duration_s": 0.2737887679999744,
+        "scope": "Argument parsing, report setup and initial persistence/logging after main entry; excludes top-level imports.",
+        "status": "observed_nonnegative_interval"
+      },
+      "runtime_load": {
+        "start_as_recorded": 326.176967494,
+        "end_as_recorded": 327.948574323,
+        "signed_delta_s": 1.7716068290000067,
+        "duration_s": 1.7716068290000067,
+        "scope": "Measured load_runtime call; not per-library import profiling.",
+        "status": "observed_nonnegative_interval"
+      },
+      "runtime_loaded_to_subscriptions_ready": {
+        "start_as_recorded": 327.948574323,
+        "end_as_recorded": 328.421021592,
+        "signed_delta_s": 0.4724472689999857,
+        "duration_s": 0.4724472689999857,
+        "scope": "ROS initialization, node/listener/subscription creation and native transport setup, before loop readiness observation.",
+        "status": "observed_nonnegative_interval"
+      },
+      "subscriptions_to_collector_both_streams": {
+        "start_as_recorded": 328.421021592,
+        "end_as_recorded": 328.546026562,
+        "signed_delta_s": 0.12500497000002042,
+        "duration_s": 0.12500497000002042,
+        "scope": "Collector loop observation of both native/odom sample buffers; not exact sensor publication or callback-arrival time.",
+        "status": "observed_nonnegative_interval"
+      },
+      "collector_both_streams_to_parent_observation": {
+        "start_as_recorded": 328.546026562,
+        "end_as_recorded": 328.612184385,
+        "signed_delta_s": 0.06615782299996908,
+        "duration_s": 0.06615782299996908,
+        "scope": "Between child loop observation sampled before printing and parent post-log-read observation; includes scheduling, printing and polling.",
+        "status": "observed_nonnegative_interval"
+      },
+      "parent_wait_to_marker_observation": {
+        "start_as_recorded": 311.683621853,
+        "end_as_recorded": 328.612184385,
+        "signed_delta_s": 16.928562532,
+        "duration_s": 16.928562532,
+        "scope": "Time consumed within the parent readiness wait; not the complete lifetime from process creation.",
+        "status": "observed_nonnegative_interval"
+      },
+      "parent_effective_wait_budget": {
+        "start_as_recorded": 311.683621853,
+        "end_as_recorded": 371.683621853,
+        "signed_delta_s": 60.0,
+        "duration_s": 60.0,
+        "scope": "Effective budget after clipping to the unchanged global deadline; requested allowance is recorded separately.",
+        "status": "observed_nonnegative_interval"
+      },
+      "parent_observation_to_wait_deadline": {
+        "start_as_recorded": 328.612184385,
+        "end_as_recorded": 371.683621853,
+        "signed_delta_s": 43.071437468,
+        "duration_s": 43.071437468,
+        "scope": "Remaining observed budget if nonnegative; a negative signed difference means a late parent observation.",
+        "status": "observed_nonnegative_interval"
+      },
+      "gate_write_start_to_parent_observation": {
+        "start_as_recorded": 311.643388955,
+        "end_as_recorded": 328.612184385,
+        "signed_delta_s": 16.96879543,
+        "duration_s": 16.96879543,
+        "scope": "Whole gate-write-start to parent readiness observation interval; the release event itself lies within its recorded bracket.",
+        "status": "observed_nonnegative_interval"
+      }
+    },
+    "inconsistent_or_unconfirmed_claims": [],
+    "scope": "Same-run declared CLOCK_MONOTONIC diagnostics only, not ROS simulation time. Missing/negative/invalid intervals have no duration. Main entry excludes top-level imports; environment wrapper time includes its startup. Parent readiness observation is not a child timestamp or motion verification."
+  },
+  "targets": {
+    "count": 2,
+    "annotations": [
+      {
+        "uid": 1,
+        "class_id": "red_object",
+        "x": 3.590219574789414,
+        "y": -0.05748303821229211,
+        "z": -0.041871900530268284,
+        "hits": 146,
+        "first_stamp": 120.8,
+        "last_stamp": 267.1,
+        "confirmed": true,
+        "source_id": ""
+      },
+      {
+        "uid": 2,
+        "class_id": "red_object",
+        "x": -0.3737583372639172,
+        "y": -1.5728249169335966,
+        "z": -0.04281006873447573,
+        "hits": 80,
+        "first_stamp": 180.6,
+        "last_stamp": 233.7,
+        "confirmed": true,
+        "source_id": ""
+      }
+    ],
+    "unconfirmed": [],
+    "count_prior": null
+  },
+  "return": {
+    "home_map_pose": [
+      0.00884839980788424,
+      0.008657285581196052,
+      -0.03960325806191402
+    ],
+    "final_map_pose": [
+      0.03424922667237759,
+      -0.002434335894764714,
+      -0.17857791139047524
+    ],
+    "map_error": {
+      "xy_distance_m": 0.027716891462896076,
+      "yaw_error_rad": 0.13897465332856124
+    },
+    "native": {
+      "scope": "Same native model sampled at home and final observer time; no map/world identity assumption.",
+      "home_event_stamp": 120.058,
+      "home_bracket": [
+        {
+          "sim_s": 120.036,
+          "x": -7.678205193923671e-06,
+          "y": 4.395485776157162e-07,
+          "z": -0.005000002831897227,
+          "yaw": -0.01867035597287288,
+          "id": 114,
+          "receipt_wall_elapsed_s": 31.15979311800004
+        },
+        {
+          "sim_s": 120.07,
+          "x": -7.678205193923671e-06,
+          "y": 4.395485776157162e-07,
+          "z": -0.005000002831897227,
+          "yaw": -0.01867035597287288,
+          "id": 114,
+          "receipt_wall_elapsed_s": 31.19371816200004
+        }
+      ],
+      "home_bracket_gap_s": 0.033999999999991815,
+      "home_bracket_movement": {
+        "xy_distance_m": 0.0,
+        "yaw_delta_rad": 0.0
+      },
+      "same_native_id": true,
+      "home_bracket_stationary_at_sample_endpoints": true,
+      "final_sample": {
+        "sim_s": 300.101,
+        "x": 0.015586336322696272,
+        "y": -0.0029717799902408723,
+        "z": -0.005000002831897224,
+        "yaw": -0.16152445087333825,
+        "id": 114,
+        "receipt_wall_elapsed_s": 522.531419363
+      },
+      "sampled_home_to_final": {
+        "xy_distance_m": 0.0158747402524572,
+        "yaw_delta_rad": -0.14285409490046536
+      }
+    },
+    "stationary_tail": {
+      "sample_count": 977,
+      "first_sim_s": 270.101,
+      "last_sim_s": 300.101,
+      "span_s": 30.0,
+      "max_gap_s": 0.03699999999997772,
+      "x_span_m": 0.0,
+      "y_span_m": 0.0,
+      "yaw_span_rad": 0.0,
+      "latest_native_receipt_fresh": true,
+      "evidence_sufficient": true,
+      "stationary_within_1mm_002rad": true,
+      "entire_window_after_terminal": true,
+      "ready_for_operator_to_end_observer": true
+    },
+    "runner_full_terminal_tail_verified": true
+  },
+  "observer": {
+    "errors": [],
+    "final_status": {
+      "phase": "done",
+      "reason": "perception_unverified_incomplete;home_frontier_return_attempts_exhausted;final_observation_checks_incomplete",
+      "autonomous": true,
+      "confirmed_target_count": 2,
+      "map_complete": false,
+      "visual_coverage_complete": false,
+      "unresolved_failures": 4,
+      "inspection": {
+        "request_id": "goal-3",
+        "status": "satisfied",
+        "reason": "processed_frame_window",
+        "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+        "ready": true,
+        "after_stamp_ns": 153320000000,
+        "deadline_wall": 593.333387175,
+        "expected_pose": [
+          1.1516607250861581,
+          0.010990696284257417,
+          -1.3521273809209546
+        ],
+        "required_frames": 3,
+        "min_span_ns": 200000000,
+        "accepted_frames": 3,
+        "first_rgb_stamp_ns": 153400000000,
+        "last_rgb_stamp_ns": 153900000000,
+        "first_depth_stamp_ns": 153400000000,
+        "last_depth_stamp_ns": 153900000000,
+        "producer_identity": [
+          "6220d164-1139-4106-bfe9-75967d87c6d7",
+          "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+          "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+          "camera_optical_frame"
+        ],
+        "reset_count": 1,
+        "rejection_counts": {
+          "sample_before_barrier": 1
+        },
+        "last_evidence": {
+          "rgb_stamp_ns": 153900000000,
+          "depth_stamp_ns": 153900000000,
+          "processed_stamp_ns": 154000000000,
+          "sequence": 620,
+          "rgb_sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6",
+          "depth_sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691",
+          "base_pose": [
+            1.1276055777305154,
+            0.013237583793573612,
+            -1.2263103446226291
+          ],
+          "camera_pose": [
+            1.15597346158512,
+            -0.06582734626781107,
+            0.030000000000000082,
+            0.12119285519633892,
+            -0.6966435902592939,
+            0.6966435902592942,
+            -0.12119285519633896
+          ],
+          "candidate_count": 0,
+          "detection_count": 0,
+          "unlocalized_candidate_count": 0
+        },
+        "visual_coverage_claimed": false,
+        "goal_token": 3,
+        "sampling_after_stamp_ns": 153320000000,
+        "conditions": {
+          "stamp_ns": 154600000000,
+          "phase": "inspecting",
+          "blocking_condition": null,
+          "current_pose": [
+            1.1276055777305154,
+            0.013237583793573612,
+            -1.2263103446226291
+          ],
+          "distance_m": 0.02415985550000676,
+          "yaw_error_rad": 0.12581703629832575,
+          "position_tolerance_m": 0.05,
+          "yaw_tolerance_rad": 0.26,
+          "pose_within_tolerance": true,
+          "pose_stable_wall_s": 5.603823035999994,
+          "odom_stamp_ns": 154595000000,
+          "odom_wall_age_s": 0.07760019899990311,
+          "odom_ros_age_s": 0.005,
+          "odom_fresh": true,
+          "odom_sample_stationary": true,
+          "odom_stationary_count": 152,
+          "stop_confirmed": true
+        },
+        "frame_retention": {
+          "enabled": true,
+          "fault": null,
+          "current_window": 1,
+          "state": "complete",
+          "selected_count": 3,
+          "stored_count": 3,
+          "total_selected_count": 3,
+          "window_count": 1,
+          "offline_artifacts_verified": false
+        }
+      },
+      "last_inspection_failure": null,
+      "observation_actions": {
+        "mode": "bounded_processed_frames",
+        "closed": true,
+        "close_reason": "perception_unverified_incomplete",
+        "started_wall": null,
+        "deadline_wall": null,
+        "queue": null,
+        "active": null,
+        "attempts": [],
+        "continuation": {
+          "home_frontier_resumes": 0,
+          "resume_limit": 1,
+          "resume_active": false,
+          "return_started_wall": 756.617985237,
+          "return_deadline_wall": 996.617985237,
+          "return_reserve_s": 15.0,
+          "return_attempts": 4,
+          "return_attempt_limit": 4,
+          "decisions": [
+            {
+              "wall": 898.834539732,
+              "resumed": false,
+              "reason": "home_frontier_return_attempts_exhausted",
+              "selection": {
+                "state": "goal",
+                "goal": {
+                  "x": 3.1752059682763236,
+                  "y": -0.02894398039271362,
+                  "yaw": -0.8519663271732721,
+                  "kind": "frontier",
+                  "anchor": [
+                    3.52520597349173,
+                    -0.4289439863531781
+                  ]
+                },
+                "frontier_count": 1,
+                "uncovered_count": 2577,
+                "reachable_count": 2577,
+                "unobserved_count": 0
+              },
+              "resume_count_before": 0,
+              "return_deadline_wall": 996.617985237,
+              "return_attempts": 4
+            }
+          ]
+        },
+        "visual_coverage_claimed": false,
+        "validation_scope": "processed_frame_windows_only"
+      },
+      "navigation_recovery": null,
+      "selection": {
+        "state": "perception_unverified",
+        "goal": null,
+        "frontier_count": 0,
+        "uncovered_count": 2534,
+        "reachable_count": 2534,
+        "unobserved_count": 0
+      }
+    },
+    "native_sample_count": 6180,
+    "native_ids": [
+      114
+    ]
+  },
+  "map_export": {
+    "snapshot_and_posegraph": {
+      "passed": true,
+      "errors": [],
+      "exports": {
+        "/slam_toolbox/serialize_map": {
+          "service": "/slam_toolbox/serialize_map",
+          "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/final-map",
+          "status": "service_success",
+          "sent_wall_s": 3.9929654059999393,
+          "sent_ros_ns": 276250000000,
+          "result": 0,
+          "completed_wall_s": 4.501997861999939
+        }
+      },
+      "exported_files_at_capture": [
+        {
+          "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/final-map.posegraph",
+          "exists": true,
+          "bytes": 11155672,
+          "sha256": "a47227d2c7b8468ef679a24c78e7e5e8d5f5e395df195181c5a117f9147130bc"
+        },
+        {
+          "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/final-map.data",
+          "exists": true,
+          "bytes": 7939970,
+          "sha256": "897569ce1b023d93c07bba15a431771a1e9ac07425c61e1456aedf2535d4c371"
+        }
+      ],
+      "raster_export_mode": "separate_frozen_snapshot_export",
+      "save_map_service_attempted": false
+    },
+    "separate_snapshot_raster": {
+      "schema_version": 1,
+      "passed": true,
+      "method": "captured_occupancy_grid_offline_export",
+      "source": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/final-save.json",
+      "source_bytes": 117948,
+      "source_sha256": "e2b8a31ee74e26618a76c1c2dd87612c31f23493f613e3ddd63ec95053633810",
+      "frame_id": "map",
+      "map_stamp_ns": 275875000000,
+      "map_metadata": {
+        "frame_id": "map",
+        "stamp_ns": 275875000000,
+        "map_load_time_ns": 0,
+        "width": 83,
+        "height": 52,
+        "resolution": 0.05000000074505806,
+        "origin": {
+          "xyz": [
+            -0.4497940857403857,
+            -2.103944011312623,
+            0.0
+          ],
+          "quaternion_xyzw": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "valid_geometry": true
+        },
+        "receipt_ros_ns": 276085000000,
+        "receipt_wall_s": 3.283394811999983,
+        "source_age_ros_s": 0.375,
+        "receipt_age_wall_s": 0.615638669999953
+      },
+      "snapshot_capture": {
+        "valid": true,
+        "captured_ros_ns": 276250000000,
+        "captured_wall_s": 3.899033481999936,
+        "epoch": {
+          "raw": "25683868-155b-4018-abf3-bee99edf0473",
+          "receipt_ros_ns": 0,
+          "receipt_wall_s": 2.3566920549999395,
+          "receipt_age_wall_s": 1.5423414269999967
+        }
+      },
+      "source_report_export_status": {
+        "passed": true,
+        "errors": [],
+        "exports": {
+          "/slam_toolbox/serialize_map": {
+            "service": "/slam_toolbox/serialize_map",
+            "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/final-map",
+            "status": "service_success",
+            "sent_wall_s": 3.9929654059999393,
+            "sent_ros_ns": 276250000000,
+            "result": 0,
+            "completed_wall_s": 4.501997861999939
+          }
+        }
+      },
+      "source_grid_sha256": "767d955e1f2bc2ec73b74763d1a19f58c844bd8f5cf03a43e93d4806070fdf14",
+      "input_classification": {
+        "free_threshold": 0.25,
+        "occupied_threshold": 0.65,
+        "free_max_cell_inclusive": 25,
+        "occupied_min_cell_inclusive": 65,
+        "rounding": "nearest_integer_ties_to_even; free_test_first",
+        "unknown_and_intermediate_to": -1
+      },
+      "source_cell_counts": {
+        "-1": 1082,
+        "100": 649,
+        "0": 2585
+      },
+      "yaml": {
+        "image": "snapshot-map.pgm",
+        "mode": "trinary",
+        "resolution": 0.05000000074505806,
+        "origin": [
+          -0.4497940857403857,
+          -2.103944011312623,
+          0.0
+        ],
+        "negate": 0,
+        "occupied_thresh": 0.65,
+        "free_thresh": 0.196
+      },
+      "conventions": {
+        "grid_index": "width*y+x; y=0 bottom row",
+        "pgm_index": "width*(height-1-y)+x; top row first",
+        "origin": "metric lower-left corner of cell (0,0); yaw in radians, no half-cell shift",
+        "planar_tolerance": 1e-09,
+        "yaml_thresholds": "fixed Nav2 trinary reload thresholds; distinct from input classification"
+      },
+      "verification": {
+        "passed": true,
+        "method": "reopened_P5_and_YAML; reconstructed_all_trinary_cells",
+        "verified_cells": 4316,
+        "class_counts": {
+          "-1": 1082,
+          "100": 649,
+          "0": 2585
+        },
+        "files": {
+          "snapshot-map.pgm": {
+            "bytes": 4329,
+            "sha256": "534a78911335ffdc774c9898425ac1d5a0353b63a319e73f5f21512e25abaf6a"
+          },
+          "snapshot-map.yaml": {
+            "bytes": 180,
+            "sha256": "396f77784d0c0ad9836b91a9185181b140fac8dd16130a1dcfcdf63ea2717281"
+          }
+        }
+      },
+      "limitations": [
+        "No live map service was called or repaired; source report is unchanged.",
+        "Trinary export preserves unknowns and classifies intermediate probabilities as unknown; raw probabilities remain in source JSON.",
+        "YAML has no frame field; use the recorded frame_id when configuring map_server.",
+        "File readback does not prove complete mapping, visual coverage, navigation safety, or mission success."
+      ]
+    },
+    "separate_snapshot_raster_failure": {},
+    "terminal_evidence_collection": {
+      "exports": [
+        {
+          "name": "snapshot_and_posegraph",
+          "passed": true
+        },
+        {
+          "name": "snapshot_raster",
+          "passed": true
+        }
+      ],
+      "tail_verified": true,
+      "errors": [],
+      "deadline_wall": 1009.354076952,
+      "passed": true
+    },
+    "scope": "Separate captured OccupancyGrid raster and posegraph service; not a save_map service repair."
+  },
+  "cleanup": {
+    "run": "run29-navigation-recovery",
+    "epoch": "25683868-155b-4018-abf3-bee99edf0473",
+    "status": "terminal_observed",
+    "stages": [
+      {
+        "name": "sim_start_and_sensor_check",
+        "elapsed_wall_s": 38.28551954699999
+      },
+      {
+        "name": "navigation_start_and_parameter_check",
+        "elapsed_wall_s": 109.76594526699999
+      },
+      {
+        "name": "recording_perception_and_initial_survey",
+        "elapsed_wall_s": 168.141218551
+      },
+      {
+        "name": "read_only_planning_and_processed_image_preflight",
+        "elapsed_wall_s": 305.883289574
+      },
+      {
+        "name": "autonomous_mission",
+        "elapsed_wall_s": 331.807904269
+      },
+      {
+        "name": "terminal_map_export_and_independent_stationary_tail",
+        "elapsed_wall_s": 793.842110366
+      },
+      {
+        "name": "owned_shutdown",
+        "elapsed_wall_s": 868.6045513290001
+      }
+    ],
+    "errors": [],
+    "stops": {
+      "mission": {
+        "signals": [
+          {
+            "pid": 1713,
+            "start_ticks": 47084,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1732,
+            "start_ticks": 48879,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.0201768480000055,
+        "exit_code": 0
+      },
+      "recorder": {
+        "signals": [
+          {
+            "pid": 1464,
+            "start_ticks": 28471,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.6106156329999521,
+        "exit_code": 0
+      },
+      "observer": {
+        "signals": [
+          {
+            "pid": 1677,
+            "start_ticks": 44821,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 3.445653896000067,
+        "exit_code": 0
+      },
+      "perception": {
+        "signals": [
+          {
+            "pid": 1465,
+            "start_ticks": 28479,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1502,
+            "start_ticks": 29725,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.8089577939999799,
+        "exit_code": 0
+      },
+      "motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0013684990000228936,
+        "exit_code": 0
+      },
+      "survey": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0015343909999501193,
+        "exit_code": 0
+      },
+      "navigation": {
+        "signals": [
+          {
+            "pid": 1144,
+            "start_ticks": 22619,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1206,
+            "start_ticks": 24314,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1207,
+            "start_ticks": 24315,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1208,
+            "start_ticks": 24318,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1209,
+            "start_ticks": 24320,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1210,
+            "start_ticks": 24324,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1211,
+            "start_ticks": 24325,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1212,
+            "start_ticks": 24329,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1213,
+            "start_ticks": 24330,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1214,
+            "start_ticks": 24330,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 1215,
+            "start_ticks": 24341,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.2226742499999546,
+        "exit_code": 0
+      },
+      "sim": {
+        "signals": [
+          {
+            "pid": 910,
+            "start_ticks": 15468,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 959,
+            "start_ticks": 17117,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 960,
+            "start_ticks": 17117,
+            "signal": "SIGINT"
+          },
+          {
+            "pid": 961,
+            "start_ticks": 17118,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 1.8734616180000785,
+        "exit_code": 0
+      },
+      "installed-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009005509999724381,
+        "exit_code": 0
+      },
+      "sim-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0017361860000164597,
+        "exit_code": 0
+      },
+      "native-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0008944500000325206,
+        "exit_code": 0
+      },
+      "nav-check": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0010098760000119,
+        "exit_code": 0
+      },
+      "parameter-gate": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.001198458000089886,
+        "exit_code": 0
+      },
+      "native-before-motion": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009546580000687754,
+        "exit_code": 0
+      },
+      "preflight": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009949210000286257,
+        "exit_code": 0
+      },
+      "save-early": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.002555798000003051,
+        "exit_code": 0
+      },
+      "provenance": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009403180000617795,
+        "exit_code": 0
+      },
+      "native-terminal": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0012387900000021546,
+        "exit_code": 0
+      },
+      "save-final": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.0009885739999617726,
+        "exit_code": 0
+      },
+      "snapshot-raster": {
+        "signals": [],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 28.0,
+        "elapsed_wall_seconds": 0.001076904999990802,
+        "exit_code": 0
+      }
+    },
+    "active_wall_budget_seconds": 1800,
+    "native_terminal_tail_verified": true,
+    "supervisor_began_monotonic_s": 116.367326457,
+    "global_deadline_monotonic_s": 1916.367326457,
+    "timing_clock": "CLOCK_MONOTONIC",
+    "motion_startup_ready_budget_s": 60,
+    "cleanup_budget_note": "Each owned group adds at most 20+5+3 seconds of signal polling, excluding scheduling/I/O delays.",
+    "stage": "owned_shutdown",
+    "navigation_recovery_parameter_gate": {
+      "expected": {
+        "navigation_failure_cooldown_s": 1.0,
+        "navigation_recovery_timeout_s": 3.0
+      },
+      "actual": {
+        "navigation_failure_cooldown_s": {
+          "type": 3,
+          "value": 1.0,
+          "set": true
+        },
+        "navigation_recovery_timeout_s": {
+          "type": 3,
+          "value": 3.0,
+          "set": true
+        }
+      },
+      "passed": true,
+      "scope": "Read-only live receipt after Mission loaded/save-early; not a pre-first-goal claim."
+    },
+    "local_costmap_parameter_readback": {
+      "actual": {
+        "transform_tolerance": {
+          "type": 3,
+          "value": 0.3,
+          "set": true
+        },
+        "use_sim_time": {
+          "type": 1,
+          "value": true,
+          "set": true
+        }
+      },
+      "passed": true,
+      "parameters_modified": false,
+      "transform_tolerance_expected_value": null
+    },
+    "terminal": {
+      "path": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/mission/mission_20261103_002524.json",
+      "sha256": "0aa8b377ae44e61392d894d54138b24836895f11024009e297e054776d773ed3",
+      "status": "done",
+      "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+      "reported_mission_success": false
+    },
+    "same_native_instance_at_terminal": true,
+    "observed_terminal_native_tail": {
+      "wall_s": 520.785201123,
+      "count": 6157,
+      "tail": {
+        "sample_count": 976,
+        "first_sim_s": 269.401,
+        "last_sim_s": 299.394,
+        "span_s": 29.992999999999995,
+        "max_gap_s": 0.03699999999997772,
+        "x_span_m": 0.0,
+        "y_span_m": 0.0,
+        "yaw_span_rad": 0.0,
+        "latest_native_receipt_fresh": true,
+        "evidence_sufficient": true,
+        "stationary_within_1mm_002rad": true,
+        "entire_window_after_terminal": true,
+        "ready_for_operator_to_end_observer": true
+      }
+    },
+    "terminal_evidence_collection": {
+      "exports": [
+        {
+          "name": "snapshot_and_posegraph",
+          "passed": true
+        },
+        {
+          "name": "snapshot_raster",
+          "passed": true
+        }
+      ],
+      "tail_verified": true,
+      "errors": [],
+      "deadline_wall": 1009.354076952,
+      "passed": true
+    },
+    "shutdown_signal_poll_budget_seconds": 588,
+    "recorder_inner_recheck": {
+      "owner": {
+        "pid": 1499,
+        "pgid": 1499,
+        "sid": 1499,
+        "start_ticks": 29638,
+        "token": "3acc5cc1506141d89052e634faf436d0"
+      },
+      "remaining": [],
+      "ownership_errors": [],
+      "remaining_check_complete": true,
+      "reported_cleanup": {
+        "signals": [
+          {
+            "pid": 1499,
+            "start_ticks": 29638,
+            "signal": "SIGINT"
+          }
+        ],
+        "ownership_errors": [],
+        "remaining": [],
+        "remaining_check_complete": true,
+        "forced_kill": false,
+        "terminate_used": false,
+        "cleanup_budget_seconds": 15.0,
+        "elapsed_wall_seconds": 0.40968721100000494
+      }
+    },
+    "elapsed_wall_s": 877.846264207,
+    "all_owned_groups_empty": true,
+    "all_run_token_processes_absent": false,
+    "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+    "owned_cleanup_scope": "Verified launched process groups, nested recorder and exact writer child exit",
+    "retention_audit_passed": true,
+    "evidence_collection_complete": true
+  },
+  "run_token_cleanup": {
+    "remaining": [],
+    "errors": [
+      {
+        "pid": "478",
+        "error": "PermissionError"
+      },
+      {
+        "pid": "479",
+        "error": "PermissionError"
+      }
+    ],
+    "signals_sent": []
+  },
+  "run_token_cleanup_context": {
+    "original_global_absence_verified": false,
+    "recheck": {},
+    "denied_process_context": {},
+    "scope": "Ancillary evidence only; does not override the original incomplete global scan."
+  },
+  "limitations": [
+    "No ROS nodes or motion commands started by this review; no truth files read.",
+    "Owned groups and the retained-frame writer have closure evidence; global token absence remains as reported, including permission failures.",
+    "A bounded queue of processed-frame windows does not establish whole-maze visual coverage or target recall.",
+    "Saved online claims and closed-run artifact audit have different scopes; missing evidence is not a pass.",
+    "Native stationary brackets/tails are sampled evidence, not a continuous-motion proof.",
+    "No physical LIMO hardware evaluated."
+  ],
+  "missing_files": [
+    "run-token-process-recheck.json",
+    "denied-process-context.json",
+    "snapshot-map.failure.json"
+  ],
+  "source_files": {
+    "outputs\\ros_smoke\\run29-navigation-recovery\\orchestration.json": {
+      "bytes": 13100,
+      "sha256": "b593c4cc3da70efc0590670c968e97241f1415330cbc672d25698bc483bb5ae6"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\run-token-final-processes.json": {
+      "bytes": 194,
+      "sha256": "c6647c5357778bb41385e50e3ce7b095b4459744c37aa2bd643cf8374134e2b5"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\retention-shutdown.json": {
+      "bytes": 294,
+      "sha256": "5db5981d9c679df21af28ae82d4e22c562ffd489d37247201ed6e28d9b8f4ebb"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\mission\\mission_20261103_002524.json": {
+      "bytes": 41031,
+      "sha256": "0aa8b377ae44e61392d894d54138b24836895f11024009e297e054776d773ed3"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\observer.json": {
+      "bytes": 22713393,
+      "sha256": "437f9aa4b230c8dfbd36faa71449d219c416d7e624f0413ff83e4223ddef249c"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\retention-audit.json": {
+      "bytes": 950,
+      "sha256": "3c942371e29cf5f71a3a71679b532b60649f3b659f81acddffcf69c86482ecdb"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\retained\\checkpoint.json": {
+      "bytes": 14688,
+      "sha256": "4431e6860a27da8b19d8575bb7b6673a9396812caad87b80156924117b533cba"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\preparation.json": {
+      "bytes": 17841,
+      "sha256": "07665179fab1e30c8210459c76dbc889b6f0260e6553ccd4648356166158bcde"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\final-save.json": {
+      "bytes": 117948,
+      "sha256": "e2b8a31ee74e26618a76c1c2dd87612c31f23493f613e3ddd63ec95053633810"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\snapshot-map.provenance.json": {
+      "bytes": 3876,
+      "sha256": "02b52ea29d094be98c724a2d89d349d193d5a88cad2e91280fdf7478bdbe1b65"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\navigation.log": {
+      "bytes": 126542,
+      "sha256": "e548f460eec8f14338ccb3404c96d388b6a68e631c62a3c34a345655b507ed99"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\mission.log": {
+      "bytes": 32650,
+      "sha256": "eebf6b2a04767ba6e72541cf4a7f4fbf3469734ba0a2e7692b9c0d7313c6bcb1"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\launch-timing-motion.json": {
+      "bytes": 775,
+      "sha256": "2bb82354828cee160ee3b8602e11da67587f8e5347343c01396f4b25a284d532"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\motion-startup-wait.json": {
+      "bytes": 471,
+      "sha256": "73aef92aed2d60e4e00e263079b891c5c4b369331c709f72b4682aea1b245e9c"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\initial-motion.json": {
+      "bytes": 913703,
+      "sha256": "af9fb59a98ad92cef90022a6e171659d29d3278973be3c2606e11a8a86b8f014"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\process-motion.json": {
+      "bytes": 180,
+      "sha256": "bc68e6764f0f400a5958ae177c6bfd5cda093e8e007e5bb19f370e2d3105e074"
+    },
+    "outputs\\ros_smoke\\run29-navigation-recovery\\navigation-recovery-parameter-gate.json": {
+      "bytes": 443,
+      "sha256": "9f706579e5320cb456f7ec54aedc932451d19512fc4a021945549ae2c7b2a9fd"
+    },
+    "outputs\\setup\\run28-outcome-review.json": {
+      "bytes": 72887,
+      "sha256": "7d032bdee80b5e869a73517d95840fb242fc2c44807b027204ba03fd00252a72"
+    },
+    "outputs\\ros_smoke\\run28-startup-timing\\preparation.json": {
+      "bytes": 5305,
+      "sha256": "10a670e1e26a9d15a8593e884c23f72da11547f317f40ed715bd6be2af56e6a4"
+    }
+  },
+  "run28_comparison": {
+    "available": true,
+    "run28": {
+      "mission": {
+        "status": "blocked",
+        "reason": "return_navigation_failed",
+        "mission_success": false,
+        "returned_pose_verified": false,
+        "map_complete": false,
+        "visual_coverage_complete": false,
+        "mission_timed_out": false,
+        "target_definition_verified": false,
+        "coordinates_valid": true
+      },
+      "navigation_by_kind": {
+        "frontier": {
+          "sent": 12,
+          "terminal_success": 1,
+          "terminal_failure": 11,
+          "without_recorded_terminal": 0
+        },
+        "home": {
+          "sent": 4,
+          "terminal_success": 0,
+          "terminal_failure": 4,
+          "without_recorded_terminal": 0
+        }
+      },
+      "navigation_extrapolation_log_lines": 5,
+      "base_tf_age_rejected_event_count": 0,
+      "target_annotation_count": 2,
+      "retention_audit_passed": false,
+      "native_home_to_final": {
+        "xy_distance_m": 1.1709808013693874,
+        "yaw_delta_rad": 2.882272986347519
+      }
+    },
+    "run29": {
+      "mission": {
+        "status": "done",
+        "reason": "perception_unverified_incomplete;home_frontier_return_attempts_exhausted;final_observation_checks_incomplete",
+        "mission_success": false,
+        "returned_pose_verified": true,
+        "map_complete": false,
+        "visual_coverage_complete": false,
+        "mission_timed_out": false,
+        "target_definition_verified": false,
+        "coordinates_valid": true
+      },
+      "navigation_by_kind": {
+        "frontier": {
+          "sent": 9,
+          "terminal_success": 1,
+          "terminal_failure": 8,
+          "without_recorded_terminal": 0
+        },
+        "home": {
+          "sent": 4,
+          "terminal_success": 1,
+          "terminal_failure": 3,
+          "without_recorded_terminal": 0
+        }
+      },
+      "navigation_extrapolation_log_lines": 11,
+      "base_tf_age_rejected_event_count": 0,
+      "target_annotation_count": 2,
+      "retention_audit_passed": true,
+      "native_home_to_final": {
+        "xy_distance_m": 0.0158747402524572,
+        "yaw_delta_rad": -0.14285409490046536
+      }
+    },
+    "prepared_profile_equality": {
+      "world_sha256": true,
+      "nav2_sha256": true,
+      "tf_profile": true,
+      "writer_profile": true,
+      "motion_startup_ready_budget_s": true
+    },
+    "run29_configured_recovery": {
+      "navigation_failure_cooldown_s": 1.0,
+      "navigation_recovery_timeout_s": 3.0
+    },
+    "navigation_improved_by_cooldown": null,
+    "scope": "Descriptive before/after evidence only. Different trajectories, exposure lengths, scheduling and unreplicated outcomes prevent causal attribution from two runs. Compare success/failure counts by goal kind and original mission/return flags; no fabricated aggregate pass. Run28 lacks the new terminal error fields, so their absence is not error_code=0."
+  }
+}

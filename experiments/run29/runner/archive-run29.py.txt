@@ -1,0 +1,225 @@
+"""Create one compact run29 diagnostic archive only after root session closure.
+
+No ROS, Git, tests, bag decoding or image decoding. Raw retained files and large
+recordings remain external: their locations and hashes are recorded, not copied.
+This archive cannot independently replace the complete retained-frame evidence.
+"""
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT/'outputs/setup'
+RUN = ROOT/'outputs/ros_smoke/run29-navigation-recovery'
+DEST = ROOT/'experiments/run29'
+HEAD = '9e0a32687abe52eca1751a1e0e24771618835c38'
+CI_ID = 41601275268
+RUN_FILES = (
+    'retention-audit.json','parameters-early.json','parameter-gate.json',
+    'navigation-recovery-parameter-gate.json','installed-check.json','runner-inputs.json',
+    'provenance-live.json','final-save.json','nav2-rpp-03m.yaml',
+    'snapshot-map.yaml','snapshot-map.pgm','snapshot-map.provenance.json','snapshot-map.failure.json',
+    'navigation.log','mission.log','perception.log','motion-startup-wait.json',
+    'initial-survey.json','initial-motion.json','recording/supervisor.json','recording/bag/metadata.yaml')
+HELPERS = ('prepare-run29.py','start-run29.sh','run29-env.sh','run29-process.py',
+    'run29-param-gate.py','run29-preflight.py','run29-save.py','run29-provenance.py',
+    'run29-installed-check.py','run29-outcome-review.py','archive-run29.py')
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def encoded(value):
+    return (json.dumps(value,indent=2,ensure_ascii=False,allow_nan=False)+'\n').encode('utf-8')
+
+
+def safe(path):
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError('Missing, linked or unsafe file: '+str(path))
+    return path
+
+
+def small(path):
+    safe(path)
+    if path.stat().st_size>32*1024*1024:
+        raise RuntimeError('Selected diagnostic file unexpectedly exceeds 32 MiB: '+str(path))
+    return path.read_bytes()
+
+
+def fingerprint(path):
+    """Hash one external file without loading it into memory or decoding it."""
+    safe(path)
+    before=path.stat()
+    h=hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda:stream.read(1024*1024),b''):
+            h.update(chunk)
+    after=path.stat()
+    if (before.st_size,before.st_mtime_ns)!=(after.st_size,after.st_mtime_ns):
+        raise RuntimeError('External evidence changed during hashing: '+str(path))
+    return {'path':path.relative_to(ROOT).as_posix(),'bytes':after.st_size,
+            'sha256':h.hexdigest(),'copied':False,'stat_stable_during_hash':True}
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-root-session',type=int,choices=[50176],required=True)
+    parser.add_argument('--confirmed-root-exit-code',type=int,required=True)
+    args=parser.parse_args(argv)
+    if DEST.exists() or DEST.is_symlink() or not DEST.parent.resolve().is_relative_to(ROOT.resolve()):
+        raise RuntimeError('Refuse existing or unsafe archive destination')
+    payloads, records, missing, originals = {}, [], [], {}
+
+    def keep(path, name, required=True):
+        if not path.exists() and not path.is_symlink():
+            if required:raise RuntimeError('Missing required evidence: '+str(path))
+            missing.append(path.relative_to(ROOT).as_posix())
+            return None
+        raw=small(path)
+        if name in payloads or Path(name).is_absolute() or '..' in Path(name).parts:
+            raise RuntimeError('Duplicate or unsafe archive member: '+name)
+        payloads[name]=raw
+        originals[path]=raw
+        records.append({'source':path.relative_to(ROOT).as_posix(),'archive':name,
+                        'bytes':len(raw),'sha256':sha(raw)})
+        return raw
+
+    for name in ('orchestration.json','preparation.json','epoch.txt',
+                 'retention-shutdown.json','run-token-final-processes.json'):
+        keep(RUN/name,name)
+    orchestration=json.loads(payloads['orchestration.json'])
+    preparation=json.loads(payloads['preparation.json'])
+    shutdown=json.loads(payloads['retention-shutdown.json'])
+    elapsed=orchestration.get('elapsed_wall_s')
+    if not (orchestration.get('status') in ('terminal_observed','orchestration_failed')
+            and type(elapsed) in (int,float) and math.isfinite(elapsed) and elapsed>0
+            and orchestration.get('all_owned_groups_empty') is True
+            and shutdown.get('writer') is None
+            and shutdown.get('shutdown',{}).get('owned_writer_exit_confirmed') is True
+            and shutdown.get('shutdown',{}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Terminal supervisor, owned groups and writer closure are not confirmed')
+    if preparation.get('run')!=RUN.name or preparation.get('code_head')!=HEAD:
+        raise RuntimeError('Preparation differs from root-reported run29/revision')
+    epoch=preparation.get('epoch')
+    if not isinstance(epoch,str) or payloads['epoch.txt']!=(epoch+'\n').encode('ascii'):
+        raise RuntimeError('Run epoch bytes disagree with preparation')
+    terminal=orchestration.get('terminal') or {}
+    filename=str(terminal.get('path','')).replace('\\','/').rsplit('/',1)[-1]
+    if filename:
+        mission_path=RUN/'mission'/filename
+    else:
+        candidates=sorted((RUN/'mission').glob('mission_*.json'))
+        if len(candidates)!=1:raise RuntimeError('No exact unique mission result for this compact archive')
+        mission_path=candidates[0]
+    mission_raw=keep(mission_path,'mission/'+mission_path.name)
+    if terminal.get('sha256') and terminal['sha256']!=sha(mission_raw):
+        raise RuntimeError('Mission result differs from recorded terminal hash')
+    mission=json.loads(mission_raw)
+    if mission.get('map_epoch')!=epoch or mission.get('status') not in ('done','blocked'):
+        raise RuntimeError('Mission epoch or terminal state is not confirmed')
+    shutdown_path=mission_path.with_name(mission_path.name.replace('mission_','shutdown_',1))
+    keep(shutdown_path,'mission/'+shutdown_path.name,False)
+    keep(RUN/'retained/checkpoint.json','retained-checkpoint.json')
+    for name in RUN_FILES:
+        keep(RUN/name,name,False)
+    for suffix in ('.json','.md'):
+        keep(SETUP/('run29-outcome-review'+suffix),'run29-outcome-review'+suffix)
+    outcome=json.loads(payloads['run29-outcome-review.json'])
+    if outcome.get('run')!=RUN.name or outcome.get('map_epoch')!=epoch or outcome.get('runtime_head')!=HEAD or outcome.get('mission')!={
+            key:mission.get(key) for key in outcome.get('mission',{})}:
+        raise RuntimeError('Outcome does not preserve this original mission')
+    if outcome.get('cleanup')!=orchestration:
+        raise RuntimeError('Outcome predates the final supervisor closure receipt')
+    for name in HELPERS:
+        raw=keep(SETUP/name,'runner/'+name+'.txt')
+        key='outputs/setup/'+name
+        expected=preparation.get('prepared_helper_sha256',{}).get(key)
+        if name=='prepare-run29.py':expected=preparation.get('preparation_script_sha256')
+        if expected is not None and sha(raw)!=expected:
+            raise RuntimeError('Runtime helper differs from preparation: '+name)
+    ci=json.loads(keep(SETUP/'navigation-recovery-ci.json','validation/navigation-recovery-ci.json'))
+    if (ci.get('id'),ci.get('head_sha'),ci.get('status'),ci.get('conclusion'))!=(CI_ID,HEAD,'completed','success'):
+        raise RuntimeError('CI receipt differs from the root-reported revision/success')
+
+    retained_root=RUN/'retained'
+    if retained_root.is_symlink() or not retained_root.is_dir():
+        raise RuntimeError('Missing or unsafe external retained directory')
+    retained_paths=sorted(p for p in retained_root.rglob('*') if p.is_file() or p.is_symlink())
+    if len(retained_paths)>4096:raise RuntimeError('Unexpected retained evidence file count')
+    retained_files=[fingerprint(path) for path in retained_paths]
+    large_paths=set(RUN.glob('*.posegraph'))|set(RUN.glob('*.data'))
+    large_paths.update((RUN/'recording').rglob('*.mcap'))
+    large_paths.update((RUN/'recording').rglob('*.db3'))
+    if (RUN/'observer.json').exists():large_paths.add(RUN/'observer.json')
+    large_files=[fingerprint(path) for path in sorted(large_paths)]
+    external_validation=[]
+    for name in ('source-binding.json','results.json','manifest.json','SHA256SUMS'):
+        external_validation.append(fingerprint(ROOT/'experiments/navigation-recovery-20261103'/name))
+    references={'schema_version':1,'raw_retained_evidence_copied':False,
+        'complete_retention_archive':False,
+        'retained_directory':retained_root.relative_to(ROOT).as_posix(),
+        'retained_directory_at_archive':str(retained_root),
+        'retained_files':retained_files,'retained_file_count':len(retained_files),
+        'retained_total_bytes':sum(row['bytes'] for row in retained_files),
+        'large_recordings_posegraphs_observer':large_files,
+        'separate_recovery_validation_archive':external_validation,
+        'original_retention_audit_file':'retention-audit.json' if 'retention-audit.json' in payloads else None,
+        'scope':'External files were hashed without decoding after recorded closure. They remain in ignored output directories; this diagnostic archive alone cannot rerun the strict retained-frame audit. File hashes do not promote the original audit to passed.'}
+    receipt={'runtime_commit':HEAD,'ci_run_id':CI_ID,'ci_conclusion':'success',
+        'root_exec_completion':{'session_id':args.confirmed_root_session,'exit_code':args.confirmed_root_exit_code,
+            'source':'Root completion confirmation supplied explicitly; not inferred from mission or CI.'},
+        'mission_flags':{key:mission.get(key) for key in ('status','reason','mission_success','map_complete',
+                                                       'returned_pose_verified','visual_coverage_complete')},
+        'original_global_process_absence':orchestration.get('all_run_token_processes_absent'),
+        'global_scan_limitation':orchestration.get('global_scan_limitation'),
+        'missing_optional_files':missing}
+    payloads['external-evidence.json']=encoded(references)
+    payloads['external-receipts.json']=encoded(receipt)
+    payloads['.gitattributes']=b'* -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol\n'
+    payloads['README.md']=("# Run29 compact diagnostic archive\n\n"
+        "Mission, navigation-recovery diagnostics, parameter readbacks and original navigation logs are retained here. "
+        "Original failure/unknown values remain unchanged; CI success and a stationary stop do not imply mission success.\n\n"
+        "Runtime revision: `"+HEAD+"`; external CI receipt: `"+str(CI_ID)+"`. "
+        "The actual root session exit is recorded separately in `external-receipts.json`.\n\n"
+        "**This is not a complete retained-frame archive.** RGB-D binaries and metadata remain at `"+
+        retained_root.relative_to(ROOT).as_posix()+"`. `external-evidence.json` lists their exact paths, sizes and SHA256. "
+        "MCAP/DB3, posegraph/data and full observer data are also hash-only references. No image tar or bag copy is included. "
+        "Keep those original directories to rerun the strict audit; the existing audit result is preserved without reinterpretation.\n\n"
+        "See `run29-outcome-review.md` for the run28 comparison and `run29-outcome-review.json` for original mission flags, "
+        "recovery started/ready, actual later goal dispatches and terminal error fields. Ready alone is not dispatch success; "
+        "two runs cannot establish that cooldown caused improvement. Missing files are listed explicitly.\n\n"
+        "`runner/` contains exact small helper snapshots as `.txt`; restore original filenames in the repository before reuse. "
+        "Production/test source hashes are bound by preparation and the separate navigation-recovery validation archive. "
+        "No full node source or repeated validation logs are copied here.\n\n"
+        "Verify archived bytes with `sha256sum -c SHA256SUMS` from this directory. Archive-local `.gitattributes` disables "
+        "text conversion. External source hashes require the originals and are not validated by that archive-only command.\n").encode('utf-8')
+    payloads['manifest.json']=encoded({'raw_copies':records,'missing_optional_files':missing,
+        'scope':'SHA256SUMS covers archive members except itself. This manifest lists original-byte copies, not itself or generated indexes.'})
+    # No destination is created until required inputs, closure and identities
+    # pass. Failures after creation preserve the partial archive for inspection.
+    for path,raw in originals.items():
+        if small(path)!=raw:raise RuntimeError('Input changed before archive creation: '+str(path))
+    if retained_paths!=sorted(p for p in retained_root.rglob('*') if p.is_file() or p.is_symlink()):
+        raise RuntimeError('External retained directory membership changed while hashing')
+    DEST.mkdir(parents=True)
+    for name,raw in payloads.items():
+        path=DEST/name
+        path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open('xb') as stream:stream.write(raw)
+        if path.read_bytes()!=raw:raise RuntimeError('Copied bytes differ: '+name)
+    checksum=''.join(sha(raw)+'  '+name+'\n' for name,raw in sorted(payloads.items()))
+    with (DEST/'SHA256SUMS').open('xb') as stream:stream.write(checksum.encode('utf-8'))
+    for name,raw in payloads.items():
+        if sha((DEST/name).read_bytes())!=sha(raw):raise RuntimeError('Final archive hash mismatch: '+name)
+    print(json.dumps({'archive':str(DEST),'files':len(payloads)+1,
+        'bytes':sum(len(raw) for raw in payloads.values())+len(checksum.encode('utf-8')),
+        'sha256sums_sha256':sha((DEST/'SHA256SUMS').read_bytes()),
+        'complete_retention_archive':False,'retained_external_file_count':len(retained_files),
+        'mission_flags':receipt['mission_flags'],'verified_archived_bytes':True},indent=2))
+
+
+if __name__=='__main__':
+    main()

@@ -6,7 +6,7 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-run28 在相同 TF 容差配置下再次出现 Nav2 外推与旧变换错误，完整探索和返航未通过。离线时钟核查没有发现时间域混用或倒退；两红色替身均匹配，平面标注误差约 0.52/2.40 cm，原始自由区覆盖约 90.46%。地图导出、终态停车与自有进程退出通过，完整记录见 [TF 时钟与容差实验](docs/tf-timing-experiment.md)。用户目前没有小车访问条件，继续推进仿真，实车验收暂缓。
+最新 run29 启用导航失败后的有限恢复等待，完成两个红色替身标注和返航，独立原生位姿的返航位置误差约 1.59 cm。11 次恢复等待均通过，但仍出现 11 次 TF 导航故障，完整探索和视觉覆盖未通过。3 组接受的 RGB-D 审计、地图导出、终态停车与自有进程退出通过，详见 [run29 结果](experiments/run29/run29-outcome-review.md) 和 [TF 时钟与容差实验](docs/tf-timing-experiment.md)。用户目前没有小车访问条件，实车验收暂缓。
 
 后续 [输入管道对照与改进](docs/writer-pipe-timing.md) 已完成，管道扩容保留原期限并通过测试、构建及 CI。run27 的启动失败完整保留；run28 新增启动计时后在 17.21 秒内就绪，三组接受的 RGB-D 均写入且没有 writer 故障。任务失败使 consumer 失效，整体留存审计仍失败，不能把文件已写入等同于整轮通过。见 [run27](experiments/run27/README.md) 与 [run28 档案](experiments/run28/README.md)。
 

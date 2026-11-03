@@ -1,0 +1,1340 @@
+{
+  "schema_version": 1,
+  "frame_id": "map",
+  "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+  "status": "done",
+  "reason": "perception_unverified_incomplete;home_frontier_return_attempts_exhausted;final_observation_checks_incomplete",
+  "mission_success": false,
+  "returned_pose_verified": true,
+  "map_complete": false,
+  "visual_coverage_complete": false,
+  "mission_timed_out": false,
+  "target_definition_verified": false,
+  "coordinates_valid": true,
+  "inspection": {
+    "request_id": "goal-3",
+    "status": "satisfied",
+    "reason": "processed_frame_window",
+    "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+    "ready": true,
+    "after_stamp_ns": 153320000000,
+    "deadline_wall": 593.333387175,
+    "expected_pose": [
+      1.1516607250861581,
+      0.010990696284257417,
+      -1.3521273809209546
+    ],
+    "required_frames": 3,
+    "min_span_ns": 200000000,
+    "accepted_frames": 3,
+    "first_rgb_stamp_ns": 153400000000,
+    "last_rgb_stamp_ns": 153900000000,
+    "first_depth_stamp_ns": 153400000000,
+    "last_depth_stamp_ns": 153900000000,
+    "producer_identity": [
+      "6220d164-1139-4106-bfe9-75967d87c6d7",
+      "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+      "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+      "camera_optical_frame"
+    ],
+    "reset_count": 1,
+    "rejection_counts": {
+      "sample_before_barrier": 1
+    },
+    "last_evidence": {
+      "rgb_stamp_ns": 153900000000,
+      "depth_stamp_ns": 153900000000,
+      "processed_stamp_ns": 154000000000,
+      "sequence": 620,
+      "rgb_sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6",
+      "depth_sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691",
+      "base_pose": [
+        1.1276055777305154,
+        0.013237583793573612,
+        -1.2263103446226291
+      ],
+      "camera_pose": [
+        1.15597346158512,
+        -0.06582734626781107,
+        0.030000000000000082,
+        0.12119285519633892,
+        -0.6966435902592939,
+        0.6966435902592942,
+        -0.12119285519633896
+      ],
+      "candidate_count": 0,
+      "detection_count": 0,
+      "unlocalized_candidate_count": 0
+    },
+    "visual_coverage_claimed": false,
+    "goal_token": 3,
+    "sampling_after_stamp_ns": 153320000000,
+    "conditions": {
+      "stamp_ns": 154600000000,
+      "phase": "inspecting",
+      "blocking_condition": null,
+      "current_pose": [
+        1.1276055777305154,
+        0.013237583793573612,
+        -1.2263103446226291
+      ],
+      "distance_m": 0.02415985550000676,
+      "yaw_error_rad": 0.12581703629832575,
+      "position_tolerance_m": 0.05,
+      "yaw_tolerance_rad": 0.26,
+      "pose_within_tolerance": true,
+      "pose_stable_wall_s": 5.603823035999994,
+      "odom_stamp_ns": 154595000000,
+      "odom_wall_age_s": 0.07760019899990311,
+      "odom_ros_age_s": 0.005,
+      "odom_fresh": true,
+      "odom_sample_stationary": true,
+      "odom_stationary_count": 152,
+      "stop_confirmed": true
+    },
+    "frame_retention": {
+      "enabled": true,
+      "fault": null,
+      "current_window": 1,
+      "state": "complete",
+      "selected_count": 3,
+      "stored_count": 3,
+      "total_selected_count": 3,
+      "window_count": 1,
+      "offline_artifacts_verified": false
+    }
+  },
+  "last_inspection_failure": null,
+  "observation_actions": {
+    "mode": "bounded_processed_frames",
+    "closed": true,
+    "close_reason": "perception_unverified_incomplete",
+    "started_wall": null,
+    "deadline_wall": null,
+    "queue": null,
+    "active": null,
+    "attempts": [],
+    "continuation": {
+      "home_frontier_resumes": 0,
+      "resume_limit": 1,
+      "resume_active": false,
+      "return_started_wall": 756.617985237,
+      "return_deadline_wall": 996.617985237,
+      "return_reserve_s": 15.0,
+      "return_attempts": 4,
+      "return_attempt_limit": 4,
+      "decisions": [
+        {
+          "wall": 898.834539732,
+          "resumed": false,
+          "reason": "home_frontier_return_attempts_exhausted",
+          "selection": {
+            "state": "goal",
+            "goal": {
+              "x": 3.1752059682763236,
+              "y": -0.02894398039271362,
+              "yaw": -0.8519663271732721,
+              "kind": "frontier",
+              "anchor": [
+                3.52520597349173,
+                -0.4289439863531781
+              ]
+            },
+            "frontier_count": 1,
+            "uncovered_count": 2577,
+            "reachable_count": 2577,
+            "unobserved_count": 0
+          },
+          "resume_count_before": 0,
+          "return_deadline_wall": 996.617985237,
+          "return_attempts": 4
+        }
+      ]
+    },
+    "visual_coverage_claimed": false,
+    "validation_scope": "processed_frame_windows_only"
+  },
+  "navigation_recovery": null,
+  "frame_retention": {
+    "consumer_session": "b4080a4a-f53e-4da0-bc6c-b52011bb08ca",
+    "current_window": 1,
+    "enabled": true,
+    "fault": null,
+    "ignored_results": 0,
+    "reserved_metadata_bytes": 108544,
+    "scope": "exact_accepted_metadata_and_receipts; offline_artifacts_not_audited",
+    "windows": [
+      {
+        "accepted": [
+          {
+            "reason": null,
+            "request": {
+              "accepted_ordinal": 1,
+              "after_stamp_ns": 153320000000,
+              "goal_token": 3,
+              "inspection_request_id": "goal-3",
+              "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+              "retention_id": "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+              "sample": {
+                "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+                "depth_sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691",
+                "depth_stamp_ns": 153400000000,
+                "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+                "detector_session_id": "6220d164-1139-4106-bfe9-75967d87c6d7",
+                "frame_id": "camera_optical_frame",
+                "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+                "rgb_sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6",
+                "rgb_stamp_ns": 153400000000,
+                "sequence": 618,
+                "source": "red_rgbd_sim_baseline"
+              },
+              "schema_version": 1,
+              "tf": {
+                "base_pose": [
+                  1.1276055777305154,
+                  0.013237583793573612,
+                  -1.2263103446226291
+                ],
+                "camera_pose": [
+                  1.15597346158512,
+                  -0.06582734626781107,
+                  0.030000000000000082,
+                  0.12119285519633892,
+                  -0.6966435902592939,
+                  0.6966435902592942,
+                  -0.12119285519633896
+                ],
+                "stamp_ns": 153400000000
+              }
+            },
+            "request_sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b",
+            "result": {
+              "checkpoint_persisted": true,
+              "completed_wall": 586.283031147,
+              "reason": null,
+              "receipt": {
+                "directory": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b",
+                "file_fsync_completed": true,
+                "files": {
+                  "camera_info.json": {
+                    "bytes": 549,
+                    "sha256": "e00edd2b7d5b075b637795eef05449f88bb0c5460d15d86e23e88ccc1c206001"
+                  },
+                  "depth.bin": {
+                    "bytes": 1228800,
+                    "sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691"
+                  },
+                  "manifest.json": {
+                    "bytes": 1364,
+                    "sha256": "2a72073532c69fda0d373e277497719643d8bfbe0b8f9adf5c9dfe1f9b293478"
+                  },
+                  "producer.json": {
+                    "bytes": 2060,
+                    "sha256": "59893205e747b836e5ecb26c2f9dd439ebc7e3e5b44a3a4c55c8e0068296fd55"
+                  },
+                  "request.json": {
+                    "bytes": 1116,
+                    "sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b"
+                  },
+                  "rgb.bin": {
+                    "bytes": 921600,
+                    "sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6"
+                  }
+                },
+                "request_sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b"
+              },
+              "request_sha256": "c66617bd41a93866a59355db2096ef6f81c540fbf949586b05eabe078920033b",
+              "requested_wall": 585.494325943,
+              "retention_id": "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+              "status": "stored",
+              "writer_owned": false
+            },
+            "state": "stored"
+          },
+          {
+            "reason": null,
+            "request": {
+              "accepted_ordinal": 2,
+              "after_stamp_ns": 153320000000,
+              "goal_token": 3,
+              "inspection_request_id": "goal-3",
+              "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+              "retention_id": "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+              "sample": {
+                "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+                "depth_sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691",
+                "depth_stamp_ns": 153600000000,
+                "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+                "detector_session_id": "6220d164-1139-4106-bfe9-75967d87c6d7",
+                "frame_id": "camera_optical_frame",
+                "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+                "rgb_sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6",
+                "rgb_stamp_ns": 153600000000,
+                "sequence": 619,
+                "source": "red_rgbd_sim_baseline"
+              },
+              "schema_version": 1,
+              "tf": {
+                "base_pose": [
+                  1.1276055777305154,
+                  0.013237583793573615,
+                  -1.2263103446226291
+                ],
+                "camera_pose": [
+                  1.15597346158512,
+                  -0.06582734626781107,
+                  0.030000000000000082,
+                  0.12119285519633892,
+                  -0.6966435902592939,
+                  0.6966435902592942,
+                  -0.12119285519633896
+                ],
+                "stamp_ns": 153600000000
+              }
+            },
+            "request_sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba",
+            "result": {
+              "checkpoint_persisted": true,
+              "completed_wall": 587.033886106,
+              "reason": null,
+              "receipt": {
+                "directory": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba",
+                "file_fsync_completed": true,
+                "files": {
+                  "camera_info.json": {
+                    "bytes": 549,
+                    "sha256": "1187c2f5f17f474c209df12df1be882bbbeeef3e4b43520d59fe3be1dc5acf66"
+                  },
+                  "depth.bin": {
+                    "bytes": 1228800,
+                    "sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691"
+                  },
+                  "manifest.json": {
+                    "bytes": 1364,
+                    "sha256": "c474b564b04497e1e58294129f02adedfba169e2bfb3dab7f8e47672e47e3f95"
+                  },
+                  "producer.json": {
+                    "bytes": 2060,
+                    "sha256": "c9da7edeaf5a7cf4fc1fc870ff376bdd0fa3c46c3a7d218d1e832da39324e839"
+                  },
+                  "request.json": {
+                    "bytes": 1116,
+                    "sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba"
+                  },
+                  "rgb.bin": {
+                    "bytes": 921600,
+                    "sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6"
+                  }
+                },
+                "request_sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba"
+              },
+              "request_sha256": "d92a0012d067dd50e233bda2ff4730706260fe9c4bb7d88a6f65c588d9f563ba",
+              "requested_wall": 585.896863992,
+              "retention_id": "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+              "status": "stored",
+              "writer_owned": false
+            },
+            "state": "stored"
+          },
+          {
+            "reason": null,
+            "request": {
+              "accepted_ordinal": 3,
+              "after_stamp_ns": 153320000000,
+              "goal_token": 3,
+              "inspection_request_id": "goal-3",
+              "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+              "retention_id": "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972",
+              "sample": {
+                "calibration_id": "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+                "depth_sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691",
+                "depth_stamp_ns": 153900000000,
+                "detector_config_id": "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+                "detector_session_id": "6220d164-1139-4106-bfe9-75967d87c6d7",
+                "frame_id": "camera_optical_frame",
+                "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+                "rgb_sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6",
+                "rgb_stamp_ns": 153900000000,
+                "sequence": 620,
+                "source": "red_rgbd_sim_baseline"
+              },
+              "schema_version": 1,
+              "tf": {
+                "base_pose": [
+                  1.1276055777305154,
+                  0.013237583793573612,
+                  -1.2263103446226291
+                ],
+                "camera_pose": [
+                  1.15597346158512,
+                  -0.06582734626781107,
+                  0.030000000000000082,
+                  0.12119285519633892,
+                  -0.6966435902592939,
+                  0.6966435902592942,
+                  -0.12119285519633896
+                ],
+                "stamp_ns": 153900000000
+              }
+            },
+            "request_sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311",
+            "result": {
+              "checkpoint_persisted": true,
+              "completed_wall": 587.683631663,
+              "reason": null,
+              "receipt": {
+                "directory": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311",
+                "file_fsync_completed": true,
+                "files": {
+                  "camera_info.json": {
+                    "bytes": 549,
+                    "sha256": "89b501d7ea73160b1cd3d2eb7e3a27c7415199907b0d150061053069d22620c1"
+                  },
+                  "depth.bin": {
+                    "bytes": 1228800,
+                    "sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691"
+                  },
+                  "manifest.json": {
+                    "bytes": 1364,
+                    "sha256": "434274c0f959f3db51697e0628711a268138d27130e8d0b3ae6909fe954e0dd7"
+                  },
+                  "producer.json": {
+                    "bytes": 2060,
+                    "sha256": "adaba2da0cd6988aa63a13324ba38f6da85e55d7a51d6edeccce2b862a7f90e8"
+                  },
+                  "request.json": {
+                    "bytes": 1116,
+                    "sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311"
+                  },
+                  "rgb.bin": {
+                    "bytes": 921600,
+                    "sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6"
+                  }
+                },
+                "request_sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311"
+              },
+              "request_sha256": "271ad51ee091f7b722ca0b082038fa82120b2a5b98c5ba5a5d08450b0132c311",
+              "requested_wall": 586.876155169,
+              "retention_id": "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972",
+              "status": "stored",
+              "writer_owned": false
+            },
+            "state": "stored"
+          }
+        ],
+        "binding": {
+          "after_stamp_ns": 153320000000,
+          "goal_token": 3,
+          "inspection_request_id": "goal-3",
+          "map_epoch": "25683868-155b-4018-abf3-bee99edf0473"
+        },
+        "closed_wall": 588.283727132,
+        "created_wall": 585.012595699,
+        "deadline_wall": 593.333387175,
+        "ids": [
+          "retain-3e0e0e2499084029eae00bfa6a006c9fafd8b88a341088e6e4861da849622ea0",
+          "retain-28ef7c74c0ad55066048c87e1bc8cd728e9d8ee1d4f44cb70c7df2ae1d34adfe",
+          "retain-023ea6d8ba2d91f273b486122a6c7edf2e70bdc3551bc3e98307c864d7286972"
+        ],
+        "late_results": 0,
+        "ledger_accepted_count": 3,
+        "ledger_reset_count": 1,
+        "number": 1,
+        "processing_satisfied": true,
+        "reason": null,
+        "state": "complete"
+      }
+    ]
+  },
+  "initial_clearance_prior": {
+    "enabled": true,
+    "coordinates_valid": true,
+    "frame_id": "map",
+    "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+    "center": [
+      0.00884839980788424,
+      0.008657285581196052
+    ],
+    "verified_radius_m": 0.3,
+    "margin_m": 0.05,
+    "source": "smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811",
+    "currently_filled_unknown_cells": 0,
+    "sensor_observation": false,
+    "raw_slam_map_modified": false
+  },
+  "target_count_prior": null,
+  "targets": [
+    {
+      "uid": 1,
+      "class_id": "red_object",
+      "x": 3.590219574789414,
+      "y": -0.05748303821229211,
+      "z": -0.041871900530268284,
+      "hits": 146,
+      "first_stamp": 120.8,
+      "last_stamp": 267.1,
+      "confirmed": true,
+      "source_id": ""
+    },
+    {
+      "uid": 2,
+      "class_id": "red_object",
+      "x": -0.3737583372639172,
+      "y": -1.5728249169335966,
+      "z": -0.04281006873447573,
+      "hits": 80,
+      "first_stamp": 180.6,
+      "last_stamp": 233.7,
+      "confirmed": true,
+      "source_id": ""
+    }
+  ],
+  "unconfirmed_target_candidates": [],
+  "observation_sources": [
+    "red_rgbd_sim_baseline"
+  ],
+  "home": [
+    0.00884839980788424,
+    0.008657285581196052,
+    -0.03960325806191402
+  ],
+  "final_pose": [
+    0.03424922667237759,
+    -0.002434335894764714,
+    -0.17857791139047524
+  ],
+  "failures": [
+    {
+      "anchor": [
+        1.2016607258312162,
+        -0.49370534524813925
+      ],
+      "kind": "frontier",
+      "attempts": 1,
+      "last_time": 590.625340364,
+      "reason": "6:"
+    },
+    {
+      "anchor": [
+        1.1516363803313208,
+        -1.1961736096811713
+      ],
+      "kind": "frontier",
+      "attempts": 1,
+      "last_time": 689.730751041,
+      "reason": "6:"
+    },
+    {
+      "anchor": [
+        2.0950906841768573,
+        -1.1961736096811713
+      ],
+      "kind": "frontier",
+      "attempts": 1,
+      "last_time": 722.441341262,
+      "reason": "6:"
+    },
+    {
+      "anchor": [
+        3.395090703548367,
+        -1.2108456870821187
+      ],
+      "kind": "frontier",
+      "attempts": 1,
+      "last_time": 755.531150976,
+      "reason": "6:"
+    }
+  ],
+  "events": [
+    {
+      "stamp": 120.058,
+      "event": "home_recorded",
+      "pose": [
+        0.00884839980788424,
+        0.008657285581196052,
+        -0.03960325806191402
+      ],
+      "map_epoch": "25683868-155b-4018-abf3-bee99edf0473"
+    },
+    {
+      "stamp": 120.058,
+      "event": "goal_sent",
+      "token": 1,
+      "goal": {
+        "x": 0.251660711675113,
+        "y": 0.03717320726579787,
+        "yaw": -2.9441970937399127,
+        "kind": "frontier",
+        "anchor": [
+          0.001660707949822704,
+          -0.01282679347926019
+        ]
+      }
+    },
+    {
+      "stamp": 130.75,
+      "event": "goal_terminal",
+      "token": 1,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 130.75,
+      "event": "navigation_recovery_started",
+      "token": 1,
+      "detail": "6:",
+      "started_wall": 524.550511644,
+      "not_before_wall": 525.550511644,
+      "deadline_wall": 527.550511644,
+      "failed_map_odom_stamp_ns": 130200000000,
+      "latest_map_odom_stamp_ns": 130200000000
+    },
+    {
+      "stamp": 131.125,
+      "event": "navigation_recovery_ready",
+      "token": 1,
+      "detail": "6:",
+      "started_wall": 524.550511644,
+      "not_before_wall": 525.550511644,
+      "deadline_wall": 527.550511644,
+      "failed_map_odom_stamp_ns": 130200000000,
+      "latest_map_odom_stamp_ns": 131200000000,
+      "ready_wall": 525.612558883
+    },
+    {
+      "stamp": 131.125,
+      "event": "goal_sent",
+      "token": 2,
+      "goal": {
+        "x": 0.9016607213608678,
+        "y": 0.00725559413994914,
+        "yaw": -0.8519663271732721,
+        "kind": "frontier",
+        "anchor": [
+          1.2516607265762743,
+          -0.39274441182051534
+        ]
+      }
+    },
+    {
+      "stamp": 143.1,
+      "event": "goal_terminal",
+      "token": 2,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 143.1,
+      "event": "navigation_recovery_started",
+      "token": 2,
+      "detail": "6:",
+      "started_wall": 557.309819054,
+      "not_before_wall": 558.309819054,
+      "deadline_wall": 560.309819054,
+      "failed_map_odom_stamp_ns": 142575000000,
+      "latest_map_odom_stamp_ns": 142575000000
+    },
+    {
+      "stamp": 143.484,
+      "event": "navigation_recovery_ready",
+      "token": 2,
+      "detail": "6:",
+      "started_wall": 557.309819054,
+      "not_before_wall": 558.309819054,
+      "deadline_wall": 560.309819054,
+      "failed_map_odom_stamp_ns": 142575000000,
+      "latest_map_odom_stamp_ns": 143575000000,
+      "ready_wall": 558.312563547
+    },
+    {
+      "stamp": 143.484,
+      "event": "goal_sent",
+      "token": 3,
+      "goal": {
+        "x": 1.1516607250861581,
+        "y": 0.010990696284257417,
+        "yaw": -1.3521273809209546,
+        "kind": "frontier",
+        "anchor": [
+          1.2516607265762743,
+          -0.4390093104212651
+        ]
+      }
+    },
+    {
+      "stamp": 152.053,
+      "event": "goal_terminal",
+      "token": 3,
+      "success": true,
+      "detail": "4:",
+      "status": 4,
+      "error_code": 0,
+      "error_msg": ""
+    },
+    {
+      "stamp": 152.053,
+      "event": "inspection_settling",
+      "token": 3,
+      "timeout_s": 12.0,
+      "evidence": {
+        "request_id": "goal-3",
+        "status": "waiting",
+        "reason": null,
+        "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+        "ready": true,
+        "after_stamp_ns": 152053000000,
+        "deadline_wall": 593.333387175,
+        "expected_pose": [
+          1.1516607250861581,
+          0.010990696284257417,
+          -1.3521273809209546
+        ],
+        "required_frames": 3,
+        "min_span_ns": 200000000,
+        "accepted_frames": 0,
+        "first_rgb_stamp_ns": null,
+        "last_rgb_stamp_ns": null,
+        "first_depth_stamp_ns": null,
+        "last_depth_stamp_ns": null,
+        "producer_identity": null,
+        "reset_count": 0,
+        "rejection_counts": {},
+        "last_evidence": null,
+        "visual_coverage_claimed": false,
+        "goal_token": 3,
+        "sampling_after_stamp_ns": null,
+        "conditions": null,
+        "frame_retention": {
+          "enabled": true,
+          "fault": null,
+          "current_window": null,
+          "state": "idle",
+          "selected_count": 0,
+          "stored_count": 0,
+          "total_selected_count": 0,
+          "window_count": 0,
+          "offline_artifacts_verified": false
+        }
+      }
+    },
+    {
+      "stamp": 153.32,
+      "event": "inspection_started",
+      "token": 3
+    },
+    {
+      "stamp": 154.6,
+      "event": "inspection_complete",
+      "evidence": {
+        "request_id": "goal-3",
+        "status": "satisfied",
+        "reason": "processed_frame_window",
+        "map_epoch": "25683868-155b-4018-abf3-bee99edf0473",
+        "ready": true,
+        "after_stamp_ns": 153320000000,
+        "deadline_wall": 593.333387175,
+        "expected_pose": [
+          1.1516607250861581,
+          0.010990696284257417,
+          -1.3521273809209546
+        ],
+        "required_frames": 3,
+        "min_span_ns": 200000000,
+        "accepted_frames": 3,
+        "first_rgb_stamp_ns": 153400000000,
+        "last_rgb_stamp_ns": 153900000000,
+        "first_depth_stamp_ns": 153400000000,
+        "last_depth_stamp_ns": 153900000000,
+        "producer_identity": [
+          "6220d164-1139-4106-bfe9-75967d87c6d7",
+          "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+          "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+          "camera_optical_frame"
+        ],
+        "reset_count": 1,
+        "rejection_counts": {
+          "sample_before_barrier": 1
+        },
+        "last_evidence": {
+          "rgb_stamp_ns": 153900000000,
+          "depth_stamp_ns": 153900000000,
+          "processed_stamp_ns": 154000000000,
+          "sequence": 620,
+          "rgb_sha256": "7a4db2388022971309ff6a16fcb49957bb1f51d552bae17a4db6db544402bab6",
+          "depth_sha256": "29292563b5a6214cc5ef89238fc50e6d94d1e8cd6ac8d2e7fea8e61cd08e8691",
+          "base_pose": [
+            1.1276055777305154,
+            0.013237583793573612,
+            -1.2263103446226291
+          ],
+          "camera_pose": [
+            1.15597346158512,
+            -0.06582734626781107,
+            0.030000000000000082,
+            0.12119285519633892,
+            -0.6966435902592939,
+            0.6966435902592942,
+            -0.12119285519633896
+          ],
+          "candidate_count": 0,
+          "detection_count": 0,
+          "unlocalized_candidate_count": 0
+        },
+        "visual_coverage_claimed": false,
+        "goal_token": 3,
+        "sampling_after_stamp_ns": 153320000000,
+        "conditions": {
+          "stamp_ns": 154600000000,
+          "phase": "inspecting",
+          "blocking_condition": null,
+          "current_pose": [
+            1.1276055777305154,
+            0.013237583793573612,
+            -1.2263103446226291
+          ],
+          "distance_m": 0.02415985550000676,
+          "yaw_error_rad": 0.12581703629832575,
+          "position_tolerance_m": 0.05,
+          "yaw_tolerance_rad": 0.26,
+          "pose_within_tolerance": true,
+          "pose_stable_wall_s": 5.603823035999994,
+          "odom_stamp_ns": 154595000000,
+          "odom_wall_age_s": 0.07760019899990311,
+          "odom_ros_age_s": 0.005,
+          "odom_fresh": true,
+          "odom_sample_stationary": true,
+          "odom_stationary_count": 152,
+          "stop_confirmed": true
+        },
+        "frame_retention": {
+          "enabled": true,
+          "fault": null,
+          "current_window": 1,
+          "state": "complete",
+          "selected_count": 3,
+          "stored_count": 3,
+          "total_selected_count": 3,
+          "window_count": 1,
+          "offline_artifacts_verified": false
+        }
+      }
+    },
+    {
+      "stamp": 154.6,
+      "event": "goal_sent",
+      "token": 4,
+      "goal": {
+        "x": 1.5516607310466226,
+        "y": -0.1937053407777909,
+        "yaw": -2.432966381462123,
+        "kind": "frontier",
+        "anchor": [
+          1.2016607258312162,
+          -0.49370534524813925
+        ]
+      }
+    },
+    {
+      "stamp": 155.5,
+      "event": "goal_terminal",
+      "token": 4,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 155.5,
+      "event": "navigation_recovery_started",
+      "token": 4,
+      "detail": "6:",
+      "started_wall": 590.546364403,
+      "not_before_wall": 591.546364403,
+      "deadline_wall": 593.546364403,
+      "failed_map_odom_stamp_ns": 154950000000,
+      "latest_map_odom_stamp_ns": 154950000000
+    },
+    {
+      "stamp": 155.9,
+      "event": "navigation_recovery_ready",
+      "token": 4,
+      "detail": "6:",
+      "started_wall": 590.546364403,
+      "not_before_wall": 591.546364403,
+      "deadline_wall": 593.546364403,
+      "failed_map_odom_stamp_ns": 154950000000,
+      "latest_map_odom_stamp_ns": 155950000000,
+      "ready_wall": 591.612561974
+    },
+    {
+      "stamp": 155.9,
+      "event": "goal_sent",
+      "token": 5,
+      "goal": {
+        "x": 1.6016607317916807,
+        "y": -0.5437053459931973,
+        "yaw": -2.289626326416521,
+        "kind": "frontier",
+        "anchor": [
+          1.2516607265762743,
+          -0.9437053519536618
+        ]
+      }
+    },
+    {
+      "stamp": 167.875,
+      "event": "goal_terminal",
+      "token": 5,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 167.875,
+      "event": "navigation_recovery_started",
+      "token": 5,
+      "detail": "6:",
+      "started_wall": 624.846613884,
+      "not_before_wall": 625.846613884,
+      "deadline_wall": 627.846613884,
+      "failed_map_odom_stamp_ns": 167325000000,
+      "latest_map_odom_stamp_ns": 167325000000
+    },
+    {
+      "stamp": 168.875,
+      "event": "navigation_recovery_ready",
+      "token": 5,
+      "detail": "6:",
+      "started_wall": 624.846613884,
+      "not_before_wall": 625.846613884,
+      "deadline_wall": 627.846613884,
+      "failed_map_odom_stamp_ns": 167325000000,
+      "latest_map_odom_stamp_ns": 168950000000,
+      "ready_wall": 625.912527564
+    },
+    {
+      "stamp": 168.875,
+      "event": "goal_sent",
+      "token": 6,
+      "goal": {
+        "x": 1.6016607317916807,
+        "y": -1.1461736089361132,
+        "yaw": -2.922923707715851,
+        "kind": "frontier",
+        "anchor": [
+          1.1516607250861581,
+          -1.2461736104262293
+        ]
+      }
+    },
+    {
+      "stamp": 180.6,
+      "event": "goal_terminal",
+      "token": 6,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 180.6,
+      "event": "navigation_recovery_started",
+      "token": 6,
+      "detail": "6:",
+      "started_wall": 656.363216063,
+      "not_before_wall": 657.363216063,
+      "deadline_wall": 659.363216063,
+      "failed_map_odom_stamp_ns": 180075000000,
+      "latest_map_odom_stamp_ns": 180075000000
+    },
+    {
+      "stamp": 180.9,
+      "event": "navigation_recovery_ready",
+      "token": 6,
+      "detail": "6:",
+      "started_wall": 656.363216063,
+      "not_before_wall": 657.363216063,
+      "deadline_wall": 659.363216063,
+      "failed_map_odom_stamp_ns": 180075000000,
+      "latest_map_odom_stamp_ns": 180950000000,
+      "ready_wall": 657.412790371
+    },
+    {
+      "stamp": 180.9,
+      "event": "goal_sent",
+      "token": 7,
+      "goal": {
+        "x": 1.4516363848016691,
+        "y": -1.5461736148965777,
+        "yaw": 2.279422598922567,
+        "kind": "frontier",
+        "anchor": [
+          1.1516363803313208,
+          -1.1961736096811713
+        ]
+      }
+    },
+    {
+      "stamp": 192.75,
+      "event": "goal_terminal",
+      "token": 7,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 192.75,
+      "event": "navigation_recovery_started",
+      "token": 7,
+      "detail": "6:",
+      "started_wall": 689.678256611,
+      "not_before_wall": 690.678256611,
+      "deadline_wall": 692.678256611,
+      "failed_map_odom_stamp_ns": 192200000000,
+      "latest_map_odom_stamp_ns": 192200000000
+    },
+    {
+      "stamp": 193.155,
+      "event": "navigation_recovery_ready",
+      "token": 7,
+      "detail": "6:",
+      "started_wall": 689.678256611,
+      "not_before_wall": 690.678256611,
+      "deadline_wall": 692.678256611,
+      "failed_map_odom_stamp_ns": 192200000000,
+      "latest_map_odom_stamp_ns": 193200000000,
+      "ready_wall": 690.712412873
+    },
+    {
+      "stamp": 193.155,
+      "event": "goal_sent",
+      "token": 8,
+      "goal": {
+        "x": 1.7950906797065087,
+        "y": -1.5461736148965777,
+        "yaw": 0.862170054667226,
+        "kind": "frontier",
+        "anchor": [
+          2.0950906841768573,
+          -1.1961736096811713
+        ]
+      }
+    },
+    {
+      "stamp": 204.868,
+      "event": "goal_terminal",
+      "token": 8,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 204.868,
+      "event": "navigation_recovery_started",
+      "token": 8,
+      "detail": "6:",
+      "started_wall": 722.411525589,
+      "not_before_wall": 723.411525589,
+      "deadline_wall": 725.411525589,
+      "failed_map_odom_stamp_ns": 204325000000,
+      "latest_map_odom_stamp_ns": 204325000000
+    },
+    {
+      "stamp": 205.25,
+      "event": "navigation_recovery_ready",
+      "token": 8,
+      "detail": "6:",
+      "started_wall": 722.411525589,
+      "not_before_wall": 723.411525589,
+      "deadline_wall": 725.411525589,
+      "failed_map_odom_stamp_ns": 204325000000,
+      "latest_map_odom_stamp_ns": 205325000000,
+      "ready_wall": 723.413438703
+    },
+    {
+      "stamp": 205.25,
+      "event": "goal_sent",
+      "token": 9,
+      "goal": {
+        "x": 3.0450906983329604,
+        "y": -1.6108456930425832,
+        "yaw": 0.8519663271732721,
+        "kind": "frontier",
+        "anchor": [
+          3.395090703548367,
+          -1.2108456870821187
+        ]
+      }
+    },
+    {
+      "stamp": 216.75,
+      "event": "goal_terminal",
+      "token": 9,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 216.75,
+      "event": "navigation_recovery_started",
+      "token": 9,
+      "detail": "6:",
+      "started_wall": 755.482715972,
+      "not_before_wall": 756.482715972,
+      "deadline_wall": 758.482715972,
+      "failed_map_odom_stamp_ns": 216200000000,
+      "latest_map_odom_stamp_ns": 216200000000
+    },
+    {
+      "stamp": 217.1,
+      "event": "navigation_recovery_ready",
+      "token": 9,
+      "detail": "6:",
+      "started_wall": 755.482715972,
+      "not_before_wall": 756.482715972,
+      "deadline_wall": 758.482715972,
+      "failed_map_odom_stamp_ns": 216200000000,
+      "latest_map_odom_stamp_ns": 217075000000,
+      "ready_wall": 756.512830914
+    },
+    {
+      "stamp": 217.1,
+      "event": "cancel_requested",
+      "next_phase": "returning",
+      "reason": "perception_unverified_incomplete"
+    },
+    {
+      "stamp": 217.177,
+      "event": "goal_sent",
+      "token": 10,
+      "goal": {
+        "x": 0.00884839980788424,
+        "y": 0.008657285581196052,
+        "yaw": -0.03960325806191402,
+        "kind": "home",
+        "anchor": [
+          0.00884839980788424,
+          0.008657285581196052
+        ]
+      }
+    },
+    {
+      "stamp": 228.0,
+      "event": "goal_terminal",
+      "token": 10,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 228.0,
+      "event": "navigation_recovery_started",
+      "token": 10,
+      "detail": "6:",
+      "started_wall": 788.349779129,
+      "not_before_wall": 789.349779129,
+      "deadline_wall": 791.349779129,
+      "failed_map_odom_stamp_ns": 227450000000,
+      "latest_map_odom_stamp_ns": 227450000000
+    },
+    {
+      "stamp": 228.0,
+      "event": "return_retry",
+      "detail": "6:"
+    },
+    {
+      "stamp": 228.4,
+      "event": "navigation_recovery_ready",
+      "token": 10,
+      "detail": "6:",
+      "started_wall": 788.349779129,
+      "not_before_wall": 789.349779129,
+      "deadline_wall": 791.349779129,
+      "failed_map_odom_stamp_ns": 227450000000,
+      "latest_map_odom_stamp_ns": 228450000000,
+      "ready_wall": 789.413114323
+    },
+    {
+      "stamp": 228.4,
+      "event": "goal_sent",
+      "token": 11,
+      "goal": {
+        "x": 0.00884839980788424,
+        "y": 0.008657285581196052,
+        "yaw": -0.03960325806191402,
+        "kind": "home",
+        "anchor": [
+          0.00884839980788424,
+          0.008657285581196052
+        ]
+      }
+    },
+    {
+      "stamp": 239.654,
+      "event": "goal_terminal",
+      "token": 11,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 239.654,
+      "event": "navigation_recovery_started",
+      "token": 11,
+      "detail": "6:",
+      "started_wall": 821.204093837,
+      "not_before_wall": 822.204093837,
+      "deadline_wall": 824.204093837,
+      "failed_map_odom_stamp_ns": 238950000000,
+      "latest_map_odom_stamp_ns": 238950000000
+    },
+    {
+      "stamp": 239.654,
+      "event": "return_retry",
+      "detail": "6:"
+    },
+    {
+      "stamp": 240.1,
+      "event": "navigation_recovery_ready",
+      "token": 11,
+      "detail": "6:",
+      "started_wall": 821.204093837,
+      "not_before_wall": 822.204093837,
+      "deadline_wall": 824.204093837,
+      "failed_map_odom_stamp_ns": 238950000000,
+      "latest_map_odom_stamp_ns": 240075000000,
+      "ready_wall": 822.213153829
+    },
+    {
+      "stamp": 240.1,
+      "event": "goal_sent",
+      "token": 12,
+      "goal": {
+        "x": 0.00884839980788424,
+        "y": 0.008657285581196052,
+        "yaw": -0.03960325806191402,
+        "kind": "home",
+        "anchor": [
+          0.00884839980788424,
+          0.008657285581196052
+        ]
+      }
+    },
+    {
+      "stamp": 262.8,
+      "event": "goal_terminal",
+      "token": 12,
+      "success": false,
+      "detail": "6:",
+      "status": 6,
+      "error_code": 102,
+      "error_msg": ""
+    },
+    {
+      "stamp": 262.8,
+      "event": "navigation_recovery_started",
+      "token": 12,
+      "detail": "6:",
+      "started_wall": 887.126025378,
+      "not_before_wall": 888.126025378,
+      "deadline_wall": 890.126025378,
+      "failed_map_odom_stamp_ns": 262075000000,
+      "latest_map_odom_stamp_ns": 262075000000
+    },
+    {
+      "stamp": 262.8,
+      "event": "return_retry",
+      "detail": "6:"
+    },
+    {
+      "stamp": 263.286,
+      "event": "navigation_recovery_ready",
+      "token": 12,
+      "detail": "6:",
+      "started_wall": 887.126025378,
+      "not_before_wall": 888.126025378,
+      "deadline_wall": 890.126025378,
+      "failed_map_odom_stamp_ns": 262075000000,
+      "latest_map_odom_stamp_ns": 262950000000,
+      "ready_wall": 888.184223663
+    },
+    {
+      "stamp": 263.286,
+      "event": "goal_sent",
+      "token": 13,
+      "goal": {
+        "x": 0.00884839980788424,
+        "y": 0.008657285581196052,
+        "yaw": -0.03960325806191402,
+        "kind": "home",
+        "anchor": [
+          0.00884839980788424,
+          0.008657285581196052
+        ]
+      }
+    },
+    {
+      "stamp": 265.75,
+      "event": "goal_terminal",
+      "token": 13,
+      "success": true,
+      "detail": "4:",
+      "status": 4,
+      "error_code": 0,
+      "error_msg": ""
+    },
+    {
+      "stamp": 267.25,
+      "event": "home_frontier_decision",
+      "wall": 898.834539732,
+      "resumed": false,
+      "reason": "home_frontier_return_attempts_exhausted",
+      "selection": {
+        "state": "goal",
+        "goal": {
+          "x": 3.1752059682763236,
+          "y": -0.02894398039271362,
+          "yaw": -0.8519663271732721,
+          "kind": "frontier",
+          "anchor": [
+            3.52520597349173,
+            -0.4289439863531781
+          ]
+        },
+        "frontier_count": 1,
+        "uncovered_count": 2577,
+        "reachable_count": 2577,
+        "unobserved_count": 0
+      },
+      "resume_count_before": 0,
+      "return_deadline_wall": 996.617985237,
+      "return_attempts": 4
+    }
+  ],
+  "limitations": [
+    "Map-frame observations are not pose-graph landmarks.",
+    "2D coverage needs a validated detector and target-height assumption.",
+    "Navigation success is independently checked against TF at home.",
+    "A red simulation surrogate does not establish real target recognition."
+  ]
+}

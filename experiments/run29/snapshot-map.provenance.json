@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "method": "captured_occupancy_grid_offline_export",
+  "source": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/final-save.json",
+  "source_bytes": 117948,
+  "source_sha256": "e2b8a31ee74e26618a76c1c2dd87612c31f23493f613e3ddd63ec95053633810",
+  "frame_id": "map",
+  "map_stamp_ns": 275875000000,
+  "map_metadata": {
+    "frame_id": "map",
+    "stamp_ns": 275875000000,
+    "map_load_time_ns": 0,
+    "width": 83,
+    "height": 52,
+    "resolution": 0.05000000074505806,
+    "origin": {
+      "xyz": [
+        -0.4497940857403857,
+        -2.103944011312623,
+        0.0
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "valid_geometry": true
+    },
+    "receipt_ros_ns": 276085000000,
+    "receipt_wall_s": 3.283394811999983,
+    "source_age_ros_s": 0.375,
+    "receipt_age_wall_s": 0.615638669999953
+  },
+  "snapshot_capture": {
+    "valid": true,
+    "captured_ros_ns": 276250000000,
+    "captured_wall_s": 3.899033481999936,
+    "epoch": {
+      "raw": "25683868-155b-4018-abf3-bee99edf0473",
+      "receipt_ros_ns": 0,
+      "receipt_wall_s": 2.3566920549999395,
+      "receipt_age_wall_s": 1.5423414269999967
+    }
+  },
+  "source_report_export_status": {
+    "passed": true,
+    "errors": [],
+    "exports": {
+      "/slam_toolbox/serialize_map": {
+        "service": "/slam_toolbox/serialize_map",
+        "requested_prefix": "/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/ros_smoke/run29-navigation-recovery/final-map",
+        "status": "service_success",
+        "sent_wall_s": 3.9929654059999393,
+        "sent_ros_ns": 276250000000,
+        "result": 0,
+        "completed_wall_s": 4.501997861999939
+      }
+    }
+  },
+  "source_grid_sha256": "767d955e1f2bc2ec73b74763d1a19f58c844bd8f5cf03a43e93d4806070fdf14",
+  "input_classification": {
+    "free_threshold": 0.25,
+    "occupied_threshold": 0.65,
+    "free_max_cell_inclusive": 25,
+    "occupied_min_cell_inclusive": 65,
+    "rounding": "nearest_integer_ties_to_even; free_test_first",
+    "unknown_and_intermediate_to": -1
+  },
+  "source_cell_counts": {
+    "-1": 1082,
+    "100": 649,
+    "0": 2585
+  },
+  "yaml": {
+    "image": "snapshot-map.pgm",
+    "mode": "trinary",
+    "resolution": 0.05000000074505806,
+    "origin": [
+      -0.4497940857403857,
+      -2.103944011312623,
+      0.0
+    ],
+    "negate": 0,
+    "occupied_thresh": 0.65,
+    "free_thresh": 0.196
+  },
+  "conventions": {
+    "grid_index": "width*y+x; y=0 bottom row",
+    "pgm_index": "width*(height-1-y)+x; top row first",
+    "origin": "metric lower-left corner of cell (0,0); yaw in radians, no half-cell shift",
+    "planar_tolerance": 1e-09,
+    "yaml_thresholds": "fixed Nav2 trinary reload thresholds; distinct from input classification"
+  },
+  "verification": {
+    "passed": true,
+    "method": "reopened_P5_and_YAML; reconstructed_all_trinary_cells",
+    "verified_cells": 4316,
+    "class_counts": {
+      "-1": 1082,
+      "100": 649,
+      "0": 2585
+    },
+    "files": {
+      "snapshot-map.pgm": {
+        "bytes": 4329,
+        "sha256": "534a78911335ffdc774c9898425ac1d5a0353b63a319e73f5f21512e25abaf6a"
+      },
+      "snapshot-map.yaml": {
+        "bytes": 180,
+        "sha256": "396f77784d0c0ad9836b91a9185181b140fac8dd16130a1dcfcdf63ea2717281"
+      }
+    }
+  },
+  "limitations": [
+    "No live map service was called or repaired; source report is unchanged.",
+    "Trinary export preserves unknowns and classifies intermediate probabilities as unknown; raw probabilities remain in source JSON.",
+    "YAML has no frame field; use the recorded frame_id when configuring map_server.",
+    "File readback does not prove complete mapping, visual coverage, navigation safety, or mission success."
+  ]
+}

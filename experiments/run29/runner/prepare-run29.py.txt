@@ -1,0 +1,302 @@
+"""Prepare, never launch, fresh run29 using the closed run28 helper templates.
+
+Run only after root has tested, installed and committed the recovery change.
+Explicit CLI arguments record root's external exec-session completion receipt;
+they do not turn run28's failed mission/retention audit into a success.
+"""
+import argparse
+import ast
+import hashlib
+import json
+import math
+from pathlib import Path
+import subprocess
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+SETUP = ROOT / 'outputs/setup'
+OLD = ROOT / 'outputs/ros_smoke/run28-startup-timing'
+OUT = ROOT / 'outputs/ros_smoke/run29-navigation-recovery'
+NAMES = ('env.sh', 'process.py', 'param-gate.py', 'preflight.py', 'save.py',
+         'provenance.py', 'installed-check.py')
+RECOVERY = {'navigation_failure_cooldown_s': 1.0, 'navigation_recovery_timeout_s': 3.0}
+SOURCE_ROOTS = ('src', 'scripts', 'tools', 'config', 'worlds', 'patches')
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+def replace_once(source, old, new):
+    if source.count(old) != 1:
+        raise RuntimeError('Expected exactly one frozen template anchor: ' + old[:120])
+    return source.replace(old, new, 1)
+
+
+def template(previous, name):
+    path = SETUP / name
+    raw = path.read_bytes()
+    expected = previous['prepared_helper_sha256'][path.relative_to(ROOT).as_posix()]
+    if sha(raw) != expected:
+        raise RuntimeError('Frozen run28 helper changed: ' + name)
+    return raw.decode('utf-8').replace('\r\n', '\n')
+
+
+def render_helpers(previous, token):
+    """Pure text rendering; no runtime, subprocesses or file writes."""
+    helpers = {}
+    for name in NAMES:
+        value = template(previous, 'run28-' + name)
+        value = value.replace(previous['token'], token)
+        value = value.replace('run28-startup-timing', OUT.name)
+        value = value.replace('run28', 'run29').replace('Run28', 'Run29').replace('RUN28', 'RUN29')
+        helpers[name] = value
+
+    helpers['env.sh'] = replace_once(helpers['env.sh'],
+        '-p autonomous:=true -p tf_max_age_s:=1.5',
+        '-p autonomous:=true -p tf_max_age_s:=1.5 '
+        '-p navigation_failure_cooldown_s:=1.0 -p navigation_recovery_timeout_s:=3.0')
+
+    process = replace_once(helpers['process.py'], 'import json\n', 'import json\nimport math\n')
+    process = replace_once(process,
+        "    actual=parameters['limo_maze_mission']['values']\n",
+        """    actual=parameters['limo_maze_mission']['values']
+    recovery_expected={'navigation_failure_cooldown_s':1.0,'navigation_recovery_timeout_s':3.0}
+    recovery_actual={name:actual.get(name) for name in recovery_expected}
+    recovery_passed=(parameters['limo_maze_mission']['status']=='received' and all(
+        isinstance(recovery_actual[name],dict) and recovery_actual[name].get('set') is True
+        and recovery_actual[name].get('type')==3 and recovery_actual[name].get('value')==value
+        for name,value in recovery_expected.items()))
+    report['navigation_recovery_parameter_gate']={'expected':recovery_expected,
+        'actual':recovery_actual,'passed':recovery_passed,
+        'scope':'Read-only live receipt after Mission loaded/save-early; not a pre-first-goal claim.'}
+    write(OUT/'navigation-recovery-parameter-gate.json',report['navigation_recovery_parameter_gate'])
+    if not recovery_passed:raise RuntimeError('Live navigation recovery parameters differ from run29 profile')
+    local=parameters['local_costmap/local_costmap']
+    local_values=local['values']
+    tolerance=local_values.get('transform_tolerance',{})
+    sim_time=local_values.get('use_sim_time',{})
+    local_passed=(local['status']=='received' and tolerance.get('set') is True
+        and tolerance.get('type')==3 and type(tolerance.get('value')) in (int,float)
+        and math.isfinite(tolerance['value']) and tolerance['value']>=0
+        and sim_time.get('set') is True and sim_time.get('type')==1 and sim_time.get('value') is True)
+    report['local_costmap_parameter_readback']={'actual':local_values,'passed':local_passed,
+        'parameters_modified':False,'transform_tolerance_expected_value':None}
+    if not local_passed:raise RuntimeError('Local costmap parameter readback missing or invalid')
+""")
+    helpers['process.py'] = process
+
+    gate = replace_once(helpers['param-gate.py'], 'import json\n', 'import json\nimport math\n')
+    gate = replace_once(gate, 'rclpy.init()\n',
+        "observed_only={'local_costmap/local_costmap':{'transform_tolerance':None,'use_sim_time':None}}\n"
+        "queries={**expected,**observed_only}\nrclpy.init()\n")
+    gate = replace_once(gate, 'for target, values in expected.items():', 'for target, values in queries.items():')
+    gate = replace_once(gate,
+        "        actual[target] = {name:getattr(value,fields[value.type]) for name,value in zip(expected[target],future.result().values)}\n",
+        "        values=future.result().values\n"
+        "        if len(values)!=len(queries[target]):raise RuntimeError('Parameter response length mismatch: '+target)\n"
+        "        actual[target] = {name:getattr(value,fields[value.type]) for name,value in zip(queries[target],values)}\n")
+    gate = replace_once(gate, '    passed = actual == expected\n',
+        "    local=actual['local_costmap/local_costmap']\n"
+        "    tolerance=local['transform_tolerance']\n"
+        "    local_passed=(local['use_sim_time'] is True and type(tolerance) in (int,float)\n"
+        "        and math.isfinite(tolerance) and tolerance>=0)\n"
+        "    passed = all(actual[target]==values for target,values in expected.items()) and local_passed\n")
+    gate = replace_once(gate,
+        "json.dump({'expected':expected,'actual':actual,'passed':passed},handle,indent=2)",
+        "json.dump({'expected':expected,'actual':actual,'passed':passed,"
+        "'observed_only_parameter_names':{k:list(v) for k,v in observed_only.items()},"
+        "'parameters_modified':False},handle,indent=2)")
+    helpers['param-gate.py'] = gate
+
+    saver = replace_once(helpers['save.py'],
+        "NODES = ('controller_server', 'slam_toolbox', 'limo_maze_mission', 'red_rgbd_sim_baseline')",
+        "NODES = ('controller_server', 'slam_toolbox', 'limo_maze_mission', 'red_rgbd_sim_baseline',\n"
+        "         'local_costmap/local_costmap')")
+    saver = replace_once(saver,
+        "                                            list_completed_wall_s=now-started)\n",
+        "                                            list_completed_wall_s=now-started)\n"
+        "                                requested=(['transform_tolerance','use_sim_time']\n"
+        "                                           if name=='local_costmap/local_costmap' else names)\n"
+        "                                if not set(requested).issubset(names):\n"
+        "                                    raise ValueError('Required local costmap parameter missing')\n"
+        "                                item['requested_names']=requested\n")
+    saver = replace_once(saver, "len(result.values) != len(item['listed_names'])",
+                         "len(result.values) != len(item['requested_names'])")
+    saver = replace_once(saver, "zip(item['listed_names'], result.values)",
+                         "zip(item['requested_names'], result.values)")
+    saver = replace_once(saver, "GetParameters.Request(names=item['listed_names'])",
+                         "GetParameters.Request(names=item['requested_names'])")
+    helpers['save.py'] = saver
+
+    installed = replace_once(helpers['installed-check.py'],
+        "passed = all(r['equal'] and r['current_workspace'] for r in rows)\nreport = dict(passed=passed, modules=rows)\n",
+        """from ament_index_python.packages import get_package_share_directory
+launch_rows=[]
+for package,filename in (('limo_maze_mission','mission.launch.py'),
+        ('limo_maze_bringup','mapping_navigation.launch.py'),
+        ('limo_maze_bringup','navigation.launch.py'),('limo_sim_bringup','sim.launch.py')):
+    source=root/'src'/package/'launch'/filename
+    installed=Path(get_package_share_directory(package))/'launch'/filename
+    launch_rows.append(dict(package=package,file=filename,source=str(source),installed=str(installed),
+        sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+        equal=installed.read_bytes()==source.read_bytes(),
+        current_workspace=installed.resolve().is_relative_to(root/'install')))
+passed = all(r['equal'] and r['current_workspace'] for r in rows+launch_rows)
+report = dict(passed=passed, modules=rows, launch_files=launch_rows)
+""")
+    helpers['installed-check.py'] = installed
+    for name, value in helpers.items():
+        if name.endswith('.py'):
+            ast.parse(value, filename='run29-' + name)
+    # These assertions guard comparison-critical limits; the rest of each
+    # template is copied byte-for-byte after the explicit run-ID substitutions.
+    for fragment in ('wait_motion_startup(60)', "wait_ready('observer','READY:',25)",
+                     'deadline = began+1800', "run('save-early',60,", "run('parameter-gate',45,",
+                     "'retention_worker_timeout_s':5.0,'retention_request_timeout_s':10.0",
+                     "'retention_shutdown_timeout_s':8.0"):
+        if fragment not in process:
+            raise RuntimeError('Unchanged runtime bound missing: '+fragment)
+    for fragment in ('--duration 70 --motion-wait 90', '-p tf_max_age_s:=1.5',
+                     '-p mission_timeout_s:=900.0', '-p return_timeout_s:=240.0',
+                     '-p goal_timeout_s:=120.0', '-p observation_stage_timeout_s:=360.0',
+                     '-p require_retained_inspection:=true', '-p retention_enabled:=true',
+                     '-p retention_max_jobs:=96'):
+        if fragment not in helpers['env.sh']:
+            raise RuntimeError('Unchanged runtime setting missing: '+fragment)
+    return helpers
+
+
+def render_start(previous):
+    start = template(previous, 'start-run28.sh')
+    start = start.replace('run28-startup-timing', OUT.name).replace('run28', 'run29')
+    start = replace_once(start,
+        "assert report['previous_attempt']['original_all_owned_groups_empty'] is False\n"
+        "assert report['previous_attempt']['later_scoped_groups_empty'] is True\n",
+        "assert report['previous_attempt']['original_all_owned_groups_empty'] is True\n"
+        "assert report['previous_attempt']['root_exec_completion']['session_id'] == 74367\n"
+        "assert report['previous_attempt']['root_exec_completion']['exit_code'] == 1\n")
+    start = replace_once(start, "assert report['code_head'] is None\n", """assert report['code_head'] is None
+assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=normal'])
+assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip() == report['prepared_head_actual']
+for name, expected in report['prepared_source_sha256'].items():
+    assert hashlib.sha256((root/name).read_bytes()).hexdigest() == expected, name
+assert hashlib.sha256((root/'worlds/smoke_maze.world').read_bytes()).hexdigest() == report['world_sha256']
+assert report['navigation_recovery_parameters'] == {'navigation_failure_cooldown_s':1.0,'navigation_recovery_timeout_s':3.0}
+assert (out/'epoch.txt').read_bytes() == (report['epoch']+'\\n').encode('ascii')
+assert report['writer_profile']['worker_wall_seconds'] == 5.0
+assert report['writer_profile']['request_wall_seconds'] == 10.0
+assert report['writer_profile']['shutdown_wall_seconds'] == 8.0
+""")
+    embedded = start.split("<<'PY'\n", 1)[1].split('\nPY\n', 1)[0]
+    ast.parse(embedded, filename='start-run29.sh:embedded-python')
+    return start
+
+
+def previous_run_evidence():
+    closed = read(OLD / 'orchestration.json')
+    elapsed = closed.get('elapsed_wall_s')
+    if not (closed.get('status') == 'terminal_observed' and closed.get('terminal')
+            and type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed > 0
+            and closed.get('all_owned_groups_empty') is True):
+        raise RuntimeError('Run28 has not preserved its reviewed terminal and owned closure receipt')
+    stops = closed.get('stops') or {}
+    nested = closed.get('recorder_inner_recheck') or {}
+    if not (stops and all(row.get('remaining') == [] and row.get('ownership_errors') == []
+                        and row.get('remaining_check_complete') is True for row in stops.values())
+            and nested.get('remaining') == [] and nested.get('ownership_errors') == []
+            and nested.get('remaining_check_complete') is True):
+        raise RuntimeError('Run28 recorded group/nested-recorder closure is incomplete')
+    writer = read(OLD / 'retention-shutdown.json')
+    if not (writer.get('writer') is None and writer.get('fault') is None
+            and writer.get('shutdown', {}).get('owned_writer_exit_confirmed') is True
+            and writer.get('shutdown', {}).get('final_checkpoint_persisted') is True):
+        raise RuntimeError('Run28 producer did not confirm writer exit and final checkpoint')
+    return closed, writer, read(OLD / 'preparation.json')
+
+
+def source_snapshot():
+    if subprocess.check_output(['git','status','--porcelain','--untracked-files=normal'], cwd=ROOT):
+        raise RuntimeError('Commit the reviewed changes and use a clean tree before preparation')
+    head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT, text=True).strip()
+    names = subprocess.check_output(['git','ls-files','-z','--',*SOURCE_ROOTS], cwd=ROOT)
+    paths = sorted(name.decode('utf-8') for name in names.split(b'\0') if name)
+    if not paths:
+        raise RuntimeError('No tracked runtime source files found')
+    return head, {name: sha((ROOT / name).read_bytes()) for name in paths}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-previous-root-session', type=int, choices=[74367], required=True)
+    parser.add_argument('--confirmed-previous-root-exit-code', type=int, choices=[1], required=True)
+    args = parser.parse_args(argv)
+    targets = [SETUP / ('run29-' + name) for name in NAMES] + [SETUP / 'start-run29.sh']
+    if OUT.exists() or OUT.is_symlink() or any(path.exists() or path.is_symlink() for path in targets):
+        raise RuntimeError('Refuse any existing run29 output/helper; no restart or overwrite')
+    closed, writer, previous = previous_run_evidence()
+    nav = (ROOT / 'src/limo_maze_bringup/config/nav2_rpp_tf_experimental.yaml').read_bytes()
+    world = (ROOT / 'worlds/smoke_maze.world').read_bytes()
+    if nav != (OLD / 'nav2-rpp-03m.yaml').read_bytes() or sha(nav) != previous['nav2_sha256']:
+        raise RuntimeError('Nav2/TF profile changed from run28')
+    if sha(world) != previous['world_sha256']:
+        raise RuntimeError('Comparison world changed from run28')
+    for path in ('src/limo_maze_mission/limo_maze_mission/node.py',
+                 'src/limo_maze_mission/launch/mission.launch.py'):
+        source = (ROOT / path).read_bytes()
+        ast.parse(source, filename=path)
+        if not all(name.encode('ascii') in source for name in RECOVERY):
+            raise RuntimeError('Recovery parameter implementation missing: '+path)
+    head, sources = source_snapshot()
+    collector = (ROOT / 'scripts/capture_motion_evidence.py').read_bytes()
+    if sha(collector) != previous['collector_source_sha256_at_preparation']:
+        raise RuntimeError('Motion collector changed from run28')
+    token, epoch = 'run29-' + uuid.uuid4().hex, str(uuid.uuid4())
+    helpers, start = render_helpers(previous, token), render_start(previous)
+    payloads = {SETUP / ('run29-' + name): value.encode('utf-8') for name, value in helpers.items()}
+    payloads[SETUP / 'start-run29.sh'] = start.encode('utf-8')
+    report = {**previous, 'run': OUT.name, 'code_head': None, 'prepared_head_actual': head,
+        'token': token, 'epoch': epoch, 'navigation_recovery_parameters': RECOVERY,
+        'prepared_source_sha256': sources,
+        'prepared_helper_sha256': {path.relative_to(ROOT).as_posix(): sha(data) for path,data in payloads.items()},
+        'preparation_script_sha256': sha(Path(__file__).read_bytes()),
+        'previous_attempt': {'run': OLD.name, 'status': closed['status'], 'errors': closed['errors'],
+            'original_all_owned_groups_empty': closed['all_owned_groups_empty'],
+            'original_orchestration_sha256': sha((OLD / 'orchestration.json').read_bytes()),
+            'retention_shutdown_sha256': sha((OLD / 'retention-shutdown.json').read_bytes()),
+            'retention_audit_passed': closed.get('retention_audit_passed'),
+            'all_run_token_processes_absent': closed.get('all_run_token_processes_absent'),
+            'global_scan_limitation': closed.get('global_scan_limitation'),
+            'owned_writer_exit_confirmed': writer['shutdown']['owned_writer_exit_confirmed'],
+            'final_checkpoint_persisted': writer['shutdown']['final_checkpoint_persisted'],
+            'scope': 'Original owned-group closure and writer receipt; no global process-absence claim or success rewrite.',
+            'root_exec_completion': {'session_id': args.confirmed_previous_root_session,
+                'exit_code': args.confirmed_previous_root_exit_code,
+                'source': 'Root confirmation supplied as explicit prepare arguments.'}},
+        'change': 'Only mission navigation_failure_cooldown_s=1.0 and navigation_recovery_timeout_s=3.0; add read-only local-costmap parameter receipts.',
+        'startup_change': 'None relative to run28: motion collector outer readiness remains 60 s under global 1800 s.',
+        'local_costmap_parameter_capture': {'node': '/local_costmap/local_costmap',
+            'names': ['transform_tolerance','use_sim_time'], 'parameters_modified': False,
+            'transform_tolerance_expected_value': None},
+        'comparison_scope': 'Same run28 world, TF/RPP values, /mnt/c output, strict raw-frame retention and startup60. Mission900/return240/goal120/observation360/inspection12/writer5/request10/shutdown8 unchanged; only mission recovery values change.'}
+    # All validation precedes exclusive writes. Interrupted preparation remains
+    # visible and cannot be reused. The old run directory is never a write target.
+    if source_snapshot() != (head, sources):
+        raise RuntimeError('Source tree changed while preparing run29')
+    OUT.mkdir(parents=True)
+    (OUT / 'mission').mkdir()
+    for path, data in ((OUT / 'epoch.txt', (epoch+'\n').encode('ascii')),
+                       (OUT / 'nav2-rpp-03m.yaml', nav), *payloads.items(),
+                       (OUT / 'preparation.json', (json.dumps(report,indent=2,allow_nan=False)+'\n').encode('utf-8'))):
+        with path.open('xb') as stream:
+            stream.write(data)
+    print(json.dumps({'prepared':str(OUT),'epoch':epoch,'token':token,'prepared_head_actual':head,
+                      'launched':False,'navigation_recovery_parameters':RECOVERY},indent=2))
+
+
+if __name__ == '__main__':
+    main()

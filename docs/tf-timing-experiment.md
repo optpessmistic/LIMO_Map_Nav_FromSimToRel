@@ -2,6 +2,14 @@
 
 2026-11-01，按用户建议检查时钟一致性并尝试适度放宽限制。本实验使用 WSL / ROS2 Jazzy，未在实车验证。
 
+## 最新对照：run29 恢复等待
+
+2026-11-03，运行 `9e0a326`，仅相对 run28 启用任务恢复参数 `1.0/3.0`，原 TF 容差和任务期限保留。11 次失败均触发等待，并在约 1 秒墙钟后看到 map→odom 时间戳推进；未发生恢复超时。9 次 frontier 导航中 1 次成功，4 次 home 导航中最后一次成功。独立原生位姿返航位置误差 1.59 cm，两个红色替身已标注，但完整地图与视觉覆盖仍为 false。
+
+11 次导航失败的原始 error_code 均为 102，安装的 Nav2 1.3.13 `FollowPath.action` 定义其为 TF_ERROR；对应日志明确位于 RPPPathHandler 的未来外推。此定义属于 FollowPath，不能仅依据 NavigateToPose 状态 ABORTED 推断。实际读回 local costmap 的 `transform_tolerance=0.3`、`use_sim_time=true`，RPP 等待仍为 0.5 秒。这是两个不同调用路径的参数，本轮首发故障来自 RPP。
+
+3/3 接受的 RGB-D 通过严格审计；地图和位姿图保存、终态后 30 sim 秒静止、自有进程关闭通过。编排器退出 0 只表示运行与证据收尾正常，不改变 `mission_success=false`。日志中 TF 故障间隔近 31 秒墙钟；恢复等待没有消除它，仍需调查发布或传输延迟，不能据两轮返航结果证明因果改善。见 [run29 原始结果](../experiments/run29/run29-outcome-review.md)。该紧凑档案不复制大 bag 和原图，外部证据路径与哈希单列保存。
+
 ## run24 原始数据核查
 
 参数回读中，SLAM、Nav2 控制器、任务和识别节点均为 `use_sim_time=true`；启动检查发现一个 `/clock` 发布者。原始录包的 `/clock`、`map→odom`、`odom→base_footprint`、`/odom` 和 `/scan` 时间戳均无倒退，没有发现系统时间与仿真时间混用的证据。
