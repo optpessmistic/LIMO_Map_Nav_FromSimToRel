@@ -2,6 +2,8 @@
 
 Gazebo 显示三维迷宫、LIMO 和红色替身；RViz 显示机器人收到的传感器、SLAM 地图、导航路径与确认后的目标标注。两个窗口可以同时打开。以下命令在 **WSL Ubuntu-24.04 的 Bash 终端**执行，先进入仓库根目录，退出 Conda。
 
+要让小车自主试跑，请使用[当前建图标注试跑指南](manual-mapping-trial.md)：默认完成探索和标注后停车，返航可选。本页的三终端步骤只打开场景、建图导航服务与窗口。本次文档修订没有启动新仿真。
+
 ## 已经有仿真在运行
 
 每个窗口使用一个终端：
@@ -48,7 +50,7 @@ bash scripts/view_sim.sh rviz --frame odom \
 
 以下使用本机 F 盘的模型依赖，以及 C 盘当前 checkout 构建的仿真启动包和 RViz 预设。C 盘 overlay 包含单次模型生成修复，必须在 F 盘环境后加载。仅在没有已有仿真时执行第一步；三个终端都保持打开。若终端提示 `(base)`，先执行 `conda deactivate`。
 
-启动 SLAM 的终端 2 还需在 F 盘环境与 C 盘主 overlay 之间加载 **C 盘 `outputs/slam-steady-ws/install`**。这是已完成构建并用于 run30 的边界补丁加单调时钟发布版本；旧 F 盘 `slam-boundary-ws` 保留作历史对照。run30 已验证其建图判据、两个红色替身标注及返航，本轮无导航外推错误；观察覆盖与严格留存仍未全部通过，详见[有限验证结果](wsl-clock-tf.md)。
+启动 SLAM 的终端 2 还需在 F 盘环境与 C 盘主 overlay 之间加载 **C 盘 `outputs/slam-steady-map-ws/install`**。它包含边界补丁、TF 稳态调度和地图发布稳态调度；旧 `slam-steady-ws`、`slam-boundary-ws` 保留作历史对照。构建通过不等于本次完整任务通过，相关证据和限制见[地图发布时钟](map-publish-clock.md)。
 
 从 Windows PowerShell 可用 `wsl -d Ubuntu-24.04` 打开 Ubuntu；下面的命令均在 Ubuntu 内执行。WSLg 会把 Gazebo/RViz 显示为 Windows 桌面窗口。
 
@@ -78,7 +80,7 @@ source install/local_setup.bash
 ```bash
 cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
 source /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/scripts/env.sh
-source outputs/slam-steady-ws/install/local_setup.bash
+source outputs/slam-steady-map-ws/install/local_setup.bash
 source install/local_setup.bash
 ros2 pkg prefix slam_toolbox
 ros2 launch limo_maze_bringup mapping_navigation.launch.py \
@@ -86,7 +88,7 @@ ros2 launch limo_maze_bringup mapping_navigation.launch.py \
   slam_params:="$PWD/src/limo_maze_bringup/config/slam_smoke_experimental.yaml"
 ```
 
-打印的 SLAM 前缀应为 `/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-steady-ws/install/slam_toolbox`。这里使用 run30 的仿真导航配置。加载新 SLAM 后不要再次 `source scripts/env.sh`，以免改变 overlay 顺序；已有 SLAM 进程不会因另一个终端重新 source 而切换库。
+打印的 SLAM 前缀应为 `/mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel/outputs/slam-steady-map-ws/install/slam_toolbox`。这里保留已使用的 RPP/TF 实验导航配置。加载新 SLAM 后不要再次 `source scripts/env.sh`，以免改变 overlay 顺序；已有 SLAM 进程不会因另一个终端重新 source 而切换库。
 
 **终端 3：打开 RViz 地图、雷达和相机。**
 
@@ -96,7 +98,7 @@ bash scripts/view_sim.sh rviz \
   --runtime /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
 ```
 
-如果省略终端 2，给终端 3 的命令加 `--frame odom`，即可只查看模型和传感器。以上步骤没有启动自主探索，机器人保持等待；自主实验还须执行[初始检查、环视、感知与任务启动](rpp-smoke-reproduction.md)。不要同时启动第二套自主任务。任务结束后仍可保留这些窗口查看现场。
+如果省略终端 2，给终端 3 的命令加 `--frame odom`，即可只查看模型和传感器。以上步骤没有启动自主探索，机器人保持等待；自主实验还须执行[初始检查、环视、感知与任务启动](manual-mapping-trial.md)。不要同时启动第二套自主任务。任务结束后仍可保留这些窗口查看现场。
 
 `view_sim.sh` 只加载查看客户端需要的模型环境，不启动或替换 SLAM；因此终端 3 继续使用 F 盘 `--runtime`，实际建图库由终端 2 的加载顺序决定。run30 已关闭，单独打开查看客户端不会恢复该次实验。
 

@@ -12,9 +12,11 @@ import textwrap
 import tempfile
 from types import SimpleNamespace
 import unittest
+import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src' / 'limo_maze_mission'))
 from limo_maze_mission.core import Coverage, FailureBook, Goal, Grid, Planner, TargetStore
+from limo_maze_mission.artifacts import export_bundle
 
 
 def grid(rows, resolution=.1, origin=(0., 0., 0.)):
@@ -585,7 +587,7 @@ class AdapterCallbackTests(unittest.TestCase):
         methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in
                    ('tick', 'save_result', 'bounded_observation_enabled', 'observation_snapshot')]
         namespace = {'time': SimpleNamespace(monotonic=lambda: 1000., strftime=lambda _: 'test'),
-                     'Path': Path, 'json': json}
+                     'Path': Path, 'json': json, 'uuid': uuid, 'export_bundle': export_bundle}
         exec(compile(ast.Module(body=methods, type_ignores=[]), str(node_path), 'exec'), namespace)
         # Keep the disposable result under this test's workspace in restricted
         # Windows environments whose system temp directory is not writable.
@@ -593,13 +595,17 @@ class AdapterCallbackTests(unittest.TestCase):
                                          dir=Path(__file__).resolve().parent) as directory:
             node = SimpleNamespace(
                 last_clock=None, home=(1., 2., 0.), canceling=False, phase='exploring',
-                grid=object(), map_received=1000., started=0., mission_timed_out=False,
+                grid=grid(['#'*30]+['#'+'.'*28+'#']*28+['#'*30]),
+                map_received=1000., map_stamp_ns=1_000_000_000_000, started=0., mission_timed_out=False,
                 seconds=lambda: 1000., get_pose=lambda: (1., 2., 0.), publish_status=lambda: None,
                 result_written=False, map_complete=True, visual_complete=True, navigation_recovery=None,
                 failures=SimpleNamespace(entries=[]), targets=SimpleNamespace(confirmed=lambda: [], targets=[]),
-                coordinates_valid=True, map_epoch='test-epoch', prior_filled_cells=0,
-                sources=set(), events=[], get_logger=lambda: SimpleNamespace(info=lambda _: None, error=self.fail),
+                coordinates_valid=True, map_epoch='test-epoch', map_epoch_ready=True, prior_filled_cells=0,
+                detector_received=1000., completion_stop_verified=False, completion_selection=None,
+                sources={'synthetic_detector'}, events=[],
+                get_logger=lambda: SimpleNamespace(info=lambda _: None, error=self.fail),
                 cfg={'mission_timeout_s': 900., 'map_max_age_s': 5., 'target_definition_verified': True,
+                     'return_home': True, 'detector_timeout_s': 5.,
                      'map_frame': 'map', 'initial_clearance_radius_m': 0., 'initial_clearance_margin_m': .05,
                      'initial_clearance_source': '', 'output_dir': directory})
             def start_return(reason):
@@ -614,12 +620,17 @@ class AdapterCallbackTests(unittest.TestCase):
             # Model later complete home checks: geometry/coverage are complete,
             # the return pose is verified, and the detector definition is valid.
             node.phase, node.reason = 'done', 'returned_after_deadline'
+            node.completion_stop_verified = True
             namespace['save_result'](node, True, node.home)
-            result = json.loads((Path(directory) / 'mission_test.json').read_text(encoding='utf-8'))
+            result_path, = Path(directory).glob('mission_test_*.json')
+            result = json.loads(result_path.read_text(encoding='utf-8'))
             self.assertTrue(result['returned_pose_verified'])
             self.assertTrue(result['map_complete'] and result['visual_coverage_complete'])
             self.assertTrue(result['mission_timed_out'])
             self.assertFalse(result['mission_success'])
+            self.assertTrue(result['mapping_annotation_complete'])
+            self.assertEqual(result['artifacts']['status'], 'saved')
+            self.assertFalse(result['task_success'])
             self.assertIn('mission_timeout_incomplete', result['reason'])
 
     def test_late_goal_acceptance_after_cancel_timeout_is_canceled(self):

@@ -148,7 +148,7 @@ class ObservationActionDDSTests(unittest.TestCase):
         self.action_server = ActionServer(self.probe, NavigateToPose, action_name,
                                           execute_callback=self.execute_goal,
                                           cancel_callback=self.accept_cancel)
-        params = {"use_sim_time": True, "autonomous": True,
+        params = {"use_sim_time": True, "autonomous": True, "return_home": True,
                   "navigation_action": action_name,
                   "map_topic": "/observation_test/map",
                   "inspection_odom_topic": "/observation_test/odom",

@@ -2,6 +2,18 @@
 
 最近整理日期：2026-11-03。以下记录区分逻辑测试、ROS 接口、物理仿真和实车；某一层通过不代表其他层通过。完整课程任务仍未验收。
 
+## 建图标注完成与可选返航：2026-11-03
+
+按用户新范围，任务默认 `return_home=false`：导航所有权解除后，检查连续新鲜的停车里程计和稳定 TF，复查地图，再保存原始地图与已确认目标标注。规划耗时后重新检查证据新鲜度，缺地图或导出失败仍保存失败 JSON。停止调度、地图完成、标注交付和当前任务成功分别报告，不将未知目标数量解释为全部检出。操作步骤见[本机试跑指南](manual-mapping-trial.md)。
+
+保留可选返航。在有限观察模式下，验证到家后如需补图，释放已经结束的返航时限；下次返航重新计时，同一次返航重试不延时，累计返航次数、任务总时限和观察预算不重置。旧 `home_frontier_return_reserve_s` 接受但不再用于截断补图。历史 `manual_trial_01` 的 `return_total_timeout` 和失败记录保持原样。
+
+最终相关回归共 234 项，229 通过、5 项真实 ROS 条件未启用而跳过；覆盖取消终态、无返航停车、时钟暂停、地图重验、返航预算、留存、原始地图导出、坐标旋转与文件失败。完整无 ROS 测试集 580 项中 557 通过、22 跳过、1 项旧 Linux 进程测试失败：`test_missing_ready_assertion_still_flushes_worker_and_closes_pipes` 在 4 秒内未获得 worker-ready 文件。该项两次隔离复测通过（一次 2.131 秒；诊断复测的就绪文件 1.151 秒出现、stderr 为空，关闭检查通过），支持时序抖动的可能，但原失败未保留子进程输出，具体原因未确认。没有放宽生产期限来追认整套通过。早期 Windows 完整运行另有平台符号链接权限、临时目录和缺 PyYAML 问题；新计时器及结果字段所需的旧测试夹具已更新。
+
+WSL Jazzy 的 `limo_maze_mission` 构建成功，安装的 `node.py` 和 `artifacts.py` 与本轮源码逐字节相同；安装版 launch 的 `return_home` 默认值确认为 `false`。本轮未启动新的 ROS 导航或 Gazebo，未做完整仿真验收，也没有实车实验。
+
+本机诊断摘要位于 `outputs/validation/mapping-completion-20261103/targeted-tests.json`；旧进程测试的隔离诊断位于 `outputs/validation/missing-ready-isolated-20261103/`。这些路径是本机忽略输出，不替代本节的版本化验证记录。
+
 ## run31：导航与留存通过，观察点重验留下缺口
 
 运行版本 `acf3419cfaa78ae994b704f009c3d9cb6d337609`，对应 [CI 41611348134](https://github.com/optpessmistic/LIMO_Map_Nav_FromSimToRel/actions/runs/41611348134) 通过。保持 run30 的 SLAM overlay、TF 容差和各阶段预算；本轮仅包含已独立验证的观察排序及退休窗口回执修复。

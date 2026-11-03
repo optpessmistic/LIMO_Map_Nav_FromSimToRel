@@ -8,6 +8,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('autonomous', default_value='false'),
+        DeclareLaunchArgument('return_home', default_value='false'),
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('tf_max_age_s', default_value='1.0'),
         DeclareLaunchArgument('navigation_failure_cooldown_s', default_value='0.0'),
@@ -26,6 +27,7 @@ def generate_launch_description():
         DeclareLaunchArgument('post_mapping_observation_mode', default_value='off'),
         Node(package='limo_maze_mission', executable='mission', output='screen',
              parameters=[{'autonomous': ParameterValue(LaunchConfiguration('autonomous'), value_type=bool),
+                          'return_home': ParameterValue(LaunchConfiguration('return_home'), value_type=bool),
                           'use_sim_time': ParameterValue(LaunchConfiguration('use_sim_time'), value_type=bool),
                           'tf_max_age_s': ParameterValue(LaunchConfiguration('tf_max_age_s'), value_type=float),
                           'navigation_failure_cooldown_s': ParameterValue(LaunchConfiguration('navigation_failure_cooldown_s'), value_type=float),

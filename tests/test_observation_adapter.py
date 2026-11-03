@@ -13,10 +13,12 @@ import sys
 from types import ModuleType, SimpleNamespace as S
 import unittest
 from unittest.mock import patch
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src/limo_maze_mission'))
 from limo_maze_mission.core import Coverage, FailureBook, Goal, Grid, Planner, TargetStore, angle_delta
+from limo_maze_mission.artifacts import export_bundle
 from limo_maze_mission.inspection import EvidenceError, InspectionLedger, InspectionPolicy, validate_record
 from limo_maze_mission.observation import ObservationQueue, Policy as ObservationPolicy
 from test_mission_inspection import frame
@@ -90,7 +92,7 @@ adapter = ModuleType('draft_observation_adapter')
 adapter.__dict__.update({name: globals()[name] for name in (
     'asdict', 'json', 'Path', 'Coverage', 'FailureBook', 'Goal', 'Grid', 'Planner', 'TargetStore',
     'angle_delta', 'EvidenceError', 'InspectionLedger', 'InspectionPolicy', 'validate_record',
-    'ObservationQueue', 'ObservationPolicy')})
+    'ObservationQueue', 'ObservationPolicy', 'export_bundle', 'uuid')})
 adapter.__dict__.update({name: getattr(math, name) for name in ('atan2', 'cos', 'hypot', 'isfinite', 'sin')})
 adapter.__dict__.update(Node=FakeNode, time=TIME, ActionClient=lambda *a: Nav(),
     Buffer=lambda **kw: S(), TransformListener=lambda *a: S(), Duration=lambda **kw: S(**kw), Time=lambda **kw: S(**kw),
@@ -113,7 +115,9 @@ class AdapterTests(unittest.TestCase):
         adapter.time = TIME
 
     def mission(self, **overrides):
-        params = {'autonomous': True, 'post_mapping_observation_mode': 'bounded_processed_frames',
+        # These fixtures exercise the optional legacy return-home path. New
+        # mapping-completion tests explicitly override it to the new default.
+        params = {'autonomous': True, 'return_home': True, 'post_mapping_observation_mode': 'bounded_processed_frames',
                   'require_processed_inspection': True, 'observation_max_stations': 1,
                   'observation_headings_per_station': 2, 'observation_max_dispatches': 2}
         params.update(overrides)
@@ -363,7 +367,8 @@ class AdapterTests(unittest.TestCase):
             # Restore ONLY serialization; navigation and ledger still ran above.
             with patch.object(adapter.time, 'strftime', lambda fmt: 'fixture', create=True):
                 adapter.MissionNode.save_result(m, True, m.home)
-            result = json.loads((Path(directory)/'mission_fixture.json').read_text())
+            result_path, = Path(directory).glob('mission_fixture*.json')
+            result = json.loads(result_path.read_text())
         self.assertFalse(result['mission_success'])
         self.assertFalse(result['visual_coverage_complete'])
         self.assertTrue(result['returned_pose_verified'])

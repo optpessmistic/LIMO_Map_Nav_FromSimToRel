@@ -59,7 +59,7 @@ class ContinuationTests(unittest.TestCase):
         self.f.odom(m)
         m.map_received = t.TIME.wall
 
-    def test_new_reachable_frontier_resumes_without_reopening_queue_or_resetting_budgets(self):
+    def test_new_reachable_frontier_releases_completed_return_budget_only(self):
         m = self.close_views_and_arrive()
         queue = m.observation_queue
         deadline, return_deadline, started = m.observation_deadline_wall, m.return_deadline_wall, m.started
@@ -78,7 +78,9 @@ class ContinuationTests(unittest.TestCase):
         self.assertTrue(m.observation_closed)
         self.assertEqual(queue.dispatches, 2)
         self.assertEqual(m.observation_deadline_wall, deadline)
-        self.assertEqual(m.return_deadline_wall, return_deadline)
+        self.assertIsNone(m.return_deadline_wall)
+        self.assertIsNone(m.return_started)
+        self.assertGreater(return_deadline, t.TIME.wall)
         self.assertEqual(m.started, started)
         self.assertEqual(m.observation_attempt_records, records)
         self.assertEqual(m.failures.entries, failures)
@@ -118,11 +120,11 @@ class ContinuationTests(unittest.TestCase):
         self.assertIsNotNone(m.observation_queue)
         self.assertEqual(m.observation_queue.dispatches, 0)
         self.assertEqual(m.started, started)
-        self.assertEqual(m.return_started, return_started)
-        self.assertEqual(m.return_deadline_wall, deadline)
+        self.assertIsNone(m.return_started)
+        self.assertIsNone(m.return_deadline_wall)
         self.assertEqual(m.return_attempts, 1)
         self.assertEqual(m.home_frontier_resumes, 1)
-        self.assertLessEqual(m.observation_deadline_wall, deadline-m.cfg['home_frontier_return_reserve_s'])
+        self.assertGreater(m.observation_deadline_wall, deadline)
         self.assertLessEqual(m.observation_deadline_wall, started+m.cfg['mission_timeout_s'])
         self.assertFalse(m.visual_complete)
         self.f.tick(m)
@@ -137,12 +139,15 @@ class ContinuationTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 self.f.mission(frontier_fallback_standoff_m=value)
 
-    def test_second_mapping_completion_returns_without_new_views_or_time_reset(self):
+    def test_second_return_gets_fresh_deadline_without_refilling_observation_budget(self):
         m = self.close_views_and_arrive()
         original_map = m.grid
+        first_return_started, first_deadline = m.return_started, m.return_deadline_wall
         self.frontier_map(m)
         self.verify_home(m)
-        return_started, deadline = m.return_started, m.return_deadline_wall
+        self.assertIsNone(m.return_started)
+        self.assertIsNone(m.return_deadline_wall)
+        t.TIME.advance(1.)
         attempts = copy.deepcopy(m.observation_attempt_records)
         # A map update resolves the frontier before another goal is dispatched.
         m.grid = original_map
@@ -152,8 +157,9 @@ class ContinuationTests(unittest.TestCase):
         self.f.tick(m)
         self.assertEqual(m.goal.kind, 'home')
         self.assertEqual(m.return_attempts, 2)
-        self.assertEqual(m.return_started, return_started)
-        self.assertEqual(m.return_deadline_wall, deadline)
+        self.assertGreater(m.return_started, first_return_started)
+        self.assertGreater(m.return_deadline_wall, first_deadline)
+        self.assertAlmostEqual(m.return_deadline_wall-m.return_started, m.cfg['return_timeout_s'])
         self.assertEqual(m.observation_attempt_records, attempts)
         self.assertEqual(m.observation_queue.dispatches, 2)
         self.f.terminal(m)
@@ -162,7 +168,7 @@ class ContinuationTests(unittest.TestCase):
         self.assertFalse(m.visual_complete)
 
     def test_resume_denied_for_each_budget_without_fabricating_map_completion(self):
-        for budget in ('limit', 'mission', 'reserve', 'return_attempts'):
+        for budget in ('limit', 'mission', 'return_attempts'):
             with self.subTest(budget=budget):
                 self.setUp()
                 m = self.close_views_and_arrive()
@@ -171,8 +177,6 @@ class ContinuationTests(unittest.TestCase):
                     m.home_frontier_resumes = m.cfg['home_frontier_resume_limit']
                 elif budget == 'mission':
                     m.started = t.TIME.wall-m.cfg['mission_timeout_s']
-                elif budget == 'reserve':
-                    m.return_deadline_wall = t.TIME.wall+m.cfg['home_frontier_return_reserve_s']
                 else:
                     m.return_attempts = m.return_attempt_limit()
                 self.verify_home(m)
@@ -187,9 +191,9 @@ class ContinuationTests(unittest.TestCase):
         m = self.close_views_and_arrive()
         original = m.grid
         self.frontier_map(m); self.verify_home(m)
-        deadline = m.return_deadline_wall
         m.grid = original
         self.f.tick(m); self.f.tick(m); self.f.tick(m)
+        deadline = m.return_deadline_wall
         self.f.terminal(m)
         self.frontier_map(m); self.verify_home(m)
         self.assertEqual(m.phase, 'done')
@@ -257,13 +261,13 @@ class ContinuationTests(unittest.TestCase):
                 self.assertEqual(m.phase, 'blocked')
                 self.assertEqual(m.home_frontier_resumes, 0)
 
-    def test_resumed_pending_goal_reserve_waits_for_owned_terminal_and_keeps_absolute_deadline(self):
+    def test_resumed_pending_goal_mission_timeout_waits_for_terminal_then_starts_new_return_budget(self):
         m = self.close_views_and_arrive()
+        first_deadline = m.return_deadline_wall
         self.frontier_map(m); self.verify_home(m); self.f.tick(m)
         self.assertEqual(m.goal.kind, 'frontier')
-        deadline, start = m.return_deadline_wall, m.return_started
-        reserve_time = deadline-m.cfg['home_frontier_return_reserve_s']
-        self.f.tick(m, reserve_time-t.TIME.wall+.01, ros=False)
+        self.assertIsNone(m.return_deadline_wall)
+        self.f.tick(m, m.started+m.cfg['mission_timeout_s']-t.TIME.wall+.01, ros=False)
         self.assertTrue(m.canceling)
         self.assertEqual(m.cancel_next, 'returning')
         self.assertEqual(len(m.nav.sent), 4)
@@ -276,21 +280,35 @@ class ContinuationTests(unittest.TestCase):
         self.f.tick(m); self.f.tick(m)
         self.assertEqual(len(m.nav.sent), 5)
         self.assertEqual(m.goal.kind, 'home')
-        self.assertEqual(m.return_started, start)
-        self.assertEqual(m.return_deadline_wall, deadline)
+        self.assertGreater(m.return_started, first_deadline)
+        self.assertAlmostEqual(m.return_deadline_wall-m.return_started, m.cfg['return_timeout_s'])
         self.assertEqual(m.return_attempts, 2)
 
-    def test_absolute_deadline_while_canceling_paused_clock_upgrades_to_block_without_new_send(self):
-        m = self.close_views_and_arrive(cancel_timeout_s=30.)
-        self.frontier_map(m); self.verify_home(m); self.f.tick(m)
+    def test_return_deadline_with_pending_home_send_preserves_ownership_and_blocks_without_new_send(self):
+        m = self.f.mission(cancel_timeout_s=30., return_timeout_s=2.)
+        m.start_return('test_mapping_finished')
+        self.f.tick(m); self.f.tick(m)
+        self.assertTrue(m.send_pending)
+        self.assertEqual(m.goal.kind, 'home')
         deadline = m.return_deadline_wall
-        self.f.tick(m, deadline-m.cfg['home_frontier_return_reserve_s']-t.TIME.wall+.01, ros=False)
-        self.assertEqual(m.cancel_next, 'returning')
         self.f.tick(m, deadline-t.TIME.wall+.01, ros=False)
         self.assertEqual(m.cancel_next, 'blocked')
         self.assertEqual(m.reason, 'return_total_timeout')
         self.assertTrue(m.send_pending)
-        self.assertEqual(len(m.nav.sent), 4)
+        self.assertEqual(len(m.nav.sent), 1)
+
+    def test_same_return_retry_does_not_extend_deadline_or_reset_attempts(self):
+        m = self.f.mission(return_timeout_s=20.)
+        m.start_return('test_mapping_finished')
+        self.f.tick(m); self.f.tick(m)
+        deadline, started = m.return_deadline_wall, m.return_started
+        self.f.tick(m, 2.)
+        self.f.terminal(m, status=6)
+        self.assertEqual(m.goal.kind, 'home')
+        self.assertEqual(m.return_attempts, 2)
+        self.assertEqual(m.return_deadline_wall, deadline)
+        self.assertEqual(m.return_started, started)
+        self.assertEqual(len(m.nav.sent), 2)
 
     def test_timeout_zero_and_partial_frames_freeze_once_then_next_view(self):
         for frames in (0, 1, 2):

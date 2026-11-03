@@ -1,12 +1,14 @@
 # LIMO 未知迷宫多目标搜索
 
-课程项目：使用 ROS2 驱动 LIMO，在现场搭建的未知环境中自主探索和建图，搜索数量与位置均未知的目标，在地图上标注已确认目标，完成后返回起点。无需拿取物品。
+课程项目：使用 ROS2 驱动 LIMO，在现场搭建的未知环境中自主探索和建图，搜索数量与位置均未知的目标，在地图上标注已确认目标，完成后停车保存。返航通过 `return_home:=true` 单独启用，默认关闭；不包含拿取、搬运或解救动作。
 
 本仓库用于源代码、配置、实验方案、每周分工及验证记录的版本管理。复用 SLAM Toolbox、Nav2 和已有 LIMO 模型，将新增工作集中在自主任务调度、视觉确认、目标标注和验收。
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
-**2026-11-03：按用户要求，在 run34 完成后暂停。** 本轮初始环视及 4 次探索导航通过，标注 1 个红色替身；第四次到点后的观察因朝向超差超时，未完成建图或返航，严格留存审计失败。已关闭本轮所属进程，不再启动新实验。已完成工作、剩余问题及用户后续事项见[暂停交接](docs/paused-handoff-20261103.md)。
+**2026-11-03：根据新的任务范围，默认改为建图、标注后停车，返航可选。** 本次代码修正没有启动新仿真，也没有重写历史结果。本机的完整启动、查看与停止步骤见[建图标注试跑](docs/manual-mapping-trial.md)。新结果分别报告 `mapping_annotation_complete` 和 `task_success`；历史 `mission_success` 保留严格视觉覆盖、正式目标定义和返航的口径。
+
+此前 run34 已按要求结束并暂停：初始环视及 4 次探索导航通过，标注 1 个红色替身；第四次到点后的观察因朝向超差超时，未完成建图或返航，严格留存审计失败。已关闭当轮所属进程。该次交接与剩余问题保留在[暂停交接](docs/paused-handoff-20261103.md)，其失败结论不因本次修改而改变。
 
 run33 配置使用新 SLAM 安装，在初始环视就绪检查超时，未发出 Spin 目标，独立位姿未检测到运动；尚未进入自主任务。已补上生命周期服务查询的有界重试及逐节点诊断，保持总预检查和运动安全阈值。原日志不足以确认此次具体根因，见[就绪检查诊断](docs/initial-survey-readiness.md)；新地图时钟补丁仍待完整运行验证。
 
@@ -45,6 +47,7 @@ run32 实跑在第二个探索目标因地图接收超过 5 秒墙钟未更新�
 | 实验矩阵与完成标准 | [实验验收](docs/experiment-plan.md) |
 | ROS2 / Gazebo 接入 | [Jazzy 仿真](docs/jazzy-simulation.md) |
 | 打开三维场景、地图和相机窗口 | [Gazebo / RViz 可视化](docs/visualization.md) |
+| 本机试跑建图、目标标注与停车 | [当前试跑步骤与结果说明](docs/manual-mapping-trial.md) |
 | 首次启动等待与传感器就绪 | [冷启动诊断](docs/simulation-startup-diagnosis.md) |
 | 防止重复生成模型与同戳状态冲突 | [单次生成和原生模型检查](docs/single-spawn-diagnosis.md) |
 | ROS2 任务管理 | [任务节点](docs/ros2-mission.md) |
@@ -112,13 +115,13 @@ source scripts/env.sh
 ros2 launch limo_sim_bringup sim.launch.py world:="$PWD/worlds/smoke_maze.world"
 ```
 
-第二终端启动实时建图和导航：
+第二终端启动实时建图和导航；本机 C/F 两个工作区的完整加载顺序以[当前试跑步骤](docs/manual-mapping-trial.md)为准：
 
-当前系统 SLAM 2.8.5 存在最大边界漏墙问题。先按[边界补丁说明](docs/slam-grid-boundary.md)构建独立 overlay，再在导航终端显式加载；不要把原版运行记为补丁验证。
+当前系统 SLAM 2.8.5 的最大边界漏墙及发布调度已有独立 overlay 修正。本机现用 `outputs/slam-steady-map-ws`，包含边界、TF 稳态调度和地图稳态调度补丁，见[地图发布时钟](docs/map-publish-clock.md)。其他电脑先完成对应构建；不要把原版运行记为补丁验证。
 
 ```bash
 source scripts/env.sh
-source outputs/slam-boundary-ws/install/local_setup.bash
+source outputs/slam-steady-map-ws/install/local_setup.bash
 ros2 launch limo_maze_bringup mapping_navigation.launch.py
 ```
 
@@ -151,30 +154,23 @@ flowchart LR
     mission --> records[目标地图标注 任务日志 验收结果]
 ```
 
-任务管理器独占导航目标句柄，负责候选选择、失败重试、取消确认、观察、返航和到达验证。SLAM 和 Nav2 使用现有实现。任务包自带一个小型前沿候选选择器；调研过的 `explore_lite` 可作为后续对照，不能与当前任务节点同时发送导航目标。
+任务管理器独占导航目标句柄，负责候选选择、失败重试、取消确认、观察、停车以及可选返航和到达验证。SLAM 和 Nav2 使用现有实现。任务包自带一个小型前沿候选选择器；调研过的 `explore_lite` 可作为后续对照，不能与当前任务节点同时发送导航目标。
 
-未知目标数意味着结束条件来自探索和有效视觉覆盖，而不是“找够预设数量”。激光覆盖不等于摄像头看过。没有有效视觉覆盖或正式目标定义时，任务结果必须说明感知尚未验证。
+未知目标数意味着不能以“找够预设数量”结束。当前任务在地图探索完成、已发现目标标注保存并停车后报告本次结果；激光覆盖不等于摄像头看过，地图标注完成不证明全部物品已发现。完整视觉覆盖和正式目标定义仍单独记录。
 
 ## 地图与结果
 
 地图保存为原始占据地图，目标以独立 JSON 和 RViz Marker 图层标注，不画进障碍栅格。目标观测携带图像采样时间与相机坐标系，经该时间的 TF 转入地图；重复观测经确认与空间去重后形成目标记录。
 
-任务结束后，在同一 SLAM 会话中保存地图，并把该次任务结果叠加为 SVG：
+任务写入终态 JSON 时，会将同一会话的原始 SLAM 地图和已确认目标保存到旁边的新目录 `mission_<timestamp>_<id>_map/`。其中 `map.pgm` / `map.yaml` 可由 ROS 地图工具加载，`map.json` 保留原始占据值、旋转原点、时间戳和会话代次，`targets.json` 保存目标编号和坐标，`annotated.svg` 可直接在浏览器打开，`manifest.json` 记录文件 SHA256。目标图层不会写入占据栅格；已有目录不覆盖。
 
-```bash
-ros2 run nav2_map_server map_saver_cli -f outputs/map/final --ros-args -p use_sim_time:=true
-/usr/bin/python3 tools/export_annotated_map.py outputs/map/final.yaml \
-  outputs/mission/mission_<timestamp>.json --map-epoch '<该次结果的map_epoch>' \
-  --output outputs/map/annotated.svg
-```
-
-先创建 `outputs/map` 目录；替换示例中的任务文件名与代次。导出工具拒绝会话代次不符、无效坐标和图外标注，不修改原始地图。
+失败任务可以导出明确标为未完成的部分地图；坐标无效、会话不一致、目标超出地图或写入失败时，不生成可用标注包，并在任务 JSON 中保留错误。看见文件或两个红点不等于任务通过，具体字段见[结果说明](docs/manual-mapping-trial.md#查看保存结果)。
 
 离线目标评分使用 `tools/evaluate_targets.py`。它要求显式提供独立标定的 `map → world` 平移、旋转和类别映射，先最大化一对一匹配数量，再最小化总定位误差；输出 TP/FP/FN、precision/recall 和距离误差。零目标时未定义的比率保留为 `null`，目标清单匹配不等于整个任务成功。参见该工具的 `--help`；真值文件只允许评分器读取。
 
 仿真世界及 `.metadata.json` 是物理引擎/离线评估器输入，不能作为探索或识别输入。SDF 可通过 `tools/build_gazebo_world.py` 从 `# . S T` ASCII 生成，支持多个 `T`。环境中的红盒只是待替换的视觉替身。
 
-成功需要分别满足地图验收、目标搜索/标注验收、实际返航验收。无 frontier、导航 Action 成功或零检测都不能单独证明任务全部完成。更完整的判据与失败分类见实验方案。
+当前建图标注任务使用 `mapping_annotation_complete` 和 `task_success`；开启返航时，`task_success` 还要求返航验证通过。`mission_success` 保留历史更严格的全搜索、正式识别和返航标准，不能作为当前任务成功的唯一判据。无 frontier、导航 Action 成功或零检测都不能单独证明全部目标已发现；历史实验的原判定继续保留。
 
 ## 版本与复现
 

@@ -51,7 +51,9 @@ class FinalRepairTests(unittest.TestCase):
         self.assertEqual(m.started, started)
         self.assertEqual(m.map_epoch, epoch)
         self.assertEqual(m.inspection.epoch_barrier_ns, epoch_barrier)
-        self.assertEqual(m.return_deadline_wall, return_deadline)
+        self.assertIsNone(m.return_deadline_wall)
+        self.assertIsNone(m.return_started)
+        self.assertGreater(return_deadline, t.TIME.wall)
         self.assertIs(m.observation_queue, queue)
         self.assertEqual(queue.dispatches, 1)
         self.assertEqual(m.observation_deadline_wall, stage_deadline)
@@ -70,11 +72,12 @@ class FinalRepairTests(unittest.TestCase):
         self.assertEqual(queue.dispatches, 1)
         self.assertFalse(m.visual_complete)
 
-    def test_counterexample_planning_crosses_absolute_deadline_without_new_frontier_send(self):
+    def test_planning_after_verified_home_can_cross_old_return_deadline(self):
         m = self.c.close_views_and_arrive(home_frontier_return_reserve_s=.2, return_timeout_s=20.)
+        deadline = m.return_deadline_wall
         self.c.frontier_map(m)
         self.c.verify_home(m)
-        deadline, count, token = m.return_deadline_wall, len(m.nav.sent), m.token
+        count, token = len(m.nav.sent), m.token
         attempts = m.return_attempts
         t.TIME.advance(deadline-t.TIME.wall-.3, ros=False)
         actual = m.planner.select
@@ -86,22 +89,20 @@ class FinalRepairTests(unittest.TestCase):
         with patch.object(m.planner, 'select', side_effect=slow_select):
             self.c.f.tick(m)
         self.assertGreater(t.TIME.wall, deadline)
-        self.assertEqual(len(m.nav.sent), count)
-        self.assertEqual(m.token, token)
+        self.assertEqual(len(m.nav.sent), count+1)
+        self.assertEqual(m.token, token+1)
         self.assertEqual(m.return_attempts, attempts)
-        self.assertFalse(m.send_pending)
-        self.assertTrue(m.canceling)
-        self.assertEqual(m.cancel_next, 'blocked')
-        self.assertEqual(m.reason, 'return_total_timeout')
-        self.assertEqual(m.return_deadline_wall, deadline)
-        self.c.f.tick(m)
-        self.assertEqual(m.phase, 'blocked')
+        self.assertTrue(m.send_pending)
+        self.assertFalse(m.canceling)
+        self.assertEqual(m.goal.kind, 'frontier')
+        self.assertIsNone(m.return_deadline_wall)
 
-    def test_planning_crosses_reserve_returns_without_new_frontier_or_resetting_deadline(self):
+    def test_deprecated_reserve_does_not_truncate_resumed_exploration(self):
         m = self.c.close_views_and_arrive(home_frontier_return_reserve_s=2., return_timeout_s=20.)
+        deadline = m.return_deadline_wall
         self.c.frontier_map(m)
         self.c.verify_home(m)
-        deadline, count, token = m.return_deadline_wall, len(m.nav.sent), m.token
+        count, token = len(m.nav.sent), m.token
         t.TIME.advance(deadline-m.cfg['home_frontier_return_reserve_s']-t.TIME.wall-.1, ros=False)
         actual = m.planner.select
         def slow_select(*args, **kwargs):
@@ -110,16 +111,13 @@ class FinalRepairTests(unittest.TestCase):
             return selected
         with patch.object(m.planner, 'select', side_effect=slow_select):
             self.c.f.tick(m)
-        self.assertEqual(m.cancel_next, 'returning')
-        self.assertEqual(m.reason, 'home_frontier_return_reserve_reached')
-        self.assertEqual(len(m.nav.sent), count)
-        self.assertEqual(m.token, token)
-        self.assertFalse(m.home_frontier_resume_active)
-        self.c.f.tick(m)
-        self.c.f.tick(m)
-        self.assertEqual(m.goal.kind, 'home')
-        self.assertEqual(m.return_attempts, 2)
-        self.assertEqual(m.return_deadline_wall, deadline)
+        self.assertFalse(m.canceling)
+        self.assertEqual(len(m.nav.sent), count+1)
+        self.assertEqual(m.token, token+1)
+        self.assertTrue(m.home_frontier_resume_active)
+        self.assertEqual(m.goal.kind, 'frontier')
+        self.assertEqual(m.return_attempts, 1)
+        self.assertIsNone(m.return_deadline_wall)
 
     def test_planning_crosses_mission_budget_returns_without_exploration_send(self):
         m = self.c.f.mission()

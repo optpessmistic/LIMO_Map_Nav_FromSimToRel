@@ -32,6 +32,7 @@ from .core import Coverage, FailureBook, Goal, Grid, Planner, TargetStore, angle
 from .inspection import EvidenceError, InspectionLedger, InspectionPolicy, validate_record
 from .observation import ObservationQueue, Policy as ObservationPolicy
 from .retention import Consumer as RetentionConsumer, Policy as RetentionPolicy
+from .artifacts import export_bundle
 
 
 def yaw_of(q):
@@ -51,7 +52,7 @@ class MissionNode(Node):
     def __init__(self, **kwargs):
         super().__init__('limo_maze_mission', **kwargs)
         defaults = {
-            'autonomous': False, 'map_topic': '/map', 'map_frame': 'map',
+            'autonomous': False, 'return_home': False, 'map_topic': '/map', 'map_frame': 'map',
             'base_frame': 'base_link', 'odom_frame': 'odom',
             'navigation_action': 'navigate_to_pose', 'observation_topic': '/mission/target_observations',
             # Covers the padded Nav2 rectangle: hypot(.18+.02, .12+.02) < .25.
@@ -97,6 +98,8 @@ class MissionNode(Node):
         for key, value in defaults.items():
             self.declare_parameter(key, value)
         self.cfg = {key: self.get_parameter(key).value for key in defaults}
+        if type(self.cfg['return_home']) is not bool:
+            raise ValueError('return_home must be bool')
         for key, value in self.cfg.items():
             if key == 'navigation_failure_cooldown_s':
                 if type(value) not in (int, float) or not isfinite(value) or value < 0:
@@ -201,6 +204,11 @@ class MissionNode(Node):
         self.home_frontier_decisions = []
         self.home_stable_since = None
         self.last_home_pose = None
+        self.completion_started_wall = None
+        self.completion_stable_since = None
+        self.last_completion_pose = None
+        self.completion_stop_verified = False
+        self.completion_selection = None
         self.result_written = False
         self.coordinates_valid = True
         self.map_complete = False
@@ -231,11 +239,12 @@ class MissionNode(Node):
                 yaw_tolerance=self.cfg['inspection_yaw_tolerance_rad'],
                 allowed_source=self.cfg['frame_processing_source']))
             self.create_subscription(String, self.cfg['frame_processing_topic'], self.on_frame_processing, 10)
-            self.create_subscription(Odometry, self.cfg['inspection_odom_topic'],
-                                     self.on_inspection_odom, qos_profile_sensor_data)
             self.inspection_clock_jump = self.get_clock().create_jump_callback(
                 JumpThreshold(min_forward=None, min_backward=Duration(nanoseconds=-1), on_clock_change=True),
                 pre_callback=self.on_inspection_clock_jump)
+        # Final stopping needs fresh wheel evidence even without camera inspection.
+        self.create_subscription(Odometry, self.cfg['inspection_odom_topic'],
+                                 self.on_inspection_odom, qos_profile_sensor_data)
         if self.cfg['require_retained_inspection']:
             retention_qos = QoSProfile(depth=32, reliability=ReliabilityPolicy.RELIABLE)
             self.retention_pub = self.create_publisher(String, self.cfg['frame_retention_request_topic'], retention_qos)
@@ -250,8 +259,7 @@ class MissionNode(Node):
             self.create_subscription(String, self.cfg['frame_retention_result_topic'],
                                      self.on_frame_retention_result, retention_qos)
         # ROS time still timestamps measurements; wall deadlines must run while /clock is paused.
-        wall_timer = self.inspection is not None or self.cfg['navigation_failure_cooldown_s'] > 0
-        timer_options = {'clock': Clock(clock_type=ClockType.STEADY_TIME)} if wall_timer else {}
+        timer_options = {'clock': Clock(clock_type=ClockType.STEADY_TIME)}
         self._mission_timer = self.create_timer(.1 if self.inspection else .5, self.tick, **timer_options)
         self.get_logger().info('Mission loaded; autonomous=' + str(self.cfg['autonomous']))
 
@@ -449,7 +457,7 @@ class MissionNode(Node):
         self.inspection_pose_since = None
 
     def on_inspection_odom(self, msg):
-        if self.phase not in ('settling', 'inspecting', 'home_verification'):
+        if self.phase not in ('settling', 'inspecting', 'home_verification', 'completion_verification'):
             return
         now, now_ns = time.monotonic(), self.get_clock().now().nanoseconds
         state = self.inspection_odom
@@ -461,6 +469,7 @@ class MissionNode(Node):
         fresh = (msg.header.stamp.sec >= 0 and 0 <= msg.header.stamp.nanosec < 1_000_000_000 and
                  0 <= now_ns-stamp <= maximum_age*1e9 and
                  (state['stamp_ns'] is None or stamp > state['stamp_ns']) and
+                 self.inspection_terminal_received is not None and
                  stamp > self.inspection_terminal_received[1])
         continuous = state['received'] is None or now-state['received'] <= maximum_age
         stationary = (msg.header.frame_id == self.cfg['odom_frame'] and
@@ -802,9 +811,6 @@ class MissionNode(Node):
         elif kind != 'home' and now-self.started >= self.cfg['mission_timeout_s']:
             self.mission_timed_out = True
             self.start_return('mission_timeout_incomplete')
-        elif (kind != 'home' and self.home_frontier_resume_active and
-                now >= self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s']):
-            self.start_return('home_frontier_return_reserve_reached')
         elif (kind != 'home' and self.observation_queue is not None and not self.observation_closed and
                 now >= self.observation_deadline_wall):
             self.start_return('bounded_observation_wall_timeout')
@@ -1007,7 +1013,7 @@ class MissionNode(Node):
     def cancel_to(self, next_phase, reason):
         retention = getattr(self, 'frame_retention', None)
         if retention is not None:
-            if next_phase == 'returning' and not retention.fault:
+            if next_phase in ('returning', 'completion_verification') and not retention.fault:
                 # Closing selection cannot re-authorize Ledger/epoch. Preserve
                 # the existing mission-budget return behavior and its deadline.
                 retention.retire('mission_request_canceled_for_return', time.monotonic())
@@ -1018,7 +1024,7 @@ class MissionNode(Node):
             if previous_failure is None or previous_failure['evidence']['request_id'] != self.inspection.request_id:
                 self.record_inspection_failure(reason)
             self.event('inspection_interrupted', reason=reason, evidence=self.inspection_snapshot())
-            if (self.bounded_observation_enabled() and next_phase == 'returning' and
+            if (self.bounded_observation_enabled() and next_phase in ('returning', 'completion_verification') and
                     reason == 'bounded_observation_wall_timeout' and
                     self.goal.kind == 'observation_queue' and
                     self.goal_handle is None and not self.send_pending and not self.canceling and
@@ -1076,7 +1082,7 @@ class MissionNode(Node):
             self.home_frontier_resume_active = False
         else:
             self.return_attempts = 0
-        self.cancel_to('returning', reason)
+        self.cancel_to('returning' if self.cfg['return_home'] else 'completion_verification', reason)
 
     def return_attempt_limit(self):
         # Bounded mode counts all home sends across resumptions, not only errors.
@@ -1084,6 +1090,8 @@ class MissionNode(Node):
         return self.cfg['max_goal_attempts'] * multiplier
 
     def return_budget_expired(self, now):
+        if not self.cfg['return_home']:
+            return False
         if self.bounded_observation_enabled():
             return self.return_deadline_wall is not None and now >= self.return_deadline_wall
         return self.return_started is not None and now-self.return_started > self.cfg['return_timeout_s']
@@ -1109,9 +1117,8 @@ class MissionNode(Node):
         elif self.mission_timed_out or now >= self.started+self.cfg['mission_timeout_s']:
             self.mission_timed_out = True
             reason = 'home_frontier_mission_budget_exhausted'
-        elif (self.return_deadline_wall is None or
-                now >= self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s']):
-            reason = 'home_frontier_return_reserve_reached'
+        elif self.return_deadline_wall is None or now >= self.return_deadline_wall:
+            reason = 'home_frontier_return_budget_expired'
         elif self.return_attempts >= self.return_attempt_limit():
             reason = 'home_frontier_return_attempts_exhausted'
         decision = {'wall': now, 'resumed': reason is None, 'reason': reason,
@@ -1125,6 +1132,7 @@ class MissionNode(Node):
             return False
         self.home_frontier_resumes += 1
         self.home_frontier_resume_active = True
+        self.release_return_budget()
         if (self.observation_queue is None and self.observation_started_wall is None and
                 self.observation_deadline_wall is None and not self.observation_attempt_records):
             # An early mapping return closed selection before any stage existed.
@@ -1135,6 +1143,13 @@ class MissionNode(Node):
         self.phase, self.home_stable_since, self.last_home_pose = 'exploring', None, None
         self.map_complete = self.visual_complete = False
         return True
+
+    def release_return_budget(self):
+        # A verified home arrival ends this return episode. Keep cumulative send
+        # counts, mission/observation deadlines and failures across resumptions.
+        self.event('return_budget_released', started_wall=self.return_started,
+                   deadline_wall=self.return_deadline_wall, return_attempts=self.return_attempts)
+        self.return_started = self.return_deadline_wall = None
 
     def bounded_observation_enabled(self):
         return self.cfg.get('post_mapping_observation_mode', 'off') == 'bounded_processed_frames'
@@ -1210,7 +1225,10 @@ class MissionNode(Node):
                     'resume_active': self.home_frontier_resume_active,
                     'return_started_wall': self.return_started,
                     'return_deadline_wall': self.return_deadline_wall,
-                    'return_reserve_s': self.cfg['home_frontier_return_reserve_s'],
+                    'return_budget_scope': 'per_return_episode',
+                    'return_home_requested': self.cfg['return_home'],
+                    'return_reserve_s': None,
+                    'legacy_return_reserve_parameter_ignored': True,
                     'return_attempts': self.return_attempts, 'return_attempt_limit': self.return_attempt_limit(),
                     'decisions': list(self.home_frontier_decisions)},
                 'visual_coverage_claimed': False, 'validation_scope': 'processed_frame_windows_only'}
@@ -1228,9 +1246,6 @@ class MissionNode(Node):
             self.observation_started_wall = now
             self.observation_deadline_wall = min(now+self.cfg['observation_stage_timeout_s'],
                                                  self.started+self.cfg['mission_timeout_s'])
-            if self.home_frontier_resume_active:
-                self.observation_deadline_wall = min(self.observation_deadline_wall,
-                    self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s'])
             try:
                 # No initial-clearance prior and no simulator/target truth.
                 self.observation_queue = ObservationQueue(self.grid, pose, self.map_epoch, self.observation_policy)
@@ -1315,6 +1330,12 @@ class MissionNode(Node):
                         self.return_started = now
                     if self.bounded_observation_enabled() and self.return_deadline_wall is None:
                         self.return_deadline_wall = now+self.cfg['return_timeout_s']
+                elif self.phase == 'completion_verification':
+                    self.completion_started_wall = now
+                    self.completion_stable_since = self.last_completion_pose = None
+                    self.completion_stop_verified = False
+                    self.inspection_terminal_received = (now, self.get_clock().now().nanoseconds)
+                    self.reset_inspection_stop()
             elif now-self.cancel_started > self.cfg['cancel_timeout_s']:
                 self.phase, self.reason = 'blocked', 'cancel_timeout_stop_not_confirmed'
                 self.canceling = False
@@ -1366,11 +1387,6 @@ class MissionNode(Node):
             self.start_return('mission_timeout_incomplete')
             self.publish_status()
             return
-        if (self.bounded_observation_enabled() and self.home_frontier_resume_active and
-                now >= self.return_deadline_wall-self.cfg['home_frontier_return_reserve_s']):
-            self.start_return('home_frontier_return_reserve_reached')
-            self.publish_status()
-            return
         if (self.bounded_observation_enabled() and self.observation_queue is not None and
                 not self.observation_closed and now >= self.observation_deadline_wall):
             self.start_return('bounded_observation_wall_timeout')
@@ -1393,6 +1409,10 @@ class MissionNode(Node):
                     self.cancel_to('exploring', 'goal_timeout')
             self.publish_status()
             return
+        if self.phase == 'completion_verification':
+            self.verify_completion(now, pose)
+            self.publish_status()
+            return
         if self.goal_result is not None:
             success, detail = self.goal_result
             self.goal_result = None
@@ -1400,8 +1420,8 @@ class MissionNode(Node):
                 if success:
                     self.phase = 'home_verification'
                     self.home_stable_since = None
-                    if getattr(self, 'inspection', None) is not None:
-                        self.reset_inspection_stop()
+                    self.inspection_terminal_received = (now, self.get_clock().now().nanoseconds)
+                    self.reset_inspection_stop()
                 elif self.return_attempts < self.return_attempt_limit():
                     self.event('return_retry', detail=detail)
                 else:
@@ -1457,6 +1477,8 @@ class MissionNode(Node):
             self.visual_complete = (not self.bounded_observation_enabled() and ready and self.selection.uncovered_count == 0)
             if self.bounded_observation_enabled() and self.map_complete:
                 self.begin_observation_stage(now, pose)
+            elif self.map_complete and not self.cfg['return_home']:
+                self.start_return('mapping_complete')
             elif state == 'goal':
                 g = self.selection.goal
                 self.send_goal(Goal(g.x, g.y, g.yaw-self.cfg['camera_heading_offset_rad'], g.kind, g.anchor))
@@ -1480,8 +1502,7 @@ class MissionNode(Node):
             aligned = abs(angle_delta(pose[2], self.home[2])) <= self.cfg['home_yaw_tolerance_rad']
             stable = self.last_home_pose is None or (hypot(pose[0]-self.last_home_pose[0], pose[1]-self.last_home_pose[1]) < .03 and
                                                      abs(angle_delta(pose[2], self.last_home_pose[2])) < .04)
-            if getattr(self, 'inspection', None) is not None:
-                stable = stable and self.inspection_stopped(now)
+            stable = stable and self.inspection_stopped(now)
             self.last_home_pose = pose
             if distance <= self.cfg['home_position_tolerance_m'] and aligned and stable:
                 self.home_stable_since = self.home_stable_since or now
@@ -1507,9 +1528,12 @@ class MissionNode(Node):
                     elif (not self.bounded_observation_enabled() and final.state == 'goal'
                             and now-self.started < self.cfg['mission_timeout_s']):
                         self.event('completion_changed_during_return', selection=asdict(final))
+                        self.release_return_budget()
                         self.phase, self.home_stable_since = 'exploring', None
                     else:
                         self.phase = 'done'
+                        self.completion_stop_verified = True
+                        self.completion_selection = asdict(final)
                         if not self.map_complete or not self.visual_complete:
                             self.reason += ';final_observation_checks_incomplete'
                         self.save_result(True, pose)
@@ -1519,8 +1543,79 @@ class MissionNode(Node):
                 self.block('home_pose_verification_failed')
         self.publish_status()
 
+    def verify_completion(self, now, pose):
+        """Recheck the map after owned navigation terminates and wheels settle.
+
+        This does not command motion or use simulator truth. Finishing without
+        return has its own bounded stop check, never a return navigation budget.
+        """
+        if now-self.completion_started_wall >= self.cfg['cancel_timeout_s']:
+            self.block('completion_stop_verification_timeout')
+            return
+        anchor = self.last_completion_pose
+        stable = (anchor is None or (hypot(pose[0]-anchor[0], pose[1]-anchor[1]) < .03 and
+                                     abs(angle_delta(pose[2], anchor[2])) < .04))
+        if not stable or not self.inspection_stopped(now):
+            self.completion_stable_since = None
+            self.last_completion_pose = None
+            return
+        if self.completion_stable_since is None:
+            self.completion_stable_since, self.last_completion_pose = now, pose
+        if now-self.completion_stable_since < self.cfg['home_stable_s']:
+            return
+        ready = (self.detector_received is not None and
+                 now-self.detector_received <= self.cfg['detector_timeout_s'] and self.coverage.frames > 0)
+        final = self.planner.select(self.planning_grid(), pose, self.coverage, self.failures,
+                                    now, ready, observed_grid=self.grid)
+        now = time.monotonic()
+        if now-self.completion_started_wall >= self.cfg['cancel_timeout_s']:
+            self.block('completion_stop_verification_timeout')
+            return
+        # Planning is synchronous and can consume the freshness window. Do not
+        # certify a stop from samples that were fresh only before it started.
+        if self.map_received is None or now-self.map_received > self.cfg['map_max_age_s']:
+            self.block('map_stale')
+            return
+        try:
+            current_pose = self.get_pose()
+        except (TransformException, ValueError) as exc:
+            self.block(str(exc))
+            return
+        if (not self.inspection_stopped(now) or
+                hypot(current_pose[0]-pose[0], current_pose[1]-pose[1]) >= .03 or
+                abs(angle_delta(current_pose[2], pose[2])) >= .04):
+            self.completion_stable_since = self.last_completion_pose = None
+            return
+        pose = current_pose
+        self.completion_selection = asdict(final)
+        self.map_complete = (final.frontier_count == 0 and final.unobserved_count == 0 and
+                             final.state != 'unsafe_or_unlocalized' and
+                             not any(f.kind == 'frontier' for f in self.failures.entries))
+        self.visual_complete = (not self.bounded_observation_enabled() and ready and final.uncovered_count == 0)
+        if now-self.started >= self.cfg['mission_timeout_s']:
+            self.mission_timed_out = True
+        if (final.state == 'goal' and final.goal is not None and final.goal.kind == 'frontier'
+                and not self.mission_timed_out):
+            # Keep a closed queue closed. Only a never-started stage may be
+            # selected for the first time after this newly visible frontier.
+            if (self.observation_queue is None and self.observation_started_wall is None and
+                    not self.observation_attempt_records):
+                self.observation_closed, self.observation_close_reason = False, None
+            self.event('completion_changed_before_stop', selection=asdict(final))
+            self.phase = 'exploring'
+            self.completion_stable_since = self.last_completion_pose = None
+            return
+        self.completion_stop_verified = True
+        self.phase = 'done'
+        if not self.map_complete:
+            self.reason += ';final_map_check_incomplete'
+        self.event('mapping_task_stopped', map_complete=self.map_complete, return_home_requested=False)
+        self.save_result(False, pose)
+
     def publish_status(self):
         value = {'phase': self.phase, 'reason': self.reason, 'autonomous': self.cfg['autonomous'],
+                 'return_home_requested': self.cfg['return_home'],
+                 'completion_stop_verified': self.completion_stop_verified,
                  'confirmed_target_count': len(self.targets.confirmed()),
                  'map_complete': self.map_complete, 'visual_coverage_complete': self.visual_complete,
                  'unresolved_failures': len(self.failures.entries),
@@ -1539,10 +1634,31 @@ class MissionNode(Node):
         mission_success = (returned and self.map_complete and self.visual_complete and
                            not self.mission_timed_out and not self.failures.entries and
                            self.cfg['target_definition_verified'])
+        detector_fresh = (self.detector_received is not None and
+                          0 <= time.monotonic()-self.detector_received <= self.cfg['detector_timeout_s'] and
+                          bool(self.sources))
+        mapping_annotation_complete = bool(self.phase == 'done' and self.map_complete and
+            self.coordinates_valid and self.map_epoch_ready and detector_fresh and self.completion_stop_verified)
+        observation_actions_complete = (not self.bounded_observation_enabled() or
+            self.observation_queue is not None and
+            self.observation_queue.snapshot()['all_planned_actions_completed'])
+        task_success = bool(mapping_annotation_complete and observation_actions_complete and
+            not self.mission_timed_out and not self.failures.entries and
+            (not self.cfg['return_home'] or returned))
         if self.mission_timed_out and 'mission_timeout_incomplete' not in self.reason:
             self.reason += (';' if self.reason else '') + 'mission_timeout_incomplete'
+        # Additive fields retain v1 for existing bounded recorders/audit tools.
         result = {'schema_version': 1, 'frame_id': self.cfg['map_frame'], 'map_epoch': self.map_epoch,
                   'status': self.phase, 'reason': self.reason, 'mission_success': bool(mission_success),
+                  'objective': 'mapping_and_confirmed_target_annotation',
+                  'return_home_requested': self.cfg['return_home'],
+                  'mapping_annotation_complete': mapping_annotation_complete,
+                  'task_success': task_success,
+                  'completion_stop_verified': self.completion_stop_verified,
+                  'completion_selection': self.completion_selection,
+                  'detector_fresh_at_completion': bool(detector_fresh),
+                  'observation_actions_complete': bool(observation_actions_complete),
+                  'all_targets_found': None,
                   'returned_pose_verified': returned, 'map_complete': self.map_complete,
                   'visual_coverage_complete': self.visual_complete,
                   'mission_timed_out': self.mission_timed_out,
@@ -1571,11 +1687,23 @@ class MissionNode(Node):
                   'limitations': ['Map-frame observations are not pose-graph landmarks.',
                                   '2D coverage needs a validated detector and target-height assumption.',
                                   'Navigation success is independently checked against TF at home.',
+                                  'Mapping/annotation completion does not certify detection of every target.',
+                                  'Stop verification uses wheel odometry, not independent physical braking evidence.',
                                   'A red simulation surrogate does not establish real target recognition.']}
         try:
             output = Path(self.cfg['output_dir']).expanduser()
             output.mkdir(parents=True, exist_ok=True)
-            destination = output / ('mission_' + time.strftime('%Y%m%d_%H%M%S') + '.json')
+            stem = 'mission_' + time.strftime('%Y%m%d_%H%M%S') + '_' + uuid.uuid4().hex[:8]
+            destination = output / (stem + '.json')
+            try:
+                result['artifacts'] = export_bundle(output, stem, self.grid, result,
+                                                     map_stamp_ns=self.map_stamp_ns)
+            except (ValueError, OSError) as exc:
+                # Preserve failure evidence even if coordinates are unusable or
+                # map export fails; never turn a partial bundle into success.
+                result['artifacts'] = {'status': 'failed', 'error': str(exc)}
+                result['mapping_annotation_complete'] = result['task_success'] = False
+                self.get_logger().error('Failed to export map/annotations: ' + str(exc))
             destination.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding='utf-8')
             self.result_written = True
             self.get_logger().info('Saved mission evidence: ' + str(destination))

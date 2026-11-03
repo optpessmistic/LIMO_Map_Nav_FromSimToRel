@@ -54,14 +54,17 @@ class NavigationRecoveryTests(unittest.TestCase):
         for value in (0., -1., float('nan'), float('inf'), True, 30.01):
             with self.subTest(timeout=value), self.assertRaises(ValueError):
                 self.mission(navigation_recovery_timeout_s=value)
-        with patch.object(t.FakeNode, 'create_timer', return_value=S()) as timer:
-            m = t.adapter.MissionNode(parameter_overrides={'navigation_failure_cooldown_s': .5})
-            self.assertIsNone(m.inspection)
-            self.assertIn('clock', timer.call_args.kwargs)
-            self.assertEqual(timer.call_args.args[0], .5)
-        with patch.object(t.FakeNode, 'create_timer', return_value=S()) as timer:
-            t.adapter.MissionNode()
-            self.assertNotIn('clock', timer.call_args.kwargs)
+        for overrides in ({}, {'navigation_failure_cooldown_s': .5}):
+            with self.subTest(timer_overrides=overrides), \
+                    patch.object(t.FakeNode, 'create_timer', return_value=S()) as timer, \
+                    patch.object(t.adapter, 'Clock', return_value=S()) as clock:
+                m = t.adapter.MissionNode(parameter_overrides=overrides)
+                self.assertIsNone(m.inspection)
+                # Mission and stop deadlines must advance even without ROS
+                # clock messages, regardless of optional recovery/inspection.
+                clock.assert_called_once_with(clock_type=t.adapter.ClockType.STEADY_TIME)
+                self.assertIs(timer.call_args.kwargs['clock'], clock.return_value)
+                self.assertEqual(timer.call_args.args[0], .5)
 
     def test_observation_wait_consumes_neither_queue_attempt_nor_nav_ownership(self):
         m = self.mission()
