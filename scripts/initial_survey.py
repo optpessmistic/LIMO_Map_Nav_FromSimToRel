@@ -24,6 +24,78 @@ class SurveyAbort(ValueError):
     pass
 
 
+class LifecycleReadiness:
+    """Bound GetState requests without extending preflight or trusting late replies."""
+    def __init__(self, clients, request_factory, request_timeout_s=1.0, max_age_s=2.0):
+        if not all(math.isfinite(v) and v > 0 for v in (request_timeout_s, max_age_s)):
+            raise ValueError('Lifecycle time limits must be finite and positive')
+        self.clients, self.request_factory = clients, request_factory
+        self.request_timeout_s, self.max_age_s = request_timeout_s, max_age_s
+        self.pending, self.states = {}, {}
+        self.details = {name: {'service_ready': False, 'requests': 0, 'responses': 0,
+                              'timeouts': 0, 'last_error': None} for name in clients}
+
+    def poll(self, now):
+        for name, client in self.clients.items():
+            detail = self.details[name]
+            detail['service_ready'] = client.service_is_ready()
+            if name in self.pending:
+                future, sent = self.pending[name]
+                # Check the deadline first, including completed-but-unconsumed replies.
+                if now-sent >= self.request_timeout_s:
+                    client.remove_pending_request(future)
+                    future.cancel()
+                    del self.pending[name]
+                    detail['timeouts'] += 1
+                    detail['last_error'] = 'GetState response deadline exceeded'
+                elif future.done():
+                    del self.pending[name]
+                    try:
+                        state_id = future.result().current_state.id
+                        if type(state_id) is not int:
+                            raise ValueError('GetState state ID is not an integer')
+                    except Exception as exc:
+                        self.states.pop(name, None)
+                        detail['last_error'] = type(exc).__name__+': '+str(exc)
+                    else:
+                        self.states[name] = (state_id, sent, now)
+                        detail['responses'] += 1
+                        detail['last_error'] = None
+            if name not in self.pending and detail['service_ready']:
+                self.pending[name] = (client.call_async(self.request_factory()), now)
+                detail['requests'] += 1
+
+    def require_active(self, now):
+        unavailable = []
+        for name, detail in self.details.items():
+            state = self.states.get(name)
+            if not detail['service_ready']:
+                reason = 'service unavailable'
+            elif state is None:
+                reason = 'no valid response'
+            elif state[0] != 3:
+                reason = 'state='+str(state[0])
+            elif not 0 <= now-state[1] <= self.max_age_s:
+                reason = 'state evidence stale'
+            else:
+                continue
+            unavailable.append(name+': '+reason)
+        if unavailable:
+            raise SurveyAbort('Waiting for active lifecycle chain: '+'; '.join(unavailable))
+
+    def report(self, now):
+        nodes = {}
+        for name, detail in self.details.items():
+            pending, state = self.pending.get(name), self.states.get(name)
+            nodes[name] = {**detail, 'pending_age_s': now-pending[1] if pending else None,
+                           'state_id': state[0] if state else None,
+                           'state_request_age_s': now-state[1] if state else None,
+                           'state_received_age_s': now-state[2] if state else None}
+        return {'clock': 'time.monotonic', 'request_timeout_s': self.request_timeout_s,
+                'max_state_age_s': self.max_age_s, 'nodes': nodes,
+                'scope': 'Fresh GetState evidence, not an atomic guarantee of future lifecycle state.'}
+
+
 def angle_delta(a, b):
     return math.atan2(math.sin(a-b), math.cos(a-b))
 
@@ -323,7 +395,8 @@ def run(args):
                       node.create_subscription(Twist, '/cmd_vel_nav', guarded(command_seen), 10)]
     clients = {name: node.create_client(GetState, '/'+name+'/get_state')
                for name in ('behavior_server', 'velocity_smoother', 'collision_monitor')}
-    lifecycle, pending, status_subs = {}, {}, {}
+    lifecycle = LifecycleReadiness(clients, GetState.Request)
+    status_subs = {}
 
     def action_status(topic, msg):
         entries = [(bytes(entry.goal_info.goal_id.uuid), entry.status) for entry in msg.status_list]
@@ -344,13 +417,8 @@ def run(args):
             if topic.endswith('/_action/status') and 'action_msgs/msg/GoalStatusArray' in types and topic not in status_subs:
                 status_subs[topic] = node.create_subscription(GoalStatusArray, topic,
                     guarded(lambda msg, name=topic: action_status(name, msg)), latched)
-        for name, client in clients.items():
-            if name in pending and pending[name].done():
-                lifecycle[name] = (pending.pop(name).result().current_state.id, now)
-            if name not in pending and client.service_is_ready():
-                pending[name] = client.call_async(GetState.Request())
-        if any(name not in lifecycle or lifecycle[name][0] != 3 or now-lifecycle[name][1] > 2 for name in clients):
-            raise SurveyAbort('Waiting for active behavior/smoother/collision-monitor chain')
+        lifecycle.poll(now)
+        lifecycle.require_active(now)
         if not action.server_is_ready() or any(node.count_publishers(topic) == 0 for topic in
                 ('/follow_path/_action/status', '/spin/_action/status')):
             raise SurveyAbort('Spin action or controller/behavior status unavailable')
@@ -494,6 +562,7 @@ def run(args):
                   'final_heading_error_rad': angle_delta(state.odom[4], state.home[4]) if state.home else None,
                   'spin_goals': [request.record() for request in requests],
                   'action_statuses_received': statuses, 'action_status_topics_monitored': sorted(status_subs),
+                  'lifecycle_readiness': lifecycle.report(time.monotonic()),
                   'cancel_required': cancel_required, 'stop_verified': stop_verified,
                   'stop_stage_stamp': stop_stage_stamp,
                   'stop_new_odom_samples': sum(s > stop_stage_stamp for s in odom_stamps[stop_count:])

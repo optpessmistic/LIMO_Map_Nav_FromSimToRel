@@ -1,0 +1,251 @@
+"""Archive the closed run33 survey startup failure; no ROS or audit execution."""
+import argparse
+import gzip
+import hashlib
+import json
+import math
+from pathlib import Path
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[2]
+RUN = ROOT/'outputs/ros_smoke/run33-steady-map'
+OUT = ROOT/'experiments/run33'
+EPOCH = 'a877f343-be40-4e77-b86c-0d9f9d315621'
+TOKEN = 'run33-6e88b6946c28483d9e263d8a87f21e24'
+HEAD = 'd4ba9bec3b2e177d6d348c072e5afa11a18a9889'
+RAW, STATS, COPIES, EXTERNAL = {}, {}, [], []
+
+
+def require(value, message):
+    if not value:
+        raise RuntimeError(message)
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def safe(path):
+    path = Path(path).absolute()
+    relative = path.relative_to(ROOT)
+    cursor = ROOT
+    for part in relative.parts:
+        cursor /= part
+        require(part != '..' and not cursor.is_symlink(), 'Unsafe input path: '+str(path))
+    require(path.is_file() and path.resolve().is_relative_to(ROOT.resolve()), 'Missing input: '+str(path))
+    return path
+
+
+def stat_key(path):
+    st = path.stat()
+    return st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns
+
+
+def read(path):
+    path = safe(path)
+    before = stat_key(path)
+    require(before[2] <= 8*1024*1024, 'Unexpected large copied input: '+str(path))
+    raw = path.read_bytes()
+    require(stat_key(path) == before and len(raw) == before[2], 'Changing input: '+str(path))
+    require(path not in STATS or STATS[path] == before, 'Input changed since prior read: '+str(path))
+    STATS[path], RAW[path] = before, raw
+    return raw
+
+
+def load(path):
+    return json.loads(read(path))
+
+
+def retain(source, destination, *, expected=None, compress=False):
+    source = Path(source)
+    raw = read(source)
+    require(expected is None or sha(raw) == expected, 'Prepared input hash mismatch: '+str(source))
+    encoded = gzip.compress(raw, mtime=0) if compress else raw
+    COPIES.append({'source':source.relative_to(ROOT).as_posix(), 'destination':destination,
+        'source_bytes':len(raw), 'source_sha256':sha(raw), 'archive_bytes':len(encoded),
+        'archive_sha256':sha(encoded), 'encoding':'gzip_mtime_0' if compress else 'raw', '_payload':encoded})
+
+
+def external(source, reason, expected=None):
+    source = safe(source)
+    before = stat_key(source)
+    digest = hashlib.sha256()
+    with source.open('rb') as stream:
+        while chunk := stream.read(1024*1024):
+            digest.update(chunk)
+    require(stat_key(source) == before, 'Changing external input: '+str(source))
+    actual = digest.hexdigest()
+    require(expected is None or actual == expected, 'External prepared input mismatch: '+str(source))
+    require(source not in STATS or STATS[source] == before, 'External input changed since read')
+    STATS[source] = before
+    EXTERNAL.append({'path':source.relative_to(ROOT).as_posix(),'bytes':before[2],
+        'sha256':actual,'reason':reason,'copied':False})
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--confirmed-root-session', type=int, choices=[21930], required=True)
+    parser.add_argument('--confirmed-root-exit-code', type=int, choices=[1], required=True)
+    args = parser.parse_args()
+    require(not OUT.exists() and not OUT.is_symlink(), 'Refuse existing run33 archive')
+    preparation, closed = load(RUN/'preparation.json'), load(RUN/'orchestration.json')
+    require(preparation['run'] == closed['run'] == RUN.name and
+        preparation['epoch'] == closed['epoch'] == EPOCH and preparation['token'] == TOKEN and
+        preparation['code_head'] == preparation['prepared_head_actual'] == HEAD, 'Run identity mismatch')
+    require(read(RUN/'epoch.txt') == (EPOCH+'\n').encode('ascii'), 'Frozen epoch bytes mismatch')
+    require(closed.get('status') == 'orchestration_failed' and closed.get('stage') == 'owned_shutdown' and
+        closed.get('all_owned_groups_empty') is True and
+        type(closed.get('elapsed_wall_s')) in (int,float) and math.isfinite(closed['elapsed_wall_s']) and
+        closed['elapsed_wall_s'] > 0 and closed.get('terminal') is None, 'Closed startup-failure receipt missing')
+    stops = closed.get('stops')
+    require(isinstance(stops,dict) and stops, 'Owned stop records missing')
+    for name,row in [*stops.items(),('recorder_inner_recheck',closed.get('recorder_inner_recheck',{}))]:
+        require(row.get('remaining') == [] and row.get('ownership_errors') == [] and
+            row.get('remaining_check_complete') is True, 'Owned group not confirmed closed: '+name)
+    for name in stops:
+        owner = load(RUN/('process-'+name+'.json'))
+        require(owner.get('name') == name and owner.get('token') == TOKEN, 'Owned group identity mismatch')
+    writer, checkpoint = load(RUN/'retention-shutdown.json'), load(RUN/'retained/checkpoint.json')
+    require(writer.get('writer') is None and writer.get('shutdown',{}).get('owned_writer_exit_confirmed') is True and
+        writer.get('shutdown',{}).get('final_checkpoint_persisted') is True and checkpoint.get('closed') is True and
+        checkpoint.get('writer') is None and checkpoint.get('core',{}).get('closed') is True and
+        checkpoint.get('core',{}).get('writer_pending') is False, 'Writer/final checkpoint closure missing')
+    survey = load(RUN/'initial-survey.json')
+    require(survey.get('map_epoch') == EPOCH and survey.get('success') is False and survey.get('phase') == 'preflight' and
+        survey.get('motion_started') is False and survey.get('spin_goals') == [], 'Survey failure identity changed')
+    require(not list((RUN/'mission').glob('*.json')), 'Unexpected mission result: this archive is for startup failure')
+    absent = [RUN/name for name in ('mission.log','provenance-live.json','parameters-early.json',
+        'observation-relocation-parameter-gate.json','retention-audit.json','final-save.json','observer.json')]
+    absent += [ROOT/'outputs/setup'/name for name in ('run33-outcome-review.json','run33-outcome-review.md',
+        'run33-selection-audit.json','run33-wsl-system-steady-clock-probe.json')]
+    require(all(not p.exists() for p in absent), 'Unexpected later-stage/audit output exists')
+    recorder = load(RUN/'recording/supervisor.json')
+    require(recorder.get('map_epoch') == EPOCH and recorder.get('status') == 'stopped' and
+        recorder.get('terminal') is None and recorder.get('cleanup',{}).get('remaining') == [] and
+        recorder.get('cleanup',{}).get('remaining_check_complete') is True, 'Nested recorder report not closed')
+    # Preserve every small direct run artifact, all owner/timing receipts and spawn inputs.
+    omitted, candidates = [], []
+    for child in sorted(RUN.iterdir()):
+        if child.name == 'ros_logs':
+            omitted.append({'path':'ros_logs/','reason':'Redundant ROS logs and WSL symlinks omitted without traversal; direct aggregate logs archived'})
+            continue
+        candidates.extend(child.rglob('*') if child.is_dir() else [child])
+    for source in sorted(candidates):
+        rel = source.relative_to(RUN).as_posix()
+        if source.is_symlink():
+            omitted.append({'path':rel,'reason':'ROS log symlink; not dereferenced'})
+            continue
+        if not source.is_file():
+            continue
+        if rel.startswith('ros_logs/'):
+            omitted.append({'path':rel,'bytes':source.stat().st_size,'reason':'Redundant ROS log; direct aggregate logs archived'})
+            continue
+        if source.suffix == '.mcap' or rel.startswith('retained/') and rel != 'retained/checkpoint.json':
+            external(source,'Original bag/RGB-D remains in ignored run directory; content not duplicated')
+            continue
+        retain(source,'raw/'+rel+('.gz' if rel == 'initial-motion.json' else ''),compress=rel == 'initial-motion.json')
+    for name, expected in preparation['prepared_helper_sha256'].items():
+        retain(ROOT/name,'runner/'+Path(name).name+'.txt',expected=expected)
+    retain(ROOT/'outputs/setup/prepare-run33.py','runner/prepare-run33.py.txt',
+        expected=preparation['preparation_script_sha256'])
+    # Include the exact survey implementation, identified by the runtime prepared source inventory.
+    source_name = 'scripts/initial_survey.py'
+    source_raw = subprocess.check_output(['git','show',HEAD+':'+source_name],cwd=ROOT)
+    require(sha(source_raw) == preparation['prepared_source_sha256'][source_name],
+        'Committed run33 survey bytes do not match prepared runtime source')
+    COPIES.append({'source':'git:'+HEAD+':'+source_name,'destination':'runner/initial_survey.py.txt',
+        'source_bytes':len(source_raw),'source_sha256':sha(source_raw),'archive_bytes':len(source_raw),
+        'archive_sha256':sha(source_raw),'encoding':'raw','_payload':source_raw})
+    for name in ('run33-outcome-review.py','run33-selection-audit.py','probe-run33-wsl-clocks.py'):
+        retain(ROOT/'outputs/setup'/name,'not-run/'+name+'.txt')
+    ci = preparation['reviewed_ci']
+    require(ci.get('head_sha') == HEAD and ci.get('status') == 'completed' and ci.get('conclusion') == 'success',
+        'Prepared CI receipt is not exact-head success')
+    retain(ROOT/ci['path'],'provenance/'+Path(ci['path']).name,expected=ci['sha256'])
+    build = preparation['slam_build_validation']
+    for key in ('build_receipt','incremental_recheck','installation_check'):
+        row = build[key]
+        retain(ROOT/row['path'],'provenance/'+Path(row['path']).name,expected=row['sha256'])
+    # Keep the larger previously archived build evidence by byte-hashed reference.
+    for source in (ROOT/'experiments/slam-map-clock-20261103/SHA256SUMS',):
+        external(source,'Prior dedicated build archive manifest; run33 copies only bound small receipts')
+    for name,row in preparation['slam_overlay']['libraries'].items():
+        # Stored Linux paths are interpreted only beneath the known new local overlay.
+        external(ROOT/'outputs/slam-steady-map-ws/install/slam_toolbox/lib'/name,
+            'Prepared new SLAM library; installed file identity only, live mapped-library gate was not reached',row['sha256'])
+    retain(Path(__file__).resolve(),'runner/archive-run33.py.txt')
+    motion = load(RUN/'initial-motion.json')
+    summary = {'run':RUN.name,'epoch':EPOCH,'runtime_head':HEAD,
+        'root_exec_completion':{'session_id':args.confirmed_root_session,'exit_code':args.confirmed_root_exit_code,
+            'source':'Explicit actual completion supplied by root operator, never inferred from elapsed/stage'},
+        'original_orchestration':{k:closed.get(k) for k in ('status','stage','elapsed_wall_s','errors',
+            'all_owned_groups_empty','all_run_token_processes_absent','global_scan_limitation',
+            'evidence_collection_complete','native_terminal_tail_verified')},
+        'survey_as_recorded':{k:survey.get(k) for k in ('success','reason','phase','executed','motion_started',
+            'wall_seconds','spin_goals','yaw_accumulated_rad','max_displacement_m','stop_verified')},
+        'native_motion_evidence':{k:motion.get(k) for k in ('motion_detected','partial','reason','collection_complete',
+            'world_summary','odom_summary')},
+        'mission':{'status':None,'mission_success':None,'queue_created':False,'planned_views_denominator':None,
+            'completed_views':None,'relocated_goal_sends':None,'target_count':None,
+            'reason':'Mission process/result and observation queue were never reached; no denominator inferred from limits'},
+        'strict_retention':{'status':'not_run_no_terminal_mission','passed':None,'accepted_count':None,
+            'producer_result_count':len(checkpoint['core']['results']) if isinstance(checkpoint['core'].get('results'),list) else None,
+            'producer_fault':checkpoint.get('fault'),'shutdown_fault':writer.get('fault'),
+            'original_closure_errors':[x for x in closed.get('errors',[]) if x.startswith('Retention closure audit:')],
+            'scope':'No terminal consumer ledger or strict audit exists; zero producer results is not a 0/0 audit pass'},
+        'not_run':{'outcome_review':'no terminal mission; prepared script preserved only',
+            'selection_audit':'no observation queue; prepared script preserved only',
+            'system_clock_probe':'not executed; prepared script preserved only',
+            'provenance_live':'stage never reached; loaded-library identity not verified',
+            'early_mission_parameters':'stage never reached',
+            'map_export_and_terminal_tail':'mission terminal stage never reached'},
+        'scope':'Closed startup failure only. Original false/null and global process-scan uncertainty retained; no map, relocation, visual coverage or mission success claim.'}
+    provenance = {'schema_version':1,'run':RUN.name,'root_receipt':summary['root_exec_completion'],
+        'copies':[{k:v for k,v in row.items() if k != '_payload'} for row in COPIES],
+        'absent_outputs':[p.relative_to(ROOT).as_posix() for p in absent],
+        'omitted':omitted,'external_inputs_file':'external-inputs.json',
+        'raw_bytes_preserved':True,'gzip_convention':'mtime=0; reopened decompression must reproduce original bytes',
+        'scope':'Copy integrity only, not a pass for the failed experiment. README/SHA256SUMS intentionally left to root.'}
+    require(len({row['destination'] for row in COPIES}) == len(COPIES), 'Duplicate archive destinations')
+    for source,before in STATS.items():
+        require(stat_key(source) == before, 'Input changed before archive creation: '+str(source))
+    OUT.mkdir()
+    for row in COPIES:
+        dest = OUT/row['destination']
+        dest.parent.mkdir(parents=True,exist_ok=True)
+        with dest.open('xb') as stream:
+            stream.write(row['_payload'])
+    generated = {'archive-provenance.json':provenance,'external-inputs.json':{'files':EXTERNAL,
+        'rgbd_payload_file_count':sum('/retained/' in row['path'] for row in EXTERNAL),
+        'scope':'External original files are excluded, with actual size/SHA256; this is not a full bag/image archive'},
+        'startup-failure.json':summary}
+    for name,value in generated.items():
+        with (OUT/name).open('x',encoding='utf-8',newline='\n') as stream:
+            json.dump(value,stream,indent=2,ensure_ascii=False,allow_nan=False)
+            stream.write('\n')
+        require(json.loads((OUT/name).read_bytes()) == value, 'Generated JSON reopen mismatch')
+    with (OUT/'.gitattributes').open('xb') as stream:
+        stream.write(b'* -text\n')
+    for row in COPIES:
+        actual = (OUT/row['destination']).read_bytes()
+        require(len(actual) == row['archive_bytes'] and sha(actual) == row['archive_sha256'], 'Archived bytes mismatch')
+        original = gzip.decompress(actual) if row['encoding'] == 'gzip_mtime_0' else actual
+        require(len(original) == row['source_bytes'] and sha(original) == row['source_sha256'], 'Decoded bytes mismatch')
+    for source,before in STATS.items():
+        require(stat_key(source) == before, 'Input changed during archive creation: '+str(source))
+    validation = {'raw_copy_and_gzip_reopen_verified':True,'verified_copies':len(COPIES),
+        'external_file_count':len(EXTERNAL),'external_bytes':sum(row['bytes'] for row in EXTERNAL),
+        'original_run_modified':False,'audit_scripts_executed':False,'ros_or_simulation_started':False,
+        'original_experiment_status':'orchestration_failed','original_root_exit_code':1,
+        'scope':'Successful archiving does not turn run33 into a successful experiment; final manifest remains for root.'}
+    with (OUT/'archive-validation.json').open('x',encoding='utf-8',newline='\n') as stream:
+        json.dump(validation,stream,indent=2)
+        stream.write('\n')
+    require(json.loads((OUT/'archive-validation.json').read_bytes()) == validation, 'Validation reopen mismatch')
+    files = [p for p in OUT.rglob('*') if p.is_file()]
+    print(json.dumps({'archive':str(OUT),'files':len(files),'bytes':sum(p.stat().st_size for p in files),
+        **validation},indent=2))
+
+
+if __name__ == '__main__':
+    main()

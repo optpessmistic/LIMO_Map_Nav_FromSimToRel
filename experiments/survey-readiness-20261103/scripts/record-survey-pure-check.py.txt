@@ -1,0 +1,25 @@
+from pathlib import Path
+import hashlib
+import json
+
+root = Path(__file__).resolve().parents[2]
+sources = ('scripts/initial_survey.py', 'tests/test_initial_survey.py',
+           'tests/test_initial_survey_lifecycle.py', 'tests/test_initial_survey_ros.py')
+hashes = {name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in sources}
+assert hashes['scripts/initial_survey.py'] == '3a3ce3bd5f39e5d9bfbfc34d185dc98a6bfd03858c02631eb9e9105ec7a86870'
+receipt = {
+    'source': 'Actual root tool completion, chunk 370356; summary transcribed after execution.',
+    'command': ['python', '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_initial_survey*.py', '-v'],
+    'environment': 'Windows bundled Python; rclpy unavailable',
+    'exit_code': 0, 'tests_run': 24, 'passed': 23, 'skipped': 1,
+    'skip_reason': 'Existing ROS Action test skipped because rclpy unavailable.',
+    'new_pure_cases_passed': 5, 'source_sha256': hashes,
+    'discovered_modules': ['test_initial_survey', 'test_initial_survey_lifecycle', 'test_initial_survey_ros'],
+    'scope': 'Pure logic check before the new DDS test file was created. Its ROS cases are recorded separately.',
+    'full_tool_output_saved_to_file': False,
+}
+path = root/'outputs/setup/survey-readiness-pure-tests.json'
+with path.open('x', encoding='utf-8', newline='\n') as stream:
+    json.dump(receipt, stream, indent=2)
+    stream.write('\n')
+print(path)

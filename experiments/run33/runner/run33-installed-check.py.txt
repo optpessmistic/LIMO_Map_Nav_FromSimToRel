@@ -1,0 +1,70 @@
+import hashlib
+import importlib
+import json
+from pathlib import Path
+
+root = Path.cwd()
+names = ['limo_evidence_protocol.retention', 'limo_maze_mission.retention', 'limo_maze_mission.node',
+         'limo_maze_perception.node', 'limo_maze_perception.retention_adapter', 'limo_maze_perception.retention_worker']
+names += ['limo_maze_mission.core','limo_maze_mission.inspection','limo_maze_mission.observation','limo_maze_perception.evidence']
+from ament_index_python.packages import get_package_prefix, get_package_share_directory
+preparation = json.loads((root/'outputs/ros_smoke/run33-steady-map/preparation.json').read_text())
+
+def installation_row(package, source, raw_path):
+    source = source.absolute()
+    raw_path = raw_path.absolute()
+    resolved = raw_path.resolve(strict=True)
+    prefix = Path(get_package_prefix(package)).absolute()
+    expected_prefix = root/'install'/package
+    exact_source = source.resolve(strict=True) == source
+    source_link = (resolved == source and (
+        raw_path == source or raw_path.is_relative_to(expected_prefix)
+        or raw_path.is_relative_to(root/'build'/package)))
+    install_copy = (raw_path.is_relative_to(expected_prefix)
+                    and resolved.is_relative_to(expected_prefix))
+    expected_sha = preparation['prepared_source_sha256'][source.relative_to(root).as_posix()]
+    source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    installed_sha = hashlib.sha256(resolved.read_bytes()).hexdigest()
+    return dict(source=str(source), installed=str(raw_path), raw_import_path=str(raw_path),
+        resolved_path=str(resolved), package_prefix=str(prefix),
+        expected_package_prefix=str(expected_prefix), sha256=source_sha,
+        installed_sha256=installed_sha, prepared_source_sha256=expected_sha,
+        resolution_kind='exact_source' if source_link else 'install_copy' if install_copy else 'rejected',
+        equal=source_sha == installed_sha == expected_sha,
+        current_workspace=(prefix == expected_prefix and exact_source
+            and (source_link or install_copy)))
+
+rows = []
+for name in names:
+    module = importlib.import_module(name)
+    package, filename = name.split('.')
+    source = root/'src'/package/package/(filename+'.py')
+    rows.append(dict(module=name, **installation_row(package, source, Path(module.__file__))))
+launch_rows=[]
+for package,filename in (('limo_maze_mission','mission.launch.py'),
+        ('limo_maze_bringup','mapping_navigation.launch.py'),
+        ('limo_maze_bringup','navigation.launch.py'),('limo_sim_bringup','sim.launch.py')):
+    source=root/'src'/package/'launch'/filename
+    share=Path(get_package_share_directory(package)).absolute()
+    installed=share/'launch'/filename
+    row=installation_row(package, source, installed)
+    row['current_workspace'] = (row['current_workspace']
+        and share == root/'install'/package/'share'/package)
+    launch_rows.append(dict(package=package,file=filename,**row))
+passed = all(r['equal'] and r['current_workspace'] for r in rows+launch_rows)
+report = dict(passed=passed, modules=rows, launch_files=launch_rows)
+
+from ament_index_python.packages import get_package_prefix
+binding = json.loads((root/'outputs/ros_smoke/run33-steady-map/preparation.json').read_text())['slam_overlay']
+slam_files = {name: hashlib.sha256((root/name).read_bytes()).hexdigest()
+              for name in binding['files_sha256']}
+slam_passed = (get_package_prefix('slam_toolbox') == binding['package_prefix']
+    and slam_files == binding['files_sha256'])
+passed = passed and slam_passed
+report.update(passed=passed, slam_overlay={'passed':slam_passed,
+    'resolved_package_prefix':get_package_prefix('slam_toolbox'),
+    'file_sha256':slam_files, 'scope':'Disk and package resolution only; live /proc/maps checked separately.'})
+with (root/'outputs/ros_smoke/run33-steady-map/installed-check.json').open('x') as out:
+    json.dump(report, out, indent=2)
+print(json.dumps(report, indent=2))
+raise SystemExit(0 if passed else 1)

@@ -1,0 +1,44 @@
+"""Run only the opt-in lifecycle DDS tests; retain native log after completion."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+import time
+
+root = Path(__file__).resolve().parents[2]
+out = root / 'outputs/validation/initial-survey-lifecycle-dds'
+out.mkdir(parents=True, exist_ok=False)
+sources = ('scripts/initial_survey.py', 'tests/test_initial_survey_lifecycle_ros.py')
+def hashes():
+    return {name: hashlib.sha256((root/name).read_bytes()).hexdigest() for name in sources}
+before = hashes()
+command = ['/usr/bin/python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests',
+           '-p', 'test_initial_survey_lifecycle_ros.py', '-v']
+environment = {'RUN_ROS_SURVEY_TEST': '1', 'ROS_DOMAIN_ID': '74', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'LOCALHOST'}
+launcher = ['bash', '-c', 'set -eo pipefail; source /opt/ros/jazzy/setup.bash; exec "$@"', 'lifecycle-dds', *command]
+started = time.monotonic()
+with tempfile.NamedTemporaryFile(prefix='limo-lifecycle-dds-', suffix='.log', delete=False) as native_log:
+    try:
+        run = subprocess.run(launcher, cwd=root, env={**os.environ, **environment},
+            stdin=subprocess.DEVNULL, stdout=native_log, stderr=subprocess.STDOUT, timeout=60)
+        code, reason = run.returncode, 'completed'
+    except subprocess.TimeoutExpired:
+        code, reason = 124, 'owned_test_process_timeout_60s'
+    native_path = Path(native_log.name)
+raw = native_path.read_bytes()
+with (out/'tests.log').open('xb') as stream:
+    stream.write(raw)
+after = hashes()
+record = {'command': command, 'environment': environment, 'exit_code': code, 'reason': reason,
+    'elapsed_monotonic_s': time.monotonic()-started, 'source_sha256': before, 'source_sha256_after': after,
+    'source_unchanged': before == after, 'native_log_path': str(native_path),
+    'tests_log_sha256': hashlib.sha256(raw).hexdigest(), 'scope': 'Real GetState DDS only; no velocity publisher, simulator or full-survey preflight.',
+    'log_io': 'Native Linux /tmp during execution; copied after child exited.'}
+with (out/'result.json').open('x', encoding='utf-8') as stream:
+    json.dump(record, stream, indent=2)
+    stream.write('\n')
+print(raw.decode(errors='replace'), end='', flush=True)
+print(json.dumps({'result': str(out/'result.json'), 'exit_code': code, 'source_unchanged': before == after}), flush=True)
+raise SystemExit(code if before == after else 1)

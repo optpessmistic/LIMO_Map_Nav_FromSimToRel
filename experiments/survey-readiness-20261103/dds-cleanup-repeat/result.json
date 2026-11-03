@@ -1,0 +1,35 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_initial_survey_lifecycle_ros.py",
+    "-v"
+  ],
+  "environment": {
+    "RUN_ROS_SURVEY_TEST": "1",
+    "ROS_DOMAIN_ID": "74",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+  },
+  "exit_code": 0,
+  "reason": "completed",
+  "elapsed_monotonic_s": 24.267305469000004,
+  "source_sha256": {
+    "scripts/initial_survey.py": "3a3ce3bd5f39e5d9bfbfc34d185dc98a6bfd03858c02631eb9e9105ec7a86870",
+    "tests/test_initial_survey_lifecycle_ros.py": "05af314ad180daa7126ae79093ac73574736e8e5097ed26820a4ac178e03416c"
+  },
+  "source_sha256_after": {
+    "scripts/initial_survey.py": "3a3ce3bd5f39e5d9bfbfc34d185dc98a6bfd03858c02631eb9e9105ec7a86870",
+    "tests/test_initial_survey_lifecycle_ros.py": "05af314ad180daa7126ae79093ac73574736e8e5097ed26820a4ac178e03416c"
+  },
+  "source_unchanged": true,
+  "native_log_path": "/tmp/limo-lifecycle-dds-vxwhxa1_.log",
+  "tests_log_sha256": "eb3b48e8c04c08240407027877ff273b20f2e55f9936f3a73a6b0c4656c0b956",
+  "scope": "Real GetState DDS only; no velocity publisher, simulator or full-survey preflight.",
+  "log_io": "Native Linux /tmp during execution; copied after child exited."
+}

@@ -1,0 +1,45 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_initial_survey_lifecycle_ros.py",
+    "-v"
+  ],
+  "environment": {
+    "RUN_ROS_SURVEY_TEST": "1",
+    "ROS_DOMAIN_ID": "74",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+  },
+  "exit_code": 0,
+  "reason": "completed",
+  "elapsed_monotonic_s": 27.379056234000004,
+  "source_sha256": {
+    "scripts/initial_survey.py": "3a3ce3bd5f39e5d9bfbfc34d185dc98a6bfd03858c02631eb9e9105ec7a86870",
+    "tests/test_initial_survey_lifecycle_ros.py": "261e32eb910448d8af8d75956d04221b1d97dc6e62b018ec01c48803c1939151"
+  },
+  "source_sha256_after": {
+    "scripts/initial_survey.py": "3a3ce3bd5f39e5d9bfbfc34d185dc98a6bfd03858c02631eb9e9105ec7a86870",
+    "tests/test_initial_survey_lifecycle_ros.py": "261e32eb910448d8af8d75956d04221b1d97dc6e62b018ec01c48803c1939151"
+  },
+  "source_unchanged": true,
+  "native_log_path": "/tmp/limo-lifecycle-dds-rhjvylg4.log",
+  "tests_log_sha256": "073617e43e4b4758f9003a7ac9572e692432fbae4b381c7411631fc41c07ce1b",
+  "scope": "Real GetState DDS only; no velocity publisher, simulator or full-survey preflight.",
+  "log_io": "Native Linux /tmp during execution; copied after child exited.",
+  "root_exec_completion": {
+    "session_id": 4801,
+    "exit_code": 0,
+    "source": "Actual tool completion"
+  },
+  "fixture_source_snapshot": "test_initial_survey_lifecycle_ros.py.txt",
+  "cleanup_warning_lines": [
+    "The following exception was never retrieved: cannot use Destroyable because destruction was requested"
+  ],
+  "test_assertions": "2 tests passed; original cleanup warning retained"
+}

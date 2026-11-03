@@ -1,0 +1,35 @@
+{
+  "source": "Actual root tool completion, chunk 370356; summary transcribed after execution.",
+  "command": [
+    "python",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_initial_survey*.py",
+    "-v"
+  ],
+  "environment": "Windows bundled Python; rclpy unavailable",
+  "exit_code": 0,
+  "tests_run": 24,
+  "passed": 23,
+  "skipped": 1,
+  "skip_reason": "Existing ROS Action test skipped because rclpy unavailable.",
+  "new_pure_cases_passed": 5,
+  "source_sha256": {
+    "scripts/initial_survey.py": "3a3ce3bd5f39e5d9bfbfc34d185dc98a6bfd03858c02631eb9e9105ec7a86870",
+    "tests/test_initial_survey.py": "52eb244635065ae72bae5c9b780c1e73a3736a4bb9fca54104810fa3a2878589",
+    "tests/test_initial_survey_lifecycle.py": "70512ab1cfb55d0b9f9879567a594d07cd8c49fe893f102f46065ae4260fc4ba",
+    "tests/test_initial_survey_ros.py": "880b647e7550118272269dd1b1c140ca592b1d1ac921280169df7f3c3a578eb0"
+  },
+  "discovered_modules": [
+    "test_initial_survey",
+    "test_initial_survey_lifecycle",
+    "test_initial_survey_ros"
+  ],
+  "scope": "Pure logic check before the new DDS test file was created. Its ROS cases are recorded separately.",
+  "full_tool_output_saved_to_file": false
+}

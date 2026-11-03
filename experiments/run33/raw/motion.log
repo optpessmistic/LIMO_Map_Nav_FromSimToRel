@@ -1,0 +1,86 @@
+MOTION_ENV_CLOCK clock=CLOCK_MONOTONIC seconds=314.05019892 scope=wrapper_entry_after_environment_including_wrapper_startup
+STARTUP_TIMING {"main_enter": 315.026492196, "environment_ready": 314.05019892}
+STARTUP_TIMING {"runtime_load_started": 315.245334004, "runtime_load_finished": 320.110985305}
+STARTUP_TIMING {"subscriptions_ready": 320.576356436}
+READY: native Gazebo limo world pose and ROS odom received; waiting for controlled motion; no commands published. monotonic=323.162753852
+{
+  "schema_version": 1,
+  "read_only": true,
+  "startup_timing": {
+    "clock": "time.monotonic; host wall clock, not ROS simulation time",
+    "main_enter": 315.026492196,
+    "environment_ready": 314.05019892,
+    "environment_stamp_error": null,
+    "runtime_load_started": 315.245334004,
+    "runtime_load_finished": 320.110985305,
+    "subscriptions_ready": 320.576356436,
+    "both_streams_ready": 323.162753852,
+    "scope": "Main entry excludes interpreter/top-level imports; READY is loop observation of both streams. Environment stamp is optional wrapper observation, including wrapper startup."
+  },
+  "truth_used_only_for_offline_diagnosis": true,
+  "world_topic": "/world/limo_maze/pose/info",
+  "world_entity": "limo",
+  "motion_detected": false,
+  "wall_seconds": 39.48052143299998,
+  "requested_seconds_after_motion": 70.0,
+  "partial": true,
+  "reason": "signal_interrupt",
+  "error": null,
+  "errors": [],
+  "requested_signal": "SIGINT",
+  "automatic_pass_verdict": false,
+  "world_summary": {
+    "count": 619,
+    "first": {
+      "sim_s": 55.126,
+      "yaw": -3.934946980797366e-20,
+      "x": -5.7924531180803355e-12,
+      "y": -1.652197329782426e-19,
+      "z": -0.005000772039637763,
+      "id": 114
+    },
+    "last": {
+      "sim_s": 74.38,
+      "yaw": -3.934946980797366e-20,
+      "x": -5.7924531180803355e-12,
+      "y": -1.652197329782426e-19,
+      "z": -0.005000772039637763,
+      "id": 114
+    },
+    "yaw_accumulated_rad": 0.0,
+    "yaw_accumulated_min_rad": 0.0,
+    "yaw_accumulated_max_rad": 0.0,
+    "max_displacement_m": 0.0
+  },
+  "odom_summary": {
+    "count": 895,
+    "first": {
+      "sim_s": 56.504,
+      "yaw": 3.704430640977165e-18,
+      "x": 5.169437356227567e-19,
+      "y": 8.440096222633969e-37,
+      "angular_velocity": 1.2397939783523468e-19,
+      "linear_velocity": 1.2642579767957895e-20
+    },
+    "last": {
+      "sim_s": 74.384,
+      "yaw": 5.202454546782154e-18,
+      "x": 6.464762389410283e-19,
+      "y": 1.4200191907288115e-36,
+      "angular_velocity": 1.670103281557555e-19,
+      "linear_velocity": 5.755356542260103e-21
+    },
+    "yaw_accumulated_rad": 1.4980239058049888e-18,
+    "yaw_accumulated_min_rad": 0.0,
+    "yaw_accumulated_max_rad": 1.4980239058049888e-18,
+    "max_displacement_m": 1.2953250331827165e-19
+  },
+  "aligned_count": 576,
+  "cleanup": {
+    "status": "complete",
+    "native_unsubscribed": true,
+    "native_release_attempted": true,
+    "ros_shutdown_called": true
+  },
+  "collection_complete": false
+}

@@ -1,0 +1,44 @@
+"""Bounded, read-only system/steady sampler during the live run33 epoch."""
+import hashlib
+import json
+from pathlib import Path
+import time
+
+root = Path(__file__).resolve().parents[2]
+run = root/'outputs/ros_smoke/run33-steady-map'
+out = root/'outputs/setup/run33-wsl-system-steady-clock-probe.json'
+assert not out.exists()
+state = json.loads((run/'orchestration.json').read_bytes())
+assert state.get('elapsed_wall_s') is None and state.get('stage') != 'owned_shutdown', 'Only sample during live run'
+assert (run/'provenance-live.json').is_file() and (run/'mission.log').is_file()
+raw = (run/'preparation.json').read_bytes()
+preparation = json.loads(raw)
+boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+samples = []
+began = time.monotonic_ns()
+while time.monotonic_ns()-began < 65_000_000_000:
+    before = time.monotonic_ns()
+    real = time.time_ns()
+    after = time.monotonic_ns()
+    samples.append({'monotonic_before_ns': before, 'realtime_ns': real,
+                    'monotonic_after_ns': after, 'offset_ns': real-(before+after)//2})
+    time.sleep(.1)
+jumps = []
+for i, (a,b) in enumerate(zip(samples,samples[1:]),1):
+    shift = b['offset_ns']-a['offset_ns']
+    if abs(shift) > 50_000_000:
+        jumps.append({'sample':i, 'offset_change_s':shift/1e9,
+            'realtime_step_s':(b['realtime_ns']-a['realtime_ns'])/1e9,
+            'monotonic_step_s':(b['monotonic_before_ns']-a['monotonic_before_ns'])/1e9,
+            'bracket_s':(b['monotonic_after_ns']-b['monotonic_before_ns'])/1e9})
+report = {'scope':'Read-only WSL clock sample for 65 monotonic seconds during run33. Not the entire mission or a ROS clock trace; offset shifts do not establish their cause.',
+    'epoch':preparation['epoch'], 'prepared_head':preparation['prepared_head_actual'],
+    'preparation_sha256':hashlib.sha256(raw).hexdigest(), 'boot_id':boot,
+    'duration_monotonic_s':(time.monotonic_ns()-began)/1e9,
+    'live_run_at_start':True, 'run_closed_before_probe_end':json.loads((run/'orchestration.json').read_bytes()).get('elapsed_wall_s') is not None,
+    'samples':samples, 'jumps':jumps,
+    'max_sampling_bracket_s':max(s['monotonic_after_ns']-s['monotonic_before_ns'] for s in samples)/1e9}
+assert Path('/proc/sys/kernel/random/boot_id').read_text().strip() == boot
+with out.open('x') as handle:
+    json.dump(report,handle,indent=2)
+print(json.dumps({k:v for k,v in report.items() if k!='samples'},indent=2))

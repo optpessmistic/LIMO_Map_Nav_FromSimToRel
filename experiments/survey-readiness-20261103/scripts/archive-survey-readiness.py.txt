@@ -1,0 +1,58 @@
+"""Preserve both DDS attempts after their actual root completions."""
+from pathlib import Path
+import hashlib
+import json
+import shutil
+
+root = Path(__file__).resolve().parents[2]
+dest = root/'experiments/survey-readiness-20261103'
+assert not dest.exists()
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+def read(p):
+    return json.loads(p.read_bytes())
+first = root/'outputs/validation/initial-survey-lifecycle-dds'
+repeat = root/'outputs/validation/initial-survey-lifecycle-dds-cleanup'
+source = root/'scripts/initial_survey.py'
+runs = []
+for folder, session, warning in ((first,4801,True),(repeat,63621,False)):
+    result, completion = read(folder/'result.json'), read(folder/'completion.json')
+    assert result['exit_code'] == 0 and result['source_unchanged']
+    assert completion['root_exec_completion']['session_id'] == session
+    assert completion['root_exec_completion']['exit_code'] == 0
+    assert completion['test_count'] == 2 and completion['assertions_passed']
+    assert completion['cleanup_warning'] is warning
+    assert sha(folder/'tests.log') == result['tests_log_sha256']
+    assert result['source_sha256']['scripts/initial_survey.py'] == sha(source)
+    assert result['source_sha256'] == result['source_sha256_after']
+    log = (folder/'tests.log').read_text()
+    assert ('cannot use Destroyable' in log) is warning
+    runs.append({'directory':folder.relative_to(root).as_posix(), 'root_session':session,
+                 'exit_code':0, 'test_count':2, 'cleanup_warning':warning})
+assert sha(first/'test_initial_survey_lifecycle_ros.py.txt') == read(first/'result.json')['source_sha256']['tests/test_initial_survey_lifecycle_ros.py']
+assert sha(root/'tests/test_initial_survey_lifecycle_ros.py') == read(repeat/'result.json')['source_sha256']['tests/test_initial_survey_lifecycle_ros.py']
+pure = read(root/'outputs/setup/survey-readiness-pure-tests.json')
+for rel,digest in pure['source_sha256'].items():
+    assert sha(root/rel) == digest
+copies = [(root/'outputs/setup/survey-readiness-pure-tests.json','pure-tests.json'),
+          (Path(__file__).resolve(),'scripts/archive-survey-readiness.py.txt')]
+for folder,label in ((first,'dds-first'),(repeat,'dds-cleanup-repeat')):
+    for path in sorted(folder.iterdir()):
+        assert path.is_file() and not path.is_symlink()
+        copies.append((path,label+'/'+path.name))
+for rel in ('scripts/initial_survey.py','tests/test_initial_survey_lifecycle.py','tests/test_initial_survey_lifecycle_ros.py'):
+    copies.append((root/rel,'source/'+Path(rel).name+'.txt'))
+for name in ('run-initial-survey-lifecycle-dds.py','run-initial-survey-lifecycle-dds-cleanup.py','record-survey-pure-check.py'):
+    copies.append((root/'outputs/setup'/name,'scripts/'+name+'.txt'))
+dest.mkdir(parents=True)
+records = []
+for src,rel in copies:
+    target = dest/rel
+    target.parent.mkdir(parents=True,exist_ok=True)
+    shutil.copyfile(src,target)
+    assert sha(src) == sha(target)
+    records.append({'source':src.relative_to(root).as_posix(),'archive':rel,'sha256':sha(target),'bytes':target.stat().st_size})
+report = {'copies':records,'all_reopened_and_verified':True,'dds_runs':runs,
+          'scope':'Original DDS cleanup warning retained; repeat only fixes test cleanup. No whole-survey or Gazebo success claim.'}
+(dest/'archive-provenance.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps({'archived':len(records),'copies_verified':True,'dds_runs':runs},indent=2))

@@ -1,0 +1,119 @@
+{
+  "run": "run33-steady-map",
+  "epoch": "a877f343-be40-4e77-b86c-0d9f9d315621",
+  "runtime_head": "d4ba9bec3b2e177d6d348c072e5afa11a18a9889",
+  "root_exec_completion": {
+    "session_id": 21930,
+    "exit_code": 1,
+    "source": "Explicit actual completion supplied by root operator, never inferred from elapsed/stage"
+  },
+  "original_orchestration": {
+    "status": "orchestration_failed",
+    "stage": "owned_shutdown",
+    "elapsed_wall_s": 244.09086639600002,
+    "errors": [
+      "RuntimeError: survey exited 1",
+      "Retention closure audit: RuntimeError: No terminal mission result for retained-frame audit"
+    ],
+    "all_owned_groups_empty": true,
+    "all_run_token_processes_absent": false,
+    "global_scan_limitation": "Some same-UID /proc environments unreadable; no global absence claim",
+    "evidence_collection_complete": false,
+    "native_terminal_tail_verified": false
+  },
+  "survey_as_recorded": {
+    "success": false,
+    "reason": "Waiting for active behavior/smoother/collision-monitor chain",
+    "phase": "preflight",
+    "executed": true,
+    "motion_started": false,
+    "wall_seconds": 15.001202347999993,
+    "spin_goals": [],
+    "yaw_accumulated_rad": 0.0,
+    "max_displacement_m": 0.0,
+    "stop_verified": null
+  },
+  "native_motion_evidence": {
+    "motion_detected": false,
+    "partial": true,
+    "reason": "signal_interrupt",
+    "collection_complete": false,
+    "world_summary": {
+      "count": 619,
+      "first": {
+        "sim_s": 55.126,
+        "yaw": -3.934946980797366e-20,
+        "x": -5.7924531180803355e-12,
+        "y": -1.652197329782426e-19,
+        "z": -0.005000772039637763,
+        "id": 114
+      },
+      "last": {
+        "sim_s": 74.38,
+        "yaw": -3.934946980797366e-20,
+        "x": -5.7924531180803355e-12,
+        "y": -1.652197329782426e-19,
+        "z": -0.005000772039637763,
+        "id": 114
+      },
+      "yaw_accumulated_rad": 0.0,
+      "yaw_accumulated_min_rad": 0.0,
+      "yaw_accumulated_max_rad": 0.0,
+      "max_displacement_m": 0.0
+    },
+    "odom_summary": {
+      "count": 895,
+      "first": {
+        "sim_s": 56.504,
+        "yaw": 3.704430640977165e-18,
+        "x": 5.169437356227567e-19,
+        "y": 8.440096222633969e-37,
+        "angular_velocity": 1.2397939783523468e-19,
+        "linear_velocity": 1.2642579767957895e-20
+      },
+      "last": {
+        "sim_s": 74.384,
+        "yaw": 5.202454546782154e-18,
+        "x": 6.464762389410283e-19,
+        "y": 1.4200191907288115e-36,
+        "angular_velocity": 1.670103281557555e-19,
+        "linear_velocity": 5.755356542260103e-21
+      },
+      "yaw_accumulated_rad": 1.4980239058049888e-18,
+      "yaw_accumulated_min_rad": 0.0,
+      "yaw_accumulated_max_rad": 1.4980239058049888e-18,
+      "max_displacement_m": 1.2953250331827165e-19
+    }
+  },
+  "mission": {
+    "status": null,
+    "mission_success": null,
+    "queue_created": false,
+    "planned_views_denominator": null,
+    "completed_views": null,
+    "relocated_goal_sends": null,
+    "target_count": null,
+    "reason": "Mission process/result and observation queue were never reached; no denominator inferred from limits"
+  },
+  "strict_retention": {
+    "status": "not_run_no_terminal_mission",
+    "passed": null,
+    "accepted_count": null,
+    "producer_result_count": 0,
+    "producer_fault": null,
+    "shutdown_fault": null,
+    "original_closure_errors": [
+      "Retention closure audit: RuntimeError: No terminal mission result for retained-frame audit"
+    ],
+    "scope": "No terminal consumer ledger or strict audit exists; zero producer results is not a 0/0 audit pass"
+  },
+  "not_run": {
+    "outcome_review": "no terminal mission; prepared script preserved only",
+    "selection_audit": "no observation queue; prepared script preserved only",
+    "system_clock_probe": "not executed; prepared script preserved only",
+    "provenance_live": "stage never reached; loaded-library identity not verified",
+    "early_mission_parameters": "stage never reached",
+    "map_export_and_terminal_tail": "mission terminal stage never reached"
+  },
+  "scope": "Closed startup failure only. Original false/null and global process-scan uncertainty retained; no map, relocation, visual coverage or mission success claim."
+}
