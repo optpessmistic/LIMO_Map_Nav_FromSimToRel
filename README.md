@@ -6,6 +6,8 @@
 
 开发环境按已确认的 WSL Ubuntu 24.04 配置 ROS2 Jazzy 与 Gazebo Harmonic；实车的 ROS2 发行版、相机和目标定义仍待确认。
 
+新增 [留存深度诊断](docs/depth-visibility.md)：对 run31 的 33 组 RGB-D 和完整 4452 格矩形，在名义地面以上 0.02/0.10/0.18 m 三层完成 440748 次帧—点判定。2584 个自由格中分别有 798/757/743 格没有名义无遮挡支持，图上可见上方走廊的观察缺口。图、支持帧索引及来源指纹保存在 [离线结果](experiments/run31-visibility/README.md)。44 项测试通过；离散视线诊断不等于识别覆盖，原任务失败结论保留。
+
 最新 run31 保持稳态时钟调度 SLAM 的 TF 发布，6 次探索、5 次观察导航和返航共 12 次导航全部成功，未记录 TF 过期拒绝或外推错误。达到当前地图完成判据，标注两个红色替身；独立原生仿真位姿的返航误差约 1.33 cm，33/33 组接受的 RGB-D 通过严格留存审计。观察仍只完成 5/12，另 7 个视图被安全重验跳过，`mission_success=false`。原关闭检查因进程读取不确定而退出 1；后续只读复查确认记录的进程组已空，保留原失败。见 [run31 结果](experiments/run31/run31-outcome-review.md) 和 [TF 时钟与容差实验](docs/tf-timing-experiment.md)。用户目前没有小车访问条件，实车验收暂缓。
 
 独立诊断复现 WSL 系统钟回跳使 SYSTEM Rate 暂停约 1.9–2.4 秒，而 STEADY WallRate 最大间隔约 21.7 ms。SLAM 发布循环的单行补丁已构建，run30 核实实际加载新库；运行期间仍观测到系统钟回跳。本轮结果支持该修复，但不能保证消除所有 TF 延迟，详见 [WSL 时钟与 TF](docs/wsl-clock-tf.md)。
@@ -45,6 +47,7 @@
 | 到达后停稳并等待新处理帧 | [可选自主观察等待](docs/settled-inspection.md) |
 | 固定实际接受的 RGB-D 原帧并离线核对 | [源端原图留存](docs/frame-retention.md) |
 | 有限站位/朝向与到家后前沿复查 | [有界主动观察](docs/bounded-observation.md) |
+| 从原始深度帧检查不同高度的视线缺口 | [离线深度诊断](docs/depth-visibility.md) |
 | 实际验证状态 | [验证报告](docs/validation.md) |
 | 首次真实平移、扩图与目标标注 | [run10 自主实验](docs/first-autonomous-run.md) |
 | 两目标评分、到达裕量与返航停滞 | [run11 自主实验](docs/autonomous-run11.md) |

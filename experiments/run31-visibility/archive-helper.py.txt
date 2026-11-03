@@ -1,0 +1,135 @@
+"""Freeze compact offline diagnostics after checking outputs and source binding."""
+from collections import Counter
+import gzip
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE = ROOT / 'outputs/visibility/run31-nominal-01'
+DEST = ROOT / 'experiments/run31-visibility'
+
+
+def digest(path):
+    raw = path.read_bytes()
+    return {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+
+
+def read(path):
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
+def write(name, value):
+    (DEST / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
+
+
+report = read(SOURCE / 'report.json')
+inputs = read(SOURCE / 'inputs.json')
+data = json.loads(gzip.decompress((SOURCE / 'layers.json.gz').read_bytes()))
+assert report['frame_count'] == 33 and report['excluded_count'] == 0
+assert report['classification_count'] == 440748
+assert report['original_mission_flags']['mission_success'] is False
+assert report['original_mission_flags']['visual_coverage_complete'] is False
+assert report['recognition_coverage_verified'] is False
+for name, expected in report['artifacts'].items():
+    assert digest(SOURCE / name) == expected, name
+for name, expected in inputs['source_files'].items():
+    assert digest(ROOT / name) == expected, name
+original_run = ROOT / 'outputs/ros_smoke/run31-observation-route'
+for name, expected in inputs['files'].items():
+    assert expected is not None and digest(original_run / name) == expected, name
+
+cells, frames = len(data['map']['data']), len(data['frames'])
+for layer in data['layers']:
+    assert Counter(layer['states']) == Counter(layer['counts'])
+    assert sum(layer['counts'].values()) == cells
+    for supports in (layer['support_frame_indices'], layer['query_depth_support_frame_indices']):
+        assert all(len(values) == cells for values in supports.values())
+        for i in range(cells):
+            assert sorted(j for values in supports.values() for j in values[i]) == list(range(frames))
+    for relation, values in layer['query_depth_support_frame_indices'].items():
+        assert layer['query_depth_relation_counts'][relation] == sum(map(len, values))
+    assert sum(layer['query_depth_relation_counts'].values()) == layer['classification_count'] == cells*frames
+
+extra = ['run31-visibility-review.md', 'run31-visibility-gaps.py',
+         'run31-visibility-gaps.json', 'run31-visibility-gaps.md']
+for name in extra:
+    assert (ROOT / 'outputs/setup' / name).is_file(), name
+DEST.mkdir(exist_ok=False)
+for name in (*report['artifacts'], 'report.json'):
+    shutil.copyfile(SOURCE / name, DEST / name)
+for name in extra:
+    shutil.copyfile(ROOT / 'outputs/setup' / name, DEST / (name + '.txt' if name.endswith('.py') else name))
+for name in inputs['source_files']:
+    target = DEST / 'sources' / (name + '.txt')
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT / name, target)
+shutil.copyfile(__file__, DEST / 'archive-helper.py.txt')
+write('validation.json', {
+    'schema_version': 1, 'diagnostic_complete': True,
+    'unit_test_summary': {'command': '/usr/bin/python3 -B -m unittest discover -s tools/visibility -p test_*.py -v',
+        'platform': 'WSL Ubuntu-24.04', 'tests': 44, 'skipped': 0, 'exit_code': 0,
+        'elapsed_test_s': 26.937, 'tool_session_id': 80825,
+        'evidence_kind': 'Summary of observed tool result; not a saved raw transcript'},
+    'integration': {'tool_session_id': 32764, 'exit_code': 0, 'frames': frames,
+        'cells_per_layer': cells, 'point_frame_classifications': report['classification_count'],
+        'original_input_files_rehashed': len(inputs['files']),
+        'all_source_files_match': True, 'all_output_artifacts_match': True,
+        'every_point_has_exactly_one_ray_state_and_one_query_relation_per_frame': True},
+    'visual_inspection': '2240x1760 PNG inspected: four aligned panels, legends and footnotes legible, unknown occupancy hatching retained.',
+    'independent_review': 'Static review found no blocking correctness issues; query bounds, complete domain, input/source provenance and unchanged original mission flags checked.',
+    'new_ros_or_simulation_started': False,
+    'recognition_coverage_verified': False, 'mission_success_claimed': False})
+write('provenance.json', {
+    'archive_type': 'offline_diagnostic_not_new_mission',
+    'base_git_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+    'runtime_source_binding': 'inputs.json source_files; exact byte copies under sources/<path>.txt',
+    'input_run': 'outputs/ros_smoke/run31-observation-route',
+    'mission_filename': inputs['mission_filename'], 'map_epoch': report['map_epoch'],
+    'original_rgbd_included': False,
+    'command_argv': ['/usr/bin/python3', '-B', '-m', 'tools.visibility', '--run-root',
+        'outputs/ros_smoke/run31-observation-route', '--mission', 'mission_20261103_014821.json',
+        '--output', 'outputs/visibility/run31-nominal-01', '--floor-z', '-0.15',
+        '--height-reference', 'run31_tf_urdf_nominal_base_footprint_not_measured_ground',
+        '--heights', '0.02', '0.10', '0.18', '--min-depth', '0.15', '--max-depth', '6.0',
+        '--uncertainty-bound', 'unknown', '--depth-registered', '--depth-semantics', 'optical_z',
+        '--optical-axes', 'x_right_y_down_z_forward', '--assumed-size', '0.06', '0.20', '--plot']})
+readme = '''# run31 留存深度的离线诊断
+
+2026-11-03。只读取已经关闭的 run31 留存输入，没有启动新的 ROS/仿真，也没有改写原任务。33/33 帧纳入、0 帧排除；每层保留完整 4452 格，三层共 440748 次帧—点分类。输入指纹重新核对通过，新增 44 项单元测试通过。
+
+![三个高度层的名义视线](visibility-diagnostic.png)
+
+原地图自由格共 2584 个，在名义地面以上 0.02/0.10/0.18 m 三层中，分别有 **798/757/743 格没有名义 clear 支持**。绿色只表示至少一帧的四个离散深度样本在该格心之后；蓝色表示有遮挡支持且没有 clear/混合支持，其余帧仍可能在相机后方或图像外。未知地图格保持斜线，原 1229 个 unknown 未被删去或改成自由格。上方走廊存在需要补充观察的区域，详见 [缺口分析](run31-visibility-gaps.md)。
+
+这不是识别覆盖率：深度/姿态/名义地面的误差没有标定，历史 TF 未通过最终 SLAM 优化重投影，查询点量程与整物体可见性未认证。33 帧来自相邻停车采样，不是独立可靠性试验。原任务 `visual_coverage_complete=false`、`mission_success=false` 保留。
+
+## 文件与复算
+
+- `report.json`：统计、假设、原任务标志及输出哈希。
+- `inputs.json`：202 个原输入的指纹、原/当前审计、接受身份、实际计算源码的指纹。
+- `layers.json.gz`：完整原始地图、格心状态、每格每帧的状态/查询范围支持索引及最有利余量；不是原图替代品。
+- `sources/`：参与计算/审计的源码原字节副本，以 `.txt` 保存；源码指纹以 `inputs.json` 为准。
+- `run31-visibility-review.md`：计算前的高度参考/聚合审查，不能当作计算结果。
+- `validation.json`：44 项测试的工具结果摘要、整批输入/源码/产物重哈希及支持索引守恒检查。
+- `provenance.json`：实际命令参数与源实验绑定；`base_git_commit` 是新工具提交前的基线，不冒充运行源码 commit。
+- `SHA256SUMS`：本归档各文件的原字节 SHA256。
+
+用 [离线工具说明](../../docs/depth-visibility.md) 中的命令复算，输出目录必须换成不存在的新目录。原始 RGB-D 没有提交 Git，复算需取得 `inputs.json` 指定且哈希一致的原始 run31 留存目录。绘图另外需要 numpy/matplotlib；读取/计算不依赖 ROS。当前渲染环境为 WSL `/usr/bin/python3`、numpy 1.26.4、matplotlib 3.6.3。
+
+归档校验（WSL，仓库根目录）：
+
+```bash
+cd experiments/run31-visibility
+sha256sum -c SHA256SUMS
+```
+'''
+(DEST / 'README.md').write_text(readme, encoding='utf-8', newline='\n')
+entries = sorted(p for p in DEST.rglob('*') if p.is_file())
+(DEST / 'SHA256SUMS').write_text(''.join(
+    f"{digest(p)['sha256']}  {p.relative_to(DEST).as_posix()}\n" for p in entries), encoding='utf-8', newline='\n')
+print(json.dumps({'archive': str(DEST), 'files': len(entries)+1,
+    'bytes': sum(p.stat().st_size for p in DEST.rglob('*') if p.is_file()),
+    'manifest': digest(DEST / 'SHA256SUMS')}, indent=2))

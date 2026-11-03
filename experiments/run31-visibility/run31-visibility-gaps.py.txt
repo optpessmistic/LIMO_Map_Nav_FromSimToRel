@@ -1,0 +1,177 @@
+"""Read frozen depth layers only; summarize common free-cell gaps, never truth."""
+import argparse
+from collections import Counter
+import gzip
+import hashlib
+import json
+import math
+from pathlib import Path
+
+
+def main():
+    repo = Path(__file__).resolve().parents[2]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output-prefix', type=Path,
+                        default=repo/'outputs/setup/run31-visibility-gaps')
+    args = parser.parse_args()
+    outputs = [args.output_prefix.with_suffix(ext) for ext in ('.json', '.md')]
+    if any(p.exists() or p.is_symlink() for p in outputs):
+        raise FileExistsError('Refusing to overwrite gap analysis')
+    source = repo/'outputs/visibility/run31-nominal-01'
+    compressed = (source/'layers.json.gz').read_bytes()
+    report_bytes = (source/'report.json').read_bytes()
+    report = json.loads(report_bytes)
+    expected = report['artifacts']['layers.json.gz']
+    assert len(compressed) == expected['bytes']
+    assert hashlib.sha256(compressed).hexdigest() == expected['sha256']
+    data = json.loads(gzip.decompress(compressed))
+    grid, layers, frames = data['map'], data['layers'], data['frames']
+    width, height, resolution = grid['width'], grid['height'], grid['resolution']
+    assert len(layers) == 3 and len(frames) == report['frame_count']
+    assert len(grid['data']) == width*height
+    assert all(len(layer['states']) == width*height for layer in layers)
+    ox, oy, _ = grid['origin']['xyz']
+    qx, qy, qz, qw = grid['origin']['quaternion_xyzw']
+    assert abs(qx)+abs(qy) < 1e-8
+    yaw = 2*math.atan2(qz, qw)
+    cosine, sine = math.cos(yaw), math.sin(yaw)
+
+    def xy(column, row):
+        x, y = (column+.5)*resolution, (row+.5)*resolution
+        return [ox+cosine*x-sine*y, oy+sine*x+cosine*y]
+
+    catalogue = []
+    for index, frame in enumerate(frames):
+        pose = frame['camera_pose']
+        x, y, z, w = pose[3:]
+        assert abs(x*x+y*y+z*z+w*w-1) < 1e-6
+        forward = [2*(x*z+y*w), 2*(y*z-x*w), 1-2*(x*x+y*y)]
+        heading = math.degrees(math.atan2(forward[1], forward[0]))
+        catalogue.append(dict(frame, index=index, optical_z_forward_in_map=forward,
+            optical_forward_heading_deg_from_map_x=heading))
+    free = {i for i, value in enumerate(grid['data']) if value == 0}
+    gap = {i for i in free if all(layer['states'][i] != 'nominal_clear' for layer in layers)}
+    remaining, components = set(gap), []
+    while remaining:
+        first = min(remaining)
+        remaining.remove(first)
+        stack, cells = [first], []
+        while stack:
+            index = stack.pop()
+            cells.append(index)
+            row, column = divmod(index, width)
+            for x, y in ((column-1, row), (column+1, row), (column, row-1), (column, row+1)):
+                neighbor = y*width+x
+                if 0 <= x < width and 0 <= y < height and neighbor in remaining:
+                    remaining.remove(neighbor)
+                    stack.append(neighbor)
+        components.append(sorted(cells))
+    components.sort(key=lambda cells: (-len(cells), cells[0]))
+    summaries = []
+    for rank, cells in enumerate(components, 1):
+        columns, rows = [i % width for i in cells], [i//width for i in cells]
+        mean_x, mean_y = sum(columns)/len(cells), sum(rows)/len(cells)
+        representative = min(cells, key=lambda i: ((i % width-mean_x)**2+(i//width-mean_y)**2, i))
+        row, column = divmod(representative, width)
+        positions = [xy(i % width, i//width) for i in cells]
+        x_values, y_values = zip(*positions)
+        evidence = []
+        for layer in layers:
+            support = {name: values[representative]
+                       for name, values in layer['support_frame_indices'].items()}
+            flattened = [i for indices in support.values() for i in indices]
+            assert sorted(flattened) == list(range(len(frames)))
+            assert not support['depth_clear']
+            evidence.append({'height_above_floor_m': layer['height_above_floor_m'],
+                'map_z_m': layer['map_z_m'], 'display_state': layer['states'][representative],
+                'support_counts': {state: len(indices) for state, indices in support.items()},
+                'support_frame_indices': support,
+                'query_depth_support_frame_indices': {name: values[representative]
+                    for name, values in layer['query_depth_support_frame_indices'].items()},
+                'max_of_delta_min_m': layer['max_of_delta_min_m'][representative],
+                'max_margin_frame_index': layer['max_margin_frame_index'][representative]})
+        summaries.append({'component': rank, 'cells': len(cells),
+            'cell_area_m2': len(cells)*resolution*resolution,
+            'column_bounds_inclusive': [min(columns), max(columns)],
+            'row_bounds_inclusive': [min(rows), max(rows)],
+            'cell_center_xy_bounds_m': [min(x_values), min(y_values), max(x_values), max(y_values)],
+            'representative': {'index': representative, 'column': column, 'row': row,
+                'xy_m': xy(column, row),
+                'selection': 'component cell nearest mean row/column; not a robot goal',
+                'layers': evidence}})
+    result = {'schema_version': 1, 'diagnostic_only': True,
+        'recognition_coverage_verified': False, 'mission_success_claimed': False,
+        'sources': {str(path.relative_to(repo)).replace('\\', '/'): {
+            'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+            for path, raw in ((source/'layers.json.gz', compressed), (source/'report.json', report_bytes))},
+        'map_epoch': report['map_epoch'], 'original_mission_flags': report['original_mission_flags'],
+        'map_geometry': {key: value for key, value in grid.items() if key != 'data'},
+        'free_definition': 'raw occupancy == 0; unknown/occupied/intermediate excluded from this subset',
+        'gap_definition': 'free cell with no nominal_clear at any of the three supplied heights',
+        'connectedness': 'four neighbors in original row-major grid, without row wrapping',
+        'free_cells': len(free), 'common_gap_cells': len(gap),
+        'component_count': len(components), 'largest_two_gap_cells': sum(map(len, components[:2])),
+        'free_gap_cells_by_height': [{'height_m': layer['height_above_floor_m'],
+            'cells': sum(layer['states'][i] != 'nominal_clear' for i in free)} for layer in layers],
+        'frame_count': len(frames), 'floor_z_m': data['floor_z_m'],
+        'height_reference_provenance': data['height_reference_provenance'],
+        'uncertainty_bound_m': data['uncertainty_bound_m'],
+        'sampled_depth_bounds_m': data['sampled_depth_bounds_m'],
+        'components': summaries, 'frame_catalogue': catalogue,
+        'limitations': data['limitations'] + [
+            'occluded display means at least one occluded frame and no clear/ambiguous frame; not all frames occluded.',
+            'Map-cell representatives and enclosing bounds are not safe navigation targets or validated paths.',
+            'Retained camera positions are a sampled subset, not a complete robot trajectory.',
+            'Gap fractions describe only this retained-frame diagnostic, not search coverage or target recall.']}
+    lines = ['# Run31 retained-depth gaps', '',
+        f'Raw free cells: {len(free)}. No nominal_clear at all three heights: {len(gap)}; '
+        f'{len(components)} four-neighbor components.', '',
+        f'The upper-right and upper-left components contain {sum(map(len, components[:2]))}/{len(gap)} '
+        f'gap cells ({100*sum(map(len, components[:2]))/len(gap):.2f}%). '
+        'The remaining components are small. This is a discrete diagnostic, not search coverage.', '',
+        '| Component | Cells | Center bounds x / y (m) | Representative XY (m) |',
+        '|---|---:|---|---|']
+    for item in summaries:
+        a, b, c, d = item['cell_center_xy_bounds_m']
+        x, y = item['representative']['xy_m']
+        lines.append(f'| {item["component"]} | {item["cells"]} | [{a:.3f}, {c:.3f}] / '
+                     f'[{b:.3f}, {d:.3f}] | ({x:.3f}, {y:.3f}) |')
+    lines += ['', '## Two principal components', '']
+    for item in summaries[:2]:
+        rep = item['representative']
+        first = rep['layers'][0]
+        assert all(row['support_frame_indices'] == first['support_frame_indices'] for row in rep['layers'])
+        counts = first['support_counts']
+        lines += [f'- Component {item["component"]}, index {rep["index"]}: each height has '
+            f'{counts["behind_camera"]} behind-camera, {counts["outside_image"]} outside-image, '
+            f'{counts["occluded"]} occluded, {counts["invalid_depth"]} invalid, '
+            f'{counts["depth_ambiguous"]} ambiguous and {counts["depth_clear"]} clear frames.']
+        for fi in first['support_frame_indices']['occluded']:
+            frame = catalogue[fi]
+            x, y = frame['camera_pose'][:2]
+            lines.append(f'  - Source frame {fi}: camera XY=({x:.3f}, {y:.3f}) m; optical-forward '
+                f'heading={frame["optical_forward_heading_deg_from_map_x"]:.1f} deg from map +X toward +Y. '
+                f'Depth stamp={frame["depth_stamp_ns"]} ns. Exact identity is in JSON.')
+    lines += ['', '## Interpretation and next observation design', '',
+        'The aggregate occluded label is not an all-frame obstruction claim. Most retained views of the '
+        'two representative points are behind-camera or outside-image. Optical headings are derived '
+        'from the quaternion-transformed camera +Z axis, not Euler yaw of an optical-frame quaternion.', '',
+        'Prioritize testing additional view candidates for the right upper corridor, then the left upper '
+        'corridor. These representative cells describe what lacks evidence; they are not commanded '
+        'robot poses. Candidate endpoints still need footprint clearance, reachable map paths and '
+        'camera heading checks. No task strategy is changed here.', '',
+        'Only frozen layers.json.gz and report.json were read. No world or target truth was used. '
+        'The nominal floor, uncalibrated uncertainty, historical map poses and discrete rays remain '
+        'limitations. Depth bounds filter measured surfaces; query-point recognition range is not certified. '
+        'Original mission_success remains false.', '',
+        'Replay with a fresh prefix: `python -B outputs/setup/run31-visibility-gaps.py '
+        '--output-prefix <new-prefix>`. Existing outputs are refused.', '']
+    for path, content in zip(outputs, (json.dumps(result, indent=2, ensure_ascii=False)+'\n', '\n'.join(lines))):
+        with path.open('x', encoding='utf-8', newline='\n') as handle:
+            handle.write(content)
+    print(json.dumps({'outputs': [str(p) for p in outputs], 'free': len(free), 'gaps': len(gap),
+                      'component_sizes': list(map(len, components))}))
+
+
+if __name__ == '__main__':
+    main()

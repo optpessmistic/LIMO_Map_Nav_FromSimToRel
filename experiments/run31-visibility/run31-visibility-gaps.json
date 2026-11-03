@@ -1,0 +1,4529 @@
+{
+  "schema_version": 1,
+  "diagnostic_only": true,
+  "recognition_coverage_verified": false,
+  "mission_success_claimed": false,
+  "sources": {
+    "outputs/visibility/run31-nominal-01/layers.json.gz": {
+      "bytes": 450342,
+      "sha256": "a875bd8d180ce06ce4599c5cdb21c8966eaa7a6746875db0fa1342d958ffc05d"
+    },
+    "outputs/visibility/run31-nominal-01/report.json": {
+      "bytes": 4587,
+      "sha256": "ae4c30248ce4c67263a2782ff63abdd768e3450c3bc64cc4060726173c2ddf2d"
+    }
+  },
+  "map_epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+  "original_mission_flags": {
+    "status": "done",
+    "reason": "bounded_observation_exhausted;final_observation_checks_incomplete",
+    "map_complete": true,
+    "visual_coverage_complete": false,
+    "returned_pose_verified": true,
+    "mission_success": false
+  },
+  "map_geometry": {
+    "width": 84,
+    "height": 53,
+    "resolution": 0.05000000074505806,
+    "frame_id": "map",
+    "origin": {
+      "xyz": [
+        -0.5018672475186436,
+        -2.1192623631253813,
+        0.0
+      ],
+      "quaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "stamp_ns": 319250000000
+  },
+  "free_definition": "raw occupancy == 0; unknown/occupied/intermediate excluded from this subset",
+  "gap_definition": "free cell with no nominal_clear at any of the three supplied heights",
+  "connectedness": "four neighbors in original row-major grid, without row wrapping",
+  "free_cells": 2584,
+  "common_gap_cells": 743,
+  "component_count": 11,
+  "largest_two_gap_cells": 727,
+  "free_gap_cells_by_height": [
+    {
+      "height_m": 0.02,
+      "cells": 798
+    },
+    {
+      "height_m": 0.1,
+      "cells": 757
+    },
+    {
+      "height_m": 0.18,
+      "cells": 743
+    }
+  ],
+  "frame_count": 33,
+  "floor_z_m": -0.15,
+  "height_reference_provenance": "run31_tf_urdf_nominal_base_footprint_not_measured_ground",
+  "uncertainty_bound_m": null,
+  "sampled_depth_bounds_m": [
+    0.15,
+    6.0
+  ],
+  "components": [
+    {
+      "component": 1,
+      "cells": 442,
+      "cell_area_m2": 1.1050000329315666,
+      "column_bounds_inclusive": [
+        50,
+        81
+      ],
+      "row_bounds_inclusive": [
+        33,
+        48
+      ],
+      "cell_center_xy_bounds_m": [
+        2.0231327901067884,
+        -0.4442623381659363,
+        3.573132813203588,
+        0.3057376730099346
+      ],
+      "representative": {
+        "index": 3510,
+        "column": 66,
+        "row": 41,
+        "xy_m": [
+          2.8231328020277173,
+          -0.04426233220547182
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.1354601249870606,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.1354601845917054,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.1354601845917054,
+            "max_margin_frame_index": 21
+          }
+        ]
+      }
+    },
+    {
+      "component": 2,
+      "cells": 285,
+      "cell_area_m2": 0.7125000212341549,
+      "column_bounds_inclusive": [
+        3,
+        31
+      ],
+      "row_bounds_inclusive": [
+        35,
+        49
+      ],
+      "cell_center_xy_bounds_m": [
+        -0.32686724491094044,
+        -0.3442623366758202,
+        1.0731327759506852,
+        0.35573767375499266
+      ],
+      "representative": {
+        "index": 3546,
+        "column": 18,
+        "row": 42,
+        "xy_m": [
+          0.42313276626493046,
+          0.005737668539586238
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 21,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 3,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                9,
+                10,
+                11,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                12,
+                13,
+                14
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.2977326585462212,
+            "max_margin_frame_index": 12
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 21,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 3,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                9,
+                10,
+                11,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                12,
+                13,
+                14
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.2977326585462212,
+            "max_margin_frame_index": 12
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 21,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 3,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                9,
+                10,
+                11,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                12,
+                13,
+                14
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.2977326585462212,
+            "max_margin_frame_index": 12
+          }
+        ]
+      }
+    },
+    {
+      "component": 3,
+      "cells": 6,
+      "cell_area_m2": 0.01500000044703484,
+      "column_bounds_inclusive": [
+        57,
+        60
+      ],
+      "row_bounds_inclusive": [
+        2,
+        4
+      ],
+      "cell_center_xy_bounds_m": [
+        2.373132795322195,
+        -1.9942623612627361,
+        2.523132797557369,
+        -1.89426235977262
+      ],
+      "representative": {
+        "index": 310,
+        "column": 58,
+        "row": 3,
+        "xy_m": [
+          2.423132796067253,
+          -1.944262360517678
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 15,
+              "outside_image": 15,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 3,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "outside_image": [
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                3,
+                4,
+                5
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.7662905848222159,
+            "max_margin_frame_index": 3
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 15,
+              "outside_image": 15,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 3,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "outside_image": [
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                3,
+                4,
+                5
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.7662905848222159,
+            "max_margin_frame_index": 3
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 15,
+              "outside_image": 15,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 3,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "outside_image": [
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                3,
+                4,
+                5
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.7662905848222159,
+            "max_margin_frame_index": 3
+          }
+        ]
+      }
+    },
+    {
+      "component": 4,
+      "cells": 3,
+      "cell_area_m2": 0.00750000022351742,
+      "column_bounds_inclusive": [
+        2,
+        4
+      ],
+      "row_bounds_inclusive": [
+        18,
+        18
+      ],
+      "cell_center_xy_bounds_m": [
+        -0.3768672456559985,
+        -1.1942623493418072,
+        -0.2768672441658824,
+        -1.1942623493418072
+      ],
+      "representative": {
+        "index": 1515,
+        "column": 3,
+        "row": 18,
+        "xy_m": [
+          -0.32686724491094044,
+          -1.1942623493418072
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "mixed_or_surface",
+            "support_counts": {
+              "behind_camera": 12,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 3,
+              "occluded": 9,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [
+                12,
+                13,
+                14
+              ],
+              "occluded": [
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.006717883654392187,
+            "max_margin_frame_index": 12
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "mixed_or_surface",
+            "support_counts": {
+              "behind_camera": 12,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 3,
+              "occluded": 9,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [
+                12,
+                13,
+                14
+              ],
+              "occluded": [
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.006717883654392187,
+            "max_margin_frame_index": 12
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "mixed_or_surface",
+            "support_counts": {
+              "behind_camera": 12,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 3,
+              "occluded": 9,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [
+                12,
+                13,
+                14
+              ],
+              "occluded": [
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.006717883654392187,
+            "max_margin_frame_index": 12
+          }
+        ]
+      }
+    },
+    {
+      "component": 5,
+      "cells": 1,
+      "cell_area_m2": 0.0025000000745058065,
+      "column_bounds_inclusive": [
+        80,
+        80
+      ],
+      "row_bounds_inclusive": [
+        16,
+        16
+      ],
+      "cell_center_xy_bounds_m": [
+        3.52313281245853,
+        -1.2942623508319233,
+        3.52313281245853,
+        -1.2942623508319233
+      ],
+      "representative": {
+        "index": 1424,
+        "column": 80,
+        "row": 16,
+        "xy_m": [
+          3.52313281245853,
+          -1.2942623508319233
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "mixed_or_surface",
+            "support_counts": {
+              "behind_camera": 18,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 6,
+              "occluded": 0,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20
+              ],
+              "occluded": [],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.012410585431856136,
+            "max_margin_frame_index": 15
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "mixed_or_surface",
+            "support_counts": {
+              "behind_camera": 18,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 6,
+              "occluded": 0,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20
+              ],
+              "occluded": [],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.012410585431856136,
+            "max_margin_frame_index": 15
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "mixed_or_surface",
+            "support_counts": {
+              "behind_camera": 18,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 6,
+              "occluded": 0,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20
+              ],
+              "occluded": [],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.012410585431856136,
+            "max_margin_frame_index": 15
+          }
+        ]
+      }
+    },
+    {
+      "component": 6,
+      "cells": 1,
+      "cell_area_m2": 0.0025000000745058065,
+      "column_bounds_inclusive": [
+        12,
+        12
+      ],
+      "row_bounds_inclusive": [
+        19,
+        19
+      ],
+      "cell_center_xy_bounds_m": [
+        0.1231327617945821,
+        -1.1442623485967491,
+        0.1231327617945821,
+        -1.1442623485967491
+      ],
+      "representative": {
+        "index": 1608,
+        "column": 12,
+        "row": 19,
+        "xy_m": [
+          0.1231327617945821,
+          -1.1442623485967491
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 12,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 12,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                21,
+                22,
+                23
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [
+                21,
+                22,
+                23
+              ],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.25494535399704166,
+            "max_margin_frame_index": 12
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 12,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 12,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                21,
+                22,
+                23
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [
+                21,
+                22,
+                23
+              ],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.25494535399704166,
+            "max_margin_frame_index": 12
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 12,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 12,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                21,
+                22,
+                23
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [
+                21,
+                22,
+                23
+              ],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                30,
+                31,
+                32
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -0.2549452943923969,
+            "max_margin_frame_index": 12
+          }
+        ]
+      }
+    },
+    {
+      "component": 7,
+      "cells": 1,
+      "cell_area_m2": 0.0025000000745058065,
+      "column_bounds_inclusive": [
+        68,
+        68
+      ],
+      "row_bounds_inclusive": [
+        32,
+        32
+      ],
+      "cell_center_xy_bounds_m": [
+        2.9231328035178334,
+        -0.49426233891099436,
+        2.9231328035178334,
+        -0.49426233891099436
+      ],
+      "representative": {
+        "index": 2756,
+        "column": 68,
+        "row": 32,
+        "xy_m": [
+          2.9231328035178334,
+          -0.49426233891099436
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 18,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [
+                30,
+                31,
+                32
+              ],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.0113804714909822,
+            "max_margin_frame_index": 18
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 18,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [
+                30,
+                31,
+                32
+              ],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.0113804714909822,
+            "max_margin_frame_index": 18
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 18,
+              "outside_image": 9,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "outside_image": [
+                3,
+                4,
+                5,
+                21,
+                22,
+                23,
+                30,
+                31,
+                32
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "below_min_depth": [
+                30,
+                31,
+                32
+              ],
+              "within_depth_bounds": [
+                3,
+                4,
+                5,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.0113804416886598,
+            "max_margin_frame_index": 18
+          }
+        ]
+      }
+    },
+    {
+      "component": 8,
+      "cells": 1,
+      "cell_area_m2": 0.0025000000745058065,
+      "column_bounds_inclusive": [
+        65,
+        65
+      ],
+      "row_bounds_inclusive": [
+        50,
+        50
+      ],
+      "cell_center_xy_bounds_m": [
+        2.7731328012826593,
+        0.4057376745000507,
+        2.7731328012826593,
+        0.4057376745000507
+      ],
+      "representative": {
+        "index": 4265,
+        "column": 65,
+        "row": 50,
+        "xy_m": [
+          2.7731328012826593,
+          0.4057376745000507
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 21,
+              "outside_image": 6,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                12,
+                13,
+                14,
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.3502509650608716,
+            "max_margin_frame_index": 15
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 21,
+              "outside_image": 6,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                12,
+                13,
+                14,
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.3502509352585492,
+            "max_margin_frame_index": 15
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 21,
+              "outside_image": 6,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                12,
+                13,
+                14,
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.3502509054562268,
+            "max_margin_frame_index": 15
+          }
+        ]
+      }
+    },
+    {
+      "component": 9,
+      "cells": 1,
+      "cell_area_m2": 0.0025000000745058065,
+      "column_bounds_inclusive": [
+        73,
+        73
+      ],
+      "row_bounds_inclusive": [
+        50,
+        50
+      ],
+      "cell_center_xy_bounds_m": [
+        3.1731328072431237,
+        0.4057376745000507,
+        3.1731328072431237,
+        0.4057376745000507
+      ],
+      "representative": {
+        "index": 4273,
+        "column": 73,
+        "row": 50,
+        "xy_m": [
+          3.1731328072431237,
+          0.4057376745000507
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.6268885016803765,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.6268885910873436,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.6268885910873436,
+            "max_margin_frame_index": 21
+          }
+        ]
+      }
+    },
+    {
+      "component": 10,
+      "cells": 1,
+      "cell_area_m2": 0.0025000000745058065,
+      "column_bounds_inclusive": [
+        77,
+        77
+      ],
+      "row_bounds_inclusive": [
+        50,
+        50
+      ],
+      "cell_center_xy_bounds_m": [
+        3.373132810223356,
+        0.4057376745000507,
+        3.373132810223356,
+        0.4057376745000507
+      ],
+      "representative": {
+        "index": 4277,
+        "column": 77,
+        "row": 50,
+        "xy_m": [
+          3.373132810223356,
+          0.4057376745000507
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.699480921407587,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.699480921407587,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 3,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 6,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [
+                18,
+                19,
+                20
+              ],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.699480921407587,
+            "max_margin_frame_index": 21
+          }
+        ]
+      }
+    },
+    {
+      "component": 11,
+      "cells": 1,
+      "cell_area_m2": 0.0025000000745058065,
+      "column_bounds_inclusive": [
+        80,
+        80
+      ],
+      "row_bounds_inclusive": [
+        50,
+        50
+      ],
+      "cell_center_xy_bounds_m": [
+        3.52313281245853,
+        0.4057376745000507,
+        3.52313281245853,
+        0.4057376745000507
+      ],
+      "representative": {
+        "index": 4280,
+        "column": 80,
+        "row": 50,
+        "xy_m": [
+          3.52313281245853,
+          0.4057376745000507
+        ],
+        "selection": "component cell nearest mean row/column; not a robot goal",
+        "layers": [
+          {
+            "height_above_floor_m": 0.02,
+            "map_z_m": -0.13,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 0,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 9,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.7477988770978845,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.1,
+            "map_z_m": -0.04999999999999999,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 0,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 9,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.7477988770978845,
+            "max_margin_frame_index": 21
+          },
+          {
+            "height_above_floor_m": 0.18,
+            "map_z_m": 0.03,
+            "display_state": "occluded",
+            "support_counts": {
+              "behind_camera": 24,
+              "outside_image": 0,
+              "invalid_depth": 0,
+              "depth_ambiguous": 0,
+              "occluded": 9,
+              "depth_clear": 0
+            },
+            "support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "outside_image": [],
+              "invalid_depth": [],
+              "depth_ambiguous": [],
+              "occluded": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "depth_clear": []
+            },
+            "query_depth_support_frame_indices": {
+              "behind_camera": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ],
+              "below_min_depth": [],
+              "within_depth_bounds": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ],
+              "above_max_depth": []
+            },
+            "max_of_delta_min_m": -1.7477988770978845,
+            "max_margin_frame_index": 21
+          }
+        ]
+      }
+    }
+  ],
+  "frame_catalogue": [
+    {
+      "retention_id": "retain-b6d696e23fda7147ac80d76ea32fb7c612c2cac2976a125dcb391fb9ef1e627b",
+      "request_sha256": "35acff84e2751b01287d30ac64a411bbe0bc49c735f691215e2554f65287bb6e",
+      "camera_pose": [
+        0.11768419981806848,
+        0.02681823010309731,
+        0.029999999999999916,
+        -0.5294240556096159,
+        -0.46873251363849966,
+        0.4687325136384998,
+        0.5294240556096159
+      ],
+      "rgb_stamp_ns": 132800000000,
+      "depth_stamp_ns": 132800000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 0,
+      "optical_z_forward_in_map": [
+        -0.9926330734663366,
+        0.12115932263253465,
+        1.1102230246251565e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 173.0409849059351
+    },
+    {
+      "retention_id": "retain-66d10250bf108722a7d30082bd93ba0674d9487f276457b0957e452d83c99441",
+      "request_sha256": "514b66ba29ce0a4b7a7f55c93a5f24b0ad5591019f49cfc70d76b8de0a90c2f9",
+      "camera_pose": [
+        0.11768419981806848,
+        0.02681823010309731,
+        0.029999999999999916,
+        -0.5294240556096159,
+        -0.46873251363849966,
+        0.4687325136384998,
+        0.5294240556096159
+      ],
+      "rgb_stamp_ns": 132900000000,
+      "depth_stamp_ns": 132900000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 1,
+      "optical_z_forward_in_map": [
+        -0.9926330734663366,
+        0.12115932263253465,
+        1.1102230246251565e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 173.0409849059351
+    },
+    {
+      "retention_id": "retain-337accaa3cfff2daf8e668243b4f0430d43d65144fbba69ab653fc6bcd0bd181",
+      "request_sha256": "1de41024a007afb96fb3537eab0cb9a79b3dc98ba6a9f253cbc5b755c1818458",
+      "camera_pose": [
+        0.11768419981806848,
+        0.02681823010309731,
+        0.029999999999999916,
+        -0.5294240556096159,
+        -0.46873251363849966,
+        0.4687325136384998,
+        0.5294240556096159
+      ],
+      "rgb_stamp_ns": 133000000000,
+      "depth_stamp_ns": 133000000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 2,
+      "optical_z_forward_in_map": [
+        -0.9926330734663366,
+        0.12115932263253465,
+        1.1102230246251565e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 173.0409849059351
+    },
+    {
+      "retention_id": "retain-fe87ac20b87cd35e5c4d51a60f66cc266dbd9d40e2bbbccfcad593b13f0f4f48",
+      "request_sha256": "837310ba3a1c3a690ce32813a3704a7f1102a3086142f4c0ce9fdf9ea080a1ff",
+      "camera_pose": [
+        1.2959798106343678,
+        -0.10901479120299241,
+        0.030000000000000027,
+        0.00825453363319653,
+        -0.707058599180081,
+        0.707058599180081,
+        -0.00825453363319653
+      ],
+      "rgb_stamp_ns": 158100000000,
+      "depth_stamp_ns": 158100000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 3,
+      "optical_z_forward_in_map": [
+        0.02334575595029121,
+        -0.9997274506979936,
+        0.0
+      ],
+      "optical_forward_heading_deg_from_map_x": -88.6622651794003
+    },
+    {
+      "retention_id": "retain-81ce6e8ef81b1c15b2899a8dddfa24acced4d6a4ac088353b2679fa1c5219ecc",
+      "request_sha256": "76698016c02fd5dce88a6b948fb76e35d7b7d1458e27983121cfbf9fe79393fd",
+      "camera_pose": [
+        1.2959798106343678,
+        -0.10901479120299241,
+        0.030000000000000027,
+        0.00825453363319653,
+        -0.707058599180081,
+        0.707058599180081,
+        -0.00825453363319653
+      ],
+      "rgb_stamp_ns": 158200000000,
+      "depth_stamp_ns": 158200000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 4,
+      "optical_z_forward_in_map": [
+        0.02334575595029121,
+        -0.9997274506979936,
+        0.0
+      ],
+      "optical_forward_heading_deg_from_map_x": -88.6622651794003
+    },
+    {
+      "retention_id": "retain-b1ec9498ee50450ada0b6e033af5976d61705c8c94b4e403c3502d413acbe848",
+      "request_sha256": "b24f3849ba0eec12637a623d334e23b9c594558ca3b1a920910f7bed406a7fe4",
+      "camera_pose": [
+        1.2959798106343678,
+        -0.10901479120299241,
+        0.030000000000000027,
+        0.00825453363319653,
+        -0.707058599180081,
+        0.707058599180081,
+        -0.00825453363319653
+      ],
+      "rgb_stamp_ns": 158300000000,
+      "depth_stamp_ns": 158300000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 5,
+      "optical_z_forward_in_map": [
+        0.02334575595029121,
+        -0.9997274506979936,
+        0.0
+      ],
+      "optical_forward_heading_deg_from_map_x": -88.6622651794003
+    },
+    {
+      "retention_id": "retain-d69f04df214e90b071eb21a397152330a7fe25cac17060579cad8538342cf222",
+      "request_sha256": "732776d3e5cce168a33a7cb8b1b15c8842945125a7279bd08b6411804aed2461",
+      "camera_pose": [
+        1.5209919860555794,
+        -0.9559562947067005,
+        0.03,
+        -0.24789139962133316,
+        -0.6622309672567243,
+        0.6622309672567243,
+        0.24789139962133325
+      ],
+      "rgb_stamp_ns": 172800000000,
+      "depth_stamp_ns": 172800000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 6,
+      "optical_z_forward_in_map": [
+        -0.6566454453834346,
+        -0.7541994159751062,
+        -2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -131.04453440564686
+    },
+    {
+      "retention_id": "retain-a44f53d9a4ed86fe13dc97adb6b002c3c305fd6541fb590b017ac74581b6a4e1",
+      "request_sha256": "a9c8f17af1b817c4f43b4b576e9e79a7830752342939020eb2651dfc100deed7",
+      "camera_pose": [
+        1.5209919860555794,
+        -0.9559562947067005,
+        0.03,
+        -0.24789139962133316,
+        -0.6622309672567243,
+        0.6622309672567243,
+        0.24789139962133325
+      ],
+      "rgb_stamp_ns": 172900000000,
+      "depth_stamp_ns": 172900000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 7,
+      "optical_z_forward_in_map": [
+        -0.6566454453834346,
+        -0.7541994159751062,
+        -2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -131.04453440564686
+    },
+    {
+      "retention_id": "retain-ad42a44df1837ec8b581bcbf1bd4ca3fc4b108561a93dcf0f3670947975462ea",
+      "request_sha256": "84d4c3332953eecf3002119f3319929a39da547215e93bddbc15b5893437b023",
+      "camera_pose": [
+        1.5209919860555794,
+        -0.9559562947067005,
+        0.03,
+        -0.24789139962133316,
+        -0.6622309672567243,
+        0.6622309672567243,
+        0.24789139962133325
+      ],
+      "rgb_stamp_ns": 173000000000,
+      "depth_stamp_ns": 173000000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 8,
+      "optical_z_forward_in_map": [
+        -0.6566454453834346,
+        -0.7541994159751062,
+        -2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -131.04453440564686
+    },
+    {
+      "retention_id": "retain-5f58d840b306ecb4ec7644634ac6f9d1286610e2948781e2b721c96dd503dd3d",
+      "request_sha256": "dae510cc268c6dae8986e1fc65323f7ae14f858111e76aa736433726544082c2",
+      "camera_pose": [
+        1.4849229062966731,
+        -1.1363173229837196,
+        0.029999999999999943,
+        -0.4009791292376147,
+        -0.5824223020419497,
+        0.5824223020419499,
+        0.4009791292376148
+      ],
+      "rgb_stamp_ns": 185700000000,
+      "depth_stamp_ns": 185700000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 9,
+      "optical_z_forward_in_map": [
+        -0.9341567500853922,
+        -0.3568629516633769,
+        4.440892098500626e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -159.09233634071074
+    },
+    {
+      "retention_id": "retain-15a6ce87c998566a6c077be917f9a40b7b66eb88dc28a9eb047187924335a8c6",
+      "request_sha256": "af0c24c4c487fb490072f2490a5ce06ed9e7d76b4cc4c4fb8907a96e6ffe7cb9",
+      "camera_pose": [
+        1.4849229062966731,
+        -1.1363173229837196,
+        0.029999999999999943,
+        -0.4009791292376147,
+        -0.5824223020419497,
+        0.5824223020419499,
+        0.4009791292376148
+      ],
+      "rgb_stamp_ns": 185800000000,
+      "depth_stamp_ns": 185800000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 10,
+      "optical_z_forward_in_map": [
+        -0.9341567500853922,
+        -0.3568629516633769,
+        4.440892098500626e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -159.09233634071074
+    },
+    {
+      "retention_id": "retain-70840eec3fd5f8acf945fdf913b8f6cf64406d0b6e4ea0027c0dc0ad08df2de5",
+      "request_sha256": "400de8cdfc55fef229c605a69f867603903f927154a6a00b9b8d51f1c2ff369a",
+      "camera_pose": [
+        1.4849229062966731,
+        -1.1363173229837196,
+        0.029999999999999943,
+        -0.4009791292376147,
+        -0.5824223020419497,
+        0.5824223020419499,
+        0.4009791292376148
+      ],
+      "rgb_stamp_ns": 185900000000,
+      "depth_stamp_ns": 185900000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 11,
+      "optical_z_forward_in_map": [
+        -0.9341567500853922,
+        -0.3568629516633769,
+        4.440892098500626e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -159.09233634071074
+    },
+    {
+      "retention_id": "retain-79f13c147a450ba6c2aae373486aecc531413ec416d04e12d898a88d4d227d3e",
+      "request_sha256": "9980f030d8c53877dc076f02da5d1e5f9af0e56798483884c775ed1f36ed283a",
+      "camera_pose": [
+        1.37824117876674,
+        -1.4615734096887842,
+        0.030000000000000027,
+        -0.6427201951502042,
+        -0.29480629359985433,
+        0.2948062935998544,
+        0.6427201951502042
+      ],
+      "rgb_stamp_ns": 202700000000,
+      "depth_stamp_ns": 202700000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 12,
+      "optical_z_forward_in_map": [
+        -0.7579118342160271,
+        0.6523569970156661,
+        0.0
+      ],
+      "optical_forward_heading_deg_from_map_x": 139.28045402802042
+    },
+    {
+      "retention_id": "retain-f17ea53db10cb355ecd51fac09cb6692dbe5393ab56d55767f958de9d13fdae3",
+      "request_sha256": "96d3f2cc12c3847ed51fb2e9a764100ebd408853811e836f3257fa097d484152",
+      "camera_pose": [
+        1.37824117876674,
+        -1.4615734096887842,
+        0.030000000000000027,
+        -0.6427201951502042,
+        -0.29480629359985433,
+        0.2948062935998544,
+        0.6427201951502042
+      ],
+      "rgb_stamp_ns": 202800000000,
+      "depth_stamp_ns": 202800000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 13,
+      "optical_z_forward_in_map": [
+        -0.7579118342160271,
+        0.6523569970156661,
+        0.0
+      ],
+      "optical_forward_heading_deg_from_map_x": 139.28045402802042
+    },
+    {
+      "retention_id": "retain-a4173aed598ccb77ec57f2d86ff9d41a6a1ed3c5929bbbf7de8de49727567627",
+      "request_sha256": "048b998bda106cddde0c8937803d644b7412ca94aa812d910ba18a69622ae7b7",
+      "camera_pose": [
+        1.37824117876674,
+        -1.4615734096887842,
+        0.030000000000000027,
+        -0.6427201951502042,
+        -0.29480629359985433,
+        0.2948062935998544,
+        0.6427201951502042
+      ],
+      "rgb_stamp_ns": 203000000000,
+      "depth_stamp_ns": 203000000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 14,
+      "optical_z_forward_in_map": [
+        -0.7579118342160271,
+        0.6523569970156661,
+        0.0
+      ],
+      "optical_forward_heading_deg_from_map_x": 139.28045402802042
+    },
+    {
+      "retention_id": "retain-c17e1d5a058c920c2220ddf970731a5fc028c00b7a65e1442a2ac7c2e5f9aaac",
+      "request_sha256": "cb819dfcc5254f2e6bc0b5b047772b02d7e46c4634cad3c3af13b17429cd6064",
+      "camera_pose": [
+        1.7293481815481286,
+        -1.4538797786635682,
+        0.030000000000000082,
+        -0.5972606975267604,
+        0.3785229969101578,
+        -0.37852299691015784,
+        0.5972606975267608
+      ],
+      "rgb_stamp_ns": 219400000000,
+      "depth_stamp_ns": 219400000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 15,
+      "optical_z_forward_in_map": [
+        0.9043076366579228,
+        0.4268813632406105,
+        6.661338147750939e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 25.269805800859558
+    },
+    {
+      "retention_id": "retain-b45775f1e1bff1545c8a9d1483fb18c17284e11171c65228c255e8c988bed702",
+      "request_sha256": "6243aa4cb449001813daeb2ea0bf76afe88d58a20d35b14b0f300268a66c7d9e",
+      "camera_pose": [
+        1.7293481815481286,
+        -1.4538797786635682,
+        0.030000000000000082,
+        -0.5972606975267604,
+        0.3785229969101578,
+        -0.37852299691015784,
+        0.5972606975267608
+      ],
+      "rgb_stamp_ns": 219700000000,
+      "depth_stamp_ns": 219700000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 16,
+      "optical_z_forward_in_map": [
+        0.9043076366579228,
+        0.4268813632406105,
+        6.661338147750939e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 25.269805800859558
+    },
+    {
+      "retention_id": "retain-f497a0b318fa42a6ea2c2f1dca40d72fd4cda56ec117542bca4e91b84f430147",
+      "request_sha256": "058c56d3a519ee6f407dfe0fc8cd17407a46c7ae6a1da6bea4383afeb0e151ce",
+      "camera_pose": [
+        1.7293481815481286,
+        -1.4538797786635682,
+        0.030000000000000082,
+        -0.5972606975267604,
+        0.3785229969101578,
+        -0.37852299691015784,
+        0.5972606975267608
+      ],
+      "rgb_stamp_ns": 219800000000,
+      "depth_stamp_ns": 219800000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 17,
+      "optical_z_forward_in_map": [
+        0.9043076366579228,
+        0.4268813632406105,
+        6.661338147750939e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 25.269805800859558
+    },
+    {
+      "retention_id": "retain-1805e4a4383de5442fb75648c72d7fe8a57c2534c889c313c95b416fcba99df2",
+      "request_sha256": "b78e583226be02aff05cdd902ffc7acc41a880c71e07bff5b2fb7d9670b8b7dd",
+      "camera_pose": [
+        1.7366696103484043,
+        -1.478788069272615,
+        0.02999999999999997,
+        -0.5315905600378192,
+        0.46627403581872057,
+        -0.4662740358187207,
+        0.5315905600378193
+      ],
+      "rgb_stamp_ns": 223400000000,
+      "depth_stamp_ns": 223400000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 18,
+      "optical_z_forward_in_map": [
+        0.9914675033278717,
+        0.13035409408528958,
+        4.440892098500626e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 7.490054530966969
+    },
+    {
+      "retention_id": "retain-8c0c09136c0eabce5d22586f9780baf46611f1be36149ca0f125098db79d74cf",
+      "request_sha256": "8000079ffa16405c27ac7456e39e7194b88929e782b261496a32fc21ca77338d",
+      "camera_pose": [
+        1.7366696103484043,
+        -1.478788069272615,
+        0.02999999999999997,
+        -0.5315905600378192,
+        0.46627403581872057,
+        -0.4662740358187207,
+        0.5315905600378193
+      ],
+      "rgb_stamp_ns": 223600000000,
+      "depth_stamp_ns": 223600000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 19,
+      "optical_z_forward_in_map": [
+        0.9914675033278717,
+        0.13035409408528958,
+        4.440892098500626e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 7.490054530966969
+    },
+    {
+      "retention_id": "retain-3f89a25aad6651306dde1c45fb7b03e3027f2f513657bca5565b4a7b3f4fa1b2",
+      "request_sha256": "388c6984661a79d3a2bacb229f8c418bcbd3ca81b98a641847cbfa479c4cfcf7",
+      "camera_pose": [
+        1.7366696103484043,
+        -1.478788069272615,
+        0.02999999999999997,
+        -0.5315905600378192,
+        0.46627403581872057,
+        -0.4662740358187207,
+        0.5315905600378193
+      ],
+      "rgb_stamp_ns": 223700000000,
+      "depth_stamp_ns": 223700000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 20,
+      "optical_z_forward_in_map": [
+        0.9914675033278717,
+        0.13035409408528958,
+        4.440892098500626e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 7.490054530966969
+    },
+    {
+      "retention_id": "retain-71f9e36297e7df9f19cdee7444ea7d54c476f23871befbdc116ce8b2cf1589c3",
+      "request_sha256": "2e886ac2ce03176166fc340af8de32f5b17b600fcfec7617f2151c5013d4667a",
+      "camera_pose": [
+        1.6662793206671356,
+        -1.406752220731565,
+        0.030000000000000054,
+        -0.7050076964208121,
+        0.05444398945172892,
+        -0.054443989451728965,
+        0.7050076964208122
+      ],
+      "rgb_stamp_ns": 229200000000,
+      "depth_stamp_ns": 229200000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 21,
+      "optical_z_forward_in_map": [
+        0.1535337263492897,
+        0.9881434080503201,
+        2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 81.16823291271538
+    },
+    {
+      "retention_id": "retain-c85aaf535e39810597c7fc78cfa9efe1a37cdcde421762e6009c475c31066eba",
+      "request_sha256": "b359b268f8fa84a89c9f808f1594c782196f92d8bc42c95818a6db013e088ac4",
+      "camera_pose": [
+        1.6662793206671356,
+        -1.406752220731565,
+        0.030000000000000054,
+        -0.7050076964208121,
+        0.05444398945172892,
+        -0.054443989451728965,
+        0.7050076964208122
+      ],
+      "rgb_stamp_ns": 229300000000,
+      "depth_stamp_ns": 229300000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 22,
+      "optical_z_forward_in_map": [
+        0.1535337263492897,
+        0.9881434080503201,
+        2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 81.16823291271538
+    },
+    {
+      "retention_id": "retain-c1054cbd4d8a9bdd2d610628e6c6524b37cb45a7af68047ffb6f537f8eaeb68d",
+      "request_sha256": "89ac2b1a240818f503657cb7e54b8559ea13740f601576653316aaf9f31bfc1e",
+      "camera_pose": [
+        1.6662793206671356,
+        -1.406752220731565,
+        0.030000000000000054,
+        -0.7050076964208121,
+        0.05444398945172892,
+        -0.054443989451728965,
+        0.7050076964208122
+      ],
+      "rgb_stamp_ns": 229400000000,
+      "depth_stamp_ns": 229400000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 23,
+      "optical_z_forward_in_map": [
+        0.1535337263492897,
+        0.9881434080503201,
+        2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 81.16823291271538
+    },
+    {
+      "retention_id": "retain-d3e4db789a3daabc37b1948c44d8057a995f8a12b657db9eccc47bc1b341fb19",
+      "request_sha256": "b1bd9de0b5bf5c18b12ece38dd8c928da27cd818ba15670b05a52bea22dc8e96",
+      "camera_pose": [
+        1.570326096724018,
+        -1.477306111586279,
+        0.03,
+        -0.5344437750914477,
+        -0.463000919292826,
+        0.4630009192928261,
+        0.5344437750914478
+      ],
+      "rgb_stamp_ns": 235700000000,
+      "depth_stamp_ns": 235700000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 24,
+      "optical_z_forward_in_map": [
+        -0.9897918367106747,
+        0.14252059493599195,
+        2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 171.80627142288913
+    },
+    {
+      "retention_id": "retain-6fa8d15ec496ed3c320a3bb367b770e7fc343476efe0f97c6752b28d0fc9a68a",
+      "request_sha256": "4e248f02501ef1e5b9bd6c8a5d3c9f7eaa87327db2b483d19a43a7ee16864a74",
+      "camera_pose": [
+        1.570326096724018,
+        -1.477306111586279,
+        0.03,
+        -0.5344437750914477,
+        -0.463000919292826,
+        0.4630009192928261,
+        0.5344437750914478
+      ],
+      "rgb_stamp_ns": 235800000000,
+      "depth_stamp_ns": 235800000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 25,
+      "optical_z_forward_in_map": [
+        -0.9897918367106747,
+        0.14252059493599195,
+        2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 171.80627142288913
+    },
+    {
+      "retention_id": "retain-d9bd9ff78adc839c0aad56f8942822d3bd5425f870c168e12e45d2c01addc34b",
+      "request_sha256": "c05ebcb249a0541e0fdd9ae95cdbf89b2245a33aacf478f76850a760c3ec7e6b",
+      "camera_pose": [
+        1.570326096724018,
+        -1.477306111586279,
+        0.03,
+        -0.5344437750914477,
+        -0.463000919292826,
+        0.4630009192928261,
+        0.5344437750914478
+      ],
+      "rgb_stamp_ns": 235900000000,
+      "depth_stamp_ns": 235900000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 26,
+      "optical_z_forward_in_map": [
+        -0.9897918367106747,
+        0.14252059493599195,
+        2.220446049250313e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": 171.80627142288913
+    },
+    {
+      "retention_id": "retain-66065ae6e2af893a34c19e87da042385e7d4a27fe72e583b36ad96b692713c04",
+      "request_sha256": "aeb6fa30abcbe4a73f5ab799b5ed04cc392a8ea512cf4b39f837d94b621d4951",
+      "camera_pose": [
+        1.643063761109068,
+        -1.5728255585475635,
+        0.02999999999999997,
+        -0.043755961777723645,
+        -0.70575166723778,
+        0.7057516672377803,
+        0.04375596177772365
+      ],
+      "rgb_stamp_ns": 242400000000,
+      "depth_stamp_ns": 242400000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 27,
+      "optical_z_forward_in_map": [
+        -0.12352337190488419,
+        -0.9923416632356254,
+        3.3306690738754696e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -97.09549036432482
+    },
+    {
+      "retention_id": "retain-9594b64c27711628aa21b89d150851203670909cc1da2bb0e99c0133c64fa48b",
+      "request_sha256": "5bf8f59ee334e7db333d09fb4e4db7b19937c28ab1b59d533c295b3212a8738f",
+      "camera_pose": [
+        1.643063761109068,
+        -1.5728255585475635,
+        0.02999999999999997,
+        -0.043755961777723645,
+        -0.70575166723778,
+        0.7057516672377803,
+        0.04375596177772365
+      ],
+      "rgb_stamp_ns": 242500000000,
+      "depth_stamp_ns": 242500000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 28,
+      "optical_z_forward_in_map": [
+        -0.12352337190488419,
+        -0.9923416632356254,
+        3.3306690738754696e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -97.09549036432482
+    },
+    {
+      "retention_id": "retain-d3b5cfd48f90016977f94e41b69446d3987cb4362324c63a849fbe00e2eb5c43",
+      "request_sha256": "0300ad503964be59c83603537c377b879d516eccf9b1c6e825c46608de3740b9",
+      "camera_pose": [
+        1.643063761109068,
+        -1.5728255585475635,
+        0.02999999999999997,
+        -0.043755961777723645,
+        -0.70575166723778,
+        0.7057516672377803,
+        0.04375596177772365
+      ],
+      "rgb_stamp_ns": 242800000000,
+      "depth_stamp_ns": 242800000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 29,
+      "optical_z_forward_in_map": [
+        -0.12352337190488419,
+        -0.9923416632356254,
+        3.3306690738754696e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -97.09549036432482
+    },
+    {
+      "retention_id": "retain-90ff5600030e467da12deddd1d00c9a44ddaf323c4f5345bb14082feb6997748",
+      "request_sha256": "13fb7b277c29d1577e8c528c2c8ac100bbc377f6e42c40181201fc7982b38340",
+      "camera_pose": [
+        0.3418935161618544,
+        -0.08680229114821797,
+        0.030000000000000027,
+        -0.04426327981522693,
+        -0.7057200309329462,
+        0.7057200309329467,
+        0.04426327981522694
+      ],
+      "rgb_stamp_ns": 277100000000,
+      "depth_stamp_ns": 277100000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 30,
+      "optical_z_forward_in_map": [
+        -0.12494993280158247,
+        -0.9921630482399956,
+        6.661338147750939e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -97.17786447414443
+    },
+    {
+      "retention_id": "retain-567568e9a57444b5b785c6bd76b9ccf44b64e4399a0f20f29af0c1a3d536271c",
+      "request_sha256": "70c77f99208ff831508353775a08dd7d1861806b1dd91adb053f3604bf5b0200",
+      "camera_pose": [
+        0.3418935161618544,
+        -0.08680229114821797,
+        0.030000000000000027,
+        -0.04426327981522693,
+        -0.7057200309329462,
+        0.7057200309329467,
+        0.04426327981522694
+      ],
+      "rgb_stamp_ns": 277200000000,
+      "depth_stamp_ns": 277200000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 31,
+      "optical_z_forward_in_map": [
+        -0.12494993280158247,
+        -0.9921630482399956,
+        6.661338147750939e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -97.17786447414443
+    },
+    {
+      "retention_id": "retain-6eff36f8dd687875555addcc7bfab45d5742bd18a497eedf4bdd2ba4106eeb8f",
+      "request_sha256": "67ce3d64cb3e60d793659c1aeb852da7a3d85307a8cdea957dd02eb391b92be7",
+      "camera_pose": [
+        0.3418935161618544,
+        -0.08680229114821797,
+        0.030000000000000027,
+        -0.04426327981522693,
+        -0.7057200309329462,
+        0.7057200309329467,
+        0.04426327981522694
+      ],
+      "rgb_stamp_ns": 277300000000,
+      "depth_stamp_ns": 277300000000,
+      "detector_session_id": "0e567832-621a-42ee-8b30-f35eea9113ef",
+      "frame_id": "camera_optical_frame",
+      "index": 32,
+      "optical_z_forward_in_map": [
+        -0.12494993280158247,
+        -0.9921630482399956,
+        6.661338147750939e-16
+      ],
+      "optical_forward_heading_deg_from_map_x": -97.17786447414443
+    }
+  ],
+  "limitations": [
+    "Discrete sample points/rays do not certify full object visibility or recognition.",
+    "Depth registration and axial-Z semantics are explicit input declarations, not measured calibration.",
+    "Depth bounds filter measured surfaces; query-point sensor/recognition range is not certified.",
+    "Floor, depth and pose uncertainty have no measured bound in this diagnostic.",
+    "Historical map poses have not been reprojected through the final SLAM graph.",
+    "Map unknown and occupied cells remain in the denominator and keep their original map classification.",
+    "occluded display means at least one occluded frame and no clear/ambiguous frame; not all frames occluded.",
+    "Map-cell representatives and enclosing bounds are not safe navigation targets or validated paths.",
+    "Retained camera positions are a sampled subset, not a complete robot trajectory.",
+    "Gap fractions describe only this retained-frame diagnostic, not search coverage or target recall."
+  ]
+}

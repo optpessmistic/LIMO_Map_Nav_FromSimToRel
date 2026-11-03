@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "diagnostic_only": true,
+  "recognition_coverage_verified": false,
+  "mission_success_claimed": false,
+  "floor_reference_verified": false,
+  "historical_reprojection_verified": false,
+  "depth_uncertainty_verified": false,
+  "map_epoch": "7d6ec34d-3da2-4de8-a483-aeaf2faeb56e",
+  "original_mission_flags": {
+    "status": "done",
+    "reason": "bounded_observation_exhausted;final_observation_checks_incomplete",
+    "map_complete": true,
+    "visual_coverage_complete": false,
+    "returned_pose_verified": true,
+    "mission_success": false
+  },
+  "floor_z_m": -0.15,
+  "height_reference_provenance": "run31_tf_urdf_nominal_base_footprint_not_measured_ground",
+  "uncertainty_bound_m": null,
+  "sampled_depth_bounds_m": [
+    0.15,
+    6.0
+  ],
+  "depth_bounds_apply_to": "measured_surface_samples_only",
+  "assumed_size_m": {
+    "width_m": 0.06,
+    "height_m": 0.2,
+    "orientation": "parallel_image_plane"
+  },
+  "frame_count": 33,
+  "distinct_source_stamps": 33,
+  "excluded_count": 0,
+  "map_rectangle_cells": 4452,
+  "classification_count": 440748,
+  "layers": [
+    {
+      "height_above_floor_m": 0.02,
+      "map_z_m": -0.13,
+      "counts": {
+        "occluded": 2490,
+        "mixed_or_surface": 12,
+        "nominal_clear": 1950
+      },
+      "counts_by_map_class": {
+        "unknown": {
+          "occluded": 1229
+        },
+        "occupied": {
+          "occluded": 467,
+          "mixed_or_surface": 8,
+          "nominal_clear": 164
+        },
+        "free": {
+          "nominal_clear": 1786,
+          "occluded": 794,
+          "mixed_or_surface": 4
+        }
+      },
+      "classification_count": 146916,
+      "query_depth_relation_counts": {
+        "behind_camera": 72930,
+        "below_min_depth": 6873,
+        "within_depth_bounds": 67113,
+        "above_max_depth": 0
+      }
+    },
+    {
+      "height_above_floor_m": 0.1,
+      "map_z_m": -0.04999999999999999,
+      "counts": {
+        "occluded": 2440,
+        "mixed_or_surface": 12,
+        "nominal_clear": 2000
+      },
+      "counts_by_map_class": {
+        "unknown": {
+          "occluded": 1229
+        },
+        "occupied": {
+          "occluded": 458,
+          "mixed_or_surface": 8,
+          "nominal_clear": 173
+        },
+        "free": {
+          "nominal_clear": 1827,
+          "occluded": 753,
+          "mixed_or_surface": 4
+        }
+      },
+      "classification_count": 146916,
+      "query_depth_relation_counts": {
+        "behind_camera": 72930,
+        "below_min_depth": 6873,
+        "within_depth_bounds": 67113,
+        "above_max_depth": 0
+      }
+    },
+    {
+      "height_above_floor_m": 0.18,
+      "map_z_m": 0.03,
+      "counts": {
+        "occluded": 2426,
+        "mixed_or_surface": 12,
+        "nominal_clear": 2014
+      },
+      "counts_by_map_class": {
+        "unknown": {
+          "occluded": 1229
+        },
+        "occupied": {
+          "occluded": 458,
+          "mixed_or_surface": 8,
+          "nominal_clear": 173
+        },
+        "free": {
+          "nominal_clear": 1841,
+          "occluded": 739,
+          "mixed_or_surface": 4
+        }
+      },
+      "classification_count": 146916,
+      "query_depth_relation_counts": {
+        "behind_camera": 72930,
+        "below_min_depth": 6873,
+        "within_depth_bounds": 67113,
+        "above_max_depth": 0
+      }
+    }
+  ],
+  "artifacts": {
+    "inputs.json": {
+      "bytes": 114629,
+      "sha256": "71cec3537c8e5c75b136e9b805f2b195a7a0c8472333dca917b497046b265065"
+    },
+    "layers.json.gz": {
+      "bytes": 450342,
+      "sha256": "a875bd8d180ce06ce4599c5cdb21c8966eaa7a6746875db0fa1342d958ffc05d"
+    },
+    "visibility-diagnostic.png": {
+      "bytes": 345446,
+      "sha256": "bb4e3be52d13f92311c8ab567ba8217b0e7f8f9e860535da964ca713492fcc3c"
+    }
+  },
+  "elapsed_monotonic_s": 107.14784233699999,
+  "scope": "Finite map rectangle and supplied retained frames only; no target positions/counts, no missing-frame inference, no map mutation.",
+  "limitations": [
+    "Discrete sample points/rays do not certify full object visibility or recognition.",
+    "Depth registration and axial-Z semantics are explicit input declarations, not measured calibration.",
+    "Depth bounds filter measured surfaces; query-point sensor/recognition range is not certified.",
+    "Floor, depth and pose uncertainty have no measured bound in this diagnostic.",
+    "Historical map poses have not been reprojected through the final SLAM graph.",
+    "Map unknown and occupied cells remain in the denominator and keep their original map classification."
+  ]
+}
