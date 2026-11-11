@@ -13,6 +13,8 @@ limo_maze_mission:
     require_retained_inspection: true
     inspection_required_frames: 3
     inspection_timeout_s: 90.0
+    # Slow WSL delivery tolerance; ROS timestamp age remains at 0.3 seconds.
+    inspection_odom_wall_max_age_s: 1.0
     retention_max_total_samples: 96
     retention_max_windows: 64
     retention_max_metadata_bytes: 4194304

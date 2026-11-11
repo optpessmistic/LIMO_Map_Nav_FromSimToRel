@@ -18,7 +18,7 @@ source outputs/slam-steady-map-ws/install/local_setup.bash
 colcon build --base-paths src --packages-select limo_maze_mission limo_maze_perception limo_maze_bringup
 ```
 
-此步骤安装任务、感知及启动文件，不启动机器人；本机已有的独立 SLAM 安装不需要因此重建。当前本机已安装上一轮修复，本次新增 YAML 从源码目录直接读取，无需重新构建。
+此步骤安装任务、感知及启动文件，不启动机器人；本机已有的独立 SLAM 安装不需要因此重建。当前本机已构建并核验本轮任务节点修改，可以直接使用。其他安装必须重建任务包，才能识别新增的里程计墙钟容差参数；YAML 从源码目录直接读取。
 
 ## 五个终端的共同环境
 
@@ -35,10 +35,10 @@ export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export GZ_PARTITION=limo_maze_jazzy
 unset GALLIUM_DRIVER MESA_D3D12_DEFAULT_ADAPTER_NAME
 mkdir -p "$HOME/limo_runs"
-export LIMO_TRIAL="$HOME/limo_runs/simple_maze_trial_01"
+export LIMO_TRIAL="$HOME/limo_runs/simple_maze_trial_02"
 ```
 
-下次运行将五个终端的 `simple_maze_trial_01` 一起换成新的名称，保留旧结果。结果写入 WSL Linux 文件系统。此环境顺序先加载 F 盘模型依赖，再加载 C 盘的 SLAM 和当前源码安装。`ros2 pkg prefix slam_toolbox` 应指向当前仓库的 `outputs/slam-steady-map-ws/install/slam_toolbox`；`ros2 pkg prefix limo_maze_mission` 应指向当前仓库的 `install/limo_maze_mission`。
+下次运行将五个终端的 `simple_maze_trial_02` 一起换成新的名称，保留旧结果。结果写入 WSL Linux 文件系统。此环境顺序先加载 F 盘模型依赖，再加载 C 盘的 SLAM 和当前源码安装。`ros2 pkg prefix slam_toolbox` 应指向当前仓库的 `outputs/slam-steady-map-ws/install/slam_toolbox`；`ros2 pkg prefix limo_maze_mission` 应指向当前仓库的 `install/limo_maze_mission`。
 
 ## 启动场景、导航与初始检查
 
@@ -107,6 +107,8 @@ ros2 run limo_maze_mission mission --ros-args \
 现在小车会探索、识别、确认目标位置并标注；找到目标不会提前终止探索。地图检查及所配置的观察阶段结束后，停在当前地点验证静止并保存。`return_timeout_s` 在返航关闭时不支配探索完成流程。任务仍可能因地图过期、导航或观察失败等原因停止，新范围不绕过这些检查。
 
 小迷宫配置沿用最新留存期限：单个 writer 15 秒、排队请求 60 秒、整次观察 90 秒、感知退出 20 秒，正常完成即继续。3 帧与持久化回执要求保持。最多 3 个观察站、每站 4 个朝向；观察阶段上限为 720 秒，总任务上限为 1800 秒，单导航目标 180 秒，给慢速 WSL 留出余量。这些是墙钟上限，不是预计耗时。留存上限 96 帧、64 窗口，元数据 4 MiB、文件 256 MiB；目标数量和真值地图不输入任务。
+
+停车里程计的墙钟到达容差为1秒，ROS时间戳年龄仍为0.3秒，以容纳慢速WSL中实测超过0.3秒的到达间隙；重复时间戳、持续无数据或移动仍不能通过停车检查。地图有效回调超过5秒仍停止。若出现 `map_stale`，保留终端的 `map_freshness_failed` 及结果JSON中的 `last_map_freshness_failure`；不能将该情况误当成图像保存失败。原 trial01 的诊断见[记录](../experiments/simple-maze-trial01-diagnosis/README.md)。
 
 如需返航，在任务命令最后追加 `-p return_home:=true`。到家停稳复查后，若还有可达探索边界，且尚未超过任务总时限、补图次数和累计尝试上限，可以再次出发补图；此时释放上一段返航期限，后续真正再次返航时重新获得该段返航预算。同一次返航内部的失败重试不会延长期限。若最终检查仍有缺口，照实记录未完成。
 

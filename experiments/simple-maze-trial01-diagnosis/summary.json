@@ -1,0 +1,220 @@
+{
+  "mission_file": "/home/jxy/limo_runs/simple_maze_trial_01/mission/mission_20261111_011942_e4ad8209.json",
+  "input_sha256": {
+    "mission_20261111_011942_e4ad8209.json": "ba5400e734a4bd6b75f1d181799890ae1210a184f203d5ed6cf2fdd8a19d2500",
+    "checkpoint.json": "b62db072ca3ed5ef6e96c105ad0f5249e492758a60b1083797f4b631cf1c5b0f",
+    "live-sample.json": "2d1945fb1460ea917089608773c3998cd865654d279d1f0b7830cad1ea43e9dc"
+  },
+  "status": "blocked",
+  "reason": "map_stale",
+  "task_success": false,
+  "map_complete_final": false,
+  "entered_post_mapping_observation": true,
+  "navigation_results": {
+    "True": 15
+  },
+  "observation": {
+    "planned_views": 12,
+    "dispatches": 8,
+    "state_counts": {
+      "completed": 7,
+      "pending": 4,
+      "invalidated_terminal": 1
+    }
+  },
+  "inspection_resets": {
+    "odometry_not_continuously_stationary": 15,
+    "stationary_odometry_unavailable": 19
+  },
+  "last_inspection": {
+    "reason": "map_stale",
+    "stamp": 296.1,
+    "goal": {
+      "x": 2.0493708724473456,
+      "y": -1.6108728957905716,
+      "yaw": -3.141592653589793,
+      "kind": "observation_queue",
+      "anchor": [
+        2.0493708724473456,
+        -1.6108728957905716
+      ]
+    },
+    "evidence": {
+      "request_id": "goal-15",
+      "status": "waiting",
+      "reason": "stationary_odometry_unavailable",
+      "map_epoch": "0f9e7645-ee24-416a-8ffb-354e7ca55a44",
+      "ready": true,
+      "after_stamp_ns": 296100000000,
+      "deadline_wall": 4720.614595818,
+      "expected_pose": [
+        2.0493708724473456,
+        -1.6108728957905716,
+        -3.141592653589793
+      ],
+      "required_frames": 3,
+      "min_span_ns": 200000000,
+      "accepted_frames": 0,
+      "first_rgb_stamp_ns": null,
+      "last_rgb_stamp_ns": null,
+      "first_depth_stamp_ns": null,
+      "last_depth_stamp_ns": null,
+      "producer_identity": [
+        "81af37b4-7bfc-4c3f-90a1-b180f30c7332",
+        "e45848e0626a7ba444b68bafe76695967b2831a62243d20e4caf863a682c61a4",
+        "063b5170a4f810696ab4f7769088cfe3faeb98edf740f47cfbd6357090642f93",
+        "camera_optical_frame"
+      ],
+      "reset_count": 6,
+      "rejection_counts": {},
+      "last_evidence": null,
+      "visual_coverage_claimed": false,
+      "goal_token": 15,
+      "sampling_after_stamp_ns": null,
+      "conditions": {
+        "stamp_ns": 296100000000,
+        "phase": "inspecting",
+        "blocking_condition": "stationary_odometry_unavailable",
+        "current_pose": [
+          2.0233393352620674,
+          -1.6082290450684418,
+          2.984833695291213
+        ],
+        "distance_m": 0.026165451933215803,
+        "yaw_error_rad": 0.15675895829858,
+        "position_tolerance_m": 0.05,
+        "yaw_tolerance_rad": 0.26,
+        "pose_within_tolerance": true,
+        "pose_stable_wall_s": 1.954327628000101,
+        "odom_stamp_ns": 296100000000,
+        "odom_wall_age_s": 0.3262085059996025,
+        "odom_ros_age_s": 0.0,
+        "odom_fresh": false,
+        "odom_sample_stationary": true,
+        "odom_stationary_count": 49,
+        "stop_confirmed": false
+      },
+      "frame_retention": {
+        "enabled": true,
+        "fault": "mission_blocked",
+        "current_window": 48,
+        "state": "failed",
+        "selected_count": 0,
+        "stored_count": 0,
+        "total_selected_count": 78,
+        "window_count": 48,
+        "offline_artifacts_verified": false
+      }
+    }
+  },
+  "producer": {
+    "closed": false,
+    "fault": null,
+    "states": {
+      "stored": 78
+    }
+  },
+  "retention_windows": {
+    "complete": 14,
+    "retired": 33,
+    "failed": 1
+  },
+  "artifact_status": "saved",
+  "artifact_map_stamp_ns": 297000000000,
+  "confirmed_targets": [
+    {
+      "uid": 1,
+      "class_id": "red_object",
+      "x": 3.5836439325997334,
+      "y": -0.07829086663596783,
+      "z": -0.04300416567183741,
+      "hits": 93,
+      "first_stamp": 54.1,
+      "last_stamp": 101.3,
+      "confirmed": true,
+      "source_id": ""
+    },
+    {
+      "uid": 2,
+      "class_id": "red_object",
+      "x": -0.40306772484195824,
+      "y": -1.579034195634157,
+      "z": -0.04406513615711709,
+      "hits": 117,
+      "first_stamp": 125.4,
+      "last_stamp": 295.7,
+      "confirmed": true,
+      "source_id": ""
+    }
+  ],
+  "post_failure_live_probe": {
+    "scope": "Post-failure read-only live sample; cannot reconstruct fault instant.",
+    "elapsed_wall_s": 45.01849115100049,
+    "parameters": {
+      "limo_maze_mission": {
+        "map_max_age_s": {
+          "type": 3,
+          "bool": false,
+          "double": 5.0
+        },
+        "inspection_odom_max_age_s": {
+          "type": 3,
+          "bool": false,
+          "double": 0.3
+        },
+        "use_sim_time": {
+          "type": 1,
+          "bool": true,
+          "double": 0.0
+        }
+      },
+      "slam_toolbox": {
+        "map_update_interval": {
+          "type": 3,
+          "bool": false,
+          "double": 1.0
+        },
+        "use_sim_time": {
+          "type": 1,
+          "bool": true,
+          "double": 0.0
+        }
+      }
+    },
+    "topics": {
+      "map": {
+        "count": 46,
+        "max_wall_gap_s": 1.0106663560000015,
+        "p95_wall_gap_s": 1.0048917210006039,
+        "wall_gaps_over_0_3": 45,
+        "wall_gaps_over_5": 0,
+        "max_stamp_step_s": 0.375,
+        "stamp_progress_s": 14.75
+      },
+      "odom": {
+        "count": 1473,
+        "max_wall_gap_s": 0.30592159899970284,
+        "p95_wall_gap_s": 0.1636017589999028,
+        "wall_gaps_over_0_3": 2,
+        "wall_gaps_over_5": 0,
+        "max_stamp_step_s": 0.010000000000047748,
+        "stamp_progress_s": 14.720000000000027
+      },
+      "clock": {
+        "count": 14612,
+        "max_wall_gap_s": 0.2976649920001364,
+        "p95_wall_gap_s": 0.0024569819997850573,
+        "wall_gaps_over_0_3": 0,
+        "wall_gaps_over_5": 0,
+        "max_stamp_step_s": 0.016999999999995907,
+        "stamp_progress_s": 14.724000000000046
+      }
+    },
+    "max_observer_spin_gap_s": 0.024567169999500038
+  },
+  "limits": [
+    "The live probe was after failure; it cannot identify the original 5-second map gap.",
+    "Producer stored states are not a completed offline file audit.",
+    "The final map check and all observation actions did not complete."
+  ]
+}

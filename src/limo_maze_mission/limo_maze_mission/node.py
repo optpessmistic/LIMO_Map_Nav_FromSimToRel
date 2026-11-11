@@ -87,6 +87,8 @@ class MissionNode(Node):
             'inspection_yaw_tolerance_rad': .26,
             'inspection_required_frames': 3, 'inspection_min_span_s': .2,
             'inspection_odom_topic': '/odom', 'inspection_odom_max_age_s': .3,
+            # Zero inherits the ROS-age limit for backwards-compatible timing.
+            'inspection_odom_wall_max_age_s': 0.0,
             'inspection_linear_stop_m_s': .005, 'inspection_angular_stop_rad_s': .02,
             'post_mapping_observation_mode': 'off',
             'observation_station_spacing_m': 1.0, 'observation_max_stations': 3,
@@ -101,6 +103,10 @@ class MissionNode(Node):
         if type(self.cfg['return_home']) is not bool:
             raise ValueError('return_home must be bool')
         for key, value in self.cfg.items():
+            if key == 'inspection_odom_wall_max_age_s':
+                if type(value) not in (int, float) or not isfinite(value) or not 0 <= value <= 10:
+                    raise ValueError(key + ' must be finite and between zero and 10 seconds')
+                continue
             if key == 'navigation_failure_cooldown_s':
                 if type(value) not in (int, float) or not isfinite(value) or value < 0:
                     raise ValueError(key + ' must be finite and nonnegative (zero disables recovery)')
@@ -154,6 +160,11 @@ class MissionNode(Node):
         self.grid = None
         self.map_received = None
         self.map_stamp_ns = None
+        self.map_valid_receive_count = 0
+        self.map_recent_receive_gaps_s = []
+        self.map_max_receive_gap_s = None
+        self.map_last_callback_duration_s = None
+        self.last_map_freshness_failure = None
         self.map_signature = None
         self.map_epoch = None
         self.map_epoch_ready = False
@@ -271,6 +282,7 @@ class MissionNode(Node):
         self.get_logger().info(name + (' ' + json.dumps(fields) if fields else ''))
 
     def on_map(self, msg):
+        callback_started = time.monotonic()
         if msg.header.frame_id != self.cfg['map_frame']:
             self.block('map_frame_mismatch')
             return
@@ -289,7 +301,43 @@ class MissionNode(Node):
         self.map_signature = signature
         stamp = getattr(msg.header, 'stamp', None)
         self.map_stamp_ns = None if stamp is None else stamp.sec*1_000_000_000 + stamp.nanosec
+        previous_received = getattr(self, 'map_received', None)
         self.map_received = time.monotonic()
+        previous_count = getattr(self, 'map_valid_receive_count', 0)
+        if previous_count and previous_received is not None:
+            gap = self.map_received - previous_received
+            self.map_recent_receive_gaps_s = (
+                list(getattr(self, 'map_recent_receive_gaps_s', [])) + [gap])[-8:]
+            previous_max = getattr(self, 'map_max_receive_gap_s', None)
+            self.map_max_receive_gap_s = gap if previous_max is None else max(previous_max, gap)
+        self.map_valid_receive_count = previous_count + 1
+        self.map_last_callback_duration_s = self.map_received - callback_started
+
+    def record_map_freshness_failure(self, now, check):
+        """Report valid callback timing without changing the wall-age guard."""
+        try:
+            received = getattr(self, 'map_received', None)
+            stamp = getattr(self, 'map_stamp_ns', None)
+            ros_now = self.get_clock().now().nanoseconds
+            evidence = {
+                'check': check, 'phase': getattr(self, 'phase', None),
+                'check_wall': now, 'last_valid_received_wall': received,
+                'valid_receive_wall_age_s': None if received is None else now - received,
+                'max_age_s': self.cfg['map_max_age_s'],
+                'grid_available': getattr(self, 'grid', None) is not None,
+                'ros_now_ns': ros_now, 'header_stamp_ns': stamp,
+                'header_stamp_age_s': None if stamp is None else (ros_now - stamp) / 1e9,
+                'header_stamp_semantics': 'source_stamp_not_publication_heartbeat; not_used_by_wall_age_guard',
+                'valid_receive_count': getattr(self, 'map_valid_receive_count', 0),
+                'recent_valid_receive_gaps_s': list(getattr(self, 'map_recent_receive_gaps_s', []))[-8:],
+                'max_valid_receive_gap_s': getattr(self, 'map_max_receive_gap_s', None),
+                'last_valid_map_callback_duration_s': getattr(self, 'map_last_callback_duration_s', None),
+                'timing_scope': 'valid_callback_completion; excludes_executor_queue_wait; no_publisher_fault_claim',
+            }
+            self.last_map_freshness_failure = evidence
+            self.event('map_freshness_failed', **evidence)
+        except Exception:
+            pass  # Diagnostics must never prevent the original blocking path.
 
     def on_epoch(self, msg):
         epoch = msg.data.strip()
@@ -456,6 +504,9 @@ class MissionNode(Node):
         self.inspection_odom.update(since=None, count=0, first_stamp_ns=None, stationary=False)
         self.inspection_pose_since = None
 
+    def inspection_odom_wall_limit(self):
+        return self.cfg.get('inspection_odom_wall_max_age_s', 0.) or self.cfg['inspection_odom_max_age_s']
+
     def on_inspection_odom(self, msg):
         if self.phase not in ('settling', 'inspecting', 'home_verification', 'completion_verification'):
             return
@@ -471,7 +522,7 @@ class MissionNode(Node):
                  (state['stamp_ns'] is None or stamp > state['stamp_ns']) and
                  self.inspection_terminal_received is not None and
                  stamp > self.inspection_terminal_received[1])
-        continuous = state['received'] is None or now-state['received'] <= maximum_age
+        continuous = state['received'] is None or 0 <= now-state['received'] <= self.inspection_odom_wall_limit()
         stationary = (msg.header.frame_id == self.cfg['odom_frame'] and
                       msg.child_frame_id in (self.cfg['base_frame'], 'base_footprint') and
                       all(isfinite(v) for v in values) and
@@ -494,7 +545,7 @@ class MissionNode(Node):
         state = self.inspection_odom
         return (state['stationary'] and state['count'] >= 3 and state['since'] is not None and
                 now-state['since'] >= self.cfg['inspection_settle_s'] and
-                now-state['received'] <= self.cfg['inspection_odom_max_age_s'] and
+                0 <= now-state['received'] <= self.inspection_odom_wall_limit() and
                 0 <= self.get_clock().now().nanoseconds-state['stamp_ns'] <=
                 self.cfg['inspection_odom_max_age_s']*1e9 and
                 state['stamp_ns']-state['first_stamp_ns'] >= self.cfg['inspection_min_span_s']*1e9)
@@ -564,7 +615,7 @@ class MissionNode(Node):
         wall_age = None if state['received'] is None else now-state['received']
         ros_age = None if state['stamp_ns'] is None else (now_ns-state['stamp_ns'])/1e9
         fresh = (state.get('sample_fresh', False) and wall_age is not None and ros_age is not None and
-                 0 <= wall_age <= self.cfg['inspection_odom_max_age_s'] and
+                 0 <= wall_age <= self.inspection_odom_wall_limit() and
                  0 <= ros_age <= self.cfg['inspection_odom_max_age_s'])
         distance = hypot(pose[0]-self.goal.x, pose[1]-self.goal.y)
         yaw_error = abs(angle_delta(pose[2], self.goal.yaw))
@@ -588,6 +639,8 @@ class MissionNode(Node):
                 'pose_within_tolerance': pose_matches, 'pose_stable_wall_s': pose_stable,
                 'odom_stamp_ns': state['stamp_ns'], 'odom_wall_age_s': wall_age,
                 'odom_ros_age_s': ros_age, 'odom_fresh': bool(fresh),
+                'odom_wall_max_age_s': self.inspection_odom_wall_limit(),
+                'odom_ros_max_age_s': self.cfg['inspection_odom_max_age_s'],
                 'odom_sample_stationary': state.get('sample_stationary', False),
                 'odom_stationary_count': state['count'], 'stop_confirmed': bool(stopped)}
 
@@ -1356,6 +1409,9 @@ class MissionNode(Node):
             return
         if self.grid is None or self.map_received is None or now-self.map_received > self.cfg['map_max_age_s']:
             if self.home is not None:
+                record_failure = getattr(self, 'record_map_freshness_failure', None)
+                if record_failure is not None:
+                    record_failure(now, 'tick')
                 self.block('map_stale')
             elif now-self.created > self.cfg['startup_wait_s']:
                 self.block('startup_no_map')
@@ -1574,6 +1630,9 @@ class MissionNode(Node):
         # Planning is synchronous and can consume the freshness window. Do not
         # certify a stop from samples that were fresh only before it started.
         if self.map_received is None or now-self.map_received > self.cfg['map_max_age_s']:
+            record_failure = getattr(self, 'record_map_freshness_failure', None)
+            if record_failure is not None:
+                record_failure(now, 'verify_completion_after_planning')
             self.block('map_stale')
             return
         try:
@@ -1666,6 +1725,7 @@ class MissionNode(Node):
                   'coordinates_valid': self.coordinates_valid,
                   'inspection': self.inspection_snapshot() if getattr(self, 'inspection', None) else None,
                   'last_inspection_failure': getattr(self, 'last_inspection_failure', None),
+                  'last_map_freshness_failure': getattr(self, 'last_map_freshness_failure', None),
                   'observation_actions': self.observation_snapshot(),
                   'navigation_recovery': self.navigation_recovery,
                   'frame_retention': (self.frame_retention.snapshot()
