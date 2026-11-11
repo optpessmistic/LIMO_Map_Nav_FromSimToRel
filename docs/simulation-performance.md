@@ -4,16 +4,17 @@
 
 本轮 `~/.gz/rendering/ogre2.log` 中的 `GL_RENDERER` 为 `llvmpipe (LLVM 20.1.2, 256 bits)`，即软件渲染。WSL 能访问 `/dev/dxg` 和 RTX 3060，并不表示 Gazebo 已使用该 GPU。
 
-## 下一轮优先使用 GPU
+## GPU 实验已回退：先恢复原渲染设置
 
-结束本轮任务、感知、导航和仿真后，按[复杂迷宫步骤](complex-maze-trial.md)开新会话。五个终端加载完 ROS 环境后，都可执行以下两行；实际需要的是启动 Gazebo 和 RViz 的终端：
+后续完整场景运行推翻了“下一轮优先强制 GPU”的建议。00:30 的 Gazebo 确实加载了 D3D12/RTX 3060，生成小车也成功，但随后 Ogre 报 `Texture memory budget exceeded. Stalling GPU.` 和 `Stalling was not enough. Freeing memory.`。残留 server 的系统内存达到约 14.3 GiB，WSL 可用内存仅约 64 MiB。具体后端/驱动原因尚未定位，不能把小型上下文成功当成完整 Gazebo 稳定性验证。
+
+因此先按[复杂迷宫步骤](complex-maze-trial.md)使用原先可运行的渲染路径。五个终端加载环境后执行，特别是 Gazebo 和 RViz 终端：
 
 ```bash
-export GALLIUM_DRIVER=d3d12
-export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
+unset GALLIUM_DRIVER MESA_D3D12_DEFAULT_ADAPTER_NAME
 ```
 
-本机 16×16 离屏 GLX 与 EGL 测试均已验证：默认渲染器为 llvmpipe；只设置适配器名称仍为 llvmpipe；同时设置这两项后均为 `D3D12 (NVIDIA GeForce RTX 3060)`，OpenGL 4.6。探针不启动 ROS 或 Gazebo。此结果证明新上下文可以使用 GPU，尚未证明完整 Gazebo 场景的提速倍数，也不会改变正在运行的进程。
+这些环境变量不能改变已经运行的进程，需要关闭旧实例后重新启动。原始离屏试验结果仍保留：16×16 GLX/EGL 在默认设置下是 llvmpipe；仅指定适配器仍为 llvmpipe；同时指定 d3d12 和 NVIDIA 后报告 RTX 3060 / OpenGL 4.6。此结果的范围仅是创建小型上下文。
 
 启动新仿真后核对实际 Ogre 日志：
 
@@ -21,7 +22,20 @@ export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
 grep 'GL_RENDERER' ~/.gz/rendering/ogre2.log | tail -1
 ```
 
-应检查新启动时间对应的记录是否出现 `D3D12 (NVIDIA GeForce RTX 3060)`。如果仍是 llvmpipe，保留该轮日志，不以 `nvidia-smi` 中出现显卡为成功依据。这是本机验证的设置，其他显卡/驱动环境需重新检查。微软的[WSLg GPU 选择说明](https://github.com/microsoft/wslg/wiki/GPU-selection-in-WSLg)解释了适配器名称的选择规则。
+本次恢复预期会回到 llvmpipe；暂不把出现 D3D12 作为验收目标。后续 GPU 优化必须额外验证真实场景的持续运行、传感器输出、内存和退出行为。微软的[WSLg GPU 选择说明](https://github.com/microsoft/wslg/wiki/GPU-selection-in-WSLg)只解释适配器选择规则，不保证此 Gazebo 场景稳定。
+
+## 避免两个后台仿真实例
+
+00:31 的新启动出现 `ambiguous_service_publishers`，因为孤立的旧 server 仍提供 `/world/limo_maze/create`。启动器检测到两个服务，未发送创建请求，并关闭新实例；这与图形初始化错误不同。已核对旧进程的工作目录、分区、ROS domain 和孤立状态，定点结束后再次查询确认服务为空，WSL 可用内存恢复约 15 GiB。
+
+如果以 `headless:=true` 启动后只是想打开三维窗口，在另一个已加载环境的终端连接现有 server：
+
+```bash
+bash scripts/view_sim.sh gazebo \
+  --runtime /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel
+```
+
+此时不要再执行一次 `sim.launch.py`。需要完整重开时，先退出原启动终端并确认旧后台已关闭；单独关闭三维窗口不等于一定结束全部仿真进程。
 
 ## 减少窗口负载
 
@@ -45,7 +59,7 @@ RViz 中可将 `Global Options → Frame Rate` 从当前 20 改为 5–10，并�
 
 ```bash
 mkdir -p "$HOME/limo_runs"
-export LIMO_TRIAL="$HOME/limo_runs/complex_maze_trial_04"
+export LIMO_TRIAL="$HOME/limo_runs/complex_maze_trial_05"
 ```
 
 再按上述命令启动。若目录已存在，更换名称，保留旧结果。需要查看文件时，在 WSL 执行 `explorer.exe "$LIMO_TRIAL"`。这是微软[跨文件系统性能建议](https://learn.microsoft.com/en-us/windows/wsl/filesystems)对应的优化；本轮尚未做 C 盘与 Linux 目录的写盘对照，不承诺固定加速比例。

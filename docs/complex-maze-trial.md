@@ -29,6 +29,7 @@ source install/local_setup.bash
 export ROS_DOMAIN_ID=73
 export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export GZ_PARTITION=limo_maze_jazzy
+unset GALLIUM_DRIVER MESA_D3D12_DEFAULT_ADAPTER_NAME
 export LIMO_TRIAL="$PWD/outputs/ros_smoke/complex_maze_20261110_01"
 ```
 
@@ -43,7 +44,7 @@ source install/local_setup.bash
 
 `limo_maze_bringup` 的地图会话脚本现使用 `ros2 launch` 自身的 Python，避免 Conda 的 `env python3` 选错版本。仍应先退出 `(base)`。导航检查会对无回复的状态查询重试，并分别报告服务不可用、无回复、非 active 和过期状态。
 
-如果窗口卡顿或仿真慢，先看[本机 WSL 渲染与加速步骤](simulation-performance.md)。该页给出已经通过本机离屏测试的 RTX 3060 设置，以及只开 RViz 的启动方式。
+如果窗口卡顿或仿真慢，先看[本机 WSL 渲染与加速步骤](simulation-performance.md)。强制 D3D12 的小型测试曾通过，但完整场景出现严重内存异常，现已撤回该建议；上面的 `unset` 恢复原渲染设置。可以减少同时打开的窗口，并避免重复启动后台仿真。
 
 ## 五终端启动顺序
 

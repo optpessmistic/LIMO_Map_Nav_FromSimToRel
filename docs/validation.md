@@ -4,6 +4,8 @@
 
 ## 复杂迷宫试跑故障与性能诊断：2026-11-11
 
+**后续 GPU 实景失败与回退：** 用户 00:30 启动的完整场景报告 D3D12/RTX 3060，模型创建成功；随后 Ogre 纹理预算耗尽，孤立 server 4369 的 RSS 达约 14.3 GiB，WSL 可用内存仅约 64 MiB。00:31 再启动时有两个同名 create 服务，`spawn_once` 正确报告 `ambiguous_service_publishers`、`request_attempts=0` 并关闭新实例。已按 PID 句柄和目录/分区/domain/父进程身份核实后定点清理孤立进程；退出信号等待未及时完成，SIGKILL 后的独立复查确认进程消失、create 服务为空、可用内存恢复约 15 GiB。没有关闭其他应用或启动新自主任务。强制 GPU 推荐已撤回，默认步骤清除两项环境覆盖；完整 GPU 稳定性尚不成立。下面的离屏成功记录仅保留原有验证范围。
+
 `trial_03` 的原导航检查缺失 planner 状态，但 Nav2 日志显示所有托管节点已激活。检查器原先的首个 GetState 请求若无回复，会一直 pending 到总超时；现复用初始环视的有期限查询，明确区分无回复/服务不可用/非 active/过期状态，并将接入层查询限为最多 10 Hz，避免快速 spin 反复发请求。9 项 main 集成测试、5 项既有生命周期测试通过，原时钟/地图/TF/Action 门保持。
 
 导航进程的 PATH 同时使 `map_session.py` 通过 env 选择 Conda Python 3.13；在该进程环境中只导入脚本即复现缺少 yaml，系统 Python 3.12 导入正常。启动器现明确跟随 `ros2 launch` 的 `sys.executable`，本机 `limo_maze_bringup` 构建通过。本轮后续用户的 `trial_02` 导航检查已通过，任务记录了 map epoch，并完成初始环视和首个导航目标。
