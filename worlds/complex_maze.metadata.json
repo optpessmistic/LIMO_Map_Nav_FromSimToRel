@@ -1,0 +1,139 @@
+{
+  "role": "simulator_and_offline_evaluator_only",
+  "cell_m": 0.8,
+  "wall_height_m": 0.6,
+  "robot_spawn": {
+    "x": 0,
+    "y": 0,
+    "yaw": 0
+  },
+  "spawn_z": "use robot model launch default and verify ground clearance",
+  "targets_ground_truth": [
+    {
+      "x": 9.600000000000001,
+      "y": 0.385,
+      "z": 0.1,
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        13,
+        1
+      ],
+      "wall_grid_xy": [
+        13,
+        0
+      ],
+      "wall_normal_world_xy": [
+        0,
+        1
+      ],
+      "size_xyz": [
+        0.06,
+        0.03,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.37
+    },
+    {
+      "x": 6.785,
+      "y": -1.6,
+      "z": 0.1,
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        9,
+        3
+      ],
+      "wall_grid_xy": [
+        10,
+        3
+      ],
+      "wall_normal_world_xy": [
+        1,
+        0
+      ],
+      "size_xyz": [
+        0.03,
+        0.06,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.37
+    },
+    {
+      "x": 1.215,
+      "y": -3.2,
+      "z": 0.1,
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        3,
+        5
+      ],
+      "wall_grid_xy": [
+        2,
+        5
+      ],
+      "wall_normal_world_xy": [
+        -1,
+        0
+      ],
+      "size_xyz": [
+        0.03,
+        0.06,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.37
+    },
+    {
+      "x": 9.600000000000001,
+      "y": -4.415000000000001,
+      "z": 0.1,
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        13,
+        7
+      ],
+      "wall_grid_xy": [
+        13,
+        6
+      ],
+      "wall_normal_world_xy": [
+        0,
+        1
+      ],
+      "size_xyz": [
+        0.06,
+        0.03,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.37
+    },
+    {
+      "x": 3.585,
+      "y": -6.4,
+      "z": 0.1,
+      "appearance": "red_box_surrogate",
+      "grid_xy": [
+        5,
+        9
+      ],
+      "wall_grid_xy": [
+        6,
+        9
+      ],
+      "wall_normal_world_xy": [
+        1,
+        0
+      ],
+      "size_xyz": [
+        0.03,
+        0.06,
+        0.2
+      ],
+      "mounting": "flush_to_adjacent_wall",
+      "cell_center_clearance_m": 0.37
+    }
+  ],
+  "note": "World geometry only; no robot or ROS integration. Target is an unvalidated wall-mounted red-box surrogate. Centreline clearance is geometric only; robot dynamics and costmaps require runtime validation."
+}
