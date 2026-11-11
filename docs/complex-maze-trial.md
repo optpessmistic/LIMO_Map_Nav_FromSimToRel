@@ -37,9 +37,13 @@ export LIMO_TRIAL="$PWD/outputs/ros_smoke/complex_maze_20261110_01"
 本次另增加了感知节点的 `retention_max_requests` 参数，默认值仍为 128。开发者本机完成构建后可直接运行；其他机器或以后从 Git 更新源码后需先构建再加载安装：
 
 ```bash
-colcon build --base-paths src --packages-select limo_maze_perception
+colcon build --base-paths src --packages-select limo_maze_perception limo_maze_bringup
 source install/local_setup.bash
 ```
+
+`limo_maze_bringup` 的地图会话脚本现使用 `ros2 launch` 自身的 Python，避免 Conda 的 `env python3` 选错版本。仍应先退出 `(base)`。导航检查会对无回复的状态查询重试，并分别报告服务不可用、无回复、非 active 和过期状态。
+
+如果窗口卡顿或仿真慢，先看[本机 WSL 渲染与加速步骤](simulation-performance.md)。该页给出已经通过本机离屏测试的 RTX 3060 设置，以及只开 RViz 的启动方式。
 
 ## 五终端启动顺序
 
@@ -106,7 +110,7 @@ ros2 run limo_maze_mission mission --ros-args \
 
 ## 本场景的运行预算与结果
 
-配置将总任务墙钟上限设为 **3600 秒**，单导航目标为 **180 秒**；建图后最多选择 **6 个观察站、每站 4 个朝向，共 24 个动作**，观察阶段上限 **720 秒**，同时受任务总时限限制。这些是上限，不是预计耗时或全场视觉覆盖证明。所有时限仍有限，不屏蔽地图、TF、导航和停车失败。
+配置将总任务墙钟上限设为 **3600 秒**，单导航目标为 **180 秒**；每次停车观察的上限为 **30 秒**，共同覆盖稳定停车、采集 3 帧、写盘和持久化回执。建图后最多选择 **6 个观察站、每站 4 个朝向，共 24 个动作**，观察阶段上限 **720 秒**，同时受任务总时限限制。这些是上限，不是预计耗时或全场视觉覆盖证明。所有时限仍有限，不屏蔽地图、TF、导航和停车失败。
 
 较多探索点也会产生停车观察，因此把任务端接受样本上限、感知端请求和存储工作上限一起设为 256，窗口上限为 128。任务元数据上限增至 16 MiB，避免默认 2 MiB 先耗尽；原始帧文件预算为 768 MiB，不等于一开始分配或持续录像。预算仍可能在反复失败/重试时耗尽，结果会如实报告。
 

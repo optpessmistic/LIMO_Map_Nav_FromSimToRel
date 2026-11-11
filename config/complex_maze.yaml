@@ -13,6 +13,8 @@ limo_maze_mission:
     require_processed_inspection: true
     require_retained_inspection: true
     inspection_required_frames: 3
+    # Includes settling, frame acquisition, writes and durable receipts (wall time).
+    inspection_timeout_s: 30.0
     retention_max_total_samples: 256
     retention_max_windows: 128
     # 256 * 34816 bytes/slot + 128 * 4096 bytes/window = 9 MiB.

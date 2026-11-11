@@ -1,0 +1,154 @@
+{
+  "scope": "Read-only file integrity and timing diagnosis; NOT a successful retention audit or mission.",
+  "inputs": [
+    {
+      "path": "outputs\\ros_smoke\\complex_maze_trial_02\\mission\\mission_20261111_001620_d38df635.json",
+      "sha256": "c9aaae4ae6032f03184438c67d68630b4638f57ea4fd804807b8696dec8632b1"
+    },
+    {
+      "path": "outputs\\ros_smoke\\complex_maze_trial_02\\retained\\checkpoint.json",
+      "sha256": "a99c5cc2536d20a8bf66c7fa35b212c88f824cf4c25be5a5a0c7fe27e95ea6ce"
+    }
+  ],
+  "checkpoint_note": "Producer was still running; checksum describes this snapshot only.",
+  "mission_status": "blocked",
+  "mission_reason": "frame_retention_failed",
+  "consumer_fault": "retention_window_deadline",
+  "inspection_timeout_s": 12.0,
+  "window_created_wall": 517.621124647,
+  "deadline_wall": 527.220996409,
+  "producer_closed": false,
+  "producer_fault": null,
+  "frames": [
+    {
+      "sequence": 124,
+      "request_sha256": "652d7e9ac3b2e5ebe130cb7e04957a3e9b2e73fcee0634b4946e028c7ab03906",
+      "consumer_state": "pending",
+      "consumer_result": null,
+      "producer_status": "stored",
+      "requested_wall": 525.501525702,
+      "completed_wall": 526.537860096,
+      "request_margin_before_deadline_s": 1.7194707070000277,
+      "completion_offset_from_deadline_s": -0.6831363129999772,
+      "files_verified_against_receipt": [
+        {
+          "name": "camera_info.json",
+          "bytes": 549,
+          "sha256": "c8bd8a225daf836c0fb3f1e8bc9033daf27cf1df7f37a1fbcfd1f84496f8b7ee"
+        },
+        {
+          "name": "depth.bin",
+          "bytes": 1228800,
+          "sha256": "a3993721595159333a91a0a23461be85fad10e612bbe17509a11f34c6c2c94f1"
+        },
+        {
+          "name": "manifest.json",
+          "bytes": 1364,
+          "sha256": "5dd59df8a5384f71836e6060b47fe9f7513a1fa7a268d1104cdbd23e190ab473"
+        },
+        {
+          "name": "producer.json",
+          "bytes": 2060,
+          "sha256": "75b953ce3dcf8ed52d1c61cdfa652432085b94d495ec46b3cf3ec285b04d407f"
+        },
+        {
+          "name": "request.json",
+          "bytes": 1118,
+          "sha256": "652d7e9ac3b2e5ebe130cb7e04957a3e9b2e73fcee0634b4946e028c7ab03906"
+        },
+        {
+          "name": "rgb.bin",
+          "bytes": 921600,
+          "sha256": "c017bbe418ac453fe96791761bc9c8717e4ab4781235dbb082362789d2bdfbe4"
+        }
+      ]
+    },
+    {
+      "sequence": 125,
+      "request_sha256": "77807768001b01e78665b80c4a91ee8aaf6c994db62dfe9fc77c833a2e59042a",
+      "consumer_state": "pending",
+      "consumer_result": null,
+      "producer_status": "stored",
+      "requested_wall": 526.389223563,
+      "completed_wall": 527.63777316,
+      "request_margin_before_deadline_s": 0.8317728460000353,
+      "completion_offset_from_deadline_s": 0.4167767510000431,
+      "files_verified_against_receipt": [
+        {
+          "name": "camera_info.json",
+          "bytes": 549,
+          "sha256": "f7730bbe4c566c0c8d7ae40d48d4923f6b951446305201e0978333d69eec63b2"
+        },
+        {
+          "name": "depth.bin",
+          "bytes": 1228800,
+          "sha256": "a3993721595159333a91a0a23461be85fad10e612bbe17509a11f34c6c2c94f1"
+        },
+        {
+          "name": "manifest.json",
+          "bytes": 1364,
+          "sha256": "dde46327516319f437746f3dd0cca67c2e492c4189b4545629072bb051d4e6fc"
+        },
+        {
+          "name": "producer.json",
+          "bytes": 2060,
+          "sha256": "74f36398ebaa8c089d91e45d13a3d218111eeccecd8c5b0736905cf9af18c40e"
+        },
+        {
+          "name": "request.json",
+          "bytes": 1118,
+          "sha256": "77807768001b01e78665b80c4a91ee8aaf6c994db62dfe9fc77c833a2e59042a"
+        },
+        {
+          "name": "rgb.bin",
+          "bytes": 921600,
+          "sha256": "c017bbe418ac453fe96791761bc9c8717e4ab4781235dbb082362789d2bdfbe4"
+        }
+      ]
+    },
+    {
+      "sequence": 126,
+      "request_sha256": "8a53f6461e8b58ecc1d6aabc3e98436f958f84e02d533ecef3229f767209c3f7",
+      "consumer_state": "pending",
+      "consumer_result": null,
+      "producer_status": "stored",
+      "requested_wall": 527.171485545,
+      "completed_wall": 528.837432795,
+      "request_margin_before_deadline_s": 0.04951086400001259,
+      "completion_offset_from_deadline_s": 1.6164363860000321,
+      "files_verified_against_receipt": [
+        {
+          "name": "camera_info.json",
+          "bytes": 549,
+          "sha256": "1f6b4d9c52d959ae70e80f855b2ddcba1207701614fdba7b192931c5069afa65"
+        },
+        {
+          "name": "depth.bin",
+          "bytes": 1228800,
+          "sha256": "a3993721595159333a91a0a23461be85fad10e612bbe17509a11f34c6c2c94f1"
+        },
+        {
+          "name": "manifest.json",
+          "bytes": 1364,
+          "sha256": "00fdf49b579c10b97a37db757f7d65bcae7b7cbac990ba13b0cbd0801304879f"
+        },
+        {
+          "name": "producer.json",
+          "bytes": 2060,
+          "sha256": "239bc6b3691db5947ff9eb9f7f72ecf9aae4e637c1408fbe42fb0c55acdc88c1"
+        },
+        {
+          "name": "request.json",
+          "bytes": 1118,
+          "sha256": "8a53f6461e8b58ecc1d6aabc3e98436f958f84e02d533ecef3229f767209c3f7"
+        },
+        {
+          "name": "rgb.bin",
+          "bytes": 921600,
+          "sha256": "c017bbe418ac453fe96791761bc9c8717e4ab4781235dbb082362789d2bdfbe4"
+        }
+      ]
+    }
+  ],
+  "verified_files": 18
+}

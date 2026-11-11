@@ -1,5 +1,6 @@
 """Online SLAM + Nav2 for an already running robot/simulator (no AMCL)."""
 import os
+import sys
 import uuid
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -34,6 +35,8 @@ def generate_launch_description():
         DeclareLaunchArgument("nav_params", default_value=os.path.join(project, "config", "nav2.yaml")),
         DeclareLaunchArgument("slam_params", default_value=os.path.join(project, "config", "slam.yaml")),
         Node(package="limo_maze_bringup", executable="map_session.py", output="screen",
+             # Match ros2 launch's Python; env python3 may resolve to Conda.
+             prefix=[sys.executable],
              parameters=[{"epoch": LaunchConfiguration("map_epoch")}]),
         OpaqueFunction(function=_launch_stack),
     ])
