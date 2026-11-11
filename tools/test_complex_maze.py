@@ -195,6 +195,10 @@ class ComplexMazeTests(unittest.TestCase):
         self.assertIn('OFFLINE EVALUATOR GROUND TRUTH', visible_text)
         self.assertIn('Never provide this layout or target count to the mission', visible_text)
         self.assertEqual(len([e for e in image.iter() if 'data-target-id' in e.attrib]), 5)
+        metadata = image.find('{http://www.w3.org/2000/svg}metadata')
+        self.assertIsNotNone(metadata)
+        world_hash = hashlib.sha256(BASE.with_suffix('.world').read_bytes()).hexdigest()
+        self.assertIn(f'world_sha256={world_hash};', metadata.text)
 
 
 if __name__ == '__main__':
