@@ -19,9 +19,10 @@ limo_maze_mission:
     retention_max_windows: 64
     retention_max_metadata_bytes: 4194304
     post_mapping_observation_mode: bounded_processed_frames
-    observation_max_stations: 3
+    # One station, four directions: at most four post-mapping observations.
+    observation_max_stations: 1
     observation_headings_per_station: 4
-    observation_max_dispatches: 12
+    observation_max_dispatches: 4
     observation_stage_timeout_s: 720.0
     observation_relocation_radius_m: 0.15
     initial_clearance_radius_m: 0.30
