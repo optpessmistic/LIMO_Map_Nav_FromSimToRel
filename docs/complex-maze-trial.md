@@ -30,12 +30,13 @@ export ROS_DOMAIN_ID=73
 export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export GZ_PARTITION=limo_maze_jazzy
 unset GALLIUM_DRIVER MESA_D3D12_DEFAULT_ADAPTER_NAME
-export LIMO_TRIAL="$PWD/outputs/ros_smoke/complex_maze_20261110_01"
+export LIMO_TRIAL="$HOME/limo_runs/complex_maze_trial_06"
+mkdir -p "$HOME/limo_runs"
 ```
 
-每轮使用新名称，并在五个终端保持一致。配置从 `config/complex_maze.yaml` 直接加载；地图文件也直接用仓库路径，无需重新安装场景资源。
+每轮使用新名称，并在五个终端保持一致。这里改用 WSL Linux 文件系统保存结果，减少跨 Windows 文件系统写盘；仓库仍在原路径。配置从 `config/complex_maze.yaml` 直接加载；地图文件也直接用仓库路径，无需重新安装场景资源。
 
-本次另增加了感知节点的 `retention_max_requests` 参数，默认值仍为 128。开发者本机完成构建后可直接运行；其他机器或以后从 Git 更新源码后需先构建再加载安装：
+本次感知节点增加留存故障阶段日志；复杂迷宫单独调整各层等待预算。开发者本机完成构建后可直接运行；其他机器或以后从 Git 更新源码后需先构建再加载安装：
 
 ```bash
 colcon build --base-paths src --packages-select limo_maze_perception limo_maze_bringup
@@ -111,7 +112,9 @@ ros2 run limo_maze_mission mission --ros-args \
 
 ## 本场景的运行预算与结果
 
-配置将总任务墙钟上限设为 **3600 秒**，单导航目标为 **180 秒**；每次停车观察的上限为 **30 秒**，共同覆盖稳定停车、采集 3 帧、写盘和持久化回执。建图后最多选择 **6 个观察站、每站 4 个朝向，共 24 个动作**，观察阶段上限 **720 秒**，同时受任务总时限限制。这些是上限，不是预计耗时或全场视觉覆盖证明。所有时限仍有限，不屏蔽地图、TF、导航和停车失败。
+配置将总任务墙钟上限设为 **3600 秒**，单导航目标为 **180 秒**；每次停车观察的上限为 **90 秒**，共同覆盖稳定停车、采集 3 帧、写盘和持久化回执。写入子进程上限 **15 秒**，留存请求上限 **60 秒**（包括排队），感知节点退出清理上限 **20 秒**。这些预算使用单调墙钟，与仿真速度无关；正常完成即继续，不等待上限。建图后最多选择 **6 个观察站、每站 4 个朝向，共 24 个动作**，观察阶段上限 **720 秒**，同时受任务总时限限制。这些是上限，不是预计耗时或全场视觉覆盖证明。所有时限仍有限，不屏蔽地图、TF、导航和停车失败。
+
+`trial_05` 的 `frame_retention_failed` 是子进程在完整接收图像前超过原 5 秒期限，并不是 30 秒观察超时。故障会关闭该感知留存会话，不能只重启任务节点恢复。按上面的关闭顺序完整重开、使用新目录；若再失败，终端 4 的 `retention_fault` 会提供实际失败 job、阶段、传输进度和当前时限，保留该日志及任务 JSON。具体证据见[诊断记录](../experiments/complex-maze-trial05-diagnosis/README.md)。
 
 较多探索点也会产生停车观察，因此把任务端接受样本上限、感知端请求和存储工作上限一起设为 256，窗口上限为 128。任务元数据上限增至 16 MiB，避免默认 2 MiB 先耗尽；原始帧文件预算为 768 MiB，不等于一开始分配或持续录像。预算仍可能在反复失败/重试时耗尽，结果会如实报告。
 

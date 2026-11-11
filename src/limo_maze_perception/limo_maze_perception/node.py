@@ -148,6 +148,15 @@ class RedRGBDBaseline(Node):
     def on_retention_tick(self):
         self.retention_clock_guard()
         self.retention.tick(time.monotonic())
+        if self.retention.fault and getattr(self, 'retention_logged_fault', None) != self.retention.fault:
+            self.retention_logged_fault = self.retention.fault
+            state = self.retention.snapshot()
+            writer = state['writer'] or (state['writer_history'][-1] if state['writer_history'] else None)
+            self.get_logger().error('retention_fault ' + json.dumps({
+                'reason': self.retention.fault, 'writer': writer,
+                'worker_timeout_s': self.retention.runtime.worker_timeout_s,
+                'request_timeout_s': self.retention.policy.request_timeout_s,
+                'output_dir': str(self.retention.output)}, allow_nan=False))
         for result in self.retention.results():
             raw = json.dumps(result, sort_keys=True, allow_nan=False)
             rid = result['retention_id']

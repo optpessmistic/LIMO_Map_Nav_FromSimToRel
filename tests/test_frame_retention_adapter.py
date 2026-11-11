@@ -508,6 +508,25 @@ raise SystemExit(ns['main']())
 
 
 class SourceHookTests(unittest.TestCase):
+    def test_fault_log_identifies_active_writer_once_before_old_receipt_broadcast(self):
+        calls = []
+        writer = dict(job_id='sixth-job', last_stage='script_entered')
+        owner = S(fault='writer_wall_timeout', tick=lambda now: None,
+                  snapshot=lambda: dict(writer=writer, writer_history=[]),
+                  runtime=S(worker_timeout_s=15.), policy=S(request_timeout_s=60.),
+                  output='/tmp/retention-fixture',
+                  results=lambda: [dict(retention_id='old-first-job', status='failed')])
+        node = S(retention=owner, retention_clock_guard=lambda: None, retention_versions={},
+                 get_logger=lambda: S(error=lambda msg: calls.append(('error', msg))),
+                 retention_pub=S(publish=lambda msg: calls.append(('publish', msg.data))))
+        self.method('on_retention_tick')(node)
+        self.method('on_retention_tick')(node)
+        self.assertEqual([kind for kind, _ in calls], ['error', 'publish'])
+        diagnostic = json.loads(calls[0][1].split(' ', 1)[1])
+        self.assertEqual(diagnostic['writer']['job_id'], 'sixth-job')
+        self.assertEqual(diagnostic['reason'], 'writer_wall_timeout')
+        self.assertEqual(diagnostic['worker_timeout_s'], 15.)
+
     def method(self, name):
         tree = ast.parse((HERE/'node.py').read_text())
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'RedRGBDBaseline')

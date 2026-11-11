@@ -29,6 +29,35 @@ from limo_evidence_protocol.retention import Core, Policy, canonical, sha, valid
 MAX_CHECKPOINT = 4 * 1024 * 1024
 MAX_REPLY = 32768
 STDIN_PIPE_TARGET_BYTES = 1024 * 1024
+STAGE_PREFIX = b'LIMO_RETENTION_STAGE '
+WORKER_STAGES = frozenset(('script_entered', 'protocol_imported', 'root_validating',
+    'root_validated', 'input_reading', 'input_read', 'checkpoint_writing',
+    'checkpoint_written', 'artifact_writing', 'artifact_written', 'completed'))
+
+
+def last_writer_stage(stderr):
+    """Read only complete prefixed diagnostic lines from the bounded buffer.
+
+    These child-reported stages are not proof of I/O completion or success;
+    stdout reply validation and owned child exit remain the only authority.
+    """
+    latest = None
+    for line in bytes(stderr[:4096]).split(b'\n')[:-1]:
+        if not line.startswith(STAGE_PREFIX) or len(line) > 256:
+            continue
+        try:
+            value = json.loads(line[len(STAGE_PREFIX):])
+            if type(value) is not dict or set(value) != {'stage', 'monotonic_s'}:
+                continue
+            stamp = value['monotonic_s']
+            if (type(value['stage']) is not str or value['stage'] not in WORKER_STAGES or
+                    type(stamp) not in (int, float) or not math.isfinite(stamp) or stamp < 0 or
+                    latest is not None and stamp < latest['monotonic_s']):
+                continue
+        except (ValueError, UnicodeError, TypeError, RecursionError):
+            continue
+        latest = value
+    return latest
 
 
 @dataclass(frozen=True)
@@ -228,6 +257,7 @@ class OwnedWriter:
                     stop_reason=self.stop_reason, forced_kill=self.killed_at is not None,
                     termination_unconfirmed=self.unconfirmed, fault=self.fault,
                     stdin_pipe=dict(self.stdin_pipe),
+                    last_stage=last_writer_stage(self.errors),
                     # Wall values are owner poll samples, not child read/fsync times.
                     input_transfer=dict(total_bytes=self.input_total_bytes, sent_bytes=self.input_sent_bytes,
                         remaining_bytes=self.input_total_bytes - self.input_sent_bytes,

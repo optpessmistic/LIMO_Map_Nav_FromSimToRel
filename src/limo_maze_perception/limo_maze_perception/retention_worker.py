@@ -1,12 +1,33 @@
 """Owned stdlib-only writer. No ROS imports, Core calls, threads, or descendants."""
+import sys
+import time
+
+
+def emit_stage(stage):
+    """Small diagnostic only; it never authorizes a stored receipt."""
+    if __name__ != '__main__':
+        return
+    try:
+        # Stage names are fixed literals. Keep the first marker before imports
+        # that may touch the protocol package on a mounted filesystem.
+        sys.stderr.write('LIMO_RETENTION_STAGE {"stage":"%s","monotonic_s":%.9f}\n' %
+                         (stage, time.monotonic()))
+        sys.stderr.flush()
+    except OSError:
+        pass  # A diagnostic pipe failure does not alter the stdout protocol.
+
+
+emit_stage('script_entered')
+
 import argparse
 import base64
 import json
 import os
 from pathlib import Path
-import sys
 
 from limo_evidence_protocol.retention import Job, canonical, digest, write_job
+
+emit_stage('protocol_imported')
 
 MAX_CHECKPOINT = 4 * 1024 * 1024
 MAX_REPLY = 32768
@@ -37,6 +58,7 @@ def read_exact(stream, size):
 
 
 def execute(stream, root, max_wire):
+    emit_stage('input_reading')
     size = int.from_bytes(read_exact(stream, 8), 'big')
     if size > 16384:
         raise ValueError('header_budget')
@@ -66,8 +88,15 @@ def execute(stream, root, max_wire):
                   files, manifest, receipt, job_meta['file_bytes'])
     if stream.read(1):
         raise ValueError('trailing_owner_bytes')
+    emit_stage('input_read')
+    emit_stage('checkpoint_writing')
     save_checkpoint(root, checkpoint)
-    result = write_job(job, root) if job else None
+    emit_stage('checkpoint_written')
+    result = None
+    if job is not None:
+        emit_stage('artifact_writing')
+        result = write_job(job, root)
+        emit_stage('artifact_written')
     return {'ok': True, 'operation_id': header['operation_id'],
             'receipt_b64': base64.b64encode(result).decode() if result is not None else None}
 
@@ -78,8 +107,10 @@ def main():
     parser.add_argument('--max-wire-bytes', type=int, required=True)
     args = parser.parse_args()
     root = Path(args.root)
+    emit_stage('root_validating')
     if not root.is_absolute() or not root.is_dir() or root.is_symlink() or root.resolve() != root:
         raise ValueError('exclusive_absolute_root_required')
+    emit_stage('root_validated')
     try:
         reply = execute(sys.stdin.buffer, root, args.max_wire_bytes)
     except Exception as exc:
@@ -87,6 +118,8 @@ def main():
     raw = canonical(reply, MAX_REPLY - 1) + b'\n'
     sys.stdout.buffer.write(raw)
     sys.stdout.buffer.flush()
+    if reply['ok']:
+        emit_stage('completed')
     return 0 if reply['ok'] else 1
 
 

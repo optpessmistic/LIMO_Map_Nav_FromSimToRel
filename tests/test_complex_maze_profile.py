@@ -71,6 +71,16 @@ class ComplexMazeProfileTests(unittest.TestCase):
         self.assertNotIn('.metadata.json', serialized)
         self.assertNotIn('targets_ground_truth', serialized)
 
+    def test_slow_writer_budget_does_not_expire_requests_or_observation_first(self):
+        m, p = self.mission, self.detector
+        # Three serial frame jobs plus one checkpoint that may already be active.
+        queued_write_budget = (m['inspection_required_frames'] + 1) * p['retention_worker_timeout_s']
+        self.assertGreaterEqual(p['retention_request_timeout_s'], queued_write_budget)
+        # Keep time for settling/acquisition and the final durable checkpoint.
+        self.assertGreater(m['inspection_timeout_s'],
+                           p['retention_request_timeout_s'] + p['retention_worker_timeout_s'])
+        self.assertGreater(p['retention_shutdown_timeout_s'], p['retention_worker_timeout_s'] + 1.)
+
 
 if __name__ == '__main__':
     unittest.main()
