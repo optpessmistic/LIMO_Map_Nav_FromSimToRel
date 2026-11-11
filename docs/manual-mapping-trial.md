@@ -15,14 +15,14 @@ cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimTo
 source /opt/ros/jazzy/setup.bash
 source /mnt/f/study/Personal_Plan/LIMO_Map_Nav_FromSimToRel/install/local_setup.bash
 source outputs/slam-steady-map-ws/install/local_setup.bash
-colcon build --base-paths src --packages-select limo_maze_mission
+colcon build --base-paths src --packages-select limo_maze_mission limo_maze_perception limo_maze_bringup
 ```
 
-此步骤只构建任务包，不启动机器人。新模块和 launch 参数需要安装后才会被 `ros2 run` / `ros2 launch` 使用；本机已有的独立 SLAM 安装不需要因此重建。
+此步骤安装任务、感知及启动文件，不启动机器人；本机已有的独立 SLAM 安装不需要因此重建。当前本机已安装上一轮修复，本次新增 YAML 从源码目录直接读取，无需重新构建。
 
 ## 五个终端的共同环境
 
-打开五个 Ubuntu 终端，每个都先执行：
+先按文末顺序关闭上一轮会话。打开五个 Ubuntu 终端（Windows 中执行 `wsl -d Ubuntu-24.04`；有 `(base)` 时执行 `conda deactivate`），每个都先执行：
 
 ```bash
 cd /mnt/c/Users/Admin/.codex/worktrees/0dd9/Personal_Plan/LIMO_Map_Nav_FromSimToRel
@@ -33,10 +33,12 @@ source install/local_setup.bash
 export ROS_DOMAIN_ID=73
 export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export GZ_PARTITION=limo_maze_jazzy
-export LIMO_TRIAL="$PWD/outputs/ros_smoke/manual_mapping_01"
+unset GALLIUM_DRIVER MESA_D3D12_DEFAULT_ADAPTER_NAME
+mkdir -p "$HOME/limo_runs"
+export LIMO_TRIAL="$HOME/limo_runs/simple_maze_trial_01"
 ```
 
-下次运行将五个终端的 `manual_mapping_01` 一起换成新的名称，保留旧结果。此环境顺序先加载 F 盘模型依赖，再加载 C 盘的 SLAM 和当前源码安装。`ros2 pkg prefix slam_toolbox` 应指向当前仓库的 `outputs/slam-steady-map-ws/install/slam_toolbox`；`ros2 pkg prefix limo_maze_mission` 应指向当前仓库的 `install/limo_maze_mission`。
+下次运行将五个终端的 `simple_maze_trial_01` 一起换成新的名称，保留旧结果。结果写入 WSL Linux 文件系统。此环境顺序先加载 F 盘模型依赖，再加载 C 盘的 SLAM 和当前源码安装。`ros2 pkg prefix slam_toolbox` 应指向当前仓库的 `outputs/slam-steady-map-ws/install/slam_toolbox`；`ros2 pkg prefix limo_maze_mission` 应指向当前仓库的 `install/limo_maze_mission`。
 
 ## 启动场景、导航与初始检查
 
@@ -81,14 +83,8 @@ sha256sum worlds/smoke_maze.world
 
 ```bash
 ros2 run limo_maze_perception red_rgbd_detector --ros-args \
-  -p use_sim_time:=true \
-  -p enabled:=true \
-  -p depth_registered_to_color:=true \
-  -p publish_frame_processing:=true \
-  -p retention_enabled:=true \
-  -p retention_output_dir:="$LIMO_TRIAL/retained" \
-  -p retention_max_jobs:=96 \
-  -p retention_max_file_bytes:=268435456
+  --params-file "$PWD/config/simple_maze.yaml" \
+  -p retention_output_dir:="$LIMO_TRIAL/retained"
 ```
 
 **终端 5：RViz 地图、相机、导航路径和目标标注。**
@@ -100,37 +96,19 @@ bash scripts/view_sim.sh rviz \
 
 Gazebo 看物理运动，RViz 看机器人接收到的地图与感知结果。两个窗口的含义、图层与常见问题见[可视化说明](visualization.md)。
 
-**回到终端 3：启动唯一的自主任务。** 保留之前手动试跑的停车观察、有限额外观察及留存配置，显式关闭返航：
+**回到终端 3：启动唯一的自主任务。** `simple_maze.yaml` 绑定小迷宫起点指纹，默认关闭返航：
 
 ```bash
 ros2 run limo_maze_mission mission --ros-args \
-  -p use_sim_time:=true \
-  -p autonomous:=true \
-  -p return_home:=false \
-  -p tf_max_age_s:=1.5 \
-  -p navigation_failure_cooldown_s:=1.0 \
-  -p navigation_recovery_timeout_s:=3.0 \
-  -p frontier_fallback_standoff_m:=0.8 \
-  -p require_processed_inspection:=true \
-  -p require_retained_inspection:=true \
-  -p retention_max_total_samples:=96 \
-  -p post_mapping_observation_mode:=bounded_processed_frames \
-  -p observation_max_stations:=3 \
-  -p observation_headings_per_station:=4 \
-  -p observation_max_dispatches:=12 \
-  -p observation_stage_timeout_s:=360.0 \
-  -p observation_relocation_radius_m:=0.15 \
-  -p initial_clearance_radius_m:=0.30 \
-  -p initial_clearance_source:=smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811 \
-  -p mission_timeout_s:=900.0 \
-  -p return_timeout_s:=240.0 \
-  -p goal_timeout_s:=120.0 \
+  --params-file "$PWD/config/simple_maze.yaml" \
   -p output_dir:="$LIMO_TRIAL/mission"
 ```
 
 现在小车会探索、识别、确认目标位置并标注；找到目标不会提前终止探索。地图检查及所配置的观察阶段结束后，停在当前地点验证静止并保存。`return_timeout_s` 在返航关闭时不支配探索完成流程。任务仍可能因地图过期、导航或观察失败等原因停止，新范围不绕过这些检查。
 
-如需返航，只将本次任务命令中的 `-p return_home:=false` 改为 `-p return_home:=true`。到家停稳复查后，若还有可达探索边界，且尚未超过任务总时限、补图次数和累计尝试上限，可以再次出发补图；此时释放上一段返航期限，后续真正再次返航时重新获得该段返航预算。同一次返航内部的失败重试不会延长期限。这样补图不会继续消耗已经完成的上一段返航预算；若最终检查仍有缺口，照实记录未完成。
+小迷宫配置沿用最新留存期限：单个 writer 15 秒、排队请求 60 秒、整次观察 90 秒、感知退出 20 秒，正常完成即继续。3 帧与持久化回执要求保持。最多 3 个观察站、每站 4 个朝向；观察阶段上限为 720 秒，总任务上限为 1800 秒，单导航目标 180 秒，给慢速 WSL 留出余量。这些是墙钟上限，不是预计耗时。留存上限 96 帧、64 窗口，元数据 4 MiB、文件 256 MiB；目标数量和真值地图不输入任务。
+
+如需返航，在任务命令最后追加 `-p return_home:=true`。到家停稳复查后，若还有可达探索边界，且尚未超过任务总时限、补图次数和累计尝试上限，可以再次出发补图；此时释放上一段返航期限，后续真正再次返航时重新获得该段返航预算。同一次返航内部的失败重试不会延长期限。若最终检查仍有缺口，照实记录未完成。
 
 也可以在自行配置的 launch 工作流中传 `ros2 launch limo_maze_mission mission.launch.py return_home:=true`；该 launch 默认 `autonomous:=false`，且未提供上面全部试跑参数，不能用这条单独替代完整试跑命令。
 
@@ -146,7 +124,7 @@ ros2 run limo_maze_mission mission --ros-args \
 | `annotated.svg` | 可在浏览器打开的地图及目标编号、平面坐标 |
 | `manifest.json` | 上述五个文件的大小和 SHA256 校验值 |
 
-文件可在 Windows 资源管理器中通过仓库的 `outputs/ros_smoke/manual_mapping_01/mission` 找到，双击 SVG 查看。已接受并留存的 RGB-D 在 `retained` 中。标注不改变障碍栅格；中间占据值保守保存为未知，原数值仍在 `map.json` 中。
+在任意完成环境设置的 WSL 终端执行 `explorer.exe "$(wslpath -w "$LIMO_TRIAL/mission")"` 打开 Windows 资源管理器，进入 `_map` 子目录，双击 `annotated.svg` 查看。已接受并留存的 RGB-D 在 `retained` 中。标注不改变障碍栅格；中间占据值保守保存为未知，原数值仍在 `map.json` 中。
 
 任务 JSON 的主要字段：
 

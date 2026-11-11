@@ -1,0 +1,43 @@
+# Manual simulation profile for the unchanged worlds/smoke_maze.world.
+# Give both nodes a fresh output directory on their command line.
+limo_maze_mission:
+  ros__parameters:
+    use_sim_time: true
+    autonomous: true
+    return_home: false
+    tf_max_age_s: 1.5
+    navigation_failure_cooldown_s: 1.0
+    navigation_recovery_timeout_s: 3.0
+    frontier_fallback_standoff_m: 0.8
+    require_processed_inspection: true
+    require_retained_inspection: true
+    inspection_required_frames: 3
+    inspection_timeout_s: 90.0
+    retention_max_total_samples: 96
+    retention_max_windows: 64
+    retention_max_metadata_bytes: 4194304
+    post_mapping_observation_mode: bounded_processed_frames
+    observation_max_stations: 3
+    observation_headings_per_station: 4
+    observation_max_dispatches: 12
+    observation_stage_timeout_s: 720.0
+    observation_relocation_radius_m: 0.15
+    initial_clearance_radius_m: 0.30
+    initial_clearance_source: smoke_world_sha256_1ef2017583d448e36fb35825bbef6735536c2fe3cbf3a7a57380cf365c708811
+    mission_timeout_s: 1800.0
+    goal_timeout_s: 180.0
+    return_timeout_s: 240.0
+
+red_rgbd_sim_baseline:
+  ros__parameters:
+    use_sim_time: true
+    enabled: true
+    depth_registered_to_color: true
+    publish_frame_processing: true
+    retention_enabled: true
+    retention_worker_timeout_s: 15.0
+    retention_request_timeout_s: 60.0
+    retention_shutdown_timeout_s: 20.0
+    retention_max_jobs: 96
+    retention_max_requests: 96
+    retention_max_file_bytes: 268435456
